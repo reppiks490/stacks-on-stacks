@@ -1,0 +1,32 @@
+name: Everbloom Construction Phase B 100-concept integrity audit
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/phaseB_100_concepts.json'
+      - 'docs/innovation/construction/validate_phaseB_100.py'
+      - '.github/workflows/everbloom-construction-phaseB.yml'
+permissions:
+  contents: read
+jobs:
+  construction-specification-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate exact 100 Builder Phase-B concepts and adversarial mutations
+        run: |
+          set -euo pipefail
+          python docs/innovation/construction/validate_phaseB_100.py --self-test | tee phaseB_100_audit.log
+          grep -q 'PHASE B CONSTRUCTION SPECIFICATION VALID: 100 IDs, 10 domains, no implementation claims' phaseB_100_audit.log
+          grep -q 'PHASE B ADVERSARIAL VALIDATOR: 15 invalid mutations detected, 0 failures' phaseB_100_audit.log
+      - name: Preserve design-only audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-phaseB-builder-${{ github.sha }}
+          path: phaseB_100_audit.log
+          if-no-files-found: ignore
+          retention-days: 14
