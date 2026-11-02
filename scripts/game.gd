@@ -85,7 +85,7 @@ func _register_input() -> void:
         "move_up":[KEY_W, KEY_UP], "move_down":[KEY_S, KEY_DOWN],
         "interact":[KEY_E], "next_seed":[KEY_Q], "craft":[KEY_R],
         "sleep":[KEY_F], "save":[KEY_P], "load":[KEY_O],
-        "gift":[KEY_G], "ship":[KEY_H], "fish":[KEY_J]
+        "gift":[KEY_G], "job":[KEY_K], "ship":[KEY_H], "fish":[KEY_J]
     }
     for action in bindings:
         if not InputMap.has_action(action):
@@ -150,6 +150,8 @@ func _unhandled_input(event: InputEvent) -> void:
         _show("Selected seed: %s" % current_seed())
     elif event.is_action_pressed("gift"):
         _show(village.act("gift", hero.global_position))
+    elif event.is_action_pressed("job"):
+        _show(village.act("job", hero.global_position))
     elif event.is_action_pressed("ship"):
         _ship()
     elif event.is_action_pressed("fish"):
