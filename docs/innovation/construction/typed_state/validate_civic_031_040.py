@@ -224,7 +224,7 @@ def self_test(data):
         reject(c, corrupt, "nonpositive active epoch")
         bad += 1
         corrupt = copy.deepcopy(example)
-        corrupt["receipts"].append("\\u0000")
+        corrupt["receipts"].append(chr(0))
         reject(c, corrupt, "control-character receipt")
         bad += 1
         corrupt = copy.deepcopy(example)
