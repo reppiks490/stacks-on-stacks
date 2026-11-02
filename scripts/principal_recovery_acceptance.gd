@@ -30,6 +30,11 @@ func _run() -> void:
     for slot in range(1, SaveService.MAX_QUARANTINE_SLOTS + 1):
         paths.append("%s%03d" % [SaveService.QUARANTINE_PREFIX, slot])
     # Fail closed; never erase or replace somebody else's local saves.
+    var lock_absolute: String = ProjectSettings.globalize_path(SaveService.WRITE_LOCK_PATH)
+    if DirAccess.dir_exists_absolute(lock_absolute):
+        _check(false, "non-isolated writer lock already exists")
+        quit(1)
+        return
     for path in paths:
         if FileAccess.file_exists(path):
             _check(false, "non-isolated user-data path exists: " + path)
@@ -45,7 +50,21 @@ func _run() -> void:
         "hero_position": [0.0, 1.0, 0.0]
     }
     _check(SaveService.validate_payload(first), "nested original fixture validates")
+    # Simulate another process holding an exclusive writer lock. No temporary
+    # file, backup, primary, or currency may be touched by the rejected write.
+    _check(DirAccess.make_dir_absolute(lock_absolute) == OK,
+           "create exclusive writer lock before first save")
+    _check(not SaveService.write_payload(first),
+           "second writer rejected while lock held before first save")
+    _check(not FileAccess.file_exists(SaveService.SAVE_PATH)
+           and not FileAccess.file_exists(SaveService.TEMP_PATH)
+           and not FileAccess.file_exists(SaveService.BACKUP_PATH),
+           "locked first write created no save artifacts")
+    _check(DirAccess.remove_absolute(lock_absolute) == OK,
+           "release simulated first writer lock")
     _check(SaveService.write_payload(first), "first durable write")
+    _check(not DirAccess.dir_exists_absolute(lock_absolute),
+           "successful save released writer lock")
     var second: Dictionary = first.duplicate(true)
     second["gold"] = 175
     second["inventory"]["turnip"] = 4
@@ -53,6 +72,25 @@ func _run() -> void:
     _check(SaveService.write_payload(second), "second durable write")
     _check(int(SaveService._read_one(SaveService.BACKUP_PATH).get("gold", -1)) == 125,
            "backup is previous valid state")
+    var primary_locked_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
+    var backup_locked_bytes: String = FileAccess.get_file_as_string(SaveService.BACKUP_PATH)
+    _check(DirAccess.make_dir_absolute(lock_absolute) == OK,
+           "simulate competing writer with valid primary and backup")
+    var competing: Dictionary = second.duplicate(true)
+    competing["gold"] = 999
+    competing["inventory"]["turnip"] = 999
+    _check(not SaveService.write_payload(competing),
+           "competing writer rejected without currency or inventory mutation")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == primary_locked_bytes
+           and FileAccess.get_file_as_string(SaveService.BACKUP_PATH) == backup_locked_bytes,
+           "competing writer preserved authoritative primary and backup bytes")
+    _check(not FileAccess.file_exists(SaveService.TEMP_PATH),
+           "competing writer never created temporary save")
+    _check(DirAccess.remove_absolute(lock_absolute) == OK,
+           "release simulated competing writer lock")
+    _check(SaveService.write_payload(second), "writer resumes after lock release")
+    _check(not DirAccess.dir_exists_absolute(lock_absolute),
+           "resumed save released exclusive writer lock")
 
     _check(_write_raw(SaveService.TEMP_PATH, "{interrupted"), "inject torn temp")
     _check(_write_raw(SaveService.SAVE_PATH, "{broken-01"), "inject corrupt primary")
@@ -187,5 +225,7 @@ func _run() -> void:
         if FileAccess.file_exists(path):
             _check(DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK,
                    "remove assembled test artifact: " + path)
+    _check(not DirAccess.dir_exists_absolute(lock_absolute),
+           "all successful and failed writes released writer lock")
     print("PRINCIPAL RECOVERY RESUME: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
