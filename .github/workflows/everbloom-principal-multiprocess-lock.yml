@@ -1,0 +1,84 @@
+name: Everbloom principal actual-process save lock acceptance
+on:
+  push:
+    paths:
+      - 'scripts/principal_multiprocess_probe.gd'
+      - '.github/workflows/everbloom-principal-multiprocess-lock.yml'
+permissions:
+  contents: read
+jobs:
+  multiprocess-save-lock-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Native import and GDScript parse
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee lock_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load' lock_import.log; then exit 1; fi
+      - name: Verify real process contention crash-stale lock and controlled recovery
+        run: |
+          set -euo pipefail
+          export XDG_DATA_HOME="$(mktemp -d /tmp/everbloom-lock-process.XXXXXX)"
+          chmod 700 "$XDG_DATA_HOME"
+          holder_pid=""
+          trap 'if [[ -n "$holder_pid" ]]; then kill -9 "$holder_pid" 2>/dev/null || true; fi; rm -rf "$XDG_DATA_HOME"' EXIT
+          godot=/tmp/Godot_v4.7.2-stable_linux.x86_64
+          probe=res://scripts/principal_multiprocess_probe.gd
+          run_probe() {
+            local mode="$1" label="$2"
+            timeout 45s "$godot" --headless --path . --script "$probe" -- "$mode" 2>&1 | tee "lock_${label}.log"
+            grep -Eq "^PRINCIPAL MULTIPROCESS ${mode}: [0-9]+ assertions, 0 failures$" "lock_${label}.log"
+            if grep -E 'SCRIPT ERROR:|Parse Error:|PRINCIPAL MULTIPROCESS FAIL:' "lock_${label}.log"; then exit 1; fi
+          }
+          run_probe seed seed
+          "$godot" --headless --path . --script "$probe" -- hold > lock_holder.log 2>&1 &
+          holder_pid=$!
+          marker=""
+          for attempt in $(seq 1 100); do
+            marker="$(find "$XDG_DATA_HOME" -name principal_multiprocess_ready.marker -type f -print -quit)"
+            if [[ -n "$marker" ]]; then break; fi
+            if ! kill -0 "$holder_pid" 2>/dev/null; then cat lock_holder.log; exit 1; fi
+            sleep 0.1
+          done
+          [[ -n "$marker" ]] || { cat lock_holder.log; echo 'Holder never became ready'; exit 1; }
+          [[ "$(cat "$marker")" == ready ]]
+          kill -0 "$holder_pid"
+          grep -q 'PRINCIPAL MULTIPROCESS HOLDER READY' lock_holder.log
+          run_probe contend live_contention
+          kill -9 "$holder_pid"
+          wait "$holder_pid" 2>/dev/null || true
+          holder_pid=""
+          # A crashed process leaves its lock; subsequent writes must fail closed.
+          run_probe contend crash_stale_lock
+          # Manual unlock is permitted ONLY inside this newly created isolated
+          # CI directory after the holder has been reaped. Never age-delete
+          # locks in actual player data or guess another process is dead.
+          lock_dir="$(find "$XDG_DATA_HOME" -type d -name everbloom_save_v1.json.writer.lock -print -quit)"
+          [[ -n "$lock_dir" ]]
+          case "$lock_dir" in "$XDG_DATA_HOME"/*) ;; *) echo 'Unsafe lock path'; exit 1 ;; esac
+          rmdir "$lock_dir"
+          run_probe commit recovered_commit
+      - name: Archive exact-head process diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-principal-multiprocess-${{ github.sha }}
+          path: |
+            lock_import.log
+            lock_seed.log
+            lock_holder.log
+            lock_live_contention.log
+            lock_crash_stale_lock.log
+            lock_recovered_commit.log
+          if-no-files-found: ignore
+          retention-days: 14
