@@ -1,0 +1,24 @@
+name: Everbloom construction detached command journal validation
+on:
+  push:
+    branches:
+      - 'game/everbloom-construction-b13-command-journal-oracle-20261102'
+    paths:
+      - 'docs/innovation/construction/command_journal/**'
+      - '.github/workflows/everbloom-construction-command-journal.yml'
+permissions:
+  contents: read
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and exercise bounded deterministic reference
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/innovation/construction/command_journal/reference.py
+          python docs/innovation/construction/command_journal/reference.py
