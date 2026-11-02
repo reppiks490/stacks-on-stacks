@@ -1,0 +1,28 @@
+name: EVERBLOOM Emergence biome typed-state design audit
+
+on:
+  push:
+    branches:
+      - game/everbloom-emergence-e05-biome-types-20261102
+    paths:
+      - 'docs/innovation/emergence/typed_state/biome_021_030.json'
+      - 'docs/innovation/emergence/typed_state/validate_biome_021_030.py'
+      - 'docs/innovation/emergence/typed_state/BIOME_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-biome-types.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-design-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact pushed commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Print immutable commit
+        run: git rev-parse HEAD
+      - name: Validate typed biome design and adversarial fixtures
+        run: python3 docs/innovation/emergence/typed_state/validate_biome_021_030.py --self-test
