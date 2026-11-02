@@ -34,7 +34,7 @@ func _run() -> void:
     var village = game.village
     var ui = village.topic_panel
     _check(ui != null and ui.panel != null, "actual assembled Game creates optional conversation overlay")
-    _check(ui.topic_buttons.size() == 2, "two player-selectable choices")
+    _check(ui.topic_buttons.size() == 4, "four reusable player-selectable choice controls")
     _check(ui.opener.custom_minimum_size.y >= 44.0, "touch-capable opener")
     _check(ui.topic_buttons[0].focus_mode == Control.FOCUS_ALL, "keyboard/controller choice focus")
     _check(not ui.panel.visible, "no topic dialogue automatically triggered")
@@ -181,6 +181,98 @@ func _run() -> void:
     _near(game, 0)
     var rain_line: String = village._dialogue(village.residents[0], "mira", game.day_epoch(), "clinic")
     _check("rain" in rain_line.to_lower(), "rainy-day conversation priority remains intact")
+    # V05/V14: real work unlocks a new, optional chapter without a new save key.
+    game.year = 4
+    game.season_index = 0
+    game.day = 1
+    game.minute_of_day = 600.0
+    game.weather = "Clear"
+    village.set_dialogue_locale("en")
+    _near(game, 0)
+    var authored_shift: String = str(village.life_data["conversation_topics"]["mira"]["shift_reflection"]["reply"]["en"])
+    _check(village.available_topics("mira").size() == 2, "earned chapters are hidden before prerequisites")
+    _check(village._dialogue(village.residents[0], "mira", game.day_epoch(), "shift_reflection") != authored_shift,
+            "direct locked topic ID cannot bypass social prerequisites")
+    var before_shift_gold: int = game.gold
+    var before_shift_energy: float = game.energy
+    var work_reply: String = village.act("job", game.hero.global_position)
+    _check("Earned 24 petals" in work_reply and game.gold == before_shift_gold + 24
+            and is_equal_approx(game.energy, before_shift_energy - 12.0),
+            "real paid work unlocks the shift chapter through authoritative settlement")
+    _check(village.available_topics("mira").size() == 3, "one earned work chapter unlocked, trust remains gated")
+    ui.open_topics()
+    _check(ui.panel.visible and ui.topic_ids.size() == 3
+            and ui.topic_buttons[2].visible and not ui.topic_buttons[3].visible,
+            "third visible choice appears only when actually earned")
+    ui._input(_key(KEY_3))
+    _check(not ui.panel.visible and authored_shift in ui.last_result,
+            "keyboard 3 plays original earned shift chapter")
+    _check(int(village.memories["mira"]["talks"]) == 3,
+            "year-four earned chapter uses exactly one legitimate new daily talk")
+    var talk_before_trust: int = int(village.memories["mira"]["talks"])
+    village.affection["mira"] = 80
+    var authored_trust: String = str(village.life_data["conversation_topics"]["mira"]["trusted_memory"]["reply"]["en"])
+    _check(village.available_topics("mira").size() == 4, "earned trust unlocks fourth original topic")
+    ui.open_topics()
+    _check(ui.topic_ids.size() == 4 and ui.topic_buttons[3].visible,
+            "fourth choice visible and focusable after friendship threshold")
+    ui._input(_key(KEY_4))
+    _check(authored_trust in ui.last_result and not ui.panel.visible,
+            "keyboard 4 plays earned trust story")
+    _check(int(village.memories["mira"]["talks"]) == talk_before_trust,
+            "multiple same-day story choices never multiply social rewards")
+
+    # All twelve earned chapters have distinct, localized content and predicates.
+    var earned_count: int = 0
+    for resident in village.residents:
+        var rid: String = str(resident["id"])
+        village.affection[rid] = maxi(80, int(village.affection[rid]))
+        var record: Dictionary = village.memories[rid]
+        record["jobs"] = maxi(1, int(record.get("jobs", 0)))
+        village.memories[rid] = record
+        var options: Array = village.available_topics(rid)
+        _check(options.size() == 4, "both earned chapters reachable for " + rid)
+        for topic_id in ["shift_reflection", "trusted_memory"]:
+            var source: Dictionary = village.life_data["conversation_topics"][rid][topic_id]
+            _check(village._dialogue(resident, rid, game.day_epoch(), topic_id) == str(source["reply"]["en"]),
+                    "original English earned chapter reachable for " + rid + ":" + topic_id)
+            earned_count += 1
+    _check(earned_count == 12, "twelve distinct new conditional NPC chapters")
+    village.set_dialogue_locale("es")
+    for resident in village.residents:
+        var rid: String = str(resident["id"])
+        for topic_id in ["shift_reflection", "trusted_memory"]:
+            var source: Dictionary = village.life_data["conversation_topics"][rid][topic_id]
+            _check(village._dialogue(resident, rid, game.day_epoch(), topic_id) == str(source["reply"]["es"]),
+                    "original Spanish earned chapter reachable for " + rid + ":" + topic_id)
+    village.set_dialogue_locale("en")
+    var earned_snapshot: Dictionary = village.save_state()
+    var gold_at_save: int = game.gold
+    game.save_game(false)
+    village.affection["mira"] = 0
+    village.memories["mira"]["jobs"] = 0
+    game.load_game()
+    _check(game.latest_message == "Loaded saved life in the valley." and village.save_state() == earned_snapshot,
+            "all earned chapters restore from real assembled Game save without new save fields")
+    _check(game.gold == gold_at_save and village.available_topics("mira").size() == 4,
+            "save/load conserves money and restored chapter availability")
+
+    game.year = 5
+    game.season_index = 0
+    game.day = 1
+    game.minute_of_day = 600.0
+    game.weather = "Clear"
+    _near(game, 0)
+    var year_five_gold: int = game.gold
+    var first_new_year_shift: String = village.act("job", game.hero.global_position)
+    var duplicate_new_year_shift: String = village.act("job", game.hero.global_position)
+    _check("Earned 24 petals" in first_new_year_shift and game.gold == year_five_gold + 24,
+            "year-five monotonic epoch allows a new legitimate paid shift")
+    _check("already helped" in duplicate_new_year_shift and game.gold == year_five_gold + 24,
+            "same-day repeat shift cannot duplicate wages after year rollover")
+    _check(village.available_topics("mira").size() == 4 and not paused,
+            "earned chapters persist into year five without breaking modal pause")
+
     _check(not paused, "all input routes leave world pause state restored")
     print("EVERBLOOM V05 TOPIC NATIVE: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
