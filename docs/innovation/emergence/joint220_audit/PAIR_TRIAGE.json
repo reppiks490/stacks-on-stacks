@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "source_readiness_ledger_blob": "783b7bca5af5d52e23f4af439d2aa6e36111afa4",
+  "review_kind": "Independent scenario-level triage of 21 previously flagged title-similarity candidates; not complete semantic certification",
+  "phase_c": "CLOSED",
+  "counts": {
+    "pairs": 21,
+    "authority_contract_required": 3,
+    "mechanically_distinct_on_scenario_review": 18
+  },
+  "pairs": [
+    {
+      "ids": [
+        "EB-E-024",
+        "EB-E-062"
+      ],
+      "titles": [
+        "Beetle Bark Rescue",
+        "Rescue Bark Triangulation"
+      ],
+      "player_scenarios": [
+        "Differentiate helpful and harmful beetle traces and choose targeted intervention",
+        "Follow a companion's alerts to locate a stranded noncombat animal with safe alternate clues"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Tree beetle ecological intervention versus companion-guided stranded-animal rescue; habitat changes and animal rescue receipts remain distinct.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-015",
+        "EB-E-098"
+      ],
+      "titles": [
+        "Mortar Clock Masonry",
+        "Seasonal Sky Clock"
+      ],
+      "player_scenarios": [
+        "Lay stone courses and manage curing windows. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Use an original astronomical clock puzzle to schedule a safe night rendezvous"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Mortar curing and structural integrity versus timed astronomy rendezvous; no common state transition.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-036",
+        "EB-E-050"
+      ],
+      "titles": [
+        "Memory Map of Kindness",
+        "Village Price Memory"
+      ],
+      "player_scenarios": [
+        "Map small verified favors with each resident's permission and invite reciprocity",
+        "Read historical seasonal prices with uncertainty markings before trading; mark unavailable data as unknown rather than fabricating historical values"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Consent-governed kindness/favor records versus historical commodity price observations; social and economic authorities differ.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-008",
+        "EB-E-044"
+      ],
+      "titles": [
+        "Village Build Commons — community construction economy",
+        "Seed Commons Exchange"
+      ],
+      "player_scenarios": [
+        "Player posts a village bridge repair, donates lumber, hires two neighbors for weekend shifts, and sees scaffolding and a repaired crossing appear as milestones finish.",
+        "Trade native seeds with neighbors under a biodiversity-sharing agreement; record exactly which seed lot leaves and enters each participant's stock"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Bridge construction labor/donations versus seed-lot biodiversity exchange; require Principal transaction ownership for both.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-053",
+        "EB-B-107"
+      ],
+      "titles": [
+        "Glasssong Window Foundry",
+        "Frostlace Window Craft"
+      ],
+      "player_scenarios": [
+        "Cast patterned panes and manage annealing. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Design frost patterns on winter windowpanes. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world."
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Glass pane casting/annealing versus reversible frost decoration; decorative masks cannot mint additional panes.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-065",
+        "EB-E-037"
+      ],
+      "titles": [
+        "Site Staging Planner",
+        "Seasonal Reunion Planner"
+      ],
+      "player_scenarios": [
+        "Place delivery pallets around active work sites. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Invite returning friends while respecting travel times, work and availability"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Construction pallet logistics versus NPC reunion invitations; location capacity and NPC scheduling use different owners.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-066",
+        "EB-B-107"
+      ],
+      "titles": [
+        "Courier Window Scheduler",
+        "Frostlace Window Craft"
+      ],
+      "player_scenarios": [
+        "Book deliveries around seasonal road closures. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Design frost patterns on winter windowpanes. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world."
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Delivery booking window versus windowpane frost pattern; word overlap only.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-072",
+        "EB-E-037"
+      ],
+      "titles": [
+        "Companionproof Home Planner",
+        "Seasonal Reunion Planner"
+      ],
+      "player_scenarios": [
+        "Place pet gates resting spots and water access. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Invite returning friends while respecting travel times, work and availability"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Animal-safe home layout versus NPC reunion planning; distinct player actions and authority.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-084",
+        "EB-E-036"
+      ],
+      "titles": [
+        "Memory Grove Remembrance Craft",
+        "Memory Map of Kindness"
+      ],
+      "player_scenarios": [
+        "Co-design consensual memorial gardens with residents. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Map small verified favors with each resident's permission and invite reciprocity"
+      ],
+      "decision": "requires_authority_contract",
+      "review_reason": "Memorial dedication and kindness memory both reference consenting residents; Village must own visibility, revocation, identity and relationship authorization.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-084",
+        "EB-E-050"
+      ],
+      "titles": [
+        "Memory Grove Remembrance Craft",
+        "Village Price Memory"
+      ],
+      "player_scenarios": [
+        "Co-design consensual memorial gardens with residents. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Read historical seasonal prices with uncertainty markings before trading; mark unavailable data as unknown rather than fabricating historical values"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Memorial garden versus historical prices; distinct domains despite memory keyword.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-099",
+        "EB-E-081"
+      ],
+      "titles": [
+        "Build Chronicle Time-Lapse",
+        "Botanical Ink Chronicle"
+      ],
+      "player_scenarios": [
+        "Review construction history from real action receipts. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Make original ink from safe fictional plants and annotate a persistent field journal"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Construction receipt time-lapse versus player-created botanical ink journal; no shared reward/history authority.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-B-107",
+        "EB-E-020"
+      ],
+      "titles": [
+        "Frostlace Window Craft",
+        "Sunset Decision Window"
+      ],
+      "player_scenarios": [
+        "Design frost patterns on winter windowpanes. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+        "Answer a fleeting sunset request or pursue an accessible alternate outcome after expiry"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Physical frost window design versus limited-time sunset narrative decision; distinct mechanics.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-012",
+        "EB-E-018"
+      ],
+      "titles": [
+        "Echo Debt of the Valley",
+        "Harvest Echo Exchange"
+      ],
+      "player_scenarios": [
+        "Trace extraction's long-term effects and negotiate a measurable habitat restoration pact",
+        "Replay past harvest decisions through a causal visualization without repeating rewards"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Long-horizon extraction restoration debt versus read-only harvest decision replay; replay must not duplicate rewards.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-012",
+        "EB-E-054"
+      ],
+      "titles": [
+        "Echo Debt of the Valley",
+        "Canopy Echo Route"
+      ],
+      "player_scenarios": [
+        "Trace extraction's long-term effects and negotiate a measurable habitat restoration pact",
+        "Follow birds' directional calls to locate an elevated natural overlook without constructing platforms"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Restoration accounting versus audio-assisted canopy route finding; distinct transitions.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-036",
+        "EB-E-052"
+      ],
+      "titles": [
+        "Memory Map of Kindness",
+        "Tidal Cave Memory"
+      ],
+      "player_scenarios": [
+        "Map small verified favors with each resident's permission and invite reciprocity",
+        "Chart a fictional cave that opens only during bounded low-water windows; reserve a return path before entering so the cave never traps a visitor"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Consented resident favors versus tide-window cave traversal; distinct despite memory term.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-036",
+        "EB-E-077"
+      ],
+      "titles": [
+        "Memory Map of Kindness",
+        "Memory Ribbon Archive"
+      ],
+      "player_scenarios": [
+        "Map small verified favors with each resident's permission and invite reciprocity",
+        "Invite residents to record optional life milestones on a private or public timeline"
+      ],
+      "decision": "requires_authority_contract",
+      "review_reason": "Both expose personal resident memories; Village must own consent, correction, visibility and revocation across journal and favors.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-040",
+        "EB-E-075"
+      ],
+      "titles": [
+        "Neighborhood Story Circle",
+        "Community Welcome Circle"
+      ],
+      "player_scenarios": [
+        "Host opt-in storytelling and let residents retract or correct their own memories",
+        "Design a welcoming ritual for a newly arrived resident respecting their chosen participation"
+      ],
+      "decision": "requires_authority_contract",
+      "review_reason": "Storytelling and welcome ceremony both record voluntary participation; Village must own participant consent and withdrawal receipts.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-050",
+        "EB-E-052"
+      ],
+      "titles": [
+        "Village Price Memory",
+        "Tidal Cave Memory"
+      ],
+      "player_scenarios": [
+        "Read historical seasonal prices with uncertainty markings before trading; mark unavailable data as unknown rather than fabricating historical values",
+        "Chart a fictional cave that opens only during bounded low-water windows; reserve a return path before entering so the cave never traps a visitor"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Historical price lookup versus timed cave exploration; no common state owner.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-050",
+        "EB-E-077"
+      ],
+      "titles": [
+        "Village Price Memory",
+        "Memory Ribbon Archive"
+      ],
+      "player_scenarios": [
+        "Read historical seasonal prices with uncertainty markings before trading; mark unavailable data as unknown rather than fabricating historical values",
+        "Invite residents to record optional life milestones on a private or public timeline"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Market price history versus private resident milestone timeline; distinct privacy and economy boundaries.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-059",
+        "EB-E-096"
+      ],
+      "titles": [
+        "Windward Kite Survey",
+        "Sky Reflection Survey"
+      ],
+      "player_scenarios": [
+        "Pilot a small observation kite to reveal nearby terrain contours without granting free-flight traversal",
+        "Align natural pool reflections with landmarks to find a hidden inscription; provide a low-graphics diagram alternative to physical reflections"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Kite topography survey versus reflection alignment puzzle; Valley owns authoritative coordinates for both.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    },
+    {
+      "ids": [
+        "EB-E-081",
+        "EB-E-093"
+      ],
+      "titles": [
+        "Botanical Ink Chronicle",
+        "Aurora Color Chronicle"
+      ],
+      "player_scenarios": [
+        "Make original ink from safe fictional plants and annotate a persistent field journal",
+        "Record aurora patterns as a noncompetitive observation journal with accessible labels"
+      ],
+      "decision": "mechanically_distinct_on_scenario_review",
+      "review_reason": "Craft botanical ink journal versus observe aurora patterns; separate authored content and state.",
+      "integration_status": "NOT_APPROVED",
+      "native_gameplay_proof": false
+    }
+  ]
+}
