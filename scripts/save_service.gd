@@ -119,19 +119,33 @@ static func validate_payload(payload: Dictionary) -> bool:
     var field_records: Variant = payload.get("farm", null)
     if typeof(field_records) != TYPE_ARRAY:
         return false
+    # Farm.load_state() clamps these ranges. An accepted save must never
+    # silently lose soil state through that clamp. Optional legacy keys remain
+    # optional; unrecognized nested fields require an explicit schema upgrade.
+    const FARM_LIMITS := {
+        "age": 100.0, "watered_days": 100.0, "moisture": 100.0,
+        "fertility": 100.0, "weeds": 5.0, "stress": 9.0,
+        "rotation_bonus": 1.0, "seed_vigor": 2.0
+    }
     for record in field_records:
         if typeof(record) != TYPE_DICTIONARY:
             return false
         var soil: Dictionary = record
+        for attribute in soil:
+            if not attribute in ["tilled", "watered", "crop", "last_family",
+                                 "last_harvest_epoch"] and not FARM_LIMITS.has(attribute):
+                return false
         for attribute: String in ["tilled", "watered"]:
             if soil.has(attribute) and typeof(soil[attribute]) != TYPE_BOOL:
                 return false
         for attribute: String in ["crop", "last_family"]:
             if soil.has(attribute) and typeof(soil[attribute]) != TYPE_STRING:
                 return false
-        for attribute: String in ["age", "watered_days", "moisture", "fertility",
-                                  "weeds", "stress", "rotation_bonus", "seed_vigor"]:
-            if soil.has(attribute) and not _whole_in_range(soil[attribute], 0.0, MAX_SAFE_INTEGER):
+        if soil.has("last_family") and (soil["last_family"] as String).length() > 32:
+            return false
+        for attribute in FARM_LIMITS:
+            if soil.has(attribute) and not _whole_in_range(
+                    soil[attribute], 0.0, FARM_LIMITS[attribute]):
                 return false
         if soil.has("last_harvest_epoch") and not _whole_in_range(
                 soil["last_harvest_epoch"], -1.0, saved_epoch):
@@ -170,9 +184,10 @@ static func validate_payload(payload: Dictionary) -> bool:
             if typeof(memory_records[rid]) != TYPE_DICTIONARY:
                 return false
             var memory: Dictionary = memory_records[rid]
+            # Village.load_state() saturates memory counters at one million.
             for attribute: String in ["talks", "gifts", "jobs", "festivals"]:
                 if memory.has(attribute) and not _whole_in_range(
-                        memory[attribute], 0.0, MAX_SAFE_INTEGER):
+                        memory[attribute], 0.0, 1000000.0):
                     return false
             if memory.has("last_gift_epoch") and not _whole_in_range(
                     memory["last_gift_epoch"], -1.0, current_epoch):
@@ -268,6 +283,15 @@ static func validate_payload(payload: Dictionary) -> bool:
     var livestock: Variant = payload.get("animals", null)
     if typeof(livestock) != TYPE_DICTIONARY:
         return false
+    # The original animal catalog has production cycles of 2/3/4 days.
+    # The loader silently ignores unknown IDs and clamps these counters;
+    # reject both forms of loss rather than admitting an altered snapshot.
+    const PRODUCTION_MAX := {"hen": 1.0, "cow": 2.0, "sheep": 3.0}
+    const ANIMAL_LIMITS := {
+        "bond": 100.0, "happiness": 100.0, "health": 100.0,
+        "hunger": 100.0, "cleanliness": 100.0,
+        "neglect_days": 365.0, "compost_counter": 2.0
+    }
     for id in livestock:
         # Farming ecology stores grazing capacity at a reserved top-level key.
         # This is intentionally an Array, unlike per-animal Dictionary records.
@@ -286,13 +310,19 @@ static func validate_payload(payload: Dictionary) -> bool:
                 if not _whole_in_range(paddock.get("forage", null), 0.0, 7.0):
                     return false
             continue
-        if typeof(livestock[id]) != TYPE_DICTIONARY:
+        if not PRODUCTION_MAX.has(id) or typeof(livestock[id]) != TYPE_DICTIONARY:
             return false
         var animal: Dictionary = livestock[id]
-        for attribute: String in ["bond", "happiness", "health", "hunger", "cleanliness",
-                                  "production_counter", "neglect_days", "compost_counter"]:
-            if animal.has(attribute) and not _whole_in_range(animal[attribute], 0.0, MAX_SAFE_INTEGER):
+        for attribute in animal:
+            if attribute != "last_care" and attribute != "production_counter" and not ANIMAL_LIMITS.has(attribute):
                 return false
+        for attribute in ANIMAL_LIMITS:
+            if animal.has(attribute) and not _whole_in_range(
+                    animal[attribute], 0.0, ANIMAL_LIMITS[attribute]):
+                return false
+        if animal.has("production_counter") and not _whole_in_range(
+                animal["production_counter"], 0.0, PRODUCTION_MAX[id]):
+            return false
         if animal.has("last_care") and not _whole_in_range(
                 animal["last_care"], -1.0, saved_epoch):
             return false
