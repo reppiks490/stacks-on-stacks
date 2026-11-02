@@ -40,6 +40,10 @@ func _run() -> void:
     _check(ui.gift_buttons[0].custom_minimum_size.y >= 44.0, "touch-sized item choice")
     _check(ui.gift_buttons[1].focus_mode == Control.FOCUS_ALL, "controller focusable choice")
     _check(not ui.panel.visible, "gift modal starts closed")
+    var outside_focus: Control = ui.get_viewport().gui_get_focus_owner()
+    ui._navigate(1)
+    _check(not ui.panel.visible and ui.get_viewport().gui_get_focus_owner() == outside_focus,
+            "closed gift picker cannot steal focus from other game UI")
     _check(village.residents.size() == 6, "existing residents preserved")
     game.minute_of_day = 600.0
     game.weather = "Clear"
