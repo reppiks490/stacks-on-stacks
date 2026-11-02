@@ -232,6 +232,7 @@ func _run() -> void:
     _check(int(dialogue_village.affection["mira"]) == dialogue_affection and dialogue_host.gold == dialogue_gold, "locale replay cannot award social or currency")
     dialogue_village.set_dialogue_locale("fr")
     _check("young mint" in dialogue_village.act("talk", dialogue_spot), "unsupported locale falls back to English")
+    dialogue_host.inventory["wild_herb"] = 0 # Mira prefers this but bluebell is her favorite.
     for next_day_number in range(2, 6):
         dialogue_host.day = next_day_number
         dialogue_village.sync_schedule(true)
