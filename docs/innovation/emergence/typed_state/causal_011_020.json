@@ -1,0 +1,958 @@
+{
+  "schema_version": 1,
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "source": {
+    "branch": "game/everbloom-emergence-phaseB-100-20261102",
+    "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+    "path": "docs/innovation/emergence/phaseB_011_050.json",
+    "blob_sha": "a5def76918e77e0ded7e3e8085444698b4e0b549"
+  },
+  "base_main": "e0d3eaf10daa53f1082f3a253f49711bedcc725c",
+  "owner": "Emergence",
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "state_contracts": [
+    {
+      "state_version": 1,
+      "source_fields": [
+        "forecast_id",
+        "slot_epoch",
+        "reservation_id",
+        "shift_count"
+      ],
+      "additions": [],
+      "id": "EB-E-011",
+      "title": "Tideglass Forecast Bargain",
+      "fields": {
+        "forecast_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "slot_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "reservation_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "shift_count": {
+          "type": "integer",
+          "min": 0,
+          "max": 8,
+          "default": 0
+        }
+      },
+      "rules": [
+        {
+          "code": "requires",
+          "when": "reservation_id",
+          "fields": [
+            "forecast_id"
+          ]
+        },
+        {
+          "code": "nonnegative_when",
+          "when": "reservation_id",
+          "field": "slot_epoch"
+        },
+        {
+          "code": "zero_if_absent",
+          "when": "reservation_id",
+          "field": "shift_count"
+        }
+      ],
+      "migration": "Optional namespace defaults to no reservation. Principal owns forecast revisions and calendar; one active reservation per epoch; rescheduling transfers existing receipt rather than minting a second payout.",
+      "negative": "Duplicate forecast reschedule cannot produce two reward receipts.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_011",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "region_id",
+        "extraction_receipts",
+        "ecology_debt",
+        "repair_receipts"
+      ],
+      "additions": [],
+      "id": "EB-E-012",
+      "title": "Echo Debt of the Valley",
+      "fields": {
+        "region_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "extraction_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "amount": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000,
+                "default": 1
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "id"
+        },
+        "ecology_debt": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000000,
+          "default": 0
+        },
+        "repair_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "amount": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000,
+                "default": 1
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "id"
+        }
+      },
+      "rules": [
+        {
+          "code": "requires_if_nonempty",
+          "list": "extraction_receipts",
+          "field": "region_id"
+        },
+        {
+          "code": "requires_if_nonempty",
+          "list": "repair_receipts",
+          "field": "region_id"
+        },
+        {
+          "code": "sum_lte",
+          "numerator": "repair_receipts",
+          "denominator": "extraction_receipts",
+          "field": "amount"
+        }
+      ],
+      "migration": "Farming owns extraction and ecological impact receipts; Emergence stores only idempotent restoration agreements. Repair must reference verified ecological effects before ledger settlement.",
+      "negative": "Duplicate repair receipt or repairs exceeding verified extraction are rejected.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_012",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "message_id",
+        "relay_hops",
+        "weather_epoch",
+        "delivery_state"
+      ],
+      "additions": [],
+      "id": "EB-E-013",
+      "title": "Windborne Message Relay",
+      "fields": {
+        "message_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "relay_hops": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "relay_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "state": {
+                "type": "enum",
+                "values": [
+                  "pending",
+                  "delivered",
+                  "failed"
+                ],
+                "default": "pending"
+              }
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "relay_id"
+        },
+        "weather_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "delivery_state": {
+          "type": "enum",
+          "values": [
+            "idle",
+            "in_transit",
+            "delivered",
+            "returned"
+          ],
+          "default": "idle"
+        }
+      },
+      "rules": [
+        {
+          "code": "requires_if_nonempty",
+          "list": "relay_hops",
+          "field": "message_id"
+        },
+        {
+          "code": "requires_enum_when",
+          "field": "delivery_state",
+          "value": "idle",
+          "other": "relay_hops",
+          "condition": "empty"
+        },
+        {
+          "code": "requires",
+          "when": "message_id",
+          "fields": []
+        }
+      ],
+      "migration": "No active message in legacy saves. Principal owns weather epochs; Village owns delivery to residents; one message ID can settle to delivered OR returned, never both.",
+      "negative": "A failed relay cannot simultaneously deliver and refund a parcel.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_013",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "event_epoch",
+        "early_start",
+        "fatigue_debt",
+        "reward_receipt"
+      ],
+      "additions": [],
+      "id": "EB-E-014",
+      "title": "Borrowed Dawn Exchange",
+      "fields": {
+        "event_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "early_start": {
+          "type": "boolean",
+          "default": false
+        },
+        "fatigue_debt": {
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 0
+        },
+        "reward_receipt": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        }
+      },
+      "rules": [
+        {
+          "code": "positive_if",
+          "when": "early_start",
+          "field": "fatigue_debt"
+        },
+        {
+          "code": "nonnegative_when",
+          "when": "early_start",
+          "field": "event_epoch"
+        },
+        {
+          "code": "requires_if_present",
+          "field": "reward_receipt",
+          "when": "early_start"
+        }
+      ],
+      "migration": "Principal owns energy and clock; reward receipt and next-day fatigue obligation are atomic, persisted together. A legacy missing namespace has no early expedition.",
+      "negative": "Save/load cannot retain reward while clearing early-start fatigue.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_014",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "clue_ids",
+        "observation_epoch",
+        "thaw_epoch",
+        "verdict"
+      ],
+      "additions": [],
+      "id": "EB-E-015",
+      "title": "Frostline Witness Trail",
+      "fields": {
+        "clue_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "nullable": false,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 32,
+          "default": []
+        },
+        "observation_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "thaw_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "verdict": {
+          "type": "enum",
+          "values": [
+            "unobserved",
+            "protected",
+            "lost"
+          ],
+          "default": "unobserved"
+        }
+      },
+      "rules": [
+        {
+          "code": "ordered_epoch_when",
+          "when": "verdict",
+          "value": "protected",
+          "before": "observation_epoch",
+          "after": "thaw_epoch"
+        },
+        {
+          "code": "requires_nonempty_when",
+          "when": "verdict",
+          "value": "protected",
+          "list": "clue_ids"
+        }
+      ],
+      "migration": "Farming owns crop protection outcomes; only pre-thaw clue receipts qualify. Legacy missing namespace defaults to no observations.",
+      "negative": "Post-thaw clue cannot reverse an already settled frost loss.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_015",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "habitat_ids",
+        "survey_epoch",
+        "confidence",
+        "report_id"
+      ],
+      "additions": [],
+      "id": "EB-E-016",
+      "title": "Moonlit Firefly Census",
+      "fields": {
+        "habitat_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "nullable": false,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 32,
+          "default": []
+        },
+        "survey_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "confidence": {
+          "type": "number",
+          "min": 0,
+          "max": 1,
+          "default": 0
+        },
+        "report_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        }
+      },
+      "rules": [
+        {
+          "code": "confidence_coverage",
+          "field": "confidence",
+          "list": "habitat_ids",
+          "per_unique": 0.1
+        },
+        {
+          "code": "requires_nonempty_when_present",
+          "when": "report_id",
+          "list": "habitat_ids"
+        },
+        {
+          "code": "nonnegative_when",
+          "when": "report_id",
+          "field": "survey_epoch"
+        }
+      ],
+      "migration": "Farming/Valley owns biodiversity observations; census confidence is bounded by distinct verified habitats and never by repeated swarms.",
+      "negative": "Repeated habitat ID cannot inflate confidence or publish a false report.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_016",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "project_id",
+        "world_revision",
+        "choice_receipt",
+        "effect_receipts"
+      ],
+      "additions": [],
+      "id": "EB-E-017",
+      "title": "Forked Trail Consequence Board",
+      "fields": {
+        "project_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "world_revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 9007199254740991,
+          "default": 0
+        },
+        "choice_receipt": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "effect_receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "nullable": false,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 16,
+          "default": []
+        }
+      },
+      "rules": [
+        {
+          "code": "requires",
+          "when": "choice_receipt",
+          "fields": [
+            "project_id"
+          ]
+        },
+        {
+          "code": "requires_if_nonempty",
+          "list": "effect_receipts",
+          "field": "choice_receipt"
+        }
+      ],
+      "migration": "Principal owns world revision and each domain owns real effects; exactly one branch choice per project revision, with immutable effect receipts.",
+      "negative": "Two incompatible choices on the same revision cannot both settle.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_017",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "season_log",
+        "read_cursor",
+        "causal_links",
+        "snapshot_revision",
+        "playback_mode"
+      ],
+      "additions": [],
+      "id": "EB-E-018",
+      "title": "Harvest Echo Exchange",
+      "fields": {
+        "season_log": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "event_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "crop_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "quantity": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              },
+              "provenance_receipt": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "event_id"
+        },
+        "read_cursor": {
+          "type": "integer",
+          "min": 0,
+          "max": 128,
+          "default": 0
+        },
+        "causal_links": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "from_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "to_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              }
+            }
+          },
+          "max_items": 256,
+          "default": []
+        },
+        "snapshot_revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 9007199254740991,
+          "default": 0
+        },
+        "playback_mode": {
+          "type": "enum",
+          "values": [
+            "paused",
+            "playing"
+          ],
+          "default": "paused"
+        }
+      },
+      "rules": [
+        {
+          "code": "cursor_lte_length",
+          "cursor": "read_cursor",
+          "list": "season_log"
+        },
+        {
+          "code": "links_reference_events",
+          "links": "causal_links",
+          "list": "season_log"
+        }
+      ],
+      "migration": "Read-only historical projection, not authoritative inventory. Principal owns immutable harvest receipts; replay/scrub must not dispatch item or currency commands.",
+      "negative": "Scrubbing must never grant crop inventory or reset any daily cooldown.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_018",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 1,
+      "source_fields": [
+        "shelter_id",
+        "capacity",
+        "assignments",
+        "alternatives"
+      ],
+      "additions": [],
+      "id": "EB-E-019",
+      "title": "Storm Refuge Queue",
+      "fields": {
+        "shelter_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "capacity": {
+          "type": "integer",
+          "min": 0,
+          "max": 64,
+          "default": 0
+        },
+        "assignments": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "npc_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "bed_index": {
+                "type": "integer",
+                "min": 0,
+                "max": 63,
+                "default": 0
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "npc_id"
+        },
+        "alternatives": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "npc_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              },
+              "route_id": {
+                "type": "string",
+                "nullable": false,
+                "max_length": 80,
+                "default": ""
+              }
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "npc_id"
+        }
+      },
+      "rules": [
+        {
+          "code": "count_lte",
+          "list": "assignments",
+          "field": "capacity"
+        },
+        {
+          "code": "distinct_nested",
+          "list": "assignments",
+          "field": "bed_index"
+        },
+        {
+          "code": "disjoint_nested",
+          "left": "assignments",
+          "right": "alternatives",
+          "field": "npc_id"
+        },
+        {
+          "code": "requires_if_nonempty",
+          "list": "assignments",
+          "field": "shelter_id"
+        }
+      ],
+      "migration": "Village owns NPC consent/schedules and Construction owns physical shelter capacity. Reservation is exclusive; declined/unserved residents receive a nonpunitive fallback.",
+      "negative": "No bed may be double-booked or NPC simultaneously assigned and routed elsewhere.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_019",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    },
+    {
+      "state_version": 2,
+      "source_fields": [
+        "event_id",
+        "deadline_minute",
+        "choice",
+        "expired_fallback"
+      ],
+      "additions": [
+        "deadline_epoch",
+        "settlement_receipt"
+      ],
+      "id": "EB-E-020",
+      "title": "Sunset Decision Window",
+      "fields": {
+        "event_id": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        },
+        "deadline_minute": {
+          "type": "integer",
+          "min": 0,
+          "max": 1440,
+          "default": 0
+        },
+        "choice": {
+          "type": "enum",
+          "values": [
+            "pending",
+            "accepted",
+            "declined",
+            "expired"
+          ],
+          "default": "pending"
+        },
+        "expired_fallback": {
+          "type": "boolean",
+          "default": false
+        },
+        "deadline_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "settlement_receipt": {
+          "type": "string",
+          "nullable": true,
+          "max_length": 80,
+          "default": null
+        }
+      },
+      "rules": [
+        {
+          "code": "requires",
+          "when": "event_id",
+          "fields": []
+        },
+        {
+          "code": "nonnegative_when",
+          "when": "event_id",
+          "field": "deadline_epoch"
+        },
+        {
+          "code": "requires_if_enum",
+          "field": "choice",
+          "values": [
+            "accepted",
+            "declined",
+            "expired"
+          ],
+          "required": "settlement_receipt"
+        },
+        {
+          "code": "true_only_when",
+          "field": "expired_fallback",
+          "when": "choice",
+          "value": "expired"
+        }
+      ],
+      "migration": "**Source defect:** Phase-B v1 has only minute-of-day deadline; cannot distinguish years or calendar days, and has no settlement receipt. Proposed v2 adds deadline_epoch and settlement_receipt. v1 active-event snapshots MUST fail migration pending Principal-approved conversion; only absent/inactive v1 state may default safely. Never silently infer an epoch or mint a reward.",
+      "negative": "Save/reload on another day at same minute must not reopen an expired reward.",
+      "phase": "design_only_no_runtime_implementation",
+      "owner": "Emergence",
+      "save_namespace": "emergence.eb_e_020",
+      "receipt_contract": {
+        "command_id": "unique stable string, 1..96 chars",
+        "expected_revision": "JSON-safe nonnegative integer",
+        "day_epoch": "Principal monotonic 56-day epoch",
+        "effect_digest": "immutable hash of authoritative owner effects; no replay grants"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Focus, inspect preview, remappable confirm/cancel",
+        "controller": "D-pad/stick, confirm/cancel",
+        "touch": "tap focus, large buttons, long-press explanation"
+      },
+      "native_gate": "Not yet tested in Godot. Must verify atomic owner-authorized effects, invalid nested save rejection, two-year replay, input parity, and accessibility before Phase C acceptance."
+    }
+  ]
+}
