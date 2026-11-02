@@ -14,6 +14,8 @@ var memories: Dictionary = {}
 var life_data: Dictionary = {}
 ## Presentation-only locale; not a gameplay or economy save field.
 var dialogue_locale: String = "en"
+## Presentation adapter; authoritative social data stays in this domain.
+var social_journal
 
 func setup(host) -> void:
     game = host
@@ -53,6 +55,11 @@ func setup(host) -> void:
         affection[rid] = 0
         memories[rid] = _fresh_memory()
     sync_schedule(true)
+    social_journal = CanvasLayer.new()
+    social_journal.name = "SocialJournal"
+    social_journal.set_script(load("res://scripts/village_social_journal.gd"))
+    add_child(social_journal)
+    social_journal.setup(self)
 
 func _fresh_memory() -> Dictionary:
     return {"talks":0, "gifts":0, "jobs":0, "festivals":0,
@@ -311,6 +318,26 @@ func act(action: String, position: Vector3) -> String:
 
 func next_day() -> void:
     sync_schedule(true)
+
+## V19: deterministic, read-only recap. No transcript is fabricated or stored.
+## Save/load already preserves every underlying count and gift memory.
+func social_recap() -> Array:
+    var result: Array = []
+    for resident in residents:
+        var rid: String = str(resident["id"])
+        var record: Dictionary = memories.get(rid, _fresh_memory())
+        var points: int = int(affection.get(rid, 0))
+        result.append({
+            "id":rid, "name":str(resident["name"]), "role":str(resident["role"]),
+            "friendship":points, "tier":_friendship_tier(points),
+            "talks":int(record.get("talks", 0)),
+            "gifts":int(record.get("gifts", 0)),
+            "jobs":int(record.get("jobs", 0)),
+            "festivals":int(record.get("festivals", 0)),
+            "last_gift_item":str(record.get("last_gift_item", "")),
+            "gift_recollections":int(record.get("gift_recollections", 0))
+        })
+    return result
 
 func save_state() -> Dictionary:
     return {"affection":affection.duplicate(true), "talked":last_talk.duplicate(true),
