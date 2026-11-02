@@ -1,0 +1,24 @@
+name: Everbloom E041-E050 regional exchange state design audit
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed_state/exchange_041_050.json'
+      - 'docs/innovation/emergence/typed_state/validate_exchange_041_050.py'
+      - 'docs/innovation/emergence/typed_state/EXCHANGE_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-exchange-types.yml'
+permissions:
+  contents: read
+jobs:
+  exchange-design-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify typed regional exchange design and hostile fixtures
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/innovation/emergence/typed_state/validate_exchange_041_050.py
+          python docs/innovation/emergence/typed_state/validate_exchange_041_050.py --self-test
