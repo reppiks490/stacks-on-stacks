@@ -2,6 +2,7 @@ extends RefCounted
 ## EVERBLOOM save boundary. Compatible with existing schema-1 save payloads.
 ## A temporary file + validated backup makes failed writes recoverable.
 ## The backup is never treated as a second active save slot.
+## Resumed backup saves quarantine corrupt primaries; this is not power-loss atomicity.
 
 const SAVE_PATH: String = "user://everbloom_save_v1.json"
 const TEMP_PATH: String = "user://everbloom_save_v1.json.tmp"
