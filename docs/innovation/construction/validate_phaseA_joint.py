@@ -86,7 +86,7 @@ def validate(c: dict, b: dict, e: dict) -> list[str]:
                 errors.append(f"{label}: missing/placeholder {field}")
         if item.get("status") != "specified_pending_review":
             errors.append(f"{label}: unapproved implementation/acceptance claim")
-        for field, minimum in (("player_verbs", 3), ("simulation_rules", 2),
+        for field, minimum in (("player_verbs", 3), ("simulation_rules", 1),
                                ("command_contract", 2), ("service_contracts", 1),
                                ("original_asset_plan", 2), ("godot_acceptance", 3),
                                ("adversarial_tests", 2), ("dependencies", 2)):
@@ -95,6 +95,8 @@ def validate(c: dict, b: dict, e: dict) -> list[str]:
                 isinstance(s, str) and len(s.strip()) >= 3 for s in v
             ):
                 errors.append(f"{label}: inadequate {field}")
+        if not isinstance(item.get("simulation_rules"), list) or sum(len(v) for v in item["simulation_rules"] if isinstance(v, str)) < 120:
+            errors.append(f"{label}: simulation rules lack substantive detail")
         controls = item.get("controls")
         if not isinstance(controls, dict) or not all(
             isinstance(controls.get(k), str) and len(controls[k]) >= 24
