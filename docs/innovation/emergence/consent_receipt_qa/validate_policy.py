@@ -299,7 +299,7 @@ class Tests(unittest.TestCase):
 
     def test_storm_cap(self):
         for i in range(8):
-            resident = "npc%d" % i
+            resident = "npc%d" % (i + 10)
             self.g.grant(resident, "EB-E-036", 1)
             self.g.apply(command(resident=resident, receipt="r%d" % i, cost=0))
         self.g.grant("npc9", "EB-E-036", 1)

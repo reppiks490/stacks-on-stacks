@@ -1,4 +1,4 @@
-name: EVERBLOOM E18 Consent and Receipt QA (non-Codex)
+name: EVERBLOOM E18 Consent and Receipt QA
 on:
   push:
     paths:
