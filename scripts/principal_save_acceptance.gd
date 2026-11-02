@@ -379,8 +379,18 @@ func _run() -> void:
            "assembled grazing state did not persist")
     _check(saved.get("village", {}).get("memories", {}).has("mira"),
            "assembled village memory did not persist")
-    _check(saved.get("village", {}).get("memories", {}).get("mira", {}).get("dialogue_log", []) == earned_lines,
-           "assembled earned dialogue missing or changed in saved JSON")
+    var saved_lines: Array = saved.get("village", {}).get("memories", {}).get("mira", {}).get("dialogue_log", [])
+    _check(saved_lines.size() == 2,
+           "assembled earned dialogue count changed in saved JSON")
+    if saved_lines.size() == 2:
+        _check(int(saved_lines[0].get("epoch", -1)) == 129
+               and str(saved_lines[0].get("locale", "")) == "en"
+               and str(saved_lines[0].get("text", "")) == "Good morning, neighbor.",
+               "first earned dialogue changed in saved JSON")
+        _check(int(saved_lines[1].get("epoch", -1)) == 130
+               and str(saved_lines[1].get("locale", "")) == "es"
+               and str(saved_lines[1].get("text", "")) == "La cosecha prospera.",
+               "second earned dialogue changed in saved JSON")
     _check(saved.get("festivals", {}).get("awarded", []).has("3:spring_seed_exchange"),
            "assembled festival award missing from saved snapshot")
     # Invalid in-memory payload must not replace the last valid on-disk
