@@ -26,5 +26,24 @@ class SaveIntegrationContract(unittest.TestCase):
             self.assertIn(token, code)
 
 
+    def test_native_adversarial_save_contract_is_tracked(self):
+        runner = (ROOT / "scripts/principal_save_acceptance.gd").read_text(encoding="utf-8")
+        for case in ("fractional schema", "fractional day", "infinite minute",
+                     "NaN energy", "negative inventory", "malformed farm",
+                     "malformed animal", "integer precision overflow"):
+            self.assertIn(case, runner)
+        workflow = (ROOT / ".github/workflows/everbloom-principal-save-integrity.yml").read_text(
+            encoding="utf-8")
+        self.assertIn("principal_save_acceptance.gd", workflow)
+        self.assertIn("sha256sum --check", workflow)
+        self.assertNotIn("codex", workflow.lower())
+
+    def test_save_service_rejects_nonfinite_and_nonintegral_state(self):
+        code = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        for invariant in ("_finite_number", "is_nan(number)", "is_inf(number)",
+                          "_whole_in_range", "MAX_SAFE_INTEGER", "_safe_json_tree",
+                          "coordinates.size() != 3", "inventory[id]"):
+            self.assertIn(invariant, code)
+
 if __name__ == "__main__":
     unittest.main()

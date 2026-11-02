@@ -1,6 +1,6 @@
 # EVERBLOOM — Source-backed status ledger
 
-**2026-11-02, principal architecture and persistence verification.** `main` and `game/everbloom-harvest-sim-rebuild-20261101` were fast-forwarded through reconciled merge `63370c98` and persistence commit `29a5c08328466ddda1dd76459f4758babe15a301`. The original SABLESTAR history and historical branches are preserved; no force-push or branch deletion was used.
+**2026-11-02, cross-lane architecture, farming, village and persistence verification.** `main` and `game/everbloom-harvest-sim-rebuild-20261101` were fast-forwarded through reconciled merge `63370c98` and persistence commit `29a5c08328466ddda1dd76459f4758babe15a301`. The original SABLESTAR history and historical branches are preserved; no force-push or branch deletion was used.
 
 ## Verified at exact commit
 - Godot 4.7.2 native editor import and GDScript parse passed.
@@ -14,7 +14,7 @@
 - Original SVG and generated Godot primitives only. No copied proprietary Harvest Moon game assets.
 
 ## Unverified / blocked for release
-- Annual daily-action bug persists in `scripts/village.gd` and `scripts/animals.gd` until they call `game.day_epoch()`.
+- Annual daily-action collision has now been repaired in `scripts/animals.gd` (farming merge `bfd389a`) and `scripts/village.gd` (Village commit `df15d515`). Both have individual native acceptance evidence; combined integration must still be tested.
 - Schema-1 save validation, temp-file readback, previous-primary backup and corrupted-primary fallback passed a native Godot filesystem test at commit `29a5c083` ([run 41398131319](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41398131319)). Power-loss crash consistency, file-lock behavior, save migration and full-state conservation remain unverified.
 - The 120-frame smoke and targeted native save test do not exercise real keyboard interaction, harvest completion, animal production, multi-season progression, romance/family, quests, controller/mobile or visual quality.
 - Current art is procedural placeholder geometry, not a finished, stunning world. Original soundtrack, animations, interiors, festivals, NPC schedules and deep relationships remain future work.
@@ -22,3 +22,9 @@
 - No Codex, PR auto-review, paid tools, unlicensed commercial assets or new releases were used.
 
 **Next acceptance:** Village/animal epoch migration; engine-driven season/inventory/relationship conservation tests; Windows file-lock and power-loss persistence checks; authored art; reproducible controller/mobile tests; then deeper content and full game loops. Coordinate in https://github.com/reppiks490/stacks-on-stacks/issues/2.
+
+## Principal save-integrity candidate (isolated branch)
+
+`game/everbloom-principal-save-integrity-20261102` adds stricter schema-1 finite-number, inventory/gold precision, annual date, domain snapshot and hero-coordinate boundaries; a dedicated Godot-native negative-case suite and non-Codex workflow; and updated coordination docs. Initial [19-assertion native acceptance at 8b4cea2](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41399615671) passed. The runner has subsequently expanded to 24 assertions and must be reverified at the final branch SHA; integration into `main` must not be assumed until merged and main exact-head CI passes.
+
+Independent Village [native two-year acceptance at df15d515](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41399543271) and [general source validation](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41399543272) passed. Independent farming native acceptance passed at `bfd389a` ([run](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41398474589)). None of these is evidence of finished visual art, mobile performance, completed family gameplay, packaging or full release readiness.

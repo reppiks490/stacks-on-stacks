@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "places": {
+    "village_square": [
+      31,
+      0,
+      4
+    ],
+    "covered_market": [
+      36,
+      0,
+      7
+    ],
+    "herbal_garden": [
+      26,
+      0,
+      11
+    ],
+    "carpentry_yard": [
+      34,
+      0,
+      11
+    ],
+    "bakery": [
+      40,
+      0,
+      5
+    ],
+    "lake_pier": [
+      27,
+      0,
+      -17
+    ],
+    "barn_path": [
+      20,
+      0,
+      -2
+    ],
+    "archive": [
+      38,
+      0,
+      -4
+    ],
+    "orchard_edge": [
+      19,
+      0,
+      7
+    ],
+    "river_bench": [
+      29,
+      0,
+      -8
+    ]
+  },
+  "profiles": {
+    "mira": {
+      "workplace": "herbal_garden",
+      "leisure": "orchard_edge",
+      "rain_shelter": "covered_market",
+      "rest_day": 2,
+      "work_line": "Sorting seedlings for the hillside clinic is quieter than it looks.",
+      "rain_line": "Rain brings the scent of crushed mint into my workshop.",
+      "seasonal_lines": {
+        "Spring": "The hillside herbs are waking. I leave the first blossoms for the bees.",
+        "Summer": "I dry each leaf in the shade so its scent survives the heat.",
+        "Autumn": "The last roots need careful hands before the ground cools.",
+        "Winter": "My windowsill garden keeps a little green alive through the frost."
+      },
+      "bond_line": "I remember the small kindnesses you never announce.",
+      "festival_line": "The lantern path feels warmer when neighbors walk it together.",
+      "job_task": "sorting healing herbs"
+    },
+    "rowan": {
+      "workplace": "carpentry_yard",
+      "leisure": "river_bench",
+      "rain_shelter": "covered_market",
+      "rest_day": 4,
+      "work_line": "Measure twice, listen three times, and the old bridge might stand another winter.",
+      "rain_line": "Rain is useful: it shows which roof still needs my attention.",
+      "seasonal_lines": {
+        "Spring": "A new fence is a promise to the seedlings behind it.",
+        "Summer": "The sun has made every board warm to the touch.",
+        "Autumn": "I save the best timber for repairs before the first freeze.",
+        "Winter": "Even a quiet workshop has stories in its wood shavings."
+      },
+      "bond_line": "You helped this place feel worth building for.",
+      "festival_line": "I made the festival benches from reclaimed orchard wood.",
+      "job_task": "sanding reclaimed boards"
+    },
+    "celia": {
+      "workplace": "bakery",
+      "leisure": "village_square",
+      "rain_shelter": "bakery",
+      "rest_day": 1,
+      "work_line": "The oven is ready; every loaf has to earn its place at the table.",
+      "rain_line": "The rain taps the bakery awning like impatient little customers.",
+      "seasonal_lines": {
+        "Spring": "Rhubarb and berries will make the market smell like morning.",
+        "Summer": "I keep a pitcher of cold berry tea for anyone working outside.",
+        "Autumn": "There is no better sound than crust cracking beside a warm hearth.",
+        "Winter": "The kitchen windows fog up with stories and cinnamon."
+      },
+      "bond_line": "I saved the corner piece for you. I know you like the crisp edge.",
+      "festival_line": "We set an extra place at the long table for newcomers.",
+      "job_task": "kneading festival dough"
+    },
+    "orion": {
+      "workplace": "lake_pier",
+      "leisure": "river_bench",
+      "rain_shelter": "covered_market",
+      "rest_day": 5,
+      "work_line": "I mend the nets, but I never take more from the lake than it can spare.",
+      "rain_line": "A rainy lake is a thousand tiny mirrors.",
+      "seasonal_lines": {
+        "Spring": "The first silver fish return when the reeds turn bright.",
+        "Summer": "At dusk the lake holds the whole sky without spilling it.",
+        "Autumn": "The water grows still enough to hear a single falling leaf.",
+        "Winter": "I check the ice before anyone sets foot near the shore."
+      },
+      "bond_line": "You understand that patience is a kind of courage.",
+      "festival_line": "The lake lanterns are made from paper, not promises.",
+      "job_task": "repairing fishing lines"
+    },
+    "alba": {
+      "workplace": "barn_path",
+      "leisure": "orchard_edge",
+      "rain_shelter": "barn_path",
+      "rest_day": 3,
+      "work_line": "The youngest animals always eat first. They trust us to remember.",
+      "rain_line": "I make sure every creature has a dry corner before a storm.",
+      "seasonal_lines": {
+        "Spring": "The barn wakes earlier when new chicks start peeping.",
+        "Summer": "The animals seek the cool shade by the orchard wall.",
+        "Autumn": "I lay extra straw before the nights grow sharp.",
+        "Winter": "Warm water and a gentle voice do wonders on a frozen morning."
+      },
+      "bond_line": "You notice when a small creature needs help. That matters.",
+      "festival_line": "The festival garlands are woven with fallen leaves, never fresh nests.",
+      "job_task": "brushing and feeding animals"
+    },
+    "soren": {
+      "workplace": "archive",
+      "leisure": "village_square",
+      "rain_shelter": "archive",
+      "rest_day": 6,
+      "work_line": "I am cataloguing letters, not secrets. The difference is consent.",
+      "rain_line": "Rain makes the old pages curl; I keep the windows latched.",
+      "seasonal_lines": {
+        "Spring": "The oldest map shows a path hidden by the new meadow.",
+        "Summer": "The library is cool enough for long afternoons of questions.",
+        "Autumn": "Every fallen leaf is a note in the valley's yearly ledger.",
+        "Winter": "The village history has blank pages. We get to write the next ones."
+      },
+      "bond_line": "I trust you with stories that are not mine to give away lightly.",
+      "festival_line": "I will read the names of the people who planted this square.",
+      "job_task": "mending the village archive"
+    }
+  },
+  "festivals": [
+    {
+      "id": "seed_lantern_walk",
+      "season": 0,
+      "day": 7,
+      "name": "Seed Lantern Walk",
+      "start_minute": 1020,
+      "end_minute": 1320,
+      "location": "village_square",
+      "narration": "Paper lanterns light the path where neighbors once shared seeds."
+    },
+    {
+      "id": "lake_of_stars",
+      "season": 1,
+      "day": 11,
+      "name": "Lake of Stars",
+      "start_minute": 1020,
+      "end_minute": 1320,
+      "location": "village_square",
+      "narration": "Families fold blue lanterns for the lake, then return them safely to shore."
+    },
+    {
+      "id": "hearth_table",
+      "season": 2,
+      "day": 9,
+      "name": "The Hearth Table",
+      "start_minute": 1020,
+      "end_minute": 1320,
+      "location": "village_square",
+      "narration": "Everyone brings a story to the table; nobody is asked to arrive with food."
+    },
+    {
+      "id": "frostglass_bells",
+      "season": 3,
+      "day": 12,
+      "name": "Frostglass Bells",
+      "start_minute": 1020,
+      "end_minute": 1320,
+      "location": "village_square",
+      "narration": "The village rings handmade glass bells to welcome the returning light."
+    }
+  ],
+  "jobs": {
+    "reward_petals": 24,
+    "energy_cost": 12,
+    "restoration": 1,
+    "start_minute": 540,
+    "end_minute": 960,
+    "break_start": 720,
+    "break_end": 780
+  },
+  "friendship_tiers": [
+    {
+      "at": 0,
+      "name": "acquaintance"
+    },
+    {
+      "at": 80,
+      "name": "neighbor"
+    },
+    {
+      "at": 220,
+      "name": "confidant"
+    },
+    {
+      "at": 450,
+      "name": "dear friend"
+    },
+    {
+      "at": 750,
+      "name": "chosen family"
+    }
+  ]
+}

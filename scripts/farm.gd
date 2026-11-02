@@ -98,16 +98,21 @@ func act(tool: String, origin: Vector3) -> String:
                 plot["weeds"] = 0
                 _paint(plot)
                 return "You cleared the weeds and opened the soil to sunlight."
-            if int(plot["fertility"]) < 90 and int(game.inventory.get("wild_herb", 0)) >= 2:
+            var use_compost: bool = int(game.inventory.get("compost", 0)) > 0
+            var use_herbs: bool = int(game.inventory.get("wild_herb", 0)) >= 2
+            if int(plot["fertility"]) < 90 and (use_compost or use_herbs):
                 if not game.spend_energy(2.0):
                     return "You need energy to enrich the soil."
-                if not game.consume_item("wild_herb", 2):
-                    return "Gather two wild herbs for natural mulch."
-                plot["fertility"] = mini(100, int(plot["fertility"]) + 24)
+                var amendment: String = "compost" if use_compost else "wild_herb"
+                var amount: int = 1 if use_compost else 2
+                if not game.consume_item(amendment, amount):
+                    return "Amendment unavailable. Please try again."
+                plot["fertility"] = mini(100, int(plot["fertility"]) + (32 if use_compost else 24))
                 plot["moisture"] = mini(100, int(plot["moisture"]) + 12)
                 _paint(plot)
-                return "Mulched the bed with herbs. Soil fertility restored."
-            return "Already cultivated. Clear weeds or add two wild herbs as mulch."
+                return "Enriched the soil with %s. Fertility restored." % (
+                    "animal compost" if use_compost else "wild herb mulch")
+            return "Already cultivated. Clear weeds or add compost / two wild herbs."
         if not game.spend_energy(2.0):
             return "No energy left for digging."
         plot["tilled"] = true
@@ -171,7 +176,7 @@ func act(tool: String, origin: Vector3) -> String:
             return "You need energy to harvest."
         var quality: int = clampi(1 + int(int(plot["fertility"]) >= 65)
             + int(int(plot["stress"]) == 0) + int(plot["rotation_bonus"])
-            + int(int(plot["seed_vigor"]) == 2), 1, 5)
+            + int(int(plot["seed_vigor"]) == 2) - int(int(plot["weeds"]) >= 2), 1, 5)
         var amount: int = int(crop_data["yield"]) + int(quality >= 4)
         game.grant_item(crop_id, amount)
         game.crops_harvested += amount
@@ -202,7 +207,7 @@ func next_day(new_weather: String) -> void:
         var moisture: int = int(plot["moisture"])
         if rainy:
             moisture = mini(100, moisture + 68)
-        var can_grow: bool = bool(plot["watered"]) or rainy or moisture >= 45
+        var can_grow: bool = (bool(plot["watered"]) or rainy or moisture >= 45) and int(plot["weeds"]) < 4
         var crop_id: String = str(plot["crop"])
         if crop_id != "":
             var crop_data: Dictionary = game.crop_definitions.get(crop_id, {})
@@ -223,7 +228,7 @@ func next_day(new_weather: String) -> void:
             plot["fertility"] = mini(100, int(plot["fertility"]) + 2)
         if bool(plot["tilled"]) and (game.day_epoch() + i * 7) % 9 == 0:
             plot["weeds"] = mini(5, int(plot["weeds"]) + 1)
-        moisture -= 22 if rainy else (35 if summer else 29)
+        moisture -= (22 if rainy else (35 if summer else 29)) + int(plot["weeds"]) * 2
         plot["moisture"] = clampi(moisture, 0, 100)
         plot["watered"] = false
         _paint(plot)

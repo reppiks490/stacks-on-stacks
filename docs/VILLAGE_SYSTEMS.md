@@ -1,0 +1,19 @@
+# EVERBLOOM — Living village implementation and acceptance
+
+**Lane:** Village Engineer. Original authored dialogue, locations, four festivals and six NPC work/leisure/rest patterns are in `data/village_life.json`; the existing six resident identities and original primitive representations remain in `data/villagers.json` and `scripts/village.gd`.
+
+## Implemented, not aspirational
+- Six distinct residents have deterministic hourly routes: home, village square, workplace, lunch break, individual weekly rest day, leisure site and rain shelter. They move toward destinations at a fixed 2.4-world-unit/second speed during actual play; deterministic `sync_schedule(true)` snaps test fixtures and load/day transitions. This is direct linear steering, **not** pathfinding, crowd avoidance, navigation meshes, animation or collision-aware traversal.
+- All four seasons have original, resident-specific lines. Work, rain, friendship and festival contexts change spoken lines; each resident has a persistent talk/gift/job/festival memory. Friendship tiers reflect existing affection thresholds but do **not** implement dating, marriage or children.
+- Favorite gifts grant 18 friendship; other accepted preferred gifts grant 12. A resident can receive one gift and one rewarded talk per monotonic day. No gifts or friendship rewards are duplicated on same-day reload.
+- `village.act("job", position)` runs a genuine paid village shift for one employer/day, if physically near the NPC at work, between 09:00–16:00 (except 12:00–13:00), not on their weekly rest day or at a festival. A shift spends 12 energy, earns 24 petals and grants one restoration point. It is persisted and idempotent across reloads. **The player keyboard/UI action is not yet bound:** the principal must approve and integrate that input separately into `scripts/game.gd`. Do not claim player-facing job controls yet.
+- Original festivals: Seed Lantern Walk (Spring 7), Lake of Stars (Summer 11), The Hearth Table (Autumn 9), Frostglass Bells (Winter 12), 17:00–22:00. NPCs gather at the village square. A player who talks to a villager during a festival attends once per festival/year and earns a small one-time friendship/restoration reward. Festival attendance is available through the existing talk tool and persists across saves.
+- Existing schema-1 `village` save fields `affection`, `talked`, `gifted` remain. New optional `worked`, `festivals`, `memories` fields have defaults, bounds and deep-copy snapshots; old saves still load.
+
+## Verification and remaining scope
+The independent `scripts/village_life_acceptance.gd` exercises the actual `scripts/village.gd` in native Godot: deterministic 56-day × 5-time-slot × 6-resident schedules, work payments, energy debits, rest days, favorite gifts, duplicate rejection, save JSON roundtrip, year-two festivals and seasonal dialogue. Workflow `.github/workflows/everbloom-village-life-acceptance.yml` pins Godot 4.7.2 and its SHA-256, with no Codex. **Native proof must be attached only after exact-head CI passes.**
+
+Unimplemented: real pathfinding and dynamic obstacles; job selection UI and tutorial; deeper personality/reputation simulation, romance/marriage/family, pregnancy/children, multiple authored homes/interiors, festival minigames and visual/audio art, actual controller/mobile/performance tests, 20+ NPC target, quest branching and full narrative chapters. The event schedule is a functional foundation, not a finished village.
+
+## Coordination
+Built on verified independent year-two village fix `df15d515` so that once-per-day gates use principal `game.day_epoch()`. No edits to principal-owned `game.gd`, art-owned valley or farming-owned systems, no PR/Codex/paid service, and no history rewrites. Village module and data are Village-owned. QA should independently audit event duplication, malformed save values and real in-scene movement. Principal should approve the optional job input binding.
