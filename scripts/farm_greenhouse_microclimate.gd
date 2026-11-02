@@ -291,9 +291,9 @@ func advance_day(epoch: int, outside_temp_tenths: int, sunlight: int, rain: bool
         var fan_level: int = int(b["vent"]) if fan_on else 0
         b["temp"] = clampi(outside_temp_tenths + 30 + int(sunlight / 4) +
             (90 if heater_on else 0) - fan_level * 18, -300, 650)
-        b["humidity"] = clampi(int(int(b["humidity"]) * 3 / 4) + 12 +
-            (22 if rain else 0) + (5 if b["crop"] != "" else 0) -
-            fan_level * 12 - (7 if heater_on else 0), 0, 100)
+        b["humidity"] = clampi(int(int(b["humidity"]) * 3 / 4) + 20 +
+            (12 if rain else 0) + (4 if b["crop"] != "" else 0) -
+            fan_level * 6 - (4 if heater_on else 0), 0, 100)
         b["light"] = clampi(int(sunlight * daylight_factor / 100) +
             (30 if lamps_on else 0), 0, 100)
         if b["crop"] != "" and b["stage"] != "failed":
