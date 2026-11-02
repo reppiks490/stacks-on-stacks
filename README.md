@@ -64,3 +64,10 @@ The GitHub Actions workflow runs ordinary Python source tests, downloads the
 verified official Godot Linux binary (SHA-256 pinned), parses/imports the
 project and performs a headless runtime smoke. Do not interpret static tests
 as proof of a playable game; check exact-head Actions results first.
+
+## Latest native CI milestone
+
+Official Godot 4.7.2 successfully parsed, imported and ran the baseline scene
+headlessly for 120 frames at `62ef38c` (branch CI `41379257781`, main CI
+`41379347129`). The current code and any future asset wiring changes require
+their own exact-head verification. See `docs/STATUS.md` for evidence scope.

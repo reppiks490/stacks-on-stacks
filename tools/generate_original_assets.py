@@ -60,7 +60,7 @@ def material_source() -> str:
         "heart_crystal": (.87, .65, .91),
     }
     return "# Original source materials for the Sableblade\n" + "\n".join(
-        f"newmtl {name}\nKd {red:.4f} {green:.4f} {blue:.4f}\nKa 0.08 0.08 0.08\nKs 0.3 0.3 0.3\nNs 100.0\n"
+        f"newmtl {name}\nKd {red:.4f} {green:.4f} {blue:.4f}\nKs 0.3 0.3 0.3\nNs 100.0\n"
         for name,(red,green,blue) in colors.items()
     ) + "\n"
 

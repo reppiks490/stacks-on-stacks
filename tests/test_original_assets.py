@@ -13,6 +13,15 @@ class TestOriginalAssets(unittest.TestCase):
     def test_reproducible_source_mesh(self):
         self.assertEqual(assets.mesh_source(),assets.mesh_source())
         self.assertGreater(assets.mesh_source().count('\nf '),60)
+    def test_original_mesh_and_audio_are_wired_into_runtime(self):
+        player=(ROOT/'scripts/player_actor.gd').read_text()
+        hud=(ROOT/'scripts/hud.gd').read_text()
+        game=(ROOT/'scripts/game_root.gd').read_text()
+        self.assertIn('preload("res://assets/models/sableblade.obj")',player)
+        self.assertIn('_sword.mesh = SABLEBLADE_MESH',player)
+        self.assertIn('preload("res://assets/vector/sablestar_sigillum.svg")',hud)
+        self.assertIn('preload("res://assets/audio/resonance_pulse.wav")',game)
+        self.assertIn('preload("res://assets/audio/covenant_seal.wav")',game)
     def test_full_asset_provenance(self):
         valid,errors=assets.verify(ROOT)
         self.assertTrue(valid,errors)

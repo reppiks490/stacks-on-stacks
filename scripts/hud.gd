@@ -7,6 +7,10 @@ var _stamina: Label
 var _quest: Label
 var _status: Label
 var _faction: Label
+var _faction_badge: TextureRect
+const SABLESTAR_ICON = preload("res://assets/vector/sablestar_sigillum.svg")
+const EMBER_ICON = preload("res://assets/vector/ember_cartographers.svg")
+const HOLLOW_ICON = preload("res://assets/vector/hollow_accord.svg")
 var _dialog: PanelContainer
 var _faction_id: String = ""
 var _last_status_until: float = 0.0
@@ -16,14 +20,23 @@ func _ready() -> void:
     panel.offset_left = 18.0
     panel.offset_top = 16.0
     panel.offset_right = 475.0
-    panel.offset_bottom = 194.0
+    panel.offset_bottom = 234.0
     add_child(panel)
     var vbox := VBoxContainer.new()
     vbox.add_theme_constant_override("separation", 7)
     panel.add_child(vbox)
+    var header := HBoxContainer.new()
+    header.add_theme_constant_override("separation", 8)
+    vbox.add_child(header)
+    var sigil := TextureRect.new()
+    sigil.texture = SABLESTAR_ICON
+    sigil.custom_minimum_size = Vector2(40, 40)
+    sigil.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    sigil.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    header.add_child(sigil)
     var title := Label.new()
     title.text = "SABLESTAR  /  THE BROKEN MERIDIAN"
-    vbox.add_child(title)
+    header.add_child(title)
     _hp = Label.new()
     vbox.add_child(_hp)
     _stamina = Label.new()
@@ -31,8 +44,17 @@ func _ready() -> void:
     _quest = Label.new()
     _quest.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     vbox.add_child(_quest)
+    var faction_row := HBoxContainer.new()
+    faction_row.add_theme_constant_override("separation", 8)
+    vbox.add_child(faction_row)
+    _faction_badge = TextureRect.new()
+    _faction_badge.custom_minimum_size = Vector2(26, 26)
+    _faction_badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    _faction_badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    _faction_badge.visible = false
+    faction_row.add_child(_faction_badge)
     _faction = Label.new()
-    vbox.add_child(_faction)
+    faction_row.add_child(_faction)
     _status = Label.new()
     vbox.add_child(_status)
 
@@ -74,6 +96,9 @@ func update_stats(hp: float, stamina: float, session) -> void:
     _stamina.text = "RESONANCE STAMINA   %03d / 100    FRAGMENTS %d" % [int(stamina), session.fragments]
     _quest.text = "OBJECTIVE   " + session.objective_text()
     _faction.text = "ALLEGIANCE   " + (session.chosen_faction if session.chosen_faction != "" else "UNBOUND")
+    _faction_badge.visible = session.chosen_faction in ["FAC-01", "FAC-02"]
+    if _faction_badge.visible:
+        _faction_badge.texture = EMBER_ICON if session.chosen_faction == "FAC-01" else HOLLOW_ICON
     if Time.get_ticks_msec() / 1000.0 > _last_status_until:
         _status.text = ""
 

@@ -8,6 +8,8 @@ const EnemyActor = preload("res://scripts/enemy_actor.gd")
 const Fragment = preload("res://scripts/resonance_fragment.gd")
 const Companion = preload("res://scripts/companion_orb.gd")
 const GameHUD = preload("res://scripts/hud.gd")
+const PULSE_CUE = preload("res://assets/audio/resonance_pulse.wav")
+const COVENANT_CUE = preload("res://assets/audio/covenant_seal.wav")
 
 var session
 var player
@@ -15,9 +17,13 @@ var hud
 var world
 var _pending_beacon: Node3D
 var _is_restoring: bool = false
+var _cue_player: AudioStreamPlayer
 
 func _ready() -> void:
     session = SessionState.new()
+    _cue_player = AudioStreamPlayer.new()
+    _cue_player.volume_db = -8.0
+    add_child(_cue_player)
     _make_lighting()
     world = WorldBuilder.new()
     world.name = "TheBrokenMeridian"
@@ -156,6 +162,7 @@ func _on_faction_chosen(id: String) -> void:
         return
     if session.choose_faction(id):
         _apply_faction_effects()
+        _play_source_cue(COVENANT_CUE)
         hud.notify("Covenant sealed: " + ("Ember Cartographers" if id == "FAC-01" else "Hollow Accord"), 6.0)
     _pending_beacon = null
 
@@ -164,6 +171,7 @@ func _apply_faction_effects() -> void:
     player.pulse_multiplier = 1.22 if session.chosen_faction == "FAC-02" else 1.0
 
 func _on_pulse_used() -> void:
+    _play_source_cue(PULSE_CUE)
     hud.notify("RESONANCE PULSE — environmental and enemy impact", 1.8)
 
 func _on_player_died() -> void:
@@ -175,3 +183,10 @@ func _on_player_died() -> void:
     if is_instance_valid(player):
         player.restore_from_save(120.0)
     _is_restoring = false
+
+func _play_source_cue(cue: AudioStream) -> void:
+    if not is_instance_valid(_cue_player):
+        return
+    _cue_player.stop()
+    _cue_player.stream = cue
+    _cue_player.play()

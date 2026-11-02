@@ -5,6 +5,7 @@ signal struck(target: Node)
 signal pulse_used
 
 const Combat = preload("res://scripts/combat_rules.gd")
+const SABLEBLADE_MESH = preload("res://assets/models/sableblade.obj")
 const SPEED := 7.2
 const SPRINT_SPEED := 10.0
 const JUMP_SPEED := 8.0
@@ -48,14 +49,10 @@ func _ready() -> void:
     add_child(body)
 
     _sword = MeshInstance3D.new()
-    var blade := BoxMesh.new()
-    blade.size = Vector3(0.12, 1.25, 0.19)
-    _sword.mesh = blade
-    _sword.position = Vector3(0.50, 0.05, -0.35)
-    var steel := StandardMaterial3D.new()
-    steel.albedo_color = Color(0.81, 0.74, 0.9)
-    steel.metallic = 0.75
-    _sword.material_override = steel
+    # Original source-backed sword: six named faceted OBJ submeshes.
+    _sword.mesh = SABLEBLADE_MESH
+    _sword.scale = Vector3(0.42, 0.42, 0.42)
+    _sword.position = Vector3(0.52, 0.37, -0.32)
     add_child(_sword)
 
     _camera_pivot = Node3D.new()
