@@ -1,6 +1,7 @@
 extends Node3D
 ## EVERBLOOM original village: seasonal schedules, memory, friendship and civic work.
 ## The calendar belongs to game.gd. This module never advances it or writes files.
+## Dialogue history is an optional bounded nested memory; Principal owns strict save admission.
 const SEASONS := ["Spring", "Summer", "Autumn", "Winter"]
 const LIFE_PATH := "res://data/village_life.json"
 const DIALOGUE_LOG_LIMIT := 12
