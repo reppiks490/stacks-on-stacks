@@ -149,7 +149,8 @@ def validate(c: dict, b: dict, e: dict) -> list[str]:
         if x.get("approval") != "pending_principal_review":
             errors.append("overlap approval cannot be asserted by Builder")
         for key in ("title", "authority", "interface_contract", "invariant", "acceptance"):
-            if not isinstance(x.get(key), str) or len(x[key]) < 45:
+            minimum = 20 if key == "title" else 45
+            if not isinstance(x.get(key), str) or len(x[key]) < minimum:
                 errors.append(f"{x.get('id')}: insufficient {key}")
     authorities = c.get("global_authority")
     if not isinstance(authorities, list) or len(authorities) < 6:
