@@ -20,7 +20,7 @@ These are actual tracked source components, not proof of full gameplay, polish o
 ## Contract A: deterministic calendar
 Game orchestrator is the sole calendar authority: `year >= 1`, `season_index = 0..3`, `day = 1..14`, `minute_of_day`, `weather`. 4 seasons × 14 days = 56 days/year. A monotonic `day_epoch() = (year-1)*56 + season_index*14 + day` is required for once-per-day talk, gift, animal care and festival triggers. Using `season_index*14+day` alone repeats epochs every year and incorrectly blocks annual interactions. All domain modules must accept calendar snapshots, not mutate global date. Weather must be reproducible for a given calendar and save state.
 
-**Current state:** `game.gd` persists `year`, increments at Winter rollover and exposes `day_epoch()`. `farm.gd` and `animals.gd` now consume that monotonic epoch; the native Farming acceptance exercises the year-two animal-care case. **Remaining cross-lane defect:** `village.gd` still calculates `season_index * 14 + day`, repeating talk/gift gating each year. Village ownership and native regression remain mandatory.
+**Current state:** `game.gd` persists `year`, increments at Winter rollover and exposes `day_epoch()`. `farm.gd` and `animals.gd` now consume that monotonic epoch; the native Farming acceptance exercises the year-two animal-care case. **Village correction:** separate Village commit `df15d515` changed talk/gift admission to `game.day_epoch()` and added two-year native regression coverage. Its native test and canonical integration result must be confirmed at the new HEAD before marking that gate closed.
 
 ## Contract B: persistence
 Current `game.gd` writes `user://everbloom_save_v1.json` with `schema=1`. Retain compatibility for existing schema-1 saves. Required persisted fields: `year` (optional in pre-upgrade v1; default 1), `day`, `season`, `minute`, `gold`, `energy`, `weather`, `restoration`, `crops_harvested`, `social_contacts`, `care_actions`, `inventory`, `farm`, `village`, `animals`, `hero_position`. Domain save structures are delegated to their owners.
@@ -52,7 +52,7 @@ Target 60 FPS on desktop and measured 30/60 FPS mobile modes; these are goals, n
 ## Open technical risks
 - Prior CI failed before native tests because `tools/validate_project.py` was missing. QA supplied a stronger validator and tests; this blocker is **resolved** at merge commit `63370c98`.
 - No independent gameplay tests for crop progression, inventory conservation or save recovery.
-- Village talk/gift gating repeats annually; animal care now uses the monotonic epoch and has native coverage.
+- Village and animal care both use monotonic epoch after Village commit `df15d515`; verify the Village native workflow at its exact commit and again after cross-lane integration.
 - Native engine import and headless smoke have passed at the cited commits; comprehensive input/gameplay/device behavior and mobile performance remain unverified.
 - Primary saves now use validated temp writes and backup fallback, with a native recovery test. Power-loss atomicity, Windows file locks, migration fixtures and long-running save integrity remain unverified.
 - Scene's current meshes are graybox placeholders; visual quality is not yet production-level.
