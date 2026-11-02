@@ -51,8 +51,10 @@ def domain(n, s):
         nodes, v = s["trellis_nodes"], s["vine_age"]
         require(bool(nodes) and all(x["attached"] and 1 <= x["sun_hours"] <= 12 for x in nodes), "trellis_sun")
         unique([x["window_id"] for x in nodes], "trellis_window")
-        require(v["days"] <= s["day_epoch"] and v["stage"] == min(5, v["days"] // 7)
-                and v["last_pruned_epoch"] <= s["day_epoch"], "trellis_age")
+        require(v["days"] <= s["day_epoch"] and
+                s["day_epoch"] - v["days"] <= v["last_pruned_epoch"] <= s["day_epoch"] and
+                v["stage"] == max(0, min(5, v["days"] * min(x["sun_hours"] for x in nodes) // 42) -
+                (1 if s["day_epoch"] - v["last_pruned_epoch"] <= 3 else 0)), "trellis_age")
     elif n == 102:
         m, p = s["metal_surface"], s["patina_age"]
         require(m["moisture_percent"] <= 100 and m["sealant_percent"] <= 100
