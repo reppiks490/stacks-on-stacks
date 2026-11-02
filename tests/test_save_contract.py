@@ -65,5 +65,26 @@ class SaveIntegrationContract(unittest.TestCase):
         self.assertIn('village.act("job", hero.global_position)', game)
         self.assertIn("K Job", hud)
 
+    def test_recovered_saves_quarantine_invalid_primary_without_losing_backup(self):
+        service = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        for invariant in ("QUARANTINE_PREFIX", "MAX_QUARANTINE_SLOTS",
+                          "_available_quarantine_path", "damaged_primary",
+                          "_read_one(BACKUP_PATH).is_empty()",
+                          "DirAccess.rename_absolute(target, ProjectSettings.globalize_path(quarantine_path))"):
+            self.assertIn(invariant, service)
+        native = (ROOT / "scripts/principal_recovery_acceptance.gd").read_text(
+            encoding="utf-8")
+        for scenario in ("resume write after corrupt-primary recovery",
+                         "resumed inventory persists exactly, no duplicate",
+                         "second recovery resumes saving",
+                         "fail closed without valid backup",
+                         "fail closed when quarantine full"):
+            self.assertIn(scenario, native)
+        workflow = (ROOT / ".github/workflows/everbloom-principal-save-integrity.yml").read_text(
+            encoding="utf-8")
+        self.assertIn("principal_recovery_acceptance.gd", workflow)
+        self.assertIn("XDG_DATA_HOME: /tmp/everbloom-principal-recovery-resume", workflow)
+        self.assertNotIn("codex", workflow.lower())
+
 if __name__ == "__main__":
     unittest.main()
