@@ -5,6 +5,7 @@ on:
       - 'tests/native_qa_multiyear.gd'
       - 'tests/test_qa_calendar_contract.py'
       - 'tools/qa_calendar_contract.py'
+      - 'docs/QA_RELEASE_EVIDENCE.md'
       - 'scripts/game.gd'
       - 'scripts/save_service.gd'
       - 'scripts/farm.gd'
