@@ -34,7 +34,7 @@ def exact_int(value: object) -> bool:
 
 
 def git_blob_sha(data: bytes) -> str:
-    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\\0" + data).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\0" + data).hexdigest()
 
 
 def verify_policy(doc: dict, source_bytes: bytes | None = None) -> list[dict]:
