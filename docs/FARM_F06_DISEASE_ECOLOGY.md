@@ -32,3 +32,7 @@
 ## Integration handoff
 
 Principal: approve persistent nested domain contract and authoritative transactional action receipts, then run assembled-game two-year save/recovery. Farming: reconcile F01–F05 and attach F06 to real crop lifecycle and harvest only after integration approval. Emergence: provide replayable humidity/weather signals; Builder: original greenhouse/quarantine assets and resource contract. Do not claim this as integrated gameplay or a completed F06 mission.
+
+## Reconciliation checkpoint
+
+The isolated F06 branch incorporates the disjoint Principal main changes through a non-force two-parent merge at `addf9b6aef15440e0295d3d0056a6de421ff7a28` (source main `5415067e5803fe087d25e27f413e62201a534269`). Only four new Farming-owned paths differ from that source main. This is **not** a merge into canonical `main`. CI must be rerun against the subsequent exact branch HEAD before acceptance; future main movement requires another fresh comparison.
