@@ -27,6 +27,8 @@ static func _is_number(value: Variant) -> bool:
 ## Reject invalid and non-JSON state *before* any gameplay state is mutated.
 ## Integers stay within JSON's exact IEEE-754 range to avoid silent currency/item drift.
 const MAX_SAFE_INTEGER: float = 9007199254740991.0
+# A full 56-day year must fit in the JSON-exact integer range.
+const MAX_SAFE_YEAR: int = 160842843834660
 
 static func _finite_number(value: Variant) -> bool:
     if not _is_number(value):
@@ -76,8 +78,12 @@ static func validate_payload(payload: Dictionary) -> bool:
     if not _whole_in_range(payload.get("season", null), 0.0, 3.0):
         return false
     # Pre-year schema-1 saves are valid: game.gd defaults a missing year to 1.
-    if payload.has("year") and not _whole_in_range(payload["year"], 1.0, MAX_SAFE_INTEGER):
+    if payload.has("year") and not _whole_in_range(payload["year"], 1.0, float(MAX_SAFE_YEAR)):
         return false
+    # One calendar authority for every saved daily-action ledger. Never
+    # normalize future epochs into the present during a domain load.
+    var saved_epoch: float = ((float(payload.get("year", 1)) - 1.0) * 56.0
+            + float(payload["season"]) * 14.0 + float(payload["day"]))
     if not _finite_number(payload.get("minute", null)):
         return false
     if float(payload["minute"]) < 0.0 or float(payload["minute"]) > 1440.0:
@@ -128,7 +134,7 @@ static func validate_payload(payload: Dictionary) -> bool:
             if soil.has(attribute) and not _whole_in_range(soil[attribute], 0.0, MAX_SAFE_INTEGER):
                 return false
         if soil.has("last_harvest_epoch") and not _whole_in_range(
-                soil["last_harvest_epoch"], -1.0, MAX_SAFE_INTEGER):
+                soil["last_harvest_epoch"], -1.0, saved_epoch):
             return false
 
     var villagers: Variant = payload.get("village", null)
@@ -143,7 +149,7 @@ static func validate_payload(payload: Dictionary) -> bool:
         var values: Dictionary = social_state[attribute]
         for rid in values:
             var lower_bound: float = 0.0 if attribute == "affection" else -1.0
-            var upper_bound: float = 1000.0 if attribute == "affection" else MAX_SAFE_INTEGER
+            var upper_bound: float = 1000.0 if attribute == "affection" else saved_epoch
             if not _whole_in_range(values[rid], lower_bound, upper_bound):
                 return false
     if social_state.has("festivals"):
@@ -159,10 +165,7 @@ static func validate_payload(payload: Dictionary) -> bool:
         var memory_records: Dictionary = social_state["memories"]
         # Keep the schema-1 memory additions optional for older player saves.
         # New gift-recollection epochs must be bounded by the saved calendar.
-        var current_epoch: float = minf(
-                MAX_SAFE_INTEGER,
-                (float(payload.get("year", 1)) - 1.0) * 56.0
-                + float(payload["season"]) * 14.0 + float(payload["day"]))
+        var current_epoch: float = saved_epoch
         for rid in memory_records:
             if typeof(memory_records[rid]) != TYPE_DICTIONARY:
                 return false
@@ -261,7 +264,7 @@ static func validate_payload(payload: Dictionary) -> bool:
             if animal.has(attribute) and not _whole_in_range(animal[attribute], 0.0, MAX_SAFE_INTEGER):
                 return false
         if animal.has("last_care") and not _whole_in_range(
-                animal["last_care"], -1.0, MAX_SAFE_INTEGER):
+                animal["last_care"], -1.0, saved_epoch):
             return false
 
     var position: Variant = payload.get("hero_position", null)

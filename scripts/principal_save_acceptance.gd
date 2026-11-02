@@ -223,6 +223,54 @@ func _run() -> void:
     bad["village"]["memories"]["mira"]["last_gift_item"] = 7
     _check(not SaveService.validate_payload(bad), "numeric gift item accepted")
 
+    # P02/P04/P05: all once-per-day ledgers must fit the *saved* 56-day
+    # monotonic epoch. Domain loaders previously clamped future values,
+    # silently altering otherwise accepted snapshots.
+    var rollover: Dictionary = base.duplicate(true)
+    rollover["year"] = 1
+    rollover["season"] = 3
+    rollover["day"] = 14 # epoch 56
+    rollover["farm"] = [{"last_harvest_epoch": 56}]
+    rollover["animals"]["hen"]["last_care"] = 56
+    rollover["village"]["talked"] = {"mira": 56}
+    rollover["village"]["gifted"] = {"mira": 56}
+    rollover["village"]["worked"] = {"mira": 56}
+    _check(SaveService.validate_payload(rollover), "last day of year one epoch 56 rejected")
+    var next_year: Dictionary = rollover.duplicate(true)
+    next_year["year"] = 2
+    next_year["season"] = 0
+    next_year["day"] = 1 # epoch 57; prior year's actions remain valid
+    _check(SaveService.validate_payload(next_year), "year-two epoch 57 rejected")
+    for domain_key: String in ["talked", "gifted", "worked"]:
+        bad = next_year.duplicate(true)
+        bad["village"][domain_key]["mira"] = 58
+        _check(not SaveService.validate_payload(bad),
+               "future year-two village %s epoch accepted" % domain_key)
+    bad = next_year.duplicate(true)
+    bad["farm"][0]["last_harvest_epoch"] = 58
+    _check(not SaveService.validate_payload(bad), "future farm harvest epoch accepted")
+    bad = next_year.duplicate(true)
+    bad["animals"]["hen"]["last_care"] = 58
+    _check(not SaveService.validate_payload(bad), "future livestock care epoch accepted")
+    bad = next_year.duplicate(true)
+    bad["village"]["worked"]["mira"] = 56.5
+    _check(not SaveService.validate_payload(bad), "fractional job epoch accepted")
+    bad = next_year.duplicate(true)
+    bad["farm"][0]["last_harvest_epoch"] = -2
+    _check(not SaveService.validate_payload(bad), "invalid negative harvest epoch accepted")
+    bad = next_year.duplicate(true)
+    bad["year"] = SaveService.MAX_SAFE_YEAR + 1
+    _check(not SaveService.validate_payload(bad), "year allowing inexact day epoch accepted")
+    bad = next_year.duplicate(true)
+    bad["year"] = SaveService.MAX_SAFE_YEAR
+    _check(SaveService.validate_payload(bad), "last exact-safe 56-day year rejected")
+    bad = next_year.duplicate(true)
+    bad["year"] = 1
+    bad["season"] = 0
+    bad["day"] = 1
+    _check(not SaveService.validate_payload(bad),
+           "year-one snapshot accepted year-two daily-action history")
+
     # This is the actual assembled Game coordinator and its real domain saves,
     # running on a disposable CI user:// filesystem; never a live player's slot.
     for file_path: String in [SaveService.SAVE_PATH, SaveService.BACKUP_PATH,
@@ -275,6 +323,19 @@ func _run() -> void:
     _check(not SaveService.write_payload(bad), "future-year assembled festival award written")
     _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == saved_bytes,
            "invalid festival awards modified authoritative save bytes")
+    # Refuse invalid future daily-action state without touching authoritative
+    # saved bytes or the live game; unlike fixture-only tests this is a real
+    # assembled 30-bed + village + livestock snapshot.
+    bad = saved.duplicate(true)
+    bad["farm"][0]["last_harvest_epoch"] = session.day_epoch() + 1
+    _check(not SaveService.write_payload(bad), "future assembled harvest written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == saved_bytes,
+           "future harvest rejection modified saved bytes")
+    bad = saved.duplicate(true)
+    bad["village"]["talked"]["mira"] = session.day_epoch() + 1
+    _check(not SaveService.write_payload(bad), "future assembled social action written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == saved_bytes,
+           "future social rejection modified saved bytes")
     session.gold = 0
     session.inventory["turnip"] = 0
     session.year = 1
