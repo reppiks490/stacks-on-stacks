@@ -71,6 +71,8 @@ func _run() -> void:
     _check("One gift each day" in reloaded.act("gift", workplace), "save reload cannot repeat gift")
     _check(host.gold == gold_before + 24, "no reload currency duplication")
 
+    # A fresh calendar day isolates lunch admission from yesterday's paid shift cap.
+    host.day = 2
     host.minute_of_day = 750.0
     reloaded.sync_schedule(true)
     _check(str(reloaded.residents[0]["place"]) == "village_square", "midday break at square")
