@@ -2413,8 +2413,7 @@
             }
           },
           "max_items": 96,
-          "default": [],
-          "unique_by": "key"
+          "default": []
         }
       },
       "rules": [
