@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "program": "EVERBLOOM: The Living Valley",
+  "phase": "A_cross_loop_review",
+  "status": "candidate_pending_principal_acceptance",
+  "engine": "Godot 4.x",
+  "total_concepts": 20,
+  "implementation_gate": 220,
+  "source_branches": [
+    {
+      "role": "construction",
+      "branch": "game/everbloom-construction-phase1-20261102",
+      "commit": "0c23b576fc255cce5130a547be549986b685c27e",
+      "source_path": "docs/innovation/construction/phase1_ten_concepts.json",
+      "snapshot": "snapshots/phaseA_builder_at_0c23b576.json",
+      "git_blob_sha": "1fbcafa552dfab5f03e0c22fbb929174dbaa5e87"
+    },
+    {
+      "role": "emergence",
+      "branch": "game/everbloom-emergence-phase1-20261102",
+      "commit": "9ba5b83f2d11d18e23011093c08626b1057f9db2",
+      "source_path": "docs/innovation/emergence/phase1_ten_concepts.json",
+      "snapshot": "snapshots/phaseA_emergence_at_9ba5b83.json",
+      "git_blob_sha": "883f73fdf8dd31177865107eef82a7125b2703b2"
+    }
+  ],
+  "global_authority": [
+    {
+      "system": "calendar",
+      "owner": "Principal",
+      "rule": "All annual cooldowns and once-per-day receipts use monotonic game.day_epoch() across 56-day years."
+    },
+    {
+      "system": "inventory_and_currency",
+      "owner": "Principal",
+      "rule": "Single idempotent transaction ledger owns debits, refunds and resource transfers across all 20 concepts."
+    },
+    {
+      "system": "npc_schedule_and_consent",
+      "owner": "Village",
+      "rule": "Exclusive NPC reservations and consent are checked before Builder/Emergence activities."
+    },
+    {
+      "system": "farm_hydrology",
+      "owner": "Farming",
+      "rule": "Daily water and crop state are authoritative; building capture and regional habitat only consume agreed bounded summaries."
+    },
+    {
+      "system": "save_and_replay",
+      "owner": "Principal",
+      "rule": "Domain states roundtrip via assembled game save; previews have no side effects and receipts are replay-idempotent."
+    },
+    {
+      "system": "world_geometry",
+      "owner": "Valley/Principal integration",
+      "rule": "Construction placement and canoe route queries use stable world coordinates and revisioned occupancy, without unapproved valley edits."
+    }
+  ],
+  "overlaps": [
+    {
+      "id": "X-01",
+      "builder_id": "EB-B-004",
+      "emergence_id": "EB-E-002",
+      "title": "Roof cisterns versus regional watershed",
+      "authority": "Construction owns roof geometry and finite cistern water ledger; Emergence owns river segments, habitat, fish migration and catch limits.",
+      "interface_contract": "Farming hydrology exports immutable daily runoff; water transferred to cistern is debited from a single rainfall source.",
+      "invariant": "A rainfall event cannot credit both roof cistern and river without partition; daily inflow equals cistern capture plus ground runoff plus loss.",
+      "acceptance": "Native two-year rainfall replay with roof and river adapters must prove partition and save/load conservation.",
+      "approval": "pending_principal_review"
+    },
+    {
+      "id": "X-02",
+      "builder_id": "EB-B-008",
+      "emergence_id": "EB-E-010",
+      "title": "Construction crews versus community chores",
+      "authority": "Construction owns project sites, material debits and builder payroll; Emergence owns nonconstruction NPC chore commitments and results.",
+      "interface_contract": "Village owns NPC schedule, consent and fatigue; both request exclusive time-slot reservation through Village.",
+      "invariant": "One NPC cannot perform a paid build shift and harvest chore in the same exclusive time slot; wage and reward receipts idempotent.",
+      "acceptance": "Simultaneous crew and chore requests resolve deterministically with no duplicate wages or tasks.",
+      "approval": "pending_principal_review"
+    },
+    {
+      "id": "X-03",
+      "builder_id": "EB-B-005",
+      "emergence_id": "EB-E-003",
+      "title": "Room comfort versus private letters",
+      "authority": "Construction owns room topology, privacy and warmth; Emergence owns letter provenance, confidential promises and delivery state.",
+      "interface_contract": "Village alone owns NPC relationships and permission to enter private spaces; letters may query privacy status read-only.",
+      "invariant": "Room comfort cannot create a promise or override consent; private letters cannot change structural geometry.",
+      "acceptance": "Consent withdrawal, room relocation and letter replay must preserve confidential state and valid NPC routes.",
+      "approval": "pending_principal_review"
+    },
+    {
+      "id": "X-04",
+      "builder_id": "EB-B-010",
+      "emergence_id": "EB-E-001",
+      "title": "Climate homes versus world event director",
+      "authority": "Construction owns insulation, maintenance, weather wear and repair costs; Emergence owns general causal event eligibility and consequence journal.",
+      "interface_contract": "Principal provides authoritative weather/day_epoch; event adapter may request bounded damage through Construction command gateway.",
+      "invariant": "No duplicate storm damage, no hidden mutation on preview and no unbounded daily activation cascade.",
+      "acceptance": "Repeat seeded storm day with save/reload and event replay; one repair receipt and one weathering receipt.",
+      "approval": "pending_principal_review"
+    },
+    {
+      "id": "X-05",
+      "builder_id": "EB-B-010",
+      "emergence_id": "EB-E-007",
+      "title": "Climate homes versus evolving rituals",
+      "authority": "Construction owns home thermal/weather response; Emergence owns community rituals and participation consequences.",
+      "interface_contract": "Village owns festival dates, NPC invitations and consent; Emergence ritual may query house readiness read-only.",
+      "invariant": "No automatic housing modifications from ritual participation; annual fixed festivals remain authoritative.",
+      "acceptance": "Two-year winter house-warming ritual cannot trigger twice or change house structure without a build command.",
+      "approval": "pending_principal_review"
+    },
+    {
+      "id": "X-06",
+      "builder_id": "EB-B-007",
+      "emergence_id": "EB-E-008",
+      "title": "Architectural blueprints versus textile patterns",
+      "authority": "Construction owns structural graph templates and bill-of-materials; Emergence owns bounded textile motif grids and dye recipes.",
+      "interface_contract": "Inventory owns fabric and wood material debit; template catalog IDs are typed and namespaced.",
+      "invariant": "Textile motif import must never instantiate building components or mint materials; blueprints remain plans, not resource containers.",
+      "acceptance": "Cross-type import rejects invalid template with unchanged inventory and persisted state.",
+      "approval": "pending_principal_review"
+    },
+    {
+      "id": "X-07",
+      "builder_id": "EB-B-002",
+      "emergence_id": "EB-E-009",
+      "title": "Terrain foundations versus canoe routes",
+      "authority": "Construction owns foundation footprints and terrain protection; Emergence owns boat route graph and dock travel commands.",
+      "interface_contract": "Valley owns canonical water geometry and occupancy; both request read-only geometry revision.",
+      "invariant": "New foundation cannot silently block all accessible boat routes or modify a protected farm plot; invalid placement returns reasons.",
+      "acceptance": "A shoreline pier plan is rejected or adapted when it would eliminate all safe mooring routes.",
+      "approval": "pending_principal_review"
+    },
+    {
+      "id": "X-08",
+      "builder_id": "EB-B-009",
+      "emergence_id": "EB-E-004",
+      "title": "Salvage refunds versus caravan trades",
+      "authority": "Construction owns salvage provenance, dependency-safe demolition and recoverable component quality; Emergence owns finite caravan inventory and trade escrow.",
+      "interface_contract": "Principal inventory/economy service is sole authority for item ownership and currency; caravan may only trade already-minted salvaged goods.",
+      "invariant": "No duplicate refunds after demolition, no sale of pending salvage and no negative escrow during delayed caravan settlement.",
+      "acceptance": "Replay demolition plus caravan trade twice and verify exact conserved material, gold and receipt IDs.",
+      "approval": "pending_principal_review"
+    }
+  ],
+  "phase_gate": {
+    "phaseA": "Twenty documented concepts and eight explicit overlap contracts; joint mechanical tests required, then Principal acceptance before expansion.",
+    "phaseB": "After explicit Phase-A acceptance, Builder EB-B-011..110 and Emergence EB-E-011..110 add 200 fully scoped unique ideas.",
+    "phaseC": "Only after all 220 specs pass review and exact-head evidence, begin prioritized native Godot gameplay implementation.",
+    "godot_first": true,
+    "no_codex": true,
+    "no_unapproved_spend": true,
+    "no_engine_port_before_baseline": true
+  }
+}
