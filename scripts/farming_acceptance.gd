@@ -161,7 +161,7 @@ func _run() -> void:
     paddock_snapshot["__paddocks__"][1]["forage"] = 900
     animals.load_state(paddock_snapshot)
     _check(int(animals.paddocks[0]["forage"]) == 0, "negative saved pasture clamped")
-    _check(int(animals.paddocks[1]["forage"]) == animals.PADDOCK_CAPACITY,
+    _check(int(animals.paddocks[1]["forage"]) == 7,
         "oversized saved pasture clamped")
 
     # In winter or rain no free grazing is available; failed care must be atomic.
@@ -192,8 +192,8 @@ func _run() -> void:
     var compost_before: int = int(host.inventory.get("compost", 0))
     for i in range(3):
         _check("Hazel Hen" in animals.act(hen_position), "barn care advances compost ledger")
-        _check(not ("Hazel Hen" in animals.act(hen_position) and
-            not ("already been cared" in animals.act(hen_position))),
+        var second_care: String = animals.act(hen_position)
+        _check("already been cared" in second_care,
             "compost interactions remain day-gated")
         host.advance_day()
         animals.next_day()
