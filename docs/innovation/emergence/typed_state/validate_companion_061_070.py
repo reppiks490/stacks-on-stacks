@@ -194,7 +194,8 @@ def audit(data):
         assert f["save_namespace"] == f"emergence.eb_e_{n}"
         assert set(f["source_field_mapping"]) == set(f["source_fields"])
         assert set(f["source_field_mapping"].values()).issubset(set(f["fields"]))
-        assert len(f["player_verbs"]) >= 4 and all(str(n) in verb for verb in f["player_verbs"])
+        assert len(f["player_verbs"]) >= 4 and len(set(f["player_verbs"])) == len(f["player_verbs"])
+        assert any(f["title"].lower().split()[0] in verb for verb in f["player_verbs"])
         assert f["source_projection_blocker"] if n == 69 else f["source_projection_blocker"] is None
         assert f["performance_budget"]["status"] == "proposed_not_measured"
         assert set(f["controls"]) == {"keyboard_mouse", "controller", "touch", "accessibility"}
