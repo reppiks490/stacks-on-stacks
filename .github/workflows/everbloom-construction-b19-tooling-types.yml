@@ -1,0 +1,28 @@
+name: EVERBLOOM Construction B19 tooling typed-state design QA
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/typed_state/tooling_091_100.json'
+      - 'docs/innovation/construction/typed_state/validate_tooling_091_100.py'
+      - 'docs/innovation/construction/typed_state/TOOLING_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-construction-b19-tooling-types.yml'
+permissions:
+  contents: read
+jobs:
+  tooling-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact checked-out HEAD
+        run: |
+          echo "TOOLING_CONTRACT_HEAD=$(git rev-parse HEAD)"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Compile validator
+        run: python -m py_compile docs/innovation/construction/typed_state/validate_tooling_091_100.py
+      - name: Validate B091-B100 typed states and adversarial mutations
+        run: python docs/innovation/construction/typed_state/validate_tooling_091_100.py
