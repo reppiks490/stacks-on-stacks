@@ -10,6 +10,7 @@ const LABELS := {
         "talks": "Conversations", "gifts": "Gifts", "jobs": "Work shifts",
         "festivals": "Festival visits", "last_gift": "Last gift",
         "recollections": "Recollections", "none": "none yet",
+        "history": "Conversations remembered", "day": "Day %d",
         "open_tip": "Open journal: L, controller Back, or tap",
         "close_tip": "Return to the valley: Escape, L or controller Back",
         "locale_tip": "Change journal and conditional dialogue language"
@@ -22,6 +23,7 @@ const LABELS := {
         "talks": "Conversaciones", "gifts": "Regalos", "jobs": "Turnos",
         "festivals": "Visitas a festivales", "last_gift": "Último regalo",
         "recollections": "Recuerdos", "none": "ninguno",
+        "history": "Conversaciones recordadas", "day": "Día %d",
         "open_tip": "Abrir diario: L, botón Atrás del mando o tocar",
         "close_tip": "Volver al valle: Escape, L o botón Atrás",
         "locale_tip": "Cambiar el idioma del diario y del diálogo condicional"
@@ -37,6 +39,8 @@ var title_label: Label
 var hint_label: Label
 var footer_label: Label
 var selected_label: Label
+var history_title: Label
+var history_text: RichTextLabel
 var scroll_area: ScrollContainer
 var cards: Array[Button] = []
 var selected_index: int = 0
@@ -126,6 +130,18 @@ func setup(owner) -> void:
     entries.add_theme_constant_override("separation", 10)
     scroll_area.add_child(entries)
 
+    history_title = Label.new()
+    history_title.name = "ConversationHistoryTitle"
+    layout.add_child(history_title)
+    history_text = RichTextLabel.new()
+    history_text.name = "EarnedConversationHistory"
+    history_text.custom_minimum_size.y = 125.0
+    history_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    history_text.scroll_active = true
+    history_text.selection_enabled = true
+    history_text.focus_mode = Control.FOCUS_ALL
+    layout.add_child(history_text)
+
     footer_label = Label.new()
     footer_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     layout.add_child(footer_label)
@@ -142,6 +158,7 @@ func _update_labels() -> void:
     language_button.tooltip_text = _t("locale_tip")
     hint_label.text = _t("hint")
     footer_label.text = _t("footer")
+    history_title.text = _t("history")
 
 func _card_text(record: Dictionary) -> String:
     var last_gift: String = str(record["last_gift_item"])
@@ -188,9 +205,16 @@ func _update_selection_label() -> void:
         return
     var records: Array = village.social_recap()
     if selected_index >= 0 and selected_index < records.size():
-        selected_label.text = _t("selected") % str(records[selected_index]["name"])
+        var selected: Dictionary = records[selected_index]
+        selected_label.text = _t("selected") % str(selected["name"])
+        var lines: Array[String] = []
+        for entry in selected.get("dialogue_log", []):
+            lines.append("%s [%s] — %s" % [
+                _t("day") % int(entry["epoch"]), str(entry["locale"]), str(entry["text"])])
+        history_text.text = "\n\n".join(lines) if not lines.is_empty() else _t("none")
     else:
         selected_label.text = ""
+        history_text.text = _t("none")
 
 func _on_card_focus(index: int) -> void:
     if index < 0 or index >= cards.size():
