@@ -6,6 +6,7 @@ on:
       - 'scripts/hud.gd'
       - 'scripts/principal_save_health_panel.gd'
       - 'scripts/principal_save_health_panel_acceptance.gd'
+      - 'docs/PRINCIPAL_P12_SAVE_HEALTH_ACCESSIBILITY.md'
       - '.github/workflows/everbloom-principal-save-health-ui.yml'
 permissions:
   contents: read
