@@ -98,14 +98,50 @@ static func validate_payload(payload: Dictionary) -> bool:
     for record in field_records:
         if typeof(record) != TYPE_DICTIONARY:
             return false
+        var soil: Dictionary = record
+        for attribute: String in ["tilled", "watered"]:
+            if soil.has(attribute) and typeof(soil[attribute]) != TYPE_BOOL:
+                return false
+        for attribute: String in ["crop", "last_family"]:
+            if soil.has(attribute) and typeof(soil[attribute]) != TYPE_STRING:
+                return false
+        for attribute: String in ["age", "watered_days", "moisture", "fertility",
+                                  "weeds", "stress", "rotation_bonus", "seed_vigor"]:
+            if soil.has(attribute) and not _whole_in_range(soil[attribute], 0.0, MAX_SAFE_INTEGER):
+                return false
+        if soil.has("last_harvest_epoch") and not _whole_in_range(
+                soil["last_harvest_epoch"], -1.0, MAX_SAFE_INTEGER):
+            return false
+
     var villagers: Variant = payload.get("village", null)
     if typeof(villagers) != TYPE_DICTIONARY:
         return false
+    var social_state: Dictionary = villagers
+    for attribute: String in ["affection", "talked", "gifted"]:
+        if not social_state.has(attribute):
+            continue
+        if typeof(social_state[attribute]) != TYPE_DICTIONARY:
+            return false
+        var values: Dictionary = social_state[attribute]
+        for rid in values:
+            var lower_bound: float = 0.0 if attribute == "affection" else -1.0
+            var upper_bound: float = 1000.0 if attribute == "affection" else MAX_SAFE_INTEGER
+            if not _whole_in_range(values[rid], lower_bound, upper_bound):
+                return false
+
     var livestock: Variant = payload.get("animals", null)
     if typeof(livestock) != TYPE_DICTIONARY:
         return false
     for id in livestock:
         if typeof(livestock[id]) != TYPE_DICTIONARY:
+            return false
+        var animal: Dictionary = livestock[id]
+        for attribute: String in ["bond", "happiness", "health", "hunger", "cleanliness",
+                                  "production_counter", "neglect_days"]:
+            if animal.has(attribute) and not _whole_in_range(animal[attribute], 0.0, MAX_SAFE_INTEGER):
+                return false
+        if animal.has("last_care") and not _whole_in_range(
+                animal["last_care"], -1.0, MAX_SAFE_INTEGER):
             return false
 
     var position: Variant = payload.get("hero_position", null)
