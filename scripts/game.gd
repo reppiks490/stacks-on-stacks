@@ -295,7 +295,10 @@ func load_game() -> void:
     year = maxi(1, int(content.get("year", 1)))
     day = clampi(int(content.get("day", 1)), 1, 14)
     season_index = clampi(int(content.get("season", 0)), 0, 3)
-    minute_of_day = clampf(float(content.get("minute", 360.0)), 360.0, 1319.0)
+    # SaveService has already validated a finite schema-1 minute in [0, 1440].
+    # Preserve pre-dawn and bedtime legacy saves exactly; the next _process tick
+    # advances time or sleeps as usual, but loading itself must not rewrite it.
+    minute_of_day = float(content.get("minute", 360.0))
     weather = str(content.get("weather", "Clear"))
     gold = maxi(0, int(content.get("gold", 0)))
     energy = clampf(float(content.get("energy", 100.0)), 0.0, 100.0)
