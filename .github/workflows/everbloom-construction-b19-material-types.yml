@@ -1,0 +1,23 @@
+name: EVERBLOOM Construction B19 material-state offline contract QA
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/typed_state/material_051_060.json'
+      - 'docs/innovation/construction/typed_state/validate_material_051_060.py'
+      - 'docs/innovation/construction/typed_state/MATERIAL_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-construction-b19-material-types.yml'
+permissions:
+  contents: read
+jobs:
+  material-state-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile validator
+        run: python -m py_compile docs/innovation/construction/typed_state/validate_material_051_060.py
+      - name: Validate ten typed contracts and hostile states
+        run: python docs/innovation/construction/typed_state/validate_material_051_060.py
