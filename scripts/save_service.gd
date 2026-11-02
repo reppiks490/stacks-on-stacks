@@ -82,8 +82,13 @@ static func validate_payload(payload: Dictionary) -> bool:
     for counter: String in ["care_actions", "crops_harvested"]:
         if payload.has(counter) and not _whole_in_range(payload[counter], 0.0, MAX_SAFE_INTEGER):
             return false
-    if payload.has("social_contacts") and typeof(payload["social_contacts"]) != TYPE_DICTIONARY:
-        return false
+    if payload.has("social_contacts"):
+        if typeof(payload["social_contacts"]) != TYPE_DICTIONARY:
+            return false
+        var contacts: Dictionary = payload["social_contacts"]
+        for rid in contacts:
+            if typeof(contacts[rid]) != TYPE_BOOL:
+                return false
 
     var items: Variant = payload.get("inventory", null)
     if typeof(items) != TYPE_DICTIONARY:
