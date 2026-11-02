@@ -5,6 +5,7 @@ on:
       - 'docs/innovation/construction/snapshots/**'
       - 'docs/innovation/construction/PHASEA_CROSS_LOOP_CONTRACT.json'
       - 'docs/innovation/construction/validate_phaseA_joint.py'
+      - 'docs/innovation/construction/PHASEA_JOINT_REVIEW.md'
       - '.github/workflows/everbloom-phaseA-joint-audit.yml'
 permissions:
   contents: read
