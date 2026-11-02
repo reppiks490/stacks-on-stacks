@@ -1,0 +1,2296 @@
+{
+  "schema_version": 2,
+  "project": "EVERBLOOM: The Living Valley",
+  "phase": "Phase B typed design only — Phase C CLOSED",
+  "owner": "Emergence E03/E16/E18",
+  "source_branch": "game/everbloom-emergence-phaseB-100-20261102",
+  "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+  "count": 10,
+  "contracts": [
+    {
+      "id": "EB-E-101",
+      "title": "Shared Tool Queue",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "tool_id",
+        "queue",
+        "slot_epoch",
+        "release_receipts"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.101",
+      "status": "design_only_not_playable",
+      "player_scenario": "Reserve scarce shared farm tools with villagers using fair first-come windows",
+      "player_verbs": [
+        "reserve_shared_tool_queue",
+        "preview_shared_tool_queue",
+        "confirm_shared_tool_queue",
+        "review_shared_tool_queue",
+        "cancel_shared_tool_queue"
+      ],
+      "source_rule": "One unique tool has one user per time slot; canceled booking releases it",
+      "negative_case": "Double booking cannot award two simultaneous users",
+      "fields": {
+        "tool_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "queue": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "booking_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "actor_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "start_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              },
+              "end_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              },
+              "status": {
+                "kind": "enum",
+                "values": [
+                  "reserved",
+                  "cancelled",
+                  "completed"
+                ]
+              }
+            }
+          }
+        },
+        "slot_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "release_receipts": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "booking_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "tool_id": "",
+          "queue": [],
+          "slot_epoch": -1,
+          "release_receipts": [],
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "tool_id": "shared-hoe",
+          "queue": [
+            {
+              "booking_id": "booking-a",
+              "actor_id": "npc-a",
+              "start_epoch": 57,
+              "end_epoch": 57,
+              "status": "completed"
+            },
+            {
+              "booking_id": "booking-b",
+              "actor_id": "npc-b",
+              "start_epoch": 58,
+              "end_epoch": 58,
+              "status": "cancelled"
+            }
+          ],
+          "slot_epoch": 57,
+          "release_receipts": [
+            {
+              "booking_id": "booking-b",
+              "receipt_id": "release-b",
+              "day_epoch": 57
+            }
+          ],
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-101",
+              "expected_revision": 0,
+              "effect_digest": "effect-101",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Shared Tool Queue; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Reserve scarce shared farm tools with villagers using fair first-come windows; verify rule: One unique tool has one user per time slot; canceled booking releases it.",
+        "adversarial": "Double booking cannot award two simultaneous users",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-102",
+      "title": "Community Search Grid",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "search_id",
+        "volunteers",
+        "cells",
+        "find_receipt"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.102",
+      "status": "design_only_not_playable",
+      "player_scenario": "Organize volunteers to search for a missing keepsake without teleporting NPCs",
+      "player_verbs": [
+        "organize_community_search_grid",
+        "preview_community_search_grid",
+        "confirm_community_search_grid",
+        "review_community_search_grid",
+        "cancel_community_search_grid"
+      ],
+      "source_rule": "Distinct search cells assigned once; NPC schedule and consent remain authoritative",
+      "negative_case": "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route",
+      "fields": {
+        "search_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "volunteers": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "consent": {
+                "kind": "boolean"
+              },
+              "available": {
+                "kind": "boolean"
+              }
+            }
+          }
+        },
+        "cells": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "cell_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "assigned_npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "status": {
+                "kind": "enum",
+                "values": [
+                  "assigned",
+                  "searched",
+                  "found"
+                ]
+              }
+            }
+          }
+        },
+        "find_receipt": {
+          "kind": "object",
+          "properties": {
+            "receipt_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "cell_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "day_epoch": {
+              "kind": "integer",
+              "minimum": 1,
+              "maximum": 9000000000
+            },
+            "verified": {
+              "kind": "boolean"
+            }
+          },
+          "nullable": true
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "search_id": "",
+          "volunteers": [],
+          "cells": [],
+          "find_receipt": null,
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "search_id": "search-a",
+          "volunteers": [
+            {
+              "npc_id": "npc-a",
+              "consent": true,
+              "available": true
+            },
+            {
+              "npc_id": "npc-b",
+              "consent": true,
+              "available": true
+            }
+          ],
+          "cells": [
+            {
+              "cell_id": "cell-a",
+              "assigned_npc_id": "npc-a",
+              "status": "found"
+            },
+            {
+              "cell_id": "cell-b",
+              "assigned_npc_id": "npc-b",
+              "status": "searched"
+            }
+          ],
+          "find_receipt": {
+            "receipt_id": "find-a",
+            "cell_id": "cell-a",
+            "day_epoch": 57,
+            "verified": true
+          },
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-102",
+              "expected_revision": 0,
+              "effect_digest": "effect-102",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Community Search Grid; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Organize volunteers to search for a missing keepsake without teleporting NPCs; verify rule: Distinct search cells assigned once; NPC schedule and consent remain authoritative.",
+        "adversarial": "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-103",
+      "title": "Care Network Check-in",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "resident_id",
+        "requests",
+        "volunteer_slots",
+        "care_receipts"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.103",
+      "status": "design_only_not_playable",
+      "player_scenario": "Coordinate optional nonintrusive help for residents during difficult seasons",
+      "player_verbs": [
+        "coordinate_care_network_check_in",
+        "preview_care_network_check_in",
+        "confirm_care_network_check_in",
+        "review_care_network_check_in",
+        "cancel_care_network_check_in"
+      ],
+      "source_rule": "Help requires consent and bounded volunteer capacity; declining has no penalty",
+      "negative_case": "Spam check-ins cannot farm friendship indefinitely",
+      "fields": {
+        "resident_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "requests": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "request_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "consent": {
+                "kind": "boolean"
+              },
+              "status": {
+                "kind": "enum",
+                "values": [
+                  "open",
+                  "accepted",
+                  "declined",
+                  "completed"
+                ]
+              }
+            }
+          }
+        },
+        "volunteer_slots": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "slot_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "request_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              },
+              "consent": {
+                "kind": "boolean"
+              }
+            }
+          }
+        },
+        "care_receipts": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "request_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "slot_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "resident_id": "",
+          "requests": [],
+          "volunteer_slots": [],
+          "care_receipts": [],
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "resident_id": "npc-elder",
+          "requests": [
+            {
+              "request_id": "request-a",
+              "consent": true,
+              "status": "completed"
+            },
+            {
+              "request_id": "request-b",
+              "consent": true,
+              "status": "declined"
+            }
+          ],
+          "volunteer_slots": [
+            {
+              "slot_id": "slot-a",
+              "request_id": "request-a",
+              "npc_id": "npc-helper",
+              "epoch": 57,
+              "consent": true
+            }
+          ],
+          "care_receipts": [
+            {
+              "receipt_id": "care-a",
+              "request_id": "request-a",
+              "slot_id": "slot-a",
+              "day_epoch": 57
+            }
+          ],
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-103",
+              "expected_revision": 0,
+              "effect_digest": "effect-103",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Care Network Check-in; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Coordinate optional nonintrusive help for residents during difficult seasons; verify rule: Help requires consent and bounded volunteer capacity; declining has no penalty.",
+        "adversarial": "Spam check-ins cannot farm friendship indefinitely",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-104",
+      "title": "Accessible Puzzle Partner",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "puzzle_id",
+        "partner_id",
+        "hint_level",
+        "completion"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.104",
+      "status": "design_only_not_playable",
+      "player_scenario": "Invite an NPC to provide hints or alternate controls for a difficult world puzzle",
+      "player_verbs": [
+        "invite_accessible_puzzle_partner",
+        "preview_accessible_puzzle_partner",
+        "confirm_accessible_puzzle_partner",
+        "review_accessible_puzzle_partner",
+        "cancel_accessible_puzzle_partner"
+      ],
+      "source_rule": "Hints preserve the same puzzle outcome; accessibility never costs extra gold",
+      "negative_case": "Repeated hint cannot award repeated completion",
+      "fields": {
+        "puzzle_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "partner_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "hint_level": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "completion": {
+          "kind": "object",
+          "properties": {
+            "receipt_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "completed": {
+              "kind": "boolean"
+            },
+            "day_epoch": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 9000000000
+            },
+            "method": {
+              "kind": "enum",
+              "values": [
+                "none",
+                "manual",
+                "hinted",
+                "accessible"
+              ]
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "puzzle_id": "",
+          "partner_id": "",
+          "hint_level": 0,
+          "completion": {
+            "receipt_id": "",
+            "completed": false,
+            "day_epoch": -1,
+            "method": "none"
+          },
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "puzzle_id": "puzzle-a",
+          "partner_id": "npc-a",
+          "hint_level": 2,
+          "completion": {
+            "receipt_id": "puzzle-finish-a",
+            "completed": true,
+            "day_epoch": 57,
+            "method": "accessible"
+          },
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-104",
+              "expected_revision": 0,
+              "effect_digest": "effect-104",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Accessible Puzzle Partner; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Invite an NPC to provide hints or alternate controls for a difficult world puzzle; verify rule: Hints preserve the same puzzle outcome; accessibility never costs extra gold.",
+        "adversarial": "Repeated hint cannot award repeated completion",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-105",
+      "title": "Chore Preference Auction",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "job_id",
+        "bids",
+        "assignments",
+        "compensation"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.105",
+      "status": "design_only_not_playable",
+      "player_scenario": "Let consenting NPCs choose tasks matching their skills, time and preferences",
+      "player_verbs": [
+        "let_chore_preference_auction",
+        "preview_chore_preference_auction",
+        "confirm_chore_preference_auction",
+        "review_chore_preference_auction",
+        "cancel_chore_preference_auction"
+      ],
+      "source_rule": "Assignments are fair and bounded by Village schedule; no unpaid forced labor",
+      "negative_case": "Same NPC cannot accept conflicting chores",
+      "fields": {
+        "job_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "bids": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "bid_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "consent": {
+                "kind": "boolean"
+              },
+              "requested_minutes": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 480
+              },
+              "skill_id": {
+                "kind": "string",
+                "max_length": 128
+              }
+            }
+          }
+        },
+        "assignments": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "assignment_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "bid_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "start_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              },
+              "end_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        },
+        "compensation": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "assignment_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "units": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "paid": {
+                "kind": "boolean"
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "job_id": "",
+          "bids": [],
+          "assignments": [],
+          "compensation": [],
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "job_id": "job-a",
+          "bids": [
+            {
+              "bid_id": "bid-a",
+              "npc_id": "npc-a",
+              "consent": true,
+              "requested_minutes": 60,
+              "skill_id": "cooking"
+            },
+            {
+              "bid_id": "bid-b",
+              "npc_id": "npc-b",
+              "consent": true,
+              "requested_minutes": 60,
+              "skill_id": "weaving"
+            }
+          ],
+          "assignments": [
+            {
+              "assignment_id": "assignment-a",
+              "bid_id": "bid-a",
+              "npc_id": "npc-a",
+              "start_epoch": 57,
+              "end_epoch": 57
+            },
+            {
+              "assignment_id": "assignment-b",
+              "bid_id": "bid-b",
+              "npc_id": "npc-b",
+              "start_epoch": 57,
+              "end_epoch": 57
+            }
+          ],
+          "compensation": [
+            {
+              "assignment_id": "assignment-a",
+              "receipt_id": "wage-a",
+              "units": 10,
+              "paid": true
+            }
+          ],
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-105",
+              "expected_revision": 0,
+              "effect_digest": "effect-105",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Chore Preference Auction; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Let consenting NPCs choose tasks matching their skills, time and preferences; verify rule: Assignments are fair and bounded by Village schedule; no unpaid forced labor.",
+        "adversarial": "Same NPC cannot accept conflicting chores",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-106",
+      "title": "Seasonal Volunteer Rota",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "rota_id",
+        "slots",
+        "volunteer_consents",
+        "completion"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.106",
+      "status": "design_only_not_playable",
+      "player_scenario": "Plan recurring community stewardship shifts with opt-in substitutions; confirm a replacement volunteer without overlapping work assignments",
+      "player_verbs": [
+        "plan_seasonal_volunteer_rota",
+        "preview_seasonal_volunteer_rota",
+        "confirm_seasonal_volunteer_rota",
+        "review_seasonal_volunteer_rota",
+        "cancel_seasonal_volunteer_rota"
+      ],
+      "source_rule": "Each volunteer works at most one conflicting slot; missed shifts reschedule safely",
+      "negative_case": "Year rollover cannot duplicate weekly rewards",
+      "fields": {
+        "rota_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "slots": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "slot_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              },
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "status": {
+                "kind": "enum",
+                "values": [
+                  "planned",
+                  "missed",
+                  "completed"
+                ]
+              }
+            }
+          }
+        },
+        "volunteer_consents": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "consent": {
+                "kind": "boolean"
+              },
+              "valid_until_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        },
+        "completion": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "slot_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "rota_id": "",
+          "slots": [],
+          "volunteer_consents": [],
+          "completion": [],
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "rota_id": "rota-a",
+          "slots": [
+            {
+              "slot_id": "slot-a",
+              "epoch": 57,
+              "npc_id": "npc-a",
+              "status": "completed"
+            },
+            {
+              "slot_id": "slot-b",
+              "epoch": 58,
+              "npc_id": "npc-b",
+              "status": "planned"
+            }
+          ],
+          "volunteer_consents": [
+            {
+              "npc_id": "npc-a",
+              "consent": true,
+              "valid_until_epoch": 112
+            },
+            {
+              "npc_id": "npc-b",
+              "consent": true,
+              "valid_until_epoch": 112
+            }
+          ],
+          "completion": [
+            {
+              "slot_id": "slot-a",
+              "receipt_id": "rota-done-a",
+              "day_epoch": 57
+            }
+          ],
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-106",
+              "expected_revision": 0,
+              "effect_digest": "effect-106",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Seasonal Volunteer Rota; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Plan recurring community stewardship shifts with opt-in substitutions; verify rule: Each volunteer works at most one conflicting slot; missed shifts reschedule safely.; confirm a replacement volunteer without overlapping work assignments",
+        "adversarial": "Year rollover cannot duplicate weekly rewards",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-107",
+      "title": "Emergency Signal Chain",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "alert_id",
+        "relay_graph",
+        "acknowledgments",
+        "expiry"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.107",
+      "status": "design_only_not_playable",
+      "player_scenario": "Create a village-wide noncombat warning relay for a sudden weather event; check each recipient acknowledges no more than one copy of the alert",
+      "player_verbs": [
+        "create_emergency_signal_chain",
+        "preview_emergency_signal_chain",
+        "confirm_emergency_signal_chain",
+        "review_emergency_signal_chain",
+        "cancel_emergency_signal_chain"
+      ],
+      "source_rule": "Each notification propagates once; recipients may acknowledge or opt out",
+      "negative_case": "Cycle in relay graph cannot cause infinite event storm",
+      "fields": {
+        "alert_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "relay_graph": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "source_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "target_id": {
+                "kind": "string",
+                "max_length": 128
+              }
+            }
+          }
+        },
+        "acknowledgments": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "status": {
+                "kind": "enum",
+                "values": [
+                  "acknowledged",
+                  "opted_out"
+                ]
+              }
+            }
+          }
+        },
+        "expiry": {
+          "kind": "object",
+          "properties": {
+            "created_epoch": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 9000000000
+            },
+            "expires_epoch": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 9000000000
+            },
+            "delivered_ids": {
+              "kind": "array",
+              "max_items": 32,
+              "items": {
+                "kind": "string",
+                "max_length": 128
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "alert_id": "",
+          "relay_graph": [],
+          "acknowledgments": [],
+          "expiry": {
+            "created_epoch": -1,
+            "expires_epoch": -1,
+            "delivered_ids": []
+          },
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "alert_id": "alert-a",
+          "relay_graph": [
+            {
+              "source_id": "tower",
+              "target_id": "npc-a"
+            },
+            {
+              "source_id": "npc-a",
+              "target_id": "npc-b"
+            },
+            {
+              "source_id": "npc-b",
+              "target_id": "tower"
+            }
+          ],
+          "acknowledgments": [
+            {
+              "npc_id": "npc-a",
+              "receipt_id": "ack-a",
+              "status": "acknowledged"
+            },
+            {
+              "npc_id": "npc-b",
+              "receipt_id": "ack-b",
+              "status": "opted_out"
+            }
+          ],
+          "expiry": {
+            "created_epoch": 57,
+            "expires_epoch": 58,
+            "delivered_ids": [
+              "npc-a",
+              "npc-b"
+            ]
+          },
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-107",
+              "expected_revision": 0,
+              "effect_digest": "effect-107",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Emergency Signal Chain; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Create a village-wide noncombat warning relay for a sudden weather event; verify rule: Each notification propagates once; recipients may acknowledge or opt out.; check each recipient acknowledges no more than one copy of the alert",
+        "adversarial": "Cycle in relay graph cannot cause infinite event storm",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-108",
+      "title": "Shared Discovery Field Trip",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "trip_id",
+        "participants",
+        "waypoints",
+        "rest_ledger"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.108",
+      "status": "design_only_not_playable",
+      "player_scenario": "Take a small NPC group on an exploration trip with rest stops and personal goals",
+      "player_verbs": [
+        "take_shared_discovery_field_trip",
+        "preview_shared_discovery_field_trip",
+        "confirm_shared_discovery_field_trip",
+        "review_shared_discovery_field_trip",
+        "cancel_shared_discovery_field_trip"
+      ],
+      "source_rule": "Group movement respects reachable waypoints and member fatigue",
+      "negative_case": "Reload cannot teleport group or erase fatigue",
+      "fields": {
+        "trip_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "participants": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "consent": {
+                "kind": "boolean"
+              },
+              "fatigue": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "position_id": {
+                "kind": "string",
+                "max_length": 128
+              }
+            }
+          }
+        },
+        "waypoints": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "waypoint_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "reachable": {
+                "kind": "boolean"
+              },
+              "rest_available": {
+                "kind": "boolean"
+              }
+            }
+          }
+        },
+        "rest_ledger": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "waypoint_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "fatigue_recovered": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 30
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "trip_id": "",
+          "participants": [],
+          "waypoints": [],
+          "rest_ledger": [],
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "trip_id": "trip-a",
+          "participants": [
+            {
+              "npc_id": "npc-a",
+              "consent": true,
+              "fatigue": 40,
+              "position_id": "camp"
+            },
+            {
+              "npc_id": "npc-b",
+              "consent": true,
+              "fatigue": 20,
+              "position_id": "camp"
+            }
+          ],
+          "waypoints": [
+            {
+              "waypoint_id": "camp",
+              "reachable": true,
+              "rest_available": true
+            },
+            {
+              "waypoint_id": "ridge",
+              "reachable": true,
+              "rest_available": false
+            }
+          ],
+          "rest_ledger": [
+            {
+              "receipt_id": "rest-a",
+              "npc_id": "npc-a",
+              "waypoint_id": "camp",
+              "fatigue_recovered": 10,
+              "day_epoch": 57
+            }
+          ],
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-108",
+              "expected_revision": 0,
+              "effect_digest": "effect-108",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Shared Discovery Field Trip; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Take a small NPC group on an exploration trip with rest stops and personal goals; verify rule: Group movement respects reachable waypoints and member fatigue.",
+        "adversarial": "Reload cannot teleport group or erase fatigue",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-109",
+      "title": "Neighborhood Exchange Mentor",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "mentor_pair",
+        "lesson_plan",
+        "consent",
+        "progress"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.109",
+      "status": "design_only_not_playable",
+      "player_scenario": "Match residents who wish to teach and learn practical nonconstruction skills",
+      "player_verbs": [
+        "match_neighborhood_exchange_mentor",
+        "preview_neighborhood_exchange_mentor",
+        "confirm_neighborhood_exchange_mentor",
+        "review_neighborhood_exchange_mentor",
+        "cancel_neighborhood_exchange_mentor"
+      ],
+      "source_rule": "Both parties consent; lesson receipts cap progression and prevent circular skill minting",
+      "negative_case": "Reciprocal teaching loop cannot grant infinite mastery",
+      "fields": {
+        "mentor_pair": {
+          "kind": "object",
+          "properties": {
+            "mentor_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "learner_id": {
+              "kind": "string",
+              "max_length": 128
+            }
+          }
+        },
+        "lesson_plan": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "lesson_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "skill_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              },
+              "minutes": {
+                "kind": "integer",
+                "minimum": 10,
+                "maximum": 120
+              }
+            }
+          }
+        },
+        "consent": {
+          "kind": "object",
+          "properties": {
+            "mentor": {
+              "kind": "boolean"
+            },
+            "learner": {
+              "kind": "boolean"
+            },
+            "epoch": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 9000000000
+            }
+          }
+        },
+        "progress": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "lesson_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "units": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 2
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "mentor_pair": {
+            "mentor_id": "",
+            "learner_id": ""
+          },
+          "lesson_plan": [],
+          "consent": {
+            "mentor": false,
+            "learner": false,
+            "epoch": -1
+          },
+          "progress": [],
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "mentor_pair": {
+            "mentor_id": "npc-a",
+            "learner_id": "npc-b"
+          },
+          "lesson_plan": [
+            {
+              "lesson_id": "lesson-a",
+              "skill_id": "botany",
+              "epoch": 57,
+              "minutes": 45
+            }
+          ],
+          "consent": {
+            "mentor": true,
+            "learner": true,
+            "epoch": 57
+          },
+          "progress": [
+            {
+              "lesson_id": "lesson-a",
+              "receipt_id": "lesson-done-a",
+              "units": 1,
+              "day_epoch": 57
+            }
+          ],
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-109",
+              "expected_revision": 0,
+              "effect_digest": "effect-109",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Neighborhood Exchange Mentor; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Match residents who wish to teach and learn practical nonconstruction skills; verify rule: Both parties consent; lesson receipts cap progression and prevent circular skill minting.",
+        "adversarial": "Reciprocal teaching loop cannot grant infinite mastery",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    },
+    {
+      "id": "EB-E-110",
+      "title": "Village Consensus Noticeboard",
+      "mission_ids": [
+        "E03",
+        "E16"
+      ],
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "proposal_id",
+        "revision",
+        "votes",
+        "decision_receipt"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.cooperation.110",
+      "status": "design_only_not_playable",
+      "player_scenario": "Post proposals, receive reasoned feedback and decide whether to revise or withdraw",
+      "player_verbs": [
+        "post_village_consensus_noticeboard",
+        "preview_village_consensus_noticeboard",
+        "confirm_village_consensus_noticeboard",
+        "review_village_consensus_noticeboard",
+        "cancel_village_consensus_noticeboard"
+      ],
+      "source_rule": "Only authorized votes count once; dissent remains visible and outcomes noncoercive",
+      "negative_case": "One NPC cannot cast duplicate ballots; voter identity and proposal revision must prevent replayed ballots",
+      "fields": {
+        "proposal_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "votes": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "npc_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "proposal_revision": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              },
+              "choice": {
+                "kind": "enum",
+                "values": [
+                  "yes",
+                  "no",
+                  "abstain"
+                ]
+              },
+              "consent": {
+                "kind": "boolean"
+              },
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              }
+            }
+          }
+        },
+        "decision_receipt": {
+          "kind": "object",
+          "properties": {
+            "receipt_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "proposal_revision": {
+              "kind": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "outcome": {
+              "kind": "enum",
+              "values": [
+                "adopted",
+                "rejected",
+                "revised",
+                "withdrawn"
+              ]
+            },
+            "day_epoch": {
+              "kind": "integer",
+              "minimum": 1,
+              "maximum": 9000000000
+            }
+          },
+          "nullable": true
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "fixtures": {
+        "empty": {
+          "proposal_id": "",
+          "votes": [],
+          "decision_receipt": null,
+          "revision": 0,
+          "day_epoch": 57,
+          "command_receipts": []
+        },
+        "active": {
+          "proposal_id": "proposal-a",
+          "votes": [
+            {
+              "npc_id": "npc-a",
+              "proposal_revision": 1,
+              "choice": "yes",
+              "consent": true,
+              "receipt_id": "vote-a"
+            },
+            {
+              "npc_id": "npc-b",
+              "proposal_revision": 1,
+              "choice": "no",
+              "consent": true,
+              "receipt_id": "vote-b"
+            }
+          ],
+          "decision_receipt": {
+            "receipt_id": "decision-a",
+            "proposal_revision": 1,
+            "outcome": "revised",
+            "day_epoch": 57
+          },
+          "revision": 1,
+          "day_epoch": 57,
+          "command_receipts": [
+            {
+              "command_id": "cmd-110",
+              "expected_revision": 0,
+              "effect_digest": "effect-110",
+              "day_epoch": 57
+            }
+          ]
+        }
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 45,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cooperative_agency cues, legible iconography and optional original ambient audio for Village Consensus Noticeboard; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "acceptance": {
+        "positive": "In real Godot scene, Post proposals, receive reasoned feedback and decide whether to revise or withdraw; verify rule: Only authorized votes count once; dissent remains visible and outcomes noncoercive.",
+        "adversarial": "One NPC cannot cast duplicate ballots; voter identity and proposal revision must prevent replayed ballots",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests."
+    }
+  ]
+}
