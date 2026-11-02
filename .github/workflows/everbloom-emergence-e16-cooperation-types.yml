@@ -1,0 +1,32 @@
+name: Everbloom E101-E110 cooperative agency design-state validation
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed_state/cooperation_101_110.json'
+      - 'docs/innovation/emergence/typed_state/validate_cooperation_101_110.py'
+      - 'docs/innovation/emergence/typed_state/COOPERATION_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-e16-cooperation-types.yml'
+permissions:
+  contents: read
+jobs:
+  cooperation-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact HEAD and clean source checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          echo "COOPERATION_CONTRACT_HEAD=$GITHUB_SHA"
+      - name: Strict E101-E110 state validation and seeded adversarial tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/innovation/emergence/typed_state/validate_cooperation_101_110.py
+          python docs/innovation/emergence/typed_state/validate_cooperation_101_110.py --self-test
