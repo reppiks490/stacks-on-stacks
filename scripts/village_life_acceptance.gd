@@ -260,6 +260,8 @@ func _run() -> void:
             _check(not str(row["text"]["en"]).is_empty() and not str(row["text"]["es"]).is_empty(), "both languages authored for each branch")
         dialogue_reload.memories[dialogue_id]["jobs"] = 1
         dialogue_reload.affection[dialogue_id] = 80
+        # Test at a genuine scheduled work time, not this resident's rest day.
+        dialogue_host.day = 2 if int(dialogue_reload._profile(dialogue_id).get("rest_day", -1)) == 0 else 1
         dialogue_host.minute_of_day = 600.0
         dialogue_reload.sync_schedule(true)
         var dialogue_line: String = dialogue_reload._conditional_dialogue(dialogue_resident, dialogue_reload._profile(dialogue_id), dialogue_id)
