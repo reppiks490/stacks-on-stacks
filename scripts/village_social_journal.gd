@@ -2,6 +2,7 @@ extends CanvasLayer
 ## V19: first-party read-only social recap, derived from authoritative Village state.
 ## Focusable cards, keyboard/gamepad navigation and bilingual presentation have no save effects.
 const HISTORY_PAGE_SIZE := 3
+const HISTORY_FILTERS := ["all", "en", "es"]
 const TEXT_SCALE_FACTORS := [1.0, 1.25, 1.5]
 const MIN_TOUCH_TARGET := 44.0
 const LABELS := {
@@ -16,6 +17,8 @@ const LABELS := {
         "history": "Conversations remembered", "day": "Day %d",
         "page": "Page %d of %d", "empty_page": "Page 0 of 0",
         "earlier": "Earlier", "later": "Later",
+        "filter_all": "All", "filter_en": "English", "filter_es": "Español",
+        "filter_tip": "Filter spoken history • F or controller D-pad Left",
         "open_tip": "Open journal: L, controller Back, or tap",
         "close_tip": "Return to the valley: Escape, L or controller Back",
         "locale_tip": "Change journal and conditional dialogue language",
@@ -33,6 +36,8 @@ const LABELS := {
         "history": "Conversaciones recordadas", "day": "Día %d",
         "page": "Página %d de %d", "empty_page": "Página 0 de 0",
         "earlier": "Anteriores", "later": "Siguientes",
+        "filter_all": "Todos", "filter_en": "Inglés", "filter_es": "Español",
+        "filter_tip": "Filtrar conversaciones • F o cruceta izquierda",
         "open_tip": "Abrir diario: L, botón Atrás del mando o tocar",
         "close_tip": "Volver al valle: Escape, L o botón Atrás",
         "locale_tip": "Cambiar el idioma del diario y del diálogo condicional",
@@ -54,6 +59,8 @@ var hint_label: Label
 var footer_label: Label
 var selected_label: Label
 var history_title: Label
+var history_filter_button: Button
+var history_filter_index: int = 0
 var history_page_label: Label
 var history_earlier_button: Button
 var history_later_button: Button
@@ -166,9 +173,20 @@ func setup(owner) -> void:
     entries.add_theme_constant_override("separation", 10)
     scroll_area.add_child(entries)
 
+    var history_heading := HBoxContainer.new()
+    history_heading.name = "ConversationHistoryHeading"
+    layout.add_child(history_heading)
     history_title = Label.new()
     history_title.name = "ConversationHistoryTitle"
-    layout.add_child(history_title)
+    history_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    history_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    history_heading.add_child(history_title)
+    history_filter_button = Button.new()
+    history_filter_button.name = "ConversationLanguageFilter"
+    history_filter_button.custom_minimum_size.y = MIN_TOUCH_TARGET
+    history_filter_button.focus_mode = Control.FOCUS_ALL
+    history_filter_button.pressed.connect(_cycle_history_filter)
+    history_heading.add_child(history_filter_button)
     var history_controls := HBoxContainer.new()
     history_controls.name = "ConversationPageControls"
     layout.add_child(history_controls)
@@ -233,7 +251,8 @@ func _apply_text_scale() -> void:
     _set_font_size(hint_label, 14)
     _set_font_size(footer_label, 14)
     for button in [opener, smaller_text_button, larger_text_button,
-            language_button, close_button, history_earlier_button, history_later_button]:
+            language_button, close_button, history_filter_button,
+            history_earlier_button, history_later_button]:
         _set_font_size(button, 16)
     for card in cards:
         _set_font_size(card, 16)
@@ -261,6 +280,7 @@ func _update_labels() -> void:
     history_title.text = _t("history")
     history_earlier_button.text = _t("earlier")
     history_later_button.text = _t("later")
+    history_filter_button.tooltip_text = _t("filter_tip")
 
 func _card_text(record: Dictionary) -> String:
     var last_gift: String = str(record["last_gift_item"])
@@ -303,11 +323,29 @@ func refresh() -> void:
     _update_selection_label()
     _apply_text_scale()
 
+## View-only filtering. Saved transcripts retain their original locale and order.
+func _visible_history(log: Array) -> Array:
+    var selected: String = str(HISTORY_FILTERS[history_filter_index])
+    if selected == "all":
+        return log
+    var result: Array = []
+    for entry in log:
+        if entry is Dictionary and str(entry.get("locale", "")) == selected:
+            result.append(entry)
+    return result
+
+func _cycle_history_filter() -> void:
+    if panel == null or not panel.visible:
+        return
+    history_filter_index = (history_filter_index + 1) % HISTORY_FILTERS.size()
+    history_page = _latest_history_page(selected_index)
+    _update_selection_label()
+
 func _latest_history_page(index: int) -> int:
     var records: Array = village.social_recap()
     if index < 0 or index >= records.size():
         return 0
-    var log: Array = records[index].get("dialogue_log", [])
+    var log: Array = _visible_history(records[index].get("dialogue_log", []))
     return maxi(0, int((log.size() - 1) / HISTORY_PAGE_SIZE))
 
 func _update_selection_label() -> void:
@@ -321,6 +359,9 @@ func _update_selection_label() -> void:
         log = selected.get("dialogue_log", [])
     else:
         selected_label.text = ""
+    log = _visible_history(log)
+    var filter_key: String = "filter_" + str(HISTORY_FILTERS[history_filter_index])
+    history_filter_button.text = "%s (%d)" % [_t(filter_key), log.size()]
     var last_page: int = maxi(0, int((log.size() - 1) / HISTORY_PAGE_SIZE))
     history_page = clampi(history_page, 0, last_page)
     var lines: Array[String] = []
@@ -413,6 +454,8 @@ func _input(event: InputEvent) -> void:
                 _change_text_scale(1)
             elif event.ctrl_pressed and key == KEY_MINUS:
                 _change_text_scale(-1)
+            elif key == KEY_F:
+                _cycle_history_filter()
             elif key == KEY_ESCAPE:
                 close_journal()
             elif key == KEY_DOWN:
@@ -445,6 +488,8 @@ func _input(event: InputEvent) -> void:
                 _change_text_scale(-1)
             elif event.button_index == JOY_BUTTON_B:
                 close_journal()
+            elif event.button_index == JOY_BUTTON_DPAD_LEFT:
+                _cycle_history_filter()
             elif event.button_index == JOY_BUTTON_DPAD_DOWN:
                 _navigate(1)
             elif event.button_index == JOY_BUTTON_DPAD_UP:
