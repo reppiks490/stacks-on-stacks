@@ -140,6 +140,14 @@ def household_rules(fid: str, s: dict) -> None:
                     and stages.index(t["to_stage"]) == stages.index(d["stage"]) + 1,
                     "stage_progression")
             require(t["day_epoch"] >= s["day_epoch"], "transition_epoch")
+            require(any(p["room_id"] == d["room_id"] and p["installed"]
+                        and t["from_stage"] in p["compatible_stages"]
+                        and t["to_stage"] in p["compatible_stages"]
+                        for p in s["convertible_parts"]), "conversion_component")
+        for part in s["convertible_parts"]:
+            require(part["room_id"] in rooms, "conversion_room_reference")
+            require(all(stage in stages for stage in part["compatible_stages"]),
+                    "conversion_stage_reference")
     elif num == 74:
         levels = {v["id"]: v["height_cm"] for v in s["levels"]}
         require("ground" in levels and levels["ground"] == 0, "ground_level")
@@ -159,6 +167,21 @@ def household_rules(fid: str, s: dict) -> None:
         for target in s["essentials"]:
             require(target in levels and connected("ground", target, adj),
                     "essential_reach")
+        for profile in s["mobility_profiles"]:
+            start = profile["start_level"]
+            require(start in levels, "mobility_start")
+            filtered = defaultdict(list)
+            for edge in s["connectors"]:
+                if not edge["open"] or edge["width_cm"] < profile["min_width_cm"]:
+                    continue
+                if (edge["kind"] == "ramp" and
+                        edge["rise_cm"] * 1000 >
+                        edge["run_cm"] * profile["max_slope_permille"]):
+                    continue
+                filtered[edge["from"]].append(edge["to"])
+                filtered[edge["to"]].append(edge["from"])
+            require(all(target in levels and connected(start, target, filtered)
+                        for target in profile["required_levels"]), "mobility_slope_reach")
     elif num == 75:
         residents = {r["id"]: r for r in s["residents"]}
         spaces = {x["id"]: x for x in s["spaces"]}
@@ -170,6 +193,12 @@ def household_rules(fid: str, s: dict) -> None:
             require(right["approved"] and not right["revoked"], "rights_approval_revocation")
             pairs.append((rid, sid))
         unique(pairs, "duplicate_right")
+        approved_pairs = set(pairs)
+        for cabinet in s["private_inventory"]:
+            require(cabinet["space_id"] in spaces, "private_inventory_space")
+            require(all((rid, cabinet["space_id"]) in approved_pairs
+                        for rid in cabinet["allowed_residents"]),
+                    "private_inventory_right")
     elif num == 76:
         hours = s["hours"]
         require(0 <= hours["open_min"] < hours["close_min"] <= 1440, "shop_hours")
@@ -188,6 +217,21 @@ def household_rules(fid: str, s: dict) -> None:
                     "stock_conservation")
             require(lot["received"] <= lot["capacity"], "stock_capacity")
             require(totals[lot["id"]] == lot["sold"], "order_reconciliation")
+        zones = {z["id"]: z for z in s["zones"]}
+        require(s["shop_zone_id"] in zones and zones[s["shop_zone_id"]]["public"],
+                "public_shop_zone")
+        adj = defaultdict(list)
+        for edge in s["paths"]:
+            require(edge["from"] in set(zones) | {"street"} and
+                    edge["to"] in set(zones) | {"street"}, "shop_path_reference")
+            if edge["open"]:
+                adj[edge["from"]].append(edge["to"])
+                adj[edge["to"]].append(edge["from"])
+        require(connected("street", s["shop_zone_id"], adj), "public_shop_reach")
+        for private_id in s["private_zone_ids"]:
+            require(private_id in zones and not zones[private_id]["public"],
+                    "private_zone_reference")
+            require(not connected("street", private_id, adj), "private_zone_leak")
     elif num == 77:
         barriers = {b["id"]: b for b in s["barriers"]}
         for q in s["quiet_hours"]:
