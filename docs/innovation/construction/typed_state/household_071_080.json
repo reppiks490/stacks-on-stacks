@@ -211,8 +211,8 @@
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "clay": 3,
+        "seed": 1
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Arrange guest rooms, accept voluntary bookings, and keep safe exits available. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -322,7 +322,21 @@
           "value": 55,
           "rule": "booking_window"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "guest_rooms:typed_value",
+        "booking_ids:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Beds consent and exits limit occupancy.",
+      "source_field_adapters": {
+        "guest_rooms": "rooms",
+        "booking_ids": "bookings"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-072",
@@ -505,8 +519,8 @@
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "glass": 4,
+        "wood": 2
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Place pet gates and resting spots while preserving a navigable route to water. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -620,11 +634,25 @@
           "value": false,
           "rule": "amenity_available"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "pet_gates:typed_value",
+        "pet_routes:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Companions need traversable routes to amenities.",
+      "source_field_adapters": {
+        "pet_gates": "links",
+        "pet_routes": "zones"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-073",
-      "title": "Adaptable Nursery Rooms",
+      "title": "Growingroom Convertible Nursery",
       "slug": "nursery",
       "domain": "household_function",
       "status": "typed_design_only_not_playable",
@@ -812,6 +840,46 @@
               },
               "max_items": 64,
               "unique_by": "id"
+            },
+            "convertible_parts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "room_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "compatible_stages": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "min_length": 1,
+                      "max_length": 96
+                    },
+                    "max_items": 64,
+                    "unique_items": true
+                  },
+                  "installed": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "room_id",
+                  "compatible_stages",
+                  "installed"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
             }
           },
           "required": [
@@ -821,15 +889,16 @@
             "receipts",
             "rooms",
             "dependents",
-            "transitions"
+            "transitions",
+            "convertible_parts"
           ],
           "additional_properties": false
         },
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "dye": 5,
+        "stone": 3
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Reconfigure a nursery as dependents grow, subject to guardian consent and safety. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -867,6 +936,17 @@
               "day_epoch": 57,
               "approved": true
             }
+          ],
+          "convertible_parts": [
+            {
+              "id": "part:1",
+              "room_id": "nursery",
+              "compatible_stages": [
+                "infant",
+                "toddler"
+              ],
+              "installed": true
+            }
           ]
         },
         {
@@ -900,6 +980,17 @@
               "to_stage": "toddler",
               "day_epoch": 57,
               "approved": true
+            }
+          ],
+          "convertible_parts": [
+            {
+              "id": "part:1",
+              "room_id": "nursery",
+              "compatible_stages": [
+                "infant",
+                "toddler"
+              ],
+              "installed": true
             }
           ]
         }
@@ -940,12 +1031,35 @@
           ],
           "value": "school",
           "rule": "stage_progression"
+        },
+        {
+          "path": [
+            "convertible_parts",
+            0,
+            "installed"
+          ],
+          "value": false,
+          "rule": "conversion_component"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "nursery_stage:typed_value",
+        "convertible_parts:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Real components and age gate conversion.",
+      "source_field_adapters": {
+        "nursery_stage": "dependents",
+        "convertible_parts": "convertible_parts"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-074",
-      "title": "Elderstep Accessible Homes",
+      "title": "Silverpath Elder-Friendly Cottage",
       "slug": "elderstep",
       "domain": "household_function",
       "status": "typed_design_only_not_playable",
@@ -1110,6 +1224,53 @@
               },
               "max_items": 64,
               "unique_items": true
+            },
+            "mobility_profiles": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "resident_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "start_level": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "required_levels": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "min_length": 1,
+                      "max_length": 96
+                    },
+                    "max_items": 64,
+                    "unique_items": true
+                  },
+                  "min_width_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "max_slope_permille": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  }
+                },
+                "required": [
+                  "resident_id",
+                  "start_level",
+                  "required_levels",
+                  "min_width_cm",
+                  "max_slope_permille"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64
             }
           },
           "required": [
@@ -1119,15 +1280,16 @@
             "receipts",
             "levels",
             "connectors",
-            "essentials"
+            "essentials",
+            "mobility_profiles"
           ],
           "additional_properties": false
         },
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "seed": 6,
+        "iron": 1
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Design accessible routes between essential rooms using ramps and generous clearances. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -1165,6 +1327,17 @@
           "essentials": [
             "ground",
             "upper"
+          ],
+          "mobility_profiles": [
+            {
+              "resident_id": "npc:elder",
+              "start_level": "ground",
+              "required_levels": [
+                "upper"
+              ],
+              "min_width_cm": 95,
+              "max_slope_permille": 80
+            }
           ]
         },
         {
@@ -1199,6 +1372,17 @@
           "essentials": [
             "ground",
             "upper"
+          ],
+          "mobility_profiles": [
+            {
+              "resident_id": "npc:elder",
+              "start_level": "ground",
+              "required_levels": [
+                "upper"
+              ],
+              "min_width_cm": 95,
+              "max_slope_permille": 80
+            }
           ]
         }
       ],
@@ -1238,12 +1422,35 @@
           ],
           "value": 70,
           "rule": "rise_consistency"
+        },
+        {
+          "path": [
+            "mobility_profiles",
+            0,
+            "max_slope_permille"
+          ],
+          "value": 60,
+          "rule": "mobility_slope"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "threshold_heights:typed_value",
+        "mobility_profiles:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Resident mobility determines reachable rooms.",
+      "source_field_adapters": {
+        "threshold_heights": "levels",
+        "mobility_profiles": "mobility_profiles"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-075",
-      "title": "Shared Hearth Household Rights",
+      "title": "Sharedhouse Stewardship Charter",
       "slug": "shared_hearth",
       "domain": "household_function",
       "status": "typed_design_only_not_playable",
@@ -1399,6 +1606,42 @@
               },
               "max_items": 64,
               "unique_by": "id"
+            },
+            "private_inventory": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "space_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "allowed_residents": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "min_length": 1,
+                      "max_length": 96
+                    },
+                    "max_items": 64,
+                    "unique_items": true
+                  }
+                },
+                "required": [
+                  "id",
+                  "space_id",
+                  "allowed_residents"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
             }
           },
           "required": [
@@ -1408,15 +1651,16 @@
             "receipts",
             "residents",
             "spaces",
-            "rights"
+            "rights",
+            "private_inventory"
           ],
           "additional_properties": false
         },
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "wood": 7,
+        "fiber": 2
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Negotiate and revoke household access rights without overwriting resident agency. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -1453,6 +1697,15 @@
               "approved": true,
               "revoked": false
             }
+          ],
+          "private_inventory": [
+            {
+              "id": "cabinet:1",
+              "space_id": "kitchen",
+              "allowed_residents": [
+                "npc:a"
+              ]
+            }
           ]
         },
         {
@@ -1485,6 +1738,15 @@
               "space_id": "kitchen",
               "approved": true,
               "revoked": false
+            }
+          ],
+          "private_inventory": [
+            {
+              "id": "cabinet:1",
+              "space_id": "kitchen",
+              "allowed_residents": [
+                "npc:a"
+              ]
             }
           ]
         }
@@ -1525,12 +1787,37 @@
           ],
           "value": false,
           "rule": "rights_approval"
+        },
+        {
+          "path": [
+            "private_inventory",
+            0,
+            "allowed_residents"
+          ],
+          "value": [
+            "npc:b"
+          ],
+          "rule": "private_inventory_right"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "household_zones:typed_value",
+        "access_rights:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Permissions gate private inventory and access.",
+      "source_field_adapters": {
+        "household_zones": "spaces",
+        "access_rights": "rights"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-076",
-      "title": "Frontroom Home Shop",
+      "title": "Homefront Craft Shop",
       "slug": "frontroom",
       "domain": "household_function",
       "status": "typed_design_only_not_playable",
@@ -1705,6 +1992,72 @@
                 "close_min"
               ],
               "additional_properties": false
+            },
+            "zones": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "public": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "public"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "paths": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "to": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "open": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to",
+                  "open"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64
+            },
+            "shop_zone_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "private_zone_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64,
+              "unique_items": true
             }
           },
           "required": [
@@ -1714,15 +2067,19 @@
             "receipts",
             "stock_lots",
             "orders",
-            "hours"
+            "hours",
+            "zones",
+            "paths",
+            "shop_zone_id",
+            "private_zone_ids"
           ],
           "additional_properties": false
         },
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "stone": 3,
+        "clay": 3
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Operate a small home shop with finite stock and externally authorized sales receipts. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -1756,7 +2113,33 @@
           "hours": {
             "open_min": 480,
             "close_min": 1020
-          }
+          },
+          "zones": [
+            {
+              "id": "front",
+              "public": true
+            },
+            {
+              "id": "back",
+              "public": false
+            }
+          ],
+          "paths": [
+            {
+              "from": "street",
+              "to": "front",
+              "open": true
+            },
+            {
+              "from": "front",
+              "to": "back",
+              "open": false
+            }
+          ],
+          "shop_zone_id": "front",
+          "private_zone_ids": [
+            "back"
+          ]
         },
         {
           "site_id": "cottage:1",
@@ -1786,7 +2169,33 @@
           "hours": {
             "open_min": 480,
             "close_min": 1020
-          }
+          },
+          "zones": [
+            {
+              "id": "front",
+              "public": true
+            },
+            {
+              "id": "back",
+              "public": false
+            }
+          ],
+          "paths": [
+            {
+              "from": "street",
+              "to": "front",
+              "open": true
+            },
+            {
+              "from": "front",
+              "to": "back",
+              "open": false
+            }
+          ],
+          "shop_zone_id": "front",
+          "private_zone_ids": [
+            "back"
+          ]
         }
       ],
       "negative_mutations": [
@@ -1824,8 +2233,31 @@
           ],
           "value": 1100,
           "rule": "shop_hours"
+        },
+        {
+          "path": [
+            "paths",
+            1,
+            "open"
+          ],
+          "value": true,
+          "rule": "private_zone_leak"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "shop_zone:typed_value",
+        "stock_lots:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Public paths and stock separate private rooms.",
+      "source_field_adapters": {
+        "shop_zone": "shop_zone_id",
+        "stock_lots": "stock_lots"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-077",
@@ -2016,8 +2448,8 @@
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "iron": 4,
+        "glass": 1
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Insulate workshops and schedule noisy work around neighbors' quiet hours. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -2123,7 +2555,21 @@
           "value": 1250,
           "rule": "session_window"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "sound_barriers:typed_value",
+        "quiet_hours:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Openings and quiet hours determine complaints.",
+      "source_field_adapters": {
+        "sound_barriers": "barriers",
+        "quiet_hours": "quiet_hours"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-078",
@@ -2299,8 +2745,8 @@
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "fiber": 5,
+        "dye": 2
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Adjust sunroom shades and vents; request water without altering Farming-owned crops. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -2396,7 +2842,21 @@
           "value": 100,
           "rule": "shade_angle"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "shade_angle:typed_value",
+        "climate_summary:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Farming owns growth; annex modifies climate only.",
+      "source_field_adapters": {
+        "shade_angle": "shades",
+        "climate_summary": "climates"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-079",
@@ -2576,8 +3036,8 @@
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "clay": 6,
+        "seed": 3
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Mount a telescope only on a stable roof and record observable sky events once. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -2675,7 +3135,21 @@
           "value": "missing",
           "rule": "mount_reference"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "turret_base:typed_value",
+        "sky_visibility:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Visibility and vibration govern observations.",
+      "source_field_adapters": {
+        "turret_base": "mounts",
+        "sky_visibility": "observations"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     },
     {
       "id": "EB-B-080",
@@ -2871,8 +3345,8 @@
         "roundtrip": "Lossless canonical JSON; nested fields preserved; receipt authority external"
       },
       "resource_inputs_unapproved": {
-        "wood": 2,
-        "stone": 1
+        "glass": 7,
+        "wood": 1
       },
       "command_contract": "Pure preview; commit requires Principal signed receipt and current revision; undo cannot refund without verified dependency-free inverse",
       "godot_acceptance": "After 220-feature gate and Principal approval: demonstrate Excavate a pantry with structural support, water separation and an accessible exit. in Godot 4.x with real input, UI, state, save/load, idempotent receipt and conservation.",
@@ -2978,7 +3452,21 @@
           "value": false,
           "rule": "cellar_egress"
         }
-      ]
+      ],
+      "source_state_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "cellar_volume:typed_value",
+        "groundwater_risk:typed_value",
+        "receipts:[string]"
+      ],
+      "source_invariant": "Groundwater and roof supports limit volume.",
+      "source_field_adapters": {
+        "cellar_volume": "chambers",
+        "groundwater_risk": "chambers"
+      },
+      "cost_status": "Quoted source-catalog proposals only; NOT in current inventory authority; no automatic material creation or free fallback."
     }
   ]
 }
