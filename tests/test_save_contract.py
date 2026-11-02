@@ -146,8 +146,8 @@ class SaveIntegrationContract(unittest.TestCase):
         boundary = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
         native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(encoding="utf-8")
         crops = json.loads((ROOT / "data/crops.json").read_text(encoding="utf-8"))
-        farm_count = int(re.search(r"const BED_COUNT := (\\d+)", farm).group(1))
-        save_count = int(re.search(r"const FARM_BED_COUNT: int = (\\d+)", boundary).group(1))
+        farm_count = int(re.search(r"const BED_COUNT := (\d+)", farm).group(1))
+        save_count = int(re.search(r"const FARM_BED_COUNT: int = (\d+)", boundary).group(1))
         self.assertEqual(farm_count, save_count)
         registry = boundary.split("const CROP_IDS := [", 1)[1].split("]", 1)[0]
         registered = re.findall(r'"([a-z0-9_]+)"', registry)
