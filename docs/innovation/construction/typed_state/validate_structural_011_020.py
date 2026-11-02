@@ -153,6 +153,12 @@ def validate_state(contract, st):
     require(type(st) is dict and set(st) == set(fields), contract["id"] + ": unknown/missing state keys")
     for key, spec in fields.items():
         validate_value(spec, st[key], contract["id"] + "." + key)
+    # A nondefault physical feature cannot exist without an authoritative site and epoch.
+    # Inactive optional namespaces remain valid for pre-feature legacy saves.
+    active = any(st[key] != spec["default"] for key, spec in fields.items()
+                 if key not in ("site_id", "revision", "day_epoch", "receipts"))
+    require(not active or (bool(st["site_id"]) and st["day_epoch"] >= 1 and st["revision"] >= 1),
+            "orphan physical feature without site/epoch/revision")
     require(len(st["receipts"]) == len(set(st["receipts"])), "duplicate settlement receipt")
     require(not st["receipts"] or (bool(st["site_id"]) and st["day_epoch"] >= 1 and st["revision"] >= 1),
             "committed receipt without site/epoch/revision")
