@@ -268,7 +268,10 @@ class ReferenceAcceptance(unittest.TestCase):
         for n, socket in enumerate(("ne", "sw", "se")):
             s = apply(s, place("post_" + str(n), 3, "p" + str(n), "post", [n + 5, 0], "f", socket))
         self.assertEqual(s["materials"]["timber"], 9)
-        self.assert_rejected_atomic(s, place("bad", 3, "roof2", "roof", [9, 0], "w", "top"))
+        for n in range(3):
+            s = apply(s, place("wall_" + str(n), 3, "wall" + str(n), "wall", [10 + n, 0], "p" + str(n), "side_a"))
+        self.assertEqual(s["materials"]["timber"], 0)
+        self.assert_rejected_atomic(s, place("bad", 3, "wall4", "wall", [14, 0], "p", "side_b"))
 
     def test_negative_and_boolean_epoch(self):
         s = self.build()
