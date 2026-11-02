@@ -1,0 +1,1956 @@
+{
+  "schema_version": 2,
+  "project": "EVERBLOOM: The Living Valley",
+  "phase": "Phase B typed design only — Phase C CLOSED",
+  "owner": "Emergence E03/E13/E18",
+  "source_branch": "game/everbloom-emergence-phaseB-100-20261102",
+  "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+  "count": 10,
+  "contracts": [
+    {
+      "id": "EB-E-081",
+      "title": "Botanical Ink Chronicle",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "ink_batch",
+        "ingredient_receipts",
+        "journal_pages",
+        "authorship"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.081",
+      "status": "design_only_not_playable",
+      "player_scenario": "Make original ink from safe fictional plants and annotate a persistent field journal",
+      "player_verbs": [
+        "make_botanical_ink_chronicle",
+        "preview_botanical_ink_chronicle",
+        "confirm_botanical_ink_chronicle",
+        "review_botanical_ink_chronicle",
+        "cancel_botanical_ink_chronicle"
+      ],
+      "source_rule": "Each recipe consumes owned ingredients once; journal entries remain player-authored",
+      "negative_case": "One batch cannot write unlimited saleable ink items",
+      "fields": {
+        "ink_batch": {
+          "kind": "object",
+          "nullable": true,
+          "properties": {
+            "batch_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "owner_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "units": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            },
+            "spent": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            }
+          }
+        },
+        "ingredient_receipts": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "batch_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "units": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "journal_pages": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "page_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "batch_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "owner_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "ink_units": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              },
+              "content_digest": {
+                "kind": "string",
+                "max_length": 128
+              }
+            }
+          }
+        },
+        "authorship": {
+          "kind": "object",
+          "properties": {
+            "owner_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "public": {
+              "kind": "boolean"
+            },
+            "consent": {
+              "kind": "boolean"
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "ink_batch": null,
+        "ingredient_receipts": [],
+        "journal_pages": [],
+        "authorship": {
+          "owner_id": "",
+          "public": false,
+          "consent": false
+        },
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "ink_batch": {
+          "batch_id": "ink01",
+          "owner_id": "p1",
+          "units": 3,
+          "spent": 2
+        },
+        "ingredient_receipts": [
+          {
+            "receipt_id": "ir01",
+            "batch_id": "ink01",
+            "units": 3
+          }
+        ],
+        "journal_pages": [
+          {
+            "page_id": "pg01",
+            "batch_id": "ink01",
+            "owner_id": "p1",
+            "ink_units": 2,
+            "content_digest": "sha256:inkpage"
+          }
+        ],
+        "authorship": {
+          "owner_id": "p1",
+          "public": true,
+          "consent": true
+        },
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd81",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect81",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Botanical Ink Chronicle; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Make original ink from safe fictional plants and annotate a persistent field journal; verify rule: Each recipe consumes owned ingredients once; journal entries remain player-authored.",
+        "adversarial": "One batch cannot write unlimited saleable ink items",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-082",
+      "title": "Paper Marbling Current",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "pattern_seed",
+        "gesture_path",
+        "pigment_units",
+        "edition_id"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.082",
+      "status": "design_only_not_playable",
+      "player_scenario": "Create decorative marbled paper by guiding simulated pigment swirls with touch or mouse",
+      "player_verbs": [
+        "create_paper_marbling_current",
+        "preview_paper_marbling_current",
+        "confirm_paper_marbling_current",
+        "review_paper_marbling_current",
+        "cancel_paper_marbling_current"
+      ],
+      "source_rule": "Pattern seed and gestures produce deterministic exportable in-game paper",
+      "negative_case": "Cancel cannot keep paper and refund pigments",
+      "fields": {
+        "pattern_seed": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "gesture_path": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "x": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              },
+              "y": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              },
+              "tick": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "pigment_units": {
+          "kind": "object",
+          "properties": {
+            "reserved": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            },
+            "consumed": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            },
+            "refunded": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            }
+          }
+        },
+        "edition_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "pattern_seed": 0,
+        "gesture_path": [],
+        "pigment_units": {
+          "reserved": 0,
+          "consumed": 0,
+          "refunded": 0
+        },
+        "edition_id": "",
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "pattern_seed": 829,
+        "gesture_path": [
+          {
+            "x": 10,
+            "y": 10,
+            "tick": 0
+          },
+          {
+            "x": 20,
+            "y": 12,
+            "tick": 1
+          }
+        ],
+        "pigment_units": {
+          "reserved": 2,
+          "consumed": 2,
+          "refunded": 0
+        },
+        "edition_id": "edition01",
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd82",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect82",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Paper Marbling Current; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Create decorative marbled paper by guiding simulated pigment swirls with touch or mouse; verify rule: Pattern seed and gestures produce deterministic exportable in-game paper.",
+        "adversarial": "Cancel cannot keep paper and refund pigments",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-083",
+      "title": "Ceramic Glaze Alchemy",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "vessel_id",
+        "glaze_recipe",
+        "firing_receipt",
+        "color_result"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.083",
+      "status": "design_only_not_playable",
+      "player_scenario": "Experiment with nonhazardous fictional color glazes on artisan vessels; compare two reproducible color outcomes and their ingredient costs",
+      "player_verbs": [
+        "experiment_ceramic_glaze_alchemy",
+        "preview_ceramic_glaze_alchemy",
+        "confirm_ceramic_glaze_alchemy",
+        "review_ceramic_glaze_alchemy",
+        "cancel_ceramic_glaze_alchemy"
+      ],
+      "source_rule": "Glaze outcome depends on chosen recipe and kiln session owned by Builder crafting",
+      "negative_case": "One vessel cannot be glazed and sold twice",
+      "fields": {
+        "vessel_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "glaze_recipe": {
+          "kind": "object",
+          "properties": {
+            "recipe_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "pigment_units": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            }
+          }
+        },
+        "firing_receipt": {
+          "kind": "object",
+          "nullable": true,
+          "properties": {
+            "receipt_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "vessel_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "recipe_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "consumed_units": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            }
+          }
+        },
+        "color_result": {
+          "kind": "object",
+          "properties": {
+            "color_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "edition_id": {
+              "kind": "string",
+              "max_length": 128
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "vessel_id": "",
+        "glaze_recipe": {
+          "recipe_id": "",
+          "pigment_units": 0
+        },
+        "firing_receipt": null,
+        "color_result": {
+          "color_id": "",
+          "edition_id": ""
+        },
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "vessel_id": "vessel01",
+        "glaze_recipe": {
+          "recipe_id": "glaze01",
+          "pigment_units": 2
+        },
+        "firing_receipt": {
+          "receipt_id": "fire01",
+          "vessel_id": "vessel01",
+          "recipe_id": "glaze01",
+          "consumed_units": 2
+        },
+        "color_result": {
+          "color_id": "amber",
+          "edition_id": "glazed01"
+        },
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd83",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect83",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Ceramic Glaze Alchemy; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Experiment with nonhazardous fictional color glazes on artisan vessels; verify rule: Glaze outcome depends on chosen recipe and kiln session owned by Builder crafting.; compare two reproducible color outcomes and their ingredient costs",
+        "adversarial": "One vessel cannot be glazed and sold twice",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-084",
+      "title": "Windchime Tone Composer",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "chime_id",
+        "note_sequence",
+        "tempo",
+        "share_consent"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.084",
+      "status": "design_only_not_playable",
+      "player_scenario": "Tune original musical notes on handheld chimes and share a short composition",
+      "player_verbs": [
+        "tune_windchime_tone_composer",
+        "preview_windchime_tone_composer",
+        "confirm_windchime_tone_composer",
+        "review_windchime_tone_composer",
+        "cancel_windchime_tone_composer"
+      ],
+      "source_rule": "Each note has authored pitch and arrangement; reduced-audio mode shows note sequence",
+      "negative_case": "Muted mode must permit equivalent composition",
+      "fields": {
+        "chime_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "note_sequence": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "pitch": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              },
+              "beat": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "tempo": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "share_consent": {
+          "kind": "boolean"
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "chime_id": "",
+        "note_sequence": [],
+        "tempo": 100,
+        "share_consent": false,
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "chime_id": "chime01",
+        "note_sequence": [
+          {
+            "pitch": 3,
+            "beat": 0
+          },
+          {
+            "pitch": 7,
+            "beat": 2
+          },
+          {
+            "pitch": 5,
+            "beat": 4
+          }
+        ],
+        "tempo": 100,
+        "share_consent": true,
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd84",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect84",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Windchime Tone Composer; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Tune original musical notes on handheld chimes and share a short composition; verify rule: Each note has authored pitch and arrangement; reduced-audio mode shows note sequence.",
+        "adversarial": "Muted mode must permit equivalent composition",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-085",
+      "title": "Pressed Flower Memory Book",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "specimen_id",
+        "collection_epoch",
+        "book_page",
+        "habitat_rule"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.085",
+      "status": "design_only_not_playable",
+      "player_scenario": "Preserve seasonal flower specimens with location/time labels and ethical collection limits",
+      "player_verbs": [
+        "preserve_pressed_flower_memory_book",
+        "preview_pressed_flower_memory_book",
+        "confirm_pressed_flower_memory_book",
+        "review_pressed_flower_memory_book",
+        "cancel_pressed_flower_memory_book"
+      ],
+      "source_rule": "Each unique specimen is consumed once; protected flowers remain uncollectable",
+      "negative_case": "Duplicate specimen cannot fill multiple paid pages",
+      "fields": {
+        "specimen_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "collection_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "book_page": {
+          "kind": "object",
+          "properties": {
+            "page_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "specimen_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "collection_receipt": {
+              "kind": "string",
+              "max_length": 128
+            }
+          }
+        },
+        "habitat_rule": {
+          "kind": "object",
+          "properties": {
+            "protected": {
+              "kind": "boolean"
+            },
+            "permit_receipt": {
+              "kind": "string",
+              "max_length": 128
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "specimen_id": "",
+        "collection_epoch": -1,
+        "book_page": {
+          "page_id": "",
+          "specimen_id": "",
+          "collection_receipt": ""
+        },
+        "habitat_rule": {
+          "protected": false,
+          "permit_receipt": ""
+        },
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "specimen_id": "flower01",
+        "collection_epoch": 57,
+        "book_page": {
+          "page_id": "page01",
+          "specimen_id": "flower01",
+          "collection_receipt": "collect01"
+        },
+        "habitat_rule": {
+          "protected": false,
+          "permit_receipt": ""
+        },
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd85",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect85",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Pressed Flower Memory Book; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Preserve seasonal flower specimens with location/time labels and ethical collection limits; verify rule: Each unique specimen is consumed once; protected flowers remain uncollectable.",
+        "adversarial": "Duplicate specimen cannot fill multiple paid pages",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-086",
+      "title": "Herbal Scent Studio",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "blend_id",
+        "ingredient_units",
+        "formula",
+        "consent"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.086",
+      "status": "design_only_not_playable",
+      "player_scenario": "Blend fictional nonmedical fragrances for personal customization and NPC preferences",
+      "player_verbs": [
+        "blend_herbal_scent_studio",
+        "preview_herbal_scent_studio",
+        "confirm_herbal_scent_studio",
+        "review_herbal_scent_studio",
+        "cancel_herbal_scent_studio"
+      ],
+      "source_rule": "Scents affect optional cosmetics only; no fabricated medical or mood cure",
+      "negative_case": "One ingredient cannot fund two fragrance bottles",
+      "fields": {
+        "blend_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "ingredient_units": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "item_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "units": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "formula": {
+          "kind": "object",
+          "properties": {
+            "recipe_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "total_units": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            }
+          }
+        },
+        "consent": {
+          "kind": "object",
+          "properties": {
+            "owner_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "public": {
+              "kind": "boolean"
+            },
+            "npc_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "npc_allowed": {
+              "kind": "boolean"
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "blend_id": "",
+        "ingredient_units": [],
+        "formula": {
+          "recipe_id": "",
+          "total_units": 0
+        },
+        "consent": {
+          "owner_id": "",
+          "public": false,
+          "npc_id": "",
+          "npc_allowed": false
+        },
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "blend_id": "scent01",
+        "ingredient_units": [
+          {
+            "receipt_id": "scentDebit01",
+            "item_id": "herb01",
+            "units": 2
+          }
+        ],
+        "formula": {
+          "recipe_id": "blend01",
+          "total_units": 2
+        },
+        "consent": {
+          "owner_id": "p1",
+          "public": false,
+          "npc_id": "",
+          "npc_allowed": false
+        },
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd86",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect86",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Herbal Scent Studio; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Blend fictional nonmedical fragrances for personal customization and NPC preferences; verify rule: Scents affect optional cosmetics only; no fabricated medical or mood cure.",
+        "adversarial": "One ingredient cannot fund two fragrance bottles",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-087",
+      "title": "Shadow Puppet Theater",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "puppet_ids",
+        "keyframes",
+        "stage_slot",
+        "performance_receipt"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.087",
+      "status": "design_only_not_playable",
+      "player_scenario": "Create silhouettes and stage original folktales with controller/touch-compatible posing",
+      "player_verbs": [
+        "create_shadow_puppet_theater",
+        "preview_shadow_puppet_theater",
+        "confirm_shadow_puppet_theater",
+        "review_shadow_puppet_theater",
+        "cancel_shadow_puppet_theater"
+      ],
+      "source_rule": "Puppet performance uses saved keyframes; public show requires performer consent",
+      "negative_case": "Canceling a show cannot charge viewers or award performance",
+      "fields": {
+        "puppet_ids": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "string",
+            "max_length": 128
+          }
+        },
+        "keyframes": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "puppet_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "tick": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              },
+              "pose": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "stage_slot": {
+          "kind": "object",
+          "properties": {
+            "slot_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "cleared": {
+              "kind": "boolean"
+            },
+            "performer_consents": {
+              "kind": "array",
+              "max_items": 32,
+              "items": {
+                "kind": "string",
+                "max_length": 128
+              }
+            }
+          }
+        },
+        "performance_receipt": {
+          "kind": "object",
+          "nullable": true,
+          "properties": {
+            "receipt_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "reward_units": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            },
+            "charged_viewers": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "puppet_ids": [],
+        "keyframes": [],
+        "stage_slot": {
+          "slot_id": "",
+          "cleared": false,
+          "performer_consents": []
+        },
+        "performance_receipt": null,
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "puppet_ids": [
+          "puppet01"
+        ],
+        "keyframes": [
+          {
+            "puppet_id": "puppet01",
+            "tick": 0,
+            "pose": 0
+          },
+          {
+            "puppet_id": "puppet01",
+            "tick": 1,
+            "pose": 2
+          }
+        ],
+        "stage_slot": {
+          "slot_id": "stage01",
+          "cleared": true,
+          "performer_consents": [
+            "p1"
+          ]
+        },
+        "performance_receipt": {
+          "receipt_id": "show01",
+          "reward_units": 1,
+          "charged_viewers": 0
+        },
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd87",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect87",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Shadow Puppet Theater; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Create silhouettes and stage original folktales with controller/touch-compatible posing; verify rule: Puppet performance uses saved keyframes; public show requires performer consent.",
+        "adversarial": "Canceling a show cannot charge viewers or award performance",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-088",
+      "title": "Edible Art Plating",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "dish_id",
+        "ingredient_receipts",
+        "layout",
+        "judging_score"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.088",
+      "status": "design_only_not_playable",
+      "player_scenario": "Arrange owned cooked foods into decorative meal presentations for a village contest",
+      "player_verbs": [
+        "arrange_edible_art_plating",
+        "preview_edible_art_plating",
+        "confirm_edible_art_plating",
+        "review_edible_art_plating",
+        "cancel_edible_art_plating"
+      ],
+      "source_rule": "Plating never creates new nutrition; served dishes consume actual food",
+      "negative_case": "One dish cannot be served and exhibited as inventory twice",
+      "fields": {
+        "dish_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "ingredient_receipts": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "item_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "units": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "layout": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "item_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "x": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              },
+              "y": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "judging_score": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "dish_id": "",
+        "ingredient_receipts": [],
+        "layout": [],
+        "judging_score": 0,
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "dish_id": "dish01",
+        "ingredient_receipts": [
+          {
+            "receipt_id": "mealDebit01",
+            "item_id": "stew01",
+            "units": 1
+          }
+        ],
+        "layout": [
+          {
+            "item_id": "stew01",
+            "x": 2,
+            "y": 2
+          }
+        ],
+        "judging_score": 7,
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd88",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect88",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Edible Art Plating; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Arrange owned cooked foods into decorative meal presentations for a village contest; verify rule: Plating never creates new nutrition; served dishes consume actual food.",
+        "adversarial": "One dish cannot be served and exhibited as inventory twice",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-089",
+      "title": "Miniature Biome Diorama",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "diorama_id",
+        "material_receipts",
+        "biome_notes",
+        "layout"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.089",
+      "status": "design_only_not_playable",
+      "player_scenario": "Create nonfunctional tabletop ecology models using found materials and observation notes",
+      "player_verbs": [
+        "create_miniature_biome_diorama",
+        "preview_miniature_biome_diorama",
+        "confirm_miniature_biome_diorama",
+        "review_miniature_biome_diorama",
+        "cancel_miniature_biome_diorama"
+      ],
+      "source_rule": "Models are decorative and never spawn real ecosystem resources",
+      "negative_case": "Diorama cannot alter authoritative habitat score",
+      "fields": {
+        "diorama_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "material_receipts": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "receipt_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "item_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "units": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "biome_notes": {
+          "kind": "object",
+          "properties": {
+            "observation_ids": {
+              "kind": "array",
+              "max_items": 32,
+              "items": {
+                "kind": "string",
+                "max_length": 128
+              }
+            },
+            "content_digest": {
+              "kind": "string",
+              "max_length": 128
+            }
+          }
+        },
+        "layout": {
+          "kind": "array",
+          "max_items": 32,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "part_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "x": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              },
+              "y": {
+                "kind": "integer",
+                "minimum": -1,
+                "maximum": 1000000
+              }
+            }
+          }
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "diorama_id": "",
+        "material_receipts": [],
+        "biome_notes": {
+          "observation_ids": [],
+          "content_digest": ""
+        },
+        "layout": [],
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "diorama_id": "model01",
+        "material_receipts": [
+          {
+            "receipt_id": "modelDebit01",
+            "item_id": "stone01",
+            "units": 2
+          }
+        ],
+        "biome_notes": {
+          "observation_ids": [
+            "obs01"
+          ],
+          "content_digest": "sha256:notes01"
+        },
+        "layout": [
+          {
+            "part_id": "stone01",
+            "x": 2,
+            "y": 3
+          }
+        ],
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd89",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect89",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Miniature Biome Diorama; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Create nonfunctional tabletop ecology models using found materials and observation notes; verify rule: Models are decorative and never spawn real ecosystem resources.",
+        "adversarial": "Diorama cannot alter authoritative habitat score",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    },
+    {
+      "id": "EB-E-090",
+      "title": "Folk Instrument Repair Jam",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_fields": [
+        "instrument_id",
+        "durability",
+        "repair_receipt",
+        "session_id"
+      ],
+      "version": 2,
+      "save_namespace": "emergence.creative.090",
+      "status": "design_only_not_playable",
+      "player_scenario": "Restore a worn original instrument and join an opt-in neighborhood music session",
+      "player_verbs": [
+        "restore_folk_instrument_repair_jam",
+        "preview_folk_instrument_repair_jam",
+        "confirm_folk_instrument_repair_jam",
+        "review_folk_instrument_repair_jam",
+        "cancel_folk_instrument_repair_jam"
+      ],
+      "source_rule": "Repair consumes finite supplies; music contribution uses saved note sequence",
+      "negative_case": "Repairing one instrument cannot duplicate its value",
+      "fields": {
+        "instrument_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "durability": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "repair_receipt": {
+          "kind": "object",
+          "nullable": true,
+          "properties": {
+            "receipt_id": {
+              "kind": "string",
+              "max_length": 128
+            },
+            "spent_units": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            },
+            "restored_points": {
+              "kind": "integer",
+              "minimum": -1,
+              "maximum": 1000000
+            }
+          }
+        },
+        "session_id": {
+          "kind": "string",
+          "max_length": 128
+        },
+        "revision": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 1000000
+        },
+        "day_epoch": {
+          "kind": "integer",
+          "minimum": -1,
+          "maximum": 9000000000
+        },
+        "command_receipts": {
+          "kind": "array",
+          "max_items": 64,
+          "items": {
+            "kind": "object",
+            "properties": {
+              "command_id": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "expected_revision": {
+                "kind": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "effect_digest": {
+                "kind": "string",
+                "max_length": 128
+              },
+              "day_epoch": {
+                "kind": "integer",
+                "minimum": 1,
+                "maximum": 9000000000
+              }
+            }
+          }
+        }
+      },
+      "default_state": {
+        "instrument_id": "",
+        "durability": 0,
+        "repair_receipt": null,
+        "session_id": "",
+        "revision": 0,
+        "day_epoch": -1,
+        "command_receipts": []
+      },
+      "valid_state": {
+        "instrument_id": "lute01",
+        "durability": 65,
+        "repair_receipt": {
+          "receipt_id": "repair01",
+          "spent_units": 2,
+          "restored_points": 15
+        },
+        "session_id": "session01",
+        "revision": 1,
+        "day_epoch": 57,
+        "command_receipts": [
+          {
+            "command_id": "cmd90",
+            "expected_revision": 0,
+            "effect_digest": "sha256:effect90",
+            "day_epoch": 57
+          }
+        ]
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "authorities": [
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "assets": [
+        "Original stylized-realistic creative_experiments cues, legible iconography and optional original ambient audio for Folk Instrument Repair Jam; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Restore a worn original instrument and join an opt-in neighborhood music session; verify rule: Repair consumes finite supplies; music contribution uses saved note sequence.",
+        "adversarial": "Repairing one instrument cannot duplicate its value",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "calendar": "day_epoch=(year-1)*56+season_index*14+day; once-per-day gates require authoritative Principal epoch",
+      "transaction_policy": "Receipts are references only; only Principal can atomically debit/credit authoritative resources. No external asset extraction, no real-world chemical recipes.",
+      "replay_policy": "No duplicated command_id; expected_revision must match prior revision; malformed optional namespace fails closed; save JSON roundtrip exact."
+    }
+  ]
+}
