@@ -2626,10 +2626,18 @@
             "salvage_lots": [
               {
                 "lot_id": "salvage1",
-                "source_receipt": "reused",
+                "source_receipt": "demolition-receipt-1",
                 "input_kg": 100,
                 "reusable_kg": 70,
                 "scrap_kg": 30,
+                "verified": true
+              },
+              {
+                "lot_id": "salvage2",
+                "source_receipt": "demolition-receipt-1",
+                "input_kg": 10,
+                "reusable_kg": 7,
+                "scrap_kg": 3,
                 "verified": true
               }
             ],
