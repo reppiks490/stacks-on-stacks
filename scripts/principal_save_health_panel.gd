@@ -67,6 +67,7 @@ func setup(owner) -> void:
     report_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     report_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
     report_scroll.follow_focus = true
+    report_scroll.focus_mode = Control.FOCUS_ALL
     column.add_child(report_scroll)
     report_label = Label.new()
     report_label.name = "SaveHealthReport"
@@ -147,12 +148,25 @@ func _format_report(report: Dictionary) -> String:
     if str(report.get("temp_status", "missing")) != "missing":
         lines.append(_t("Temporary file is NOT an authoritative save.",
                         "El archivo temporal NO es un guardado autorizado."))
+    lines.append(_t("Scroll report: PageUp/PageDown, LB/RB, or touch drag.",
+                    "Desplazar informe: RePág/AvPág, LB/RB o deslizar."))
     return "\n".join(lines)
 
 func refresh_report() -> void:
     last_report = SaveService.inspect_save_health()
     report_label.text = _format_report(last_report)
     report_scroll.scroll_vertical = 0
+
+## Scroll only the report, never the game world; callers must own this modal.
+func _scroll_report(direction: int) -> void:
+    if not is_open or report_scroll == null or direction == 0:
+        return
+    var bar: VScrollBar = report_scroll.get_v_scroll_bar()
+    if bar == null:
+        return
+    var maximum: int = maxi(0, int(ceil(bar.max_value - bar.page)))
+    var step: int = maxi(48, int(report_scroll.size.y * 0.65))
+    report_scroll.scroll_vertical = clampi(report_scroll.scroll_vertical + direction * step, 0, maximum)
 
 func _blocked() -> bool:
     if game == null or game.village == null:
@@ -204,14 +218,26 @@ func _process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
     if event is InputEventKey and event.pressed and not event.is_echo():
-        if event.physical_keycode == KEY_Y:
+        if is_open and event.physical_keycode == KEY_PAGEDOWN:
+            _scroll_report(1)
+            get_viewport().set_input_as_handled()
+        elif is_open and event.physical_keycode == KEY_PAGEUP:
+            _scroll_report(-1)
+            get_viewport().set_input_as_handled()
+        elif event.physical_keycode == KEY_Y:
             toggle_panel()
             get_viewport().set_input_as_handled()
         elif event.physical_keycode == KEY_ESCAPE and is_open:
             close_panel()
             get_viewport().set_input_as_handled()
     elif event is InputEventJoypadButton and event.pressed:
-        if event.button_index == JOY_BUTTON_START:
+        if is_open and event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+            _scroll_report(1)
+            get_viewport().set_input_as_handled()
+        elif is_open and event.button_index == JOY_BUTTON_LEFT_SHOULDER:
+            _scroll_report(-1)
+            get_viewport().set_input_as_handled()
+        elif event.button_index == JOY_BUTTON_START:
             toggle_panel()
             get_viewport().set_input_as_handled()
         elif event.button_index == JOY_BUTTON_B and is_open:
