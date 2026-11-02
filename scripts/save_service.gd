@@ -3,6 +3,8 @@ extends RefCounted
 ## A temporary file + validated backup makes failed writes recoverable.
 ## The backup is never treated as a second active save slot.
 ## Resumed backup saves quarantine corrupt primaries; this is not power-loss atomicity.
+## Nested schema-1 bounds mirror the current Farm/Animals/Village loader clamps.
+## This is fail-closed admission, not concurrent-writer or fsync durability proof.
 
 const SAVE_PATH: String = "user://everbloom_save_v1.json"
 const TEMP_PATH: String = "user://everbloom_save_v1.json.tmp"
