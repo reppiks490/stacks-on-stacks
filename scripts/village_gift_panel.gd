@@ -119,8 +119,8 @@ func _blocked() -> bool:
         return true
     if village.topic_panel != null and village.topic_panel.panel.visible:
         return true
-    var host = village.game
-    if host != null and host.get("save_health_panel") != null and host.save_health_panel.is_open:
+    var health: Variant = village._host_property("save_health_panel", null)
+    if health != null and is_instance_valid(health) and bool(health.get("is_open")):
         return true
     return false
 
