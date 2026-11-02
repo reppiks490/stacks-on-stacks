@@ -252,12 +252,29 @@ func _choose_index(index: int) -> String:
     close_gifts()
     return _show_result(response)
 
+## V19: D-pad/arrow navigation follows actual enabled focus targets,
+## including Cancel. Disabled or out-of-stock gifts cannot trap focus.
+## Navigation is presentation-only; only _choose_index invokes Village.act.
+func _focusable_choices() -> Array[Button]:
+    var choices: Array[Button] = []
+    for index in range(gift_ids.size()):
+        if gift_buttons[index].visible and not gift_buttons[index].disabled:
+            choices.append(gift_buttons[index])
+    choices.append(cancel_button)
+    return choices
+
 func _navigate(direction: int) -> void:
-    if gift_ids.is_empty():
+    if panel == null or not panel.visible:
         return
-    selected_index = clampi(selected_index + direction, 0, gift_ids.size() - 1)
-    if not gift_buttons[selected_index].disabled:
-        gift_buttons[selected_index].grab_focus()
+    var choices: Array[Button] = _focusable_choices()
+    var current: int = choices.find(get_viewport().gui_get_focus_owner())
+    if current < 0:
+        current = choices.size() if direction < 0 else -1
+    var next_index: int = clampi(current + direction, 0, choices.size() - 1)
+    choices[next_index].grab_focus()
+    var gift_index: int = gift_buttons.find(choices[next_index])
+    if gift_index >= 0:
+        selected_index = gift_index
 
 func _activate_focused() -> void:
     if panel == null or not panel.visible:
