@@ -90,6 +90,35 @@ func _run() -> void:
             and ui.topic_ids == stable_topic_ids and paused,
             "keyboard C restores English in place without losing selected topic")
     _check(village.save_state() == initial and game.gold == gold_before, "opening dialogue menu has no economy/social effects")
+    # V19: a keyboard/controller confirm must activate the *focused* widget,
+    # not the last selected topic index. This is essential for Tab navigation.
+    ui.language_button.grab_focus()
+    ui._input(_key(KEY_ENTER))
+    _check(ui.panel.visible and paused and village.dialogue_locale == "es"
+            and ui.language_button.text == "English",
+            "keyboard Enter activates focused language control without talking")
+    ui._input(_pad(JOY_BUTTON_A))
+    _check(ui.panel.visible and paused and village.dialogue_locale == "en",
+            "controller A activates focused language control without talking")
+    _check(village.save_state() == initial and game.gold == gold_before
+            and game.inventory == inventory_before and game.restoration == restoration_before,
+            "focused language confirmations cannot mint friendship or resources")
+    ui.cancel_button.grab_focus()
+    ui._input(_key(KEY_ENTER))
+    _check(not ui.panel.visible and not paused,
+            "keyboard Enter on focused cancel closes menu rather than talking")
+    _check(village.save_state() == initial and game.gold == gold_before,
+            "focused keyboard cancel conserves all authoritative state")
+    ui.open_topics()
+    _check(ui.panel.visible and paused, "conversation reopens after focused cancel")
+    ui.cancel_button.grab_focus()
+    ui._input(_pad(JOY_BUTTON_A))
+    _check(not ui.panel.visible and not paused,
+            "controller A on focused cancel closes without selecting a topic")
+    _check(village.save_state() == initial and game.gold == gold_before,
+            "focused controller cancel cannot create a conversation reward")
+    ui.open_topics()
+    _check(ui.panel.visible and paused, "conversation reopens after controller cancel")
     _check(not village.social_journal.panel.visible, "journal initially closed")
     village.social_journal.open_journal()
     _check(not village.social_journal.panel.visible, "second modal cannot steal pause ownership")
@@ -108,6 +137,14 @@ func _run() -> void:
 
     ui._input(_key(KEY_U))
     _check(ui.panel.visible, "keyboard U reopens conversation")
+    var alternate_id: String = ui.topic_ids[1]
+    var alternate_line: String = village._dialogue(village.residents[0], "mira", game.day_epoch(), alternate_id)
+    ui.topic_buttons[1].grab_focus()
+    ui._input(_key(KEY_ENTER))
+    _check(not ui.panel.visible and not paused and alternate_line in ui.last_result,
+            "keyboard Enter follows focused second topic, not stale selected index")
+    ui._input(_key(KEY_U))
+    _check(ui.panel.visible, "keyboard U reopens after focused topic activation")
     ui._input(_key(KEY_2))
     _check(not ui.panel.visible and not paused, "keyboard 2 selects alternate choice")
     _check(int(village.affection["mira"]) == 4 and int(village.memories["mira"]["talks"]) == 1,
