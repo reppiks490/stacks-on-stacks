@@ -6,6 +6,7 @@ on:
       - 'scripts/village_life_acceptance.gd'
       - 'scripts/village_life_test_host.gd'
       - 'data/village_life.json'
+      - 'docs/VILLAGE_SYSTEMS.md'
       - '.github/workflows/everbloom-village-life-acceptance.yml'
 permissions:
   contents: read
