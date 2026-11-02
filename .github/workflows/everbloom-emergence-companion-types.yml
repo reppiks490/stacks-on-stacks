@@ -1,0 +1,23 @@
+name: Everbloom Emergence E061-E070 companion design-state audit
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed_state/companion_061_070.json'
+      - 'docs/innovation/emergence/typed_state/validate_companion_061_070.py'
+      - 'docs/innovation/emergence/typed_state/COMPANION_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-companion-types.yml'
+permissions:
+  contents: read
+jobs:
+  companion-design-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile strict companion validator
+        run: python -m py_compile docs/innovation/emergence/typed_state/validate_companion_061_070.py
+      - name: Validate design-only states, hostile mutations and roundtrips
+        run: python docs/innovation/emergence/typed_state/validate_companion_061_070.py --self-test
