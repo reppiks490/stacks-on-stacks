@@ -24,7 +24,7 @@ EXPECTED = {
     "noncanonical_save_namespace": 10,
 }
 SHA = re.compile(r"^[a-f0-9]{40}$")
-ID = re.compile(r"^EB-B-(\\d{3})$")
+ID = re.compile("^EB-B-([0-9]{3})$")
 
 
 class AuditFailure(ValueError):
@@ -68,7 +68,7 @@ def evaluate(doc: dict) -> dict:
         require(len(mapped) >= 5, "source fields missing")
         require(len({f.get("source") for f in mapped}) == len(mapped), "duplicate source field")
         for f in mapped:
-            require(f.get("root") == re.split(r"[.\\[]", f.get("target", ""))[0], "nested field root")
+            require(f.get("root") == f.get("target", "").split(".")[0].split("[")[0], "nested field root")
             require(f.get("exists") is True, "source field not mapped to typed state")
         require(row.get("receipt_field_present") is True, "receipt field missing")
         require(row.get("save_version") == 1, "unexpected migration version")
