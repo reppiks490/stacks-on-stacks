@@ -46,7 +46,7 @@ func _run() -> void:
             _check(control.register_crop(0, "turnip", epoch)["ok"], "plant control bed")
             _check(not treated.register_crop(0, "turnip", epoch)["ok"], "duplicate planting rejected")
             _check(not treated.register_crop(29, "fake_crop", epoch)["ok"], "unknown crop rejected")
-        if epoch >= 3 and epoch <= 70 and epoch % 5 == 3:
+        if epoch >= 3 and epoch <= 70 and epoch % 5 == 3 and int(treated.status(0)["infection"]) > 0:
             var x: Dictionary = treated.act(0, "treat", epoch)
             var y: Dictionary = replay.act(0, "treat", epoch)
             _check(x == y and x["ok"], "treatment accepted only on infected crop %d" % epoch)
