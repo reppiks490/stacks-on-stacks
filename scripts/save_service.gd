@@ -176,7 +176,7 @@ static func validate_payload(payload: Dictionary) -> bool:
                 var record: Dictionary = paddock
                 if record.size() != 1 or not record.has("forage"):
                     return false
-                if not _whole_in_range(record["forage"], 0.0, 7.0):
+                if not _whole_in_range(paddock.get("forage", null), 0.0, 7.0):
                     return false
             continue
         if typeof(livestock[id]) != TYPE_DICTIONARY:
