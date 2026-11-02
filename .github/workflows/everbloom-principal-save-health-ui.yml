@@ -8,6 +8,7 @@ on:
       - 'scripts/principal_save_health_panel_acceptance.gd'
       - 'docs/PRINCIPAL_P12_SAVE_HEALTH_ACCESSIBILITY.md'
       - 'docs/PRINCIPAL_P11_MODAL_EXCLUSION.md'
+      - 'docs/PRINCIPAL_P12_TEXT_SCALING.md'
       - '.github/workflows/everbloom-principal-save-health-ui.yml'
 permissions:
   contents: read
