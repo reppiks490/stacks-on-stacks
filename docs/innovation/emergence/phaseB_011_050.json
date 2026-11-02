@@ -828,7 +828,9 @@
         "fields": [
           "season_log",
           "read_cursor",
-          "causal_links"
+          "causal_links",
+          "snapshot_revision",
+          "playback_mode"
         ],
         "receipts": [
           "command_id",
@@ -1618,7 +1620,9 @@
         "fields": [
           "species_signals",
           "heard_cells",
-          "diversity_index"
+          "diversity_index",
+          "signal_provenance",
+          "accessibility_mode"
         ],
         "receipts": [
           "command_id",
