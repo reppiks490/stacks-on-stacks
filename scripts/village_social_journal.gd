@@ -2,6 +2,8 @@ extends CanvasLayer
 ## V19: first-party read-only social recap, derived from authoritative Village state.
 ## Focusable cards, keyboard/gamepad navigation and bilingual presentation have no save effects.
 const HISTORY_PAGE_SIZE := 3
+const TEXT_SCALE_FACTORS := [1.0, 1.25, 1.5]
+const MIN_TOUCH_TARGET := 44.0
 const LABELS := {
     "en": {
         "open": "Neighbors [L]", "title": "Larkspur • Neighbors & Memories",
@@ -16,7 +18,9 @@ const LABELS := {
         "earlier": "Earlier", "later": "Later",
         "open_tip": "Open journal: L, controller Back, or tap",
         "close_tip": "Return to the valley: Escape, L or controller Back",
-        "locale_tip": "Change journal and conditional dialogue language"
+        "locale_tip": "Change journal and conditional dialogue language",
+        "smaller_tip": "Smaller text (Ctrl+- or controller X)",
+        "larger_tip": "Larger text (Ctrl+= or controller Y)"
     },
     "es": {
         "open": "Vecinos [L]", "title": "Larkspur • Vecinos y recuerdos",
@@ -31,7 +35,9 @@ const LABELS := {
         "earlier": "Anteriores", "later": "Siguientes",
         "open_tip": "Abrir diario: L, botón Atrás del mando o tocar",
         "close_tip": "Volver al valle: Escape, L o botón Atrás",
-        "locale_tip": "Cambiar el idioma del diario y del diálogo condicional"
+        "locale_tip": "Cambiar el idioma del diario y del diálogo condicional",
+        "smaller_tip": "Reducir texto (Ctrl+- o botón X del mando)",
+        "larger_tip": "Ampliar texto (Ctrl+= o botón Y del mando)"
     }
 }
 var village
@@ -40,6 +46,9 @@ var panel: PanelContainer
 var entries: VBoxContainer
 var close_button: Button
 var language_button: Button
+var smaller_text_button: Button
+var larger_text_button: Button
+var text_scale_index: int = 0
 var title_label: Label
 var hint_label: Label
 var footer_label: Label
@@ -102,20 +111,38 @@ func setup(owner) -> void:
     var layout := VBoxContainer.new()
     layout.add_theme_constant_override("separation", 8)
     panel.add_child(layout)
-    var header := HBoxContainer.new()
-    layout.add_child(header)
     title_label = Label.new()
     title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    title_label.add_theme_font_size_override("font_size", 18)
-    header.add_child(title_label)
+    layout.add_child(title_label)
+    # A separate controls row avoids squeezing the title on narrow touch screens.
+    var header := HBoxContainer.new()
+    header.name = "JournalHeaderControls"
+    layout.add_child(header)
+    smaller_text_button = Button.new()
+    smaller_text_button.name = "JournalSmallerText"
+    smaller_text_button.text = "A−"
+    smaller_text_button.custom_minimum_size.y = MIN_TOUCH_TARGET
+    smaller_text_button.focus_mode = Control.FOCUS_ALL
+    smaller_text_button.pressed.connect(_change_text_scale.bind(-1))
+    header.add_child(smaller_text_button)
+    larger_text_button = Button.new()
+    larger_text_button.name = "JournalLargerText"
+    larger_text_button.text = "A+"
+    larger_text_button.custom_minimum_size.y = MIN_TOUCH_TARGET
+    larger_text_button.focus_mode = Control.FOCUS_ALL
+    larger_text_button.pressed.connect(_change_text_scale.bind(1))
+    header.add_child(larger_text_button)
     language_button = Button.new()
     language_button.name = "JournalLanguage"
+    language_button.custom_minimum_size.y = MIN_TOUCH_TARGET
+    language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     language_button.focus_mode = Control.FOCUS_ALL
     language_button.pressed.connect(_toggle_locale)
     header.add_child(language_button)
     close_button = Button.new()
     close_button.name = "CloseSocialJournal"
+    close_button.custom_minimum_size.y = MIN_TOUCH_TARGET
     close_button.focus_mode = Control.FOCUS_ALL
     close_button.pressed.connect(close_journal)
     header.add_child(close_button)
@@ -173,7 +200,51 @@ func setup(owner) -> void:
     footer_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     layout.add_child(footer_label)
     panel.visible = false
+    get_viewport().size_changed.connect(_update_layout)
+    _update_layout()
     _update_labels()
+    _apply_text_scale()
+
+## Responsive margins and readable history without per-frame layout polling.
+func _layout_for_width(width: float) -> void:
+    var narrow: bool = width < 600.0
+    panel.anchor_left = 0.02 if narrow else 0.04
+    panel.anchor_right = 0.98 if narrow else 0.96
+    panel.anchor_top = 0.02 if narrow else 0.04
+    panel.anchor_bottom = 0.98 if narrow else 0.96
+    history_text.custom_minimum_size.y = 95.0 if narrow else 125.0
+
+func _update_layout() -> void:
+    _layout_for_width(get_viewport().get_visible_rect().size.x)
+
+func _set_font_size(control: Control, base: int) -> void:
+    if control == null:
+        return
+    var factor: float = float(TEXT_SCALE_FACTORS[text_scale_index])
+    var property: String = "normal_font_size" if control is RichTextLabel else "font_size"
+    control.add_theme_font_size_override(property, int(round(float(base) * factor)))
+
+func _apply_text_scale() -> void:
+    _set_font_size(title_label, 18)
+    _set_font_size(selected_label, 16)
+    _set_font_size(history_title, 16)
+    _set_font_size(history_text, 16)
+    _set_font_size(history_page_label, 14)
+    _set_font_size(hint_label, 14)
+    _set_font_size(footer_label, 14)
+    for button in [opener, smaller_text_button, larger_text_button,
+            language_button, close_button, history_earlier_button, history_later_button]:
+        _set_font_size(button, 16)
+    for card in cards:
+        _set_font_size(card, 16)
+    smaller_text_button.disabled = text_scale_index == 0
+    larger_text_button.disabled = text_scale_index == TEXT_SCALE_FACTORS.size() - 1
+
+func _change_text_scale(direction: int) -> void:
+    if panel == null or not panel.visible or direction == 0:
+        return
+    text_scale_index = clampi(text_scale_index + direction, 0, TEXT_SCALE_FACTORS.size() - 1)
+    _apply_text_scale()
 
 func _update_labels() -> void:
     opener.text = _t("open")
@@ -183,6 +254,8 @@ func _update_labels() -> void:
     close_button.tooltip_text = _t("close_tip")
     language_button.text = "Español" if _locale() == "en" else "English"
     language_button.tooltip_text = _t("locale_tip")
+    smaller_text_button.tooltip_text = _t("smaller_tip")
+    larger_text_button.tooltip_text = _t("larger_tip")
     hint_label.text = _t("hint")
     footer_label.text = _t("footer")
     history_title.text = _t("history")
@@ -228,6 +301,7 @@ func refresh() -> void:
     rendered_text = "\n\n".join(lines)
     selected_index = clampi(selected_index, 0, maxi(0, cards.size() - 1))
     _update_selection_label()
+    _apply_text_scale()
 
 func _latest_history_page(index: int) -> int:
     var records: Array = village.social_recap()
@@ -332,7 +406,11 @@ func _input(event: InputEvent) -> void:
             toggle_journal()
             get_viewport().set_input_as_handled()
         elif panel != null and panel.visible:
-            if key == KEY_ESCAPE:
+            if event.ctrl_pressed and key == KEY_EQUAL:
+                _change_text_scale(1)
+            elif event.ctrl_pressed and key == KEY_MINUS:
+                _change_text_scale(-1)
+            elif key == KEY_ESCAPE:
                 close_journal()
             elif key == KEY_DOWN:
                 _navigate(1)
@@ -358,7 +436,11 @@ func _input(event: InputEvent) -> void:
             toggle_journal()
             get_viewport().set_input_as_handled()
         elif panel != null and panel.visible:
-            if event.button_index == JOY_BUTTON_B:
+            if event.button_index == JOY_BUTTON_Y:
+                _change_text_scale(1)
+            elif event.button_index == JOY_BUTTON_X:
+                _change_text_scale(-1)
+            elif event.button_index == JOY_BUTTON_B:
                 close_journal()
             elif event.button_index == JOY_BUTTON_DPAD_DOWN:
                 _navigate(1)
