@@ -93,7 +93,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "water_depth_cm": {
               "type": "integer",
@@ -370,7 +371,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "fuel_ledger": {
               "type": "object",
@@ -666,7 +668,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "stages": {
               "type": "array",
@@ -958,7 +961,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "plots": {
               "type": "array",
@@ -1278,7 +1282,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "towers": {
               "type": "array",
@@ -1590,7 +1595,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "bays": {
               "type": "array",
@@ -1916,7 +1922,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "zones": {
               "type": "array",
@@ -2228,7 +2235,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "crews": {
               "type": "array",
@@ -2529,7 +2537,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "panels": {
               "type": "array",
@@ -2873,7 +2882,8 @@
                 "min_length": 1,
                 "max_length": 96
               },
-              "max_items": 64
+              "max_items": 64,
+              "unique_items": true
             },
             "screens": {
               "type": "array",
