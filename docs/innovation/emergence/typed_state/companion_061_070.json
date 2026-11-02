@@ -240,7 +240,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "One sample cannot be replayed to max skill"
+      "negative": "One sample cannot be replayed to max skill",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "scent_samples": "scent_samples",
+        "confidence": "confidence",
+        "rest_epoch": "rest_epoch"
+      }
     },
     {
       "id": "EB-E-062",
@@ -444,7 +451,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt"
+      "negative": "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "alert_ids": "alert_ids",
+        "search_area": "search_area",
+        "rescue_target": "rescue_target",
+        "completion": "completion"
+      }
     },
     {
       "id": "EB-E-063",
@@ -674,7 +688,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "One dog cannot move animals already assigned elsewhere"
+      "negative": "One dog cannot move animals already assigned elsewhere",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "waypoints": "waypoints",
+        "herd_consent": "herd_consent",
+        "route_receipt": "route_receipt"
+      }
     },
     {
       "id": "EB-E-064",
@@ -886,7 +907,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "Repeated petting cannot instantly erase severe stress"
+      "negative": "Repeated petting cannot instantly erase severe stress",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "stress_level": "stress_level",
+        "care_receipts": "care_receipts",
+        "training_pause": "training_pause"
+      }
     },
     {
       "id": "EB-E-065",
@@ -1133,7 +1161,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "Search spam cannot create duplicate keepsakes"
+      "negative": "Search spam cannot create duplicate keepsakes",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "search_cells": "search_cells",
+        "protected_dens": "protected_dens",
+        "find_receipts": "find_receipts",
+        "companion_fatigue": "companion_fatigue"
+      }
     },
     {
       "id": "EB-E-066",
@@ -1325,7 +1360,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "Companion cannot be permanently lost because player missed warning"
+      "negative": "Companion cannot be permanently lost because player missed warning",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "forecast_epoch": "forecast_epoch",
+        "shelter_choice": "shelter_choice",
+        "care_status": "care_status"
+      }
     },
     {
       "id": "EB-E-067",
@@ -1505,6 +1547,23 @@
               }
             ]
           }
+        },
+        {
+          "name": "duplicate_segment_settlement",
+          "patch": {
+            "trail_segments": [
+              {
+                "segment_id": "trail-1",
+                "companion_id": "dog-1",
+                "receipt_id": "seg-1"
+              },
+              {
+                "segment_id": "trail-2",
+                "companion_id": "dog-2",
+                "receipt_id": "seg-1"
+              }
+            ]
+          }
         }
       ],
       "rule_codes": [
@@ -1574,7 +1633,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "Swap during action cannot duplicate both companions' reward"
+      "negative": "Swap during action cannot duplicate both companions' reward",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "active_id": "active_id",
+        "rotation_epoch": "rotation_epoch",
+        "energy_ledger": "energy_ledger",
+        "trail_segments": "trail_segments"
+      }
     },
     {
       "id": "EB-E-068",
@@ -1809,7 +1875,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "Unlearned gesture cannot bypass skill prerequisite"
+      "negative": "Unlearned gesture cannot bypass skill prerequisite",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "gesture_map": "gesture_map",
+        "learned_cues": "learned_cues",
+        "request_history": "request_history",
+        "consent": "consent"
+      }
     },
     {
       "id": "EB-E-069",
@@ -1957,6 +2030,12 @@
           "patch": {
             "safety_radius_cm": 0
           }
+        },
+        {
+          "name": "no_knowledge_reward_for_observation",
+          "patch": {
+            "reward_kind": "none"
+          }
         }
       ],
       "rule_codes": [
@@ -1993,8 +2072,6 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
       "additions": [
         "companion_id",
-        "safety_radius_cm",
-        "companion_distance_cm",
         "protected_nest",
         "reward_kind",
         "day_epoch"
@@ -2029,7 +2106,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "Repeated approach cannot override protected nesting boundary"
+      "negative": "Repeated approach cannot override protected nesting boundary",
+      "source_projection_blocker": "companion_position -> distance requires Valley-authoritative nest center, actor world transform and units; cannot losslessly migrate. safety_radius -> cm needs unit confirmation. No automatic migration or gameplay activation.",
+      "source_field_mapping": {
+        "species_id": "species_id",
+        "safety_radius": "safety_radius_cm",
+        "companion_position": "companion_distance_cm",
+        "observations": "observations"
+      }
     },
     {
       "id": "EB-E-070",
@@ -2246,7 +2330,14 @@
         ],
         "status": "unmeasured_planning_estimate_not_a_commitment"
       },
-      "negative": "A canceled mentorship cannot award a completed skill"
+      "negative": "A canceled mentorship cannot award a completed skill",
+      "source_projection_blocker": null,
+      "source_field_mapping": {
+        "mentor_id": "mentor_id",
+        "learner_id": "learner_id",
+        "session_receipts": "session_receipts",
+        "skill_progress": "skill_progress"
+      }
     }
   ]
 }
