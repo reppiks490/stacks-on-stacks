@@ -65,6 +65,7 @@ func setup(host) -> void:
     social_journal.set_script(load("res://scripts/village_social_journal.gd"))
     add_child(social_journal)
     social_journal.setup(self)
+    # Input-only adapter; paid shifts, calendar gates and resources stay in act("job").
     job_panel = CanvasLayer.new()
     job_panel.name = "VillageJobPanel"
     job_panel.set_script(load("res://scripts/village_job_panel.gd"))
