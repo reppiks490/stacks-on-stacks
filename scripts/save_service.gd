@@ -11,38 +11,111 @@ const SCHEMA: int = 1
 static func _is_number(value: Variant) -> bool:
     return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
 
+## Reject invalid and non-JSON state *before* any gameplay state is mutated.
+## Integers stay within JSON's exact IEEE-754 range to avoid silent currency/item drift.
+const MAX_SAFE_INTEGER: float = 9007199254740991.0
+
+static func _finite_number(value: Variant) -> bool:
+    if not _is_number(value):
+        return false
+    var number: float = float(value)
+    return not is_nan(number) and not is_inf(number)
+
+static func _whole_in_range(value: Variant, minimum: float, maximum: float) -> bool:
+    if not _finite_number(value):
+        return false
+    var number: float = float(value)
+    return number >= minimum and number <= maximum and floor(number) == number
+
+static func _safe_json_tree(value: Variant, depth: int = 0) -> bool:
+    if depth > 16:
+        return false
+    match typeof(value):
+        TYPE_NIL, TYPE_BOOL:
+            return true
+        TYPE_STRING:
+            return (value as String).length() <= 4096
+        TYPE_INT, TYPE_FLOAT:
+            return _finite_number(value)
+        TYPE_ARRAY:
+            var items: Array = value
+            for item in items:
+                if not _safe_json_tree(item, depth + 1):
+                    return false
+            return true
+        TYPE_DICTIONARY:
+            var mapping: Dictionary = value
+            for key in mapping:
+                if typeof(key) != TYPE_STRING or (key as String).is_empty():
+                    return false
+                if not _safe_json_tree(mapping[key], depth + 1):
+                    return false
+            return true
+    return false
+
 static func validate_payload(payload: Dictionary) -> bool:
-    if not _is_number(payload.get("schema", null)) or int(payload["schema"]) != SCHEMA:
+    if not _safe_json_tree(payload):
         return false
-    for key: String in ["day", "season", "minute", "gold", "energy"]:
-        if not _is_number(payload.get(key, null)):
-            return false
-    if int(payload["day"]) < 1 or int(payload["day"]) > 14:
+    if not _whole_in_range(payload.get("schema", null), 1.0, 1.0):
         return false
-    if int(payload["season"]) < 0 or int(payload["season"]) > 3:
+    if not _whole_in_range(payload.get("day", null), 1.0, 14.0):
+        return false
+    if not _whole_in_range(payload.get("season", null), 0.0, 3.0):
+        return false
+    # Pre-year schema-1 saves are valid: game.gd defaults a missing year to 1.
+    if payload.has("year") and not _whole_in_range(payload["year"], 1.0, MAX_SAFE_INTEGER):
+        return false
+    if not _finite_number(payload.get("minute", null)):
         return false
     if float(payload["minute"]) < 0.0 or float(payload["minute"]) > 1440.0:
         return false
-    if float(payload["gold"]) < 0.0 or float(payload["energy"]) < 0.0:
+    if not _whole_in_range(payload.get("gold", null), 0.0, MAX_SAFE_INTEGER):
         return false
-    if payload.has("year") and (not _is_number(payload["year"]) or int(payload["year"]) < 1):
+    if not _finite_number(payload.get("energy", null)):
         return false
-    if typeof(payload.get("inventory", null)) != TYPE_DICTIONARY:
+    if float(payload["energy"]) < 0.0 or float(payload["energy"]) > 100.0:
         return false
-    if typeof(payload.get("farm", null)) != TYPE_ARRAY:
+    if payload.has("weather") and typeof(payload["weather"]) != TYPE_STRING:
         return false
-    if typeof(payload.get("village", null)) != TYPE_DICTIONARY:
+    if payload.has("restoration") and not _whole_in_range(payload["restoration"], 0.0, 100.0):
         return false
-    if typeof(payload.get("animals", null)) != TYPE_DICTIONARY:
+    for counter: String in ["care_actions", "crops_harvested"]:
+        if payload.has(counter) and not _whole_in_range(payload[counter], 0.0, MAX_SAFE_INTEGER):
+            return false
+    if payload.has("social_contacts") and typeof(payload["social_contacts"]) != TYPE_DICTIONARY:
         return false
+
+    var items: Variant = payload.get("inventory", null)
+    if typeof(items) != TYPE_DICTIONARY:
+        return false
+    var inventory: Dictionary = items
+    for id in inventory:
+        if not _whole_in_range(inventory[id], 0.0, MAX_SAFE_INTEGER):
+            return false
+    var field_records: Variant = payload.get("farm", null)
+    if typeof(field_records) != TYPE_ARRAY:
+        return false
+    for record in field_records:
+        if typeof(record) != TYPE_DICTIONARY:
+            return false
+    var villagers: Variant = payload.get("village", null)
+    if typeof(villagers) != TYPE_DICTIONARY:
+        return false
+    var livestock: Variant = payload.get("animals", null)
+    if typeof(livestock) != TYPE_DICTIONARY:
+        return false
+    for id in livestock:
+        if typeof(livestock[id]) != TYPE_DICTIONARY:
+            return false
+
     var position: Variant = payload.get("hero_position", null)
     if typeof(position) != TYPE_ARRAY:
         return false
     var coordinates: Array = position
     if coordinates.size() != 3:
         return false
-    for value: Variant in coordinates:
-        if not _is_number(value):
+    for value in coordinates:
+        if not _finite_number(value) or absf(float(value)) > 1000000.0:
             return false
     return true
 
