@@ -25,7 +25,7 @@ Game orchestrator is the sole calendar authority: `year >= 1`, `season_index = 0
 ## Contract B: persistence
 Current `game.gd` writes `user://everbloom_save_v1.json` with `schema=1`. Retain compatibility for existing schema-1 saves. Required persisted fields: `year` (optional in pre-upgrade v1; default 1), `day`, `season`, `minute`, `gold`, `energy`, `weather`, `restoration`, `crops_harvested`, `social_contacts`, `care_actions`, `inventory`, `farm`, `village`, `animals`, `hero_position`. Domain save structures are delegated to their owners.
 
-**Acceptance:** Save/load round trip across a seasonal rollover, no item duplication, no negative balances, corrupted/unknown-schema rejection, preservation of the current session on invalid saves, backup and migration fixtures. Principal candidate adds `scripts/save_service.gd` with schema-1 validation, temporary-file readback, previous-primary backup and backup fallback. **Native parsing and real file-fault tests must pass before accepting this change.** Future v2 requires explicit migration and preserved backups. No silent overwrite of corrupt primary data.
+**Acceptance:** Save/load round trip across a seasonal rollover, no item duplication, no negative balances, corrupted/unknown-schema rejection, preservation of the current session on invalid saves, backup and migration fixtures. Integrated `scripts/save_service.gd` adds schema-1 validation, temporary-file readback, previous-primary backup and backup fallback. **Native Godot filesystem roundtrip and deliberately corrupted-primary recovery passed** at `29a5c083` ([run 41398131319](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41398131319)). Power-loss crash consistency, file-lock behavior, data-conservation and save migration are still unverified. Future v2 requires explicit migration and preserved backups. No silent overwrite of corrupt primary data.
 
 ## Contract C: domain ownership and integration
 - **Principal:** `scripts/game.gd`, `project.godot`, architecture, shared API contracts, time/save orchestration, merge decisions.
@@ -54,5 +54,5 @@ Target 60 FPS on desktop and measured 30/60 FPS mobile modes; these are goals, n
 - No independent gameplay tests for crop progression, inventory conservation or save recovery.
 - Daily social/animal gating repeats annually without monotonic epoch.
 - Unverified engine parsing and unknown mobile performance.
-- Direct save writes are not crash-safe; add backup/atomic replacement after native test coverage.
+- Primary saves now use validated temp writes and backup fallback, with a native recovery test. Power-loss atomicity, Windows file locks, migration fixtures and long-running save integrity remain unverified.
 - Scene's current meshes are graybox placeholders; visual quality is not yet production-level.
