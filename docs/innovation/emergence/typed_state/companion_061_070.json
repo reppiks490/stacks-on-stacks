@@ -1,0 +1,1832 @@
+{
+  "schema_version": 1,
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "source": {
+    "branch": "game/everbloom-emergence-phaseB-100-20261102",
+    "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+    "path": "docs/innovation/emergence/phaseB_051_110.json",
+    "blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac"
+  },
+  "base_main": "07546c9402bd0d44c899719a115c1a46b91d85cc",
+  "owner": "Emergence",
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "state_contracts": [
+    {
+      "id": "EB-E-61",
+      "title": "Scent Mosaic Tracker",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "companion_id",
+        "scent_samples",
+        "confidence",
+        "rest_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_61",
+      "player_scenario": "Train a willing companion to distinguish distinct harmless scent samples with humane rest",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "companion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "scent_samples": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "sample_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991
+              },
+              "quality": {
+                "type": "integer",
+                "min": 1,
+                "max": 100
+              }
+            }
+          },
+          "max_items": 8,
+          "unique_by": "sample_id"
+        },
+        "confidence": {
+          "type": "integer",
+          "min": 0,
+          "max": 100
+        },
+        "rest_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "training_receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96
+          },
+          "max_items": 8,
+          "unique_by": "$value"
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "companion_id": "",
+            "scent_samples": [],
+            "confidence": 0,
+            "rest_epoch": -1,
+            "training_receipts": []
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "companion_id": "hound-1",
+            "scent_samples": [
+              {
+                "sample_id": "herb",
+                "epoch": 57,
+                "quality": 80
+              },
+              {
+                "sample_id": "pine",
+                "epoch": 58,
+                "quality": 90
+              },
+              {
+                "sample_id": "earth",
+                "epoch": 58,
+                "quality": 75
+              }
+            ],
+            "confidence": 60,
+            "rest_epoch": 58,
+            "training_receipts": [
+              "train-herb",
+              "train-pine",
+              "train-earth"
+            ]
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "one_sample_max_skill",
+          "patch": {
+            "confidence": 100
+          }
+        },
+        {
+          "name": "future_sample",
+          "patch": {
+            "rest_epoch": 57
+          }
+        },
+        {
+          "name": "excess_training_receipts",
+          "patch": {
+            "training_receipts": [
+              "a",
+              "b",
+              "c",
+              "d"
+            ]
+          }
+        },
+        {
+          "name": "duplicate_sample",
+          "patch": {
+            "scent_samples": [
+              {
+                "sample_id": "herb",
+                "epoch": 57,
+                "quality": 80
+              },
+              {
+                "sample_id": "herb",
+                "epoch": 58,
+                "quality": 90
+              }
+            ]
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-62",
+      "title": "Rescue Bark Triangulation",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [],
+      "save_namespace": "emergence.eb_e_62",
+      "player_scenario": "Use accessible companion alerts to locate a stranded animal, requiring reachable path and stamina",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "alert_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96
+          },
+          "max_items": 8,
+          "unique_by": "$value"
+        },
+        "search_area": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "rescue_target": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "completion": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "reachable": {
+          "type": "boolean"
+        },
+        "stamina_cost": {
+          "type": "integer",
+          "min": 0,
+          "max": 100
+        },
+        "safe_clue_mode": {
+          "type": "enum",
+          "values": [
+            "visual",
+            "audio_and_visual"
+          ]
+        },
+        "target_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "alert_ids": [],
+            "search_area": "",
+            "rescue_target": "",
+            "completion": null,
+            "reachable": false,
+            "stamina_cost": 0,
+            "safe_clue_mode": "visual",
+            "target_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "alert_ids": [
+              "bark-west",
+              "bark-north"
+            ],
+            "search_area": "meadow",
+            "rescue_target": "lamb-8",
+            "completion": "rescue-lamb-8",
+            "reachable": true,
+            "stamina_cost": 4,
+            "safe_clue_mode": "visual",
+            "target_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "unreachable_rescue",
+          "patch": {
+            "reachable": false
+          }
+        },
+        {
+          "name": "no_stamina",
+          "patch": {
+            "stamina_cost": 0
+          }
+        },
+        {
+          "name": "single_alert",
+          "patch": {
+            "alert_ids": [
+              "bark-west"
+            ]
+          }
+        },
+        {
+          "name": "unbound_epoch",
+          "patch": {
+            "target_epoch": -1
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-63",
+      "title": "Herd Whisper Formation",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "companion_id"
+      ],
+      "save_namespace": "emergence.eb_e_63",
+      "player_scenario": "Suggest consented grazing waypoints without overriding Farming's livestock authority",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "companion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "waypoints": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "waypoint_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "animal_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "approved": {
+                "type": "boolean"
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "waypoint_id"
+        },
+        "herd_consent": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96
+          },
+          "max_items": 12,
+          "unique_by": "$value"
+        },
+        "route_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "assigned_elsewhere": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96
+          },
+          "max_items": 12,
+          "unique_by": "$value"
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "companion_id": "",
+            "waypoints": [],
+            "herd_consent": [],
+            "route_receipt": null,
+            "assigned_elsewhere": [],
+            "day_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "companion_id": "shepherd-1",
+            "waypoints": [
+              {
+                "waypoint_id": "p1",
+                "animal_id": "cow-1",
+                "approved": true
+              },
+              {
+                "waypoint_id": "p2",
+                "animal_id": "cow-2",
+                "approved": true
+              }
+            ],
+            "herd_consent": [
+              "cow-1",
+              "cow-2"
+            ],
+            "route_receipt": "herd-route-1",
+            "assigned_elsewhere": [],
+            "day_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "missing_consent",
+          "patch": {
+            "herd_consent": [
+              "cow-1"
+            ]
+          }
+        },
+        {
+          "name": "animal_elsewhere",
+          "patch": {
+            "assigned_elsewhere": [
+              "cow-2"
+            ]
+          }
+        },
+        {
+          "name": "unapproved_waypoint",
+          "patch": {
+            "waypoints": [
+              {
+                "waypoint_id": "p1",
+                "animal_id": "cow-1",
+                "approved": false
+              }
+            ]
+          }
+        },
+        {
+          "name": "missing_receipt",
+          "patch": {
+            "route_receipt": null
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-64",
+      "title": "Comfort Companion Signals",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "companion_id",
+        "rest_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_64",
+      "player_scenario": "Offer bounded stress relief and let an animal decline training",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "companion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "stress_level": {
+          "type": "integer",
+          "min": 0,
+          "max": 100
+        },
+        "care_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991
+              },
+              "relief": {
+                "type": "integer",
+                "min": 1,
+                "max": 20
+              }
+            }
+          },
+          "max_items": 8,
+          "unique_by": "receipt_id"
+        },
+        "training_pause": {
+          "type": "boolean"
+        },
+        "rest_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "stress_before_care": {
+          "type": "integer",
+          "min": 0,
+          "max": 100
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "companion_id": "",
+            "stress_level": 0,
+            "care_receipts": [],
+            "training_pause": false,
+            "rest_epoch": -1,
+            "stress_before_care": 0
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "companion_id": "hound-1",
+            "stress_level": 70,
+            "care_receipts": [
+              {
+                "receipt_id": "rest-1",
+                "epoch": 57,
+                "relief": 10
+              }
+            ],
+            "training_pause": true,
+            "rest_epoch": 57,
+            "stress_before_care": 80
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "instant_cure",
+          "patch": {
+            "stress_level": 0
+          }
+        },
+        {
+          "name": "severe_training",
+          "patch": {
+            "training_pause": false
+          }
+        },
+        {
+          "name": "excess_relief",
+          "patch": {
+            "care_receipts": [
+              {
+                "receipt_id": "a",
+                "epoch": 57,
+                "relief": 15
+              },
+              {
+                "receipt_id": "b",
+                "epoch": 57,
+                "relief": 15
+              }
+            ]
+          }
+        },
+        {
+          "name": "future_care",
+          "patch": {
+            "rest_epoch": 56
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-65",
+      "title": "Burrow-Safe Treasure Sniff",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "companion_id"
+      ],
+      "save_namespace": "emergence.eb_e_65",
+      "player_scenario": "Search only safe ground for authored keepsakes while preserving protected dens",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "companion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "search_cells": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "protected": {
+                "type": "boolean"
+              },
+              "searched": {
+                "type": "boolean"
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "cell_id"
+        },
+        "protected_dens": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96
+          },
+          "max_items": 16,
+          "unique_by": "$value"
+        },
+        "find_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "cell_id"
+        },
+        "companion_fatigue": {
+          "type": "integer",
+          "min": 0,
+          "max": 100
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "companion_id": "",
+            "search_cells": [],
+            "protected_dens": [],
+            "find_receipts": [],
+            "companion_fatigue": 0,
+            "day_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "companion_id": "hound-1",
+            "search_cells": [
+              {
+                "cell_id": "safe-1",
+                "protected": false,
+                "searched": true
+              },
+              {
+                "cell_id": "den-1",
+                "protected": true,
+                "searched": false
+              }
+            ],
+            "protected_dens": [
+              "den-1"
+            ],
+            "find_receipts": [
+              {
+                "cell_id": "safe-1",
+                "receipt_id": "keepsake-1"
+              }
+            ],
+            "companion_fatigue": 2,
+            "day_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "reward_from_den",
+          "patch": {
+            "find_receipts": [
+              {
+                "cell_id": "den-1",
+                "receipt_id": "fake"
+              }
+            ]
+          }
+        },
+        {
+          "name": "missing_den_registry",
+          "patch": {
+            "protected_dens": []
+          }
+        },
+        {
+          "name": "fatigue_bypass",
+          "patch": {
+            "companion_fatigue": 0
+          }
+        },
+        {
+          "name": "unsearched_reward",
+          "patch": {
+            "search_cells": [
+              {
+                "cell_id": "safe-1",
+                "protected": false,
+                "searched": false
+              },
+              {
+                "cell_id": "den-1",
+                "protected": true,
+                "searched": false
+              }
+            ]
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-66",
+      "title": "Weather-Savvy Companion Shelter",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "companion_id"
+      ],
+      "save_namespace": "emergence.eb_e_66",
+      "player_scenario": "Choose optional humane refuge from advisory companion weather warnings",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "companion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "forecast_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "shelter_choice": {
+          "type": "enum",
+          "values": [
+            "none",
+            "barn",
+            "cottage",
+            "covered_trail"
+          ]
+        },
+        "care_status": {
+          "type": "enum",
+          "values": [
+            "idle",
+            "alert",
+            "resting",
+            "safe"
+          ]
+        },
+        "shelter_available": {
+          "type": "boolean"
+        },
+        "warning_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "companion_id": "",
+            "forecast_epoch": -1,
+            "shelter_choice": "none",
+            "care_status": "idle",
+            "shelter_available": false,
+            "warning_receipt": null,
+            "day_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "companion_id": "hound-1",
+            "forecast_epoch": 57,
+            "shelter_choice": "barn",
+            "care_status": "resting",
+            "shelter_available": true,
+            "warning_receipt": "weather-57",
+            "day_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "no_shelter",
+          "patch": {
+            "shelter_available": false
+          }
+        },
+        {
+          "name": "forecast_future",
+          "patch": {
+            "forecast_epoch": 58
+          }
+        },
+        {
+          "name": "warning_missing",
+          "patch": {
+            "warning_receipt": null
+          }
+        },
+        {
+          "name": "care_idle_after_choice",
+          "patch": {
+            "care_status": "idle"
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-67",
+      "title": "Trail Partnership Rotation",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [],
+      "save_namespace": "emergence.eb_e_67",
+      "player_scenario": "Rotate two rested companions between route segments without overlapping rewards",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "active_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "standby_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "rotation_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "energy_ledger": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "companion_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "energy": {
+                "type": "integer",
+                "min": 0,
+                "max": 100
+              }
+            }
+          },
+          "max_items": 8,
+          "unique_by": "companion_id"
+        },
+        "trail_segments": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "segment_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "companion_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "segment_id"
+        },
+        "pending_action": {
+          "type": "boolean"
+        },
+        "swap_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "active_id": "",
+            "standby_id": "",
+            "rotation_epoch": -1,
+            "energy_ledger": [],
+            "trail_segments": [],
+            "pending_action": false,
+            "swap_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "active_id": "dog-1",
+            "standby_id": "dog-2",
+            "rotation_epoch": 57,
+            "energy_ledger": [
+              {
+                "companion_id": "dog-1",
+                "energy": 70
+              },
+              {
+                "companion_id": "dog-2",
+                "energy": 90
+              }
+            ],
+            "trail_segments": [
+              {
+                "segment_id": "trail-1",
+                "companion_id": "dog-1",
+                "receipt_id": "seg-1"
+              }
+            ],
+            "pending_action": false,
+            "swap_receipt": "swap-57"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "same_active_and_standby",
+          "patch": {
+            "standby_id": "dog-1"
+          }
+        },
+        {
+          "name": "unowned_segment",
+          "patch": {
+            "trail_segments": [
+              {
+                "segment_id": "trail-1",
+                "companion_id": "dog-3",
+                "receipt_id": "seg-1"
+              }
+            ]
+          }
+        },
+        {
+          "name": "swap_during_action",
+          "patch": {
+            "pending_action": true
+          }
+        },
+        {
+          "name": "exhausted_active",
+          "patch": {
+            "energy_ledger": [
+              {
+                "companion_id": "dog-1",
+                "energy": 0
+              },
+              {
+                "companion_id": "dog-2",
+                "energy": 90
+              }
+            ]
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-68",
+      "title": "Companion Gesture Lexicon",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "companion_id"
+      ],
+      "save_namespace": "emergence.eb_e_68",
+      "player_scenario": "Teach accessible non-audio gestures and reject unlearned cues",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "companion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "gesture_map": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "gesture_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "cue_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "gesture_id"
+        },
+        "learned_cues": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96
+          },
+          "max_items": 16,
+          "unique_by": "$value"
+        },
+        "request_history": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cue_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "receipt_id"
+        },
+        "consent": {
+          "type": "boolean"
+        },
+        "visual_fallback": {
+          "type": "boolean"
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "companion_id": "",
+            "gesture_map": [],
+            "learned_cues": [],
+            "request_history": [],
+            "consent": false,
+            "visual_fallback": true
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "companion_id": "hound-1",
+            "gesture_map": [
+              {
+                "gesture_id": "tap",
+                "cue_id": "follow"
+              },
+              {
+                "gesture_id": "wave",
+                "cue_id": "rest"
+              }
+            ],
+            "learned_cues": [
+              "follow",
+              "rest"
+            ],
+            "request_history": [
+              {
+                "cue_id": "follow",
+                "receipt_id": "cue-1"
+              }
+            ],
+            "consent": true,
+            "visual_fallback": true
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "unlearned_cue",
+          "patch": {
+            "request_history": [
+              {
+                "cue_id": "unknown",
+                "receipt_id": "cue-1"
+              }
+            ]
+          }
+        },
+        {
+          "name": "consent_denied",
+          "patch": {
+            "consent": false
+          }
+        },
+        {
+          "name": "audio_only",
+          "patch": {
+            "visual_fallback": false
+          }
+        },
+        {
+          "name": "unmapped_request",
+          "patch": {
+            "gesture_map": [
+              {
+                "gesture_id": "wave",
+                "cue_id": "rest"
+              }
+            ]
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-69",
+      "title": "Wildlife Distance Etiquette",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "companion_id"
+      ],
+      "save_namespace": "emergence.eb_e_69",
+      "player_scenario": "Observe nesting wildlife outside a protected radius for knowledge-only progress",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "species_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "companion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "safety_radius_cm": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000
+        },
+        "companion_distance_cm": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000
+        },
+        "observations": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "receipt_id"
+        },
+        "protected_nest": {
+          "type": "boolean"
+        },
+        "reward_kind": {
+          "type": "enum",
+          "values": [
+            "none",
+            "knowledge_only"
+          ]
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "species_id": "",
+            "companion_id": "",
+            "safety_radius_cm": 0,
+            "companion_distance_cm": 0,
+            "observations": [],
+            "protected_nest": false,
+            "reward_kind": "none",
+            "day_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "species_id": "swallow",
+            "companion_id": "hound-1",
+            "safety_radius_cm": 1200,
+            "companion_distance_cm": 1800,
+            "observations": [
+              {
+                "receipt_id": "observe-1",
+                "epoch": 57
+              }
+            ],
+            "protected_nest": true,
+            "reward_kind": "knowledge_only",
+            "day_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "nest_intrusion",
+          "patch": {
+            "companion_distance_cm": 100
+          }
+        },
+        {
+          "name": "future_observation",
+          "patch": {
+            "observations": [
+              {
+                "receipt_id": "observe-1",
+                "epoch": 58
+              }
+            ]
+          }
+        },
+        {
+          "name": "no_protected_nest",
+          "patch": {
+            "protected_nest": false
+          }
+        },
+        {
+          "name": "unbounded_radius",
+          "patch": {
+            "safety_radius_cm": 0
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    },
+    {
+      "id": "EB-E-70",
+      "title": "Senior Companion Mentorship",
+      "domain": "companion_intelligence",
+      "mission_ids": [
+        "E03",
+        "E10",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [],
+      "save_namespace": "emergence.eb_e_70",
+      "player_scenario": "Progress finite, consented skill lessons without forced labor or canceled awards",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "confirm",
+        "cancel"
+      ],
+      "fields": {
+        "mentor_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "learner_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "session_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991
+              },
+              "completed": {
+                "type": "boolean"
+              },
+              "skill_delta": {
+                "type": "integer",
+                "min": 0,
+                "max": 20
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "receipt_id"
+        },
+        "skill_progress": {
+          "type": "integer",
+          "min": 0,
+          "max": 100
+        },
+        "welfare_ok": {
+          "type": "boolean"
+        },
+        "canceled": {
+          "type": "boolean"
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "mentor_id": "",
+            "learner_id": "",
+            "session_receipts": [],
+            "skill_progress": 0,
+            "welfare_ok": false,
+            "canceled": false,
+            "day_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "mentor_id": "elder-dog",
+            "learner_id": "young-dog",
+            "session_receipts": [
+              {
+                "receipt_id": "lesson-1",
+                "epoch": 57,
+                "completed": true,
+                "skill_delta": 10
+              },
+              {
+                "receipt_id": "lesson-2",
+                "epoch": 58,
+                "completed": true,
+                "skill_delta": 10
+              }
+            ],
+            "skill_progress": 20,
+            "welfare_ok": true,
+            "canceled": false,
+            "day_epoch": 58
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "self_mentorship",
+          "patch": {
+            "learner_id": "elder-dog"
+          }
+        },
+        {
+          "name": "instant_skill",
+          "patch": {
+            "skill_progress": 100
+          }
+        },
+        {
+          "name": "welfare_denied",
+          "patch": {
+            "welfare_ok": false
+          }
+        },
+        {
+          "name": "cancel_and_reward",
+          "patch": {
+            "canceled": true
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_cleared",
+        "companion_welfare_and_consent",
+        "authoritative_receipt_and_unique_ownership",
+        "calendar_and_resource_conservation"
+      ],
+      "controls": {
+        "keyboard_mouse": "Remappable focus/inspect, choice preview, confirm/cancel",
+        "controller": "D-pad or stick focus, A confirm, B cancel; no analog precision requirement",
+        "touch": "48px-or-larger focusable controls; tap preview, confirm/cancel; no gesture-only critical action",
+        "accessibility": "Visual alternatives for scent/audio/gestures; captions, contrast and reduced motion"
+      },
+      "authority": "Emergence owns only design/proposed companion decisions; Principal owns command ID, economy, save and day_epoch; Farming owns animal welfare/livestock, Valley owns traversal and habitat; Village owns NPC consent",
+      "receipt_contract": {
+        "command_id": "Principal-authoritative globally immutable idempotence key",
+        "expected_revision": "stale revision rejects without mutation",
+        "day_epoch": "(year-1)*56+season_index*14+day",
+        "effect_digest": "no inventory reward, animal movement or skill grant from preview"
+      },
+      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+    }
+  ]
+}
