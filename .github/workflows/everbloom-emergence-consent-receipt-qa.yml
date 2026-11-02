@@ -1,0 +1,18 @@
+name: EVERBLOOM E18 Consent and Receipt QA (non-Codex)
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/consent_receipt_qa/**'
+      - '.github/workflows/everbloom-emergence-consent-receipt-qa.yml'
+permissions:
+  contents: read
+jobs:
+  independent-negative-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax
+        run: python3 -m py_compile docs/innovation/emergence/consent_receipt_qa/validate_policy.py
+      - name: Pinned-source and adversarial reference QA
+        run: python3 docs/innovation/emergence/consent_receipt_qa/validate_policy.py --self-test

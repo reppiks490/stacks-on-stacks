@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "phase_c": "CLOSED",
+  "status": "QA_REFERENCE_ORACLE_NOT_LIVE_AUTHORITY",
+  "source": {
+    "path": "docs/innovation/emergence/joint220_audit/PAIR_TRIAGE.json",
+    "commit": "1204ed50cb84572fad77450f836863901e0635ca",
+    "blob_sha": "2320aa61189fed9aeadaf90bfe47a6aa6501c3e6"
+  },
+  "authorities": {
+    "consent": "Village V03/V19 — pending",
+    "receipts": "Principal P03/P04 — pending",
+    "calendar": "Principal P02 — pending"
+  },
+  "feature_purposes": {
+    "EB-B-084": "memorial",
+    "EB-E-036": "kindness",
+    "EB-E-077": "archive",
+    "EB-E-040": "story",
+    "EB-E-075": "welcome"
+  },
+  "unresolved_pairs": [
+    [
+      "EB-B-084",
+      "EB-E-036"
+    ],
+    [
+      "EB-E-036",
+      "EB-E-077"
+    ],
+    [
+      "EB-E-040",
+      "EB-E-075"
+    ]
+  ],
+  "adversarial_gates": [
+    "missing_consent",
+    "revoked_consent",
+    "wrong_purpose",
+    "stale_consent_revision",
+    "forged_actor",
+    "public_without_permission",
+    "global_duplicate_receipt",
+    "changed_replay_payload",
+    "negative_epoch",
+    "stale_epoch",
+    "future_epoch",
+    "daily_duplicate",
+    "event_storm",
+    "material_underflow",
+    "corrupt_snapshot",
+    "torn_receipt_ledger",
+    "cross_feature_consent"
+  ],
+  "approval": {
+    "village": false,
+    "principal": false,
+    "phase_c": false
+  }
+}
