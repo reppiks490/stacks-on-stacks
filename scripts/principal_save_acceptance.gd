@@ -91,6 +91,70 @@ func _run() -> void:
     bad = base.duplicate(true)
     bad["social_contacts"] = {"mira": "not a boolean"}
     _check(not SaveService.validate_payload(bad), "invalid social contact flag accepted")
+    # P04/P05: domain loaders silently clamp otherwise accepted numbers.
+    # Admission must be lossless at both limits and across hostile nested keys.
+    var bounded: Dictionary = base.duplicate(true)
+    bounded["farm"] = [{
+        "age": 100, "watered_days": 100, "moisture": 100,
+        "fertility": 100, "weeds": 5, "stress": 9,
+        "rotation_bonus": 1, "seed_vigor": 2,
+        "last_family": "x".repeat(32), "last_harvest_epoch": 112
+    }]
+    bounded["animals"]["hen"] = {
+        "bond": 100, "happiness": 100, "health": 100,
+        "hunger": 100, "cleanliness": 100, "production_counter": 1,
+        "neglect_days": 365, "compost_counter": 2, "last_care": 112
+    }
+    _check(SaveService.validate_payload(bounded),
+           "exact farm/animal loader upper bounds rejected")
+    var farm_limits: Dictionary = {
+        "age": 101, "watered_days": 101, "moisture": 101,
+        "fertility": 101, "weeds": 6, "stress": 10,
+        "rotation_bonus": 2, "seed_vigor": 3
+    }
+    for attribute in farm_limits:
+        bad = bounded.duplicate(true)
+        bad["farm"][0][attribute] = farm_limits[attribute]
+        _check(not SaveService.validate_payload(bad),
+               "lossy farm %s value accepted" % attribute)
+    bad = bounded.duplicate(true)
+    bad["farm"][0]["last_family"] = "x".repeat(33)
+    _check(not SaveService.validate_payload(bad), "truncated crop family accepted")
+    bad = bounded.duplicate(true)
+    bad["farm"][0]["unowned_water"] = 7
+    _check(not SaveService.validate_payload(bad), "unknown farm field accepted")
+    var animal_limits: Dictionary = {
+        "bond": 101, "happiness": 101, "health": 101,
+        "hunger": 101, "cleanliness": 101,
+        "production_counter": 2, "neglect_days": 366,
+        "compost_counter": 3
+    }
+    for attribute in animal_limits:
+        bad = bounded.duplicate(true)
+        bad["animals"]["hen"][attribute] = animal_limits[attribute]
+        _check(not SaveService.validate_payload(bad),
+               "lossy hen %s value accepted" % attribute)
+    bad = bounded.duplicate(true)
+    bad["animals"]["hen"]["unknown_product"] = 9
+    _check(not SaveService.validate_payload(bad), "unknown livestock field accepted")
+    bad = bounded.duplicate(true)
+    bad["animals"]["future_animal"] = {"bond": 20}
+    _check(not SaveService.validate_payload(bad), "unknown livestock ID accepted")
+    for species in ["cow", "sheep"]:
+        var species_valid: Dictionary = bounded.duplicate(true)
+        species_valid["animals"][species] = {"production_counter": 2 if species == "cow" else 3}
+        _check(SaveService.validate_payload(species_valid),
+               "valid %s production cycle rejected" % species)
+        species_valid["animals"][species]["production_counter"] += 1
+        _check(not SaveService.validate_payload(species_valid),
+               "out-of-cycle %s production accepted" % species)
+    bad = bounded.duplicate(true)
+    bad["village"]["memories"] = {"mira": {"talks": 1000001}}
+    _check(not SaveService.validate_payload(bad), "clamped village memory count accepted")
+    bad = bounded.duplicate(true)
+    bad["village"]["memories"] = {"mira": {"talks": 1000000}}
+    _check(SaveService.validate_payload(bad), "valid max village memory count rejected")
+
     # Ecology + village-life contracts introduced after the original 24 fixtures.
     var integrated: Dictionary = base.duplicate(true)
     integrated["animals"]["__paddocks__"] = [
@@ -393,6 +457,24 @@ func _run() -> void:
                "second earned dialogue changed in saved JSON")
     _check(saved.get("festivals", {}).get("awarded", []).has("3:spring_seed_exchange"),
            "assembled festival award missing from saved snapshot")
+    # The assembled save must reject lossy domain mutations without touching
+    # the authoritative primary, money, inventory, relationships or paddocks.
+    var original_domain_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
+    var out_of_range_soil: Dictionary = saved.duplicate(true)
+    out_of_range_soil["farm"][0]["moisture"] = 101
+    _check(not SaveService.write_payload(out_of_range_soil),
+           "assembled out-of-range soil was written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == original_domain_bytes,
+           "rejected soil save changed authoritative bytes")
+    var out_of_range_animal: Dictionary = saved.duplicate(true)
+    out_of_range_animal["animals"]["hen"]["health"] = 101
+    _check(not SaveService.write_payload(out_of_range_animal),
+           "assembled out-of-range livestock was written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == original_domain_bytes,
+           "rejected livestock save changed authoritative bytes")
+    _check(session.gold == 901 and int(session.inventory.get("turnip", -1)) == 17
+           and int(session.animals.paddocks[0]["forage"]) == 5,
+           "rejected nested save changed live economy or paddocks")
     # Invalid in-memory payload must not replace the last valid on-disk
     # snapshot or mutate the assembled player's state.
     var saved_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
