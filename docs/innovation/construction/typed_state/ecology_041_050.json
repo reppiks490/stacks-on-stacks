@@ -1,0 +1,2647 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "base_main": "86aa22c9e7806d85f42b95a8fbd27bbba122a556",
+  "source": {
+    "commit": "f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+    "path": "docs/innovation/construction/phaseB_100_concepts.json",
+    "blob_sha": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b"
+  },
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "migration_policy": "Optional namespace: absent legacy state inactive. Present malformed nested state fails atomic admission; Principal owns migration and settlement.",
+  "state_contracts": [
+    {
+      "id": "EB-B-041",
+      "title": "Contour Orchard Terracing",
+      "source_fields": [
+        "day_epoch",
+        "receipts",
+        "revision",
+        "root_buffers",
+        "site_id",
+        "terrace_steps"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_041",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "terrace_steps": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "step_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "root_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "slope_permille": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "cut_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 300,
+                "default": 0
+              },
+              "root_distance_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              }
+            },
+            "default": {
+              "step_id": "",
+              "root_id": "",
+              "slope_permille": 0,
+              "cut_cm": 0,
+              "root_distance_cm": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "step_id"
+        },
+        "root_buffers": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "root_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "radius_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "protected": {
+                "type": "boolean",
+                "default": true
+              }
+            },
+            "default": {
+              "root_id": "",
+              "radius_cm": 0,
+              "protected": true
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "root_id"
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "terrace_slope_and_cut",
+        "terrace_root_references",
+        "terrace_root_exclusion"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "terrace_steps": [
+          {
+            "step_id": "t1",
+            "root_id": "oak1",
+            "slope_permille": 180,
+            "cut_cm": 40,
+            "root_distance_cm": 240
+          }
+        ],
+        "root_buffers": [
+          {
+            "root_id": "oak1",
+            "radius_cm": 150,
+            "protected": true
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "excessive cut",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "terrace_steps": [
+              {
+                "step_id": "t1",
+                "root_id": "oak1",
+                "slope_permille": 180,
+                "cut_cm": 200,
+                "root_distance_cm": 240
+              }
+            ],
+            "root_buffers": [
+              {
+                "root_id": "oak1",
+                "radius_cm": 150,
+                "protected": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "unknown root",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "terrace_steps": [
+              {
+                "step_id": "t1",
+                "root_id": "missing",
+                "slope_permille": 180,
+                "cut_cm": 40,
+                "root_distance_cm": 240
+              }
+            ],
+            "root_buffers": [
+              {
+                "root_id": "oak1",
+                "radius_cm": 150,
+                "protected": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "root exclusion",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "terrace_steps": [
+              {
+                "step_id": "t1",
+                "root_id": "oak1",
+                "slope_permille": 180,
+                "cut_cm": 40,
+                "root_distance_cm": 170
+              }
+            ],
+            "root_buffers": [
+              {
+                "root_id": "oak1",
+                "radius_cm": 150,
+                "protected": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "dye": 3,
+        "stone": 1
+      },
+      "player_verbs": [
+        "preview_contour",
+        "adjust_contour",
+        "commit_contour",
+        "cancel_contour",
+        "undo_contour"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to build tree terraces without damaging mature roots; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic contour orchard terracing modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Build tree terraces without damaging mature roots; terrace_steps and root_buffers must affect the visible outcome under root buffers and slope limit excavation.",
+        "Confirm once with {\"dye\":3,\"stone\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-042",
+      "title": "Windward Living Hedgerow",
+      "source_fields": [
+        "day_epoch",
+        "hedge_segments",
+        "receipts",
+        "revision",
+        "site_id",
+        "wind_shadow"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_042",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "hedge_segments": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "hedge_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "age_days": {
+                "type": "integer",
+                "min": 0,
+                "max": 5600,
+                "default": 0
+              },
+              "porosity_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "height_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 600,
+                "default": 0
+              }
+            },
+            "default": {
+              "hedge_id": "",
+              "age_days": 0,
+              "porosity_pct": 0,
+              "height_cm": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "hedge_id"
+        },
+        "wind_shadow": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "hedge_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "reduction_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "exposure_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              }
+            },
+            "default": {
+              "hedge_id": "",
+              "reduction_pct": 0,
+              "exposure_pct": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "hedge_id"
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "hedge_shadow_refs",
+        "hedge_maturity_bound",
+        "hedge_exposure_conservation"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "hedge_segments": [
+          {
+            "hedge_id": "h1",
+            "age_days": 90,
+            "porosity_pct": 30,
+            "height_cm": 200
+          }
+        ],
+        "wind_shadow": [
+          {
+            "hedge_id": "h1",
+            "reduction_pct": 50,
+            "exposure_pct": 50
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "orphan shadow",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hedge_segments": [
+              {
+                "hedge_id": "h1",
+                "age_days": 90,
+                "porosity_pct": 30,
+                "height_cm": 200
+              }
+            ],
+            "wind_shadow": [
+              {
+                "hedge_id": "orphan",
+                "reduction_pct": 50,
+                "exposure_pct": 50
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "immature shelter",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hedge_segments": [
+              {
+                "hedge_id": "h1",
+                "age_days": 10,
+                "porosity_pct": 30,
+                "height_cm": 200
+              }
+            ],
+            "wind_shadow": [
+              {
+                "hedge_id": "h1",
+                "reduction_pct": 50,
+                "exposure_pct": 50
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "exposure drift",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hedge_segments": [
+              {
+                "hedge_id": "h1",
+                "age_days": 90,
+                "porosity_pct": 30,
+                "height_cm": 200
+              }
+            ],
+            "wind_shadow": [
+              {
+                "hedge_id": "h1",
+                "reduction_pct": 50,
+                "exposure_pct": 60
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "seed": 4,
+        "iron": 2
+      },
+      "player_verbs": [
+        "preview_windward",
+        "adjust_windward",
+        "commit_windward",
+        "cancel_windward",
+        "undo_windward"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to plant hedges to shelter crops from wind; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic windward living hedgerow modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Plant hedges to shelter crops from wind; hedge_segments and wind_shadow must affect the visible outcome under maturity and porosity change wind exposure gradually.",
+        "Confirm once with {\"seed\":4,\"iron\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-043",
+      "title": "Fordstone Creek Crossing",
+      "source_fields": [
+        "day_epoch",
+        "flow_limit",
+        "receipts",
+        "revision",
+        "site_id",
+        "stone_positions"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_043",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "stone_positions": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "stone_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "depth_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 500,
+                "default": 0
+              },
+              "gap_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 500,
+                "default": 0
+              },
+              "safe": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "stone_id": "",
+              "depth_cm": 0,
+              "gap_cm": 0,
+              "safe": false
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "stone_id"
+        },
+        "flow_limit": {
+          "type": "object",
+          "fields": {
+            "current_lps": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            },
+            "max_safe_lps": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            },
+            "flood_closed": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "default": {
+            "current_lps": 0,
+            "max_safe_lps": 0,
+            "flood_closed": false
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "ford_depth_and_gap",
+        "ford_flood_closure",
+        "ford_closed_safety"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "stone_positions": [
+          {
+            "stone_id": "s1",
+            "depth_cm": 20,
+            "gap_cm": 50,
+            "safe": true
+          }
+        ],
+        "flow_limit": {
+          "current_lps": 30,
+          "max_safe_lps": 80,
+          "flood_closed": false
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "unsafe depth",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "stone_positions": [
+              {
+                "stone_id": "s1",
+                "depth_cm": 100,
+                "gap_cm": 50,
+                "safe": true
+              }
+            ],
+            "flow_limit": {
+              "current_lps": 30,
+              "max_safe_lps": 80,
+              "flood_closed": false
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "flood not closed",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "stone_positions": [
+              {
+                "stone_id": "s1",
+                "depth_cm": 20,
+                "gap_cm": 50,
+                "safe": true
+              }
+            ],
+            "flow_limit": {
+              "current_lps": 100,
+              "max_safe_lps": 80,
+              "flood_closed": false
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "closed but safe",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "stone_positions": [
+              {
+                "stone_id": "s1",
+                "depth_cm": 20,
+                "gap_cm": 50,
+                "safe": true
+              }
+            ],
+            "flow_limit": {
+              "current_lps": 30,
+              "max_safe_lps": 80,
+              "flood_closed": true
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "wood": 5,
+        "fiber": 3
+      },
+      "player_verbs": [
+        "preview_fordstone",
+        "adjust_fordstone",
+        "commit_fordstone",
+        "cancel_fordstone",
+        "undo_fordstone"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to place stepping stones for seasonal creek travel; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic fordstone creek crossing modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Place stepping stones for seasonal creek travel; stone_positions and flow_limit must affect the visible outcome under depth and flow determine crossing safety.",
+        "Confirm once with {\"wood\":5,\"fiber\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-044",
+      "title": "Salmonrise Fish Passage",
+      "source_fields": [
+        "day_epoch",
+        "flow_split",
+        "ladder_steps",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_044",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "ladder_steps": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "step_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "rise_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 150,
+                "default": 0
+              },
+              "basin_depth_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 300,
+                "default": 0
+              },
+              "bypass_lps": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "step_id": "",
+              "rise_cm": 0,
+              "basin_depth_cm": 0,
+              "bypass_lps": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "step_id"
+        },
+        "flow_split": {
+          "type": "object",
+          "fields": {
+            "inflow_lps": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "mill_lps": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "ladder_lps": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "spill_lps": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            }
+          },
+          "default": {
+            "inflow_lps": 0,
+            "mill_lps": 0,
+            "ladder_lps": 0,
+            "spill_lps": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "fish_step_geometry",
+        "fish_flow_conservation",
+        "fish_bypass_total"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "ladder_steps": [
+          {
+            "step_id": "f1",
+            "rise_cm": 18,
+            "basin_depth_cm": 55,
+            "bypass_lps": 40
+          }
+        ],
+        "flow_split": {
+          "inflow_lps": 100,
+          "mill_lps": 50,
+          "ladder_lps": 40,
+          "spill_lps": 10
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "excessive rise",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "ladder_steps": [
+              {
+                "step_id": "f1",
+                "rise_cm": 50,
+                "basin_depth_cm": 55,
+                "bypass_lps": 40
+              }
+            ],
+            "flow_split": {
+              "inflow_lps": 100,
+              "mill_lps": 50,
+              "ladder_lps": 40,
+              "spill_lps": 10
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "invented inflow",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "ladder_steps": [
+              {
+                "step_id": "f1",
+                "rise_cm": 18,
+                "basin_depth_cm": 55,
+                "bypass_lps": 40
+              }
+            ],
+            "flow_split": {
+              "inflow_lps": 101,
+              "mill_lps": 50,
+              "ladder_lps": 40,
+              "spill_lps": 10
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "bypass drift",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "ladder_steps": [
+              {
+                "step_id": "f1",
+                "rise_cm": 18,
+                "basin_depth_cm": 55,
+                "bypass_lps": 35
+              }
+            ],
+            "flow_split": {
+              "inflow_lps": 100,
+              "mill_lps": 50,
+              "ladder_lps": 40,
+              "spill_lps": 10
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "stone": 6,
+        "clay": 1
+      },
+      "player_verbs": [
+        "preview_salmonrise",
+        "adjust_salmonrise",
+        "commit_salmonrise",
+        "cancel_salmonrise",
+        "undo_salmonrise"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to build fish ladder around a village watermill; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic salmonrise fish passage modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Build fish ladder around a village watermill; ladder_steps and flow_split must affect the visible outcome under step height and conserved flow govern migration.",
+        "Confirm once with {\"stone\":6,\"clay\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-045",
+      "title": "Spongegarden Rain Basin",
+      "source_fields": [
+        "basin_cells",
+        "day_epoch",
+        "overflow_outlet",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_045",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "basin_cells": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "incoming_l": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              },
+              "infiltration_l": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              },
+              "stored_l": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              },
+              "overflow_l": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              },
+              "capacity_l": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              }
+            },
+            "default": {
+              "cell_id": "",
+              "incoming_l": 0,
+              "infiltration_l": 0,
+              "stored_l": 0,
+              "overflow_l": 0,
+              "capacity_l": 0
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "cell_id"
+        },
+        "overflow_outlet": {
+          "type": "object",
+          "fields": {
+            "inflow_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 10000000,
+              "default": 0
+            },
+            "released_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 10000000,
+              "default": 0
+            },
+            "max_release_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 10000000,
+              "default": 0
+            }
+          },
+          "default": {
+            "inflow_l": 0,
+            "released_l": 0,
+            "max_release_l": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "basin_cell_conservation",
+        "basin_capacity",
+        "basin_outlet_conservation"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "basin_cells": [
+          {
+            "cell_id": "b1",
+            "incoming_l": 100,
+            "infiltration_l": 20,
+            "stored_l": 60,
+            "overflow_l": 20,
+            "capacity_l": 80
+          }
+        ],
+        "overflow_outlet": {
+          "inflow_l": 100,
+          "released_l": 20,
+          "max_release_l": 40
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "lost water",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "basin_cells": [
+              {
+                "cell_id": "b1",
+                "incoming_l": 101,
+                "infiltration_l": 20,
+                "stored_l": 60,
+                "overflow_l": 20,
+                "capacity_l": 80
+              }
+            ],
+            "overflow_outlet": {
+              "inflow_l": 100,
+              "released_l": 20,
+              "max_release_l": 40
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "storage exceeds basin",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "basin_cells": [
+              {
+                "cell_id": "b1",
+                "incoming_l": 100,
+                "infiltration_l": 20,
+                "stored_l": 60,
+                "overflow_l": 20,
+                "capacity_l": 50
+              }
+            ],
+            "overflow_outlet": {
+              "inflow_l": 100,
+              "released_l": 20,
+              "max_release_l": 40
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "outlet overflow drift",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "basin_cells": [
+              {
+                "cell_id": "b1",
+                "incoming_l": 100,
+                "infiltration_l": 20,
+                "stored_l": 60,
+                "overflow_l": 20,
+                "capacity_l": 80
+              }
+            ],
+            "overflow_outlet": {
+              "inflow_l": 100,
+              "released_l": 25,
+              "max_release_l": 40
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "iron": 7,
+        "glass": 2
+      },
+      "player_verbs": [
+        "preview_spongegarden",
+        "adjust_spongegarden",
+        "commit_spongegarden",
+        "cancel_spongegarden",
+        "undo_spongegarden"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to excavate rain gardens to reduce street runoff; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic spongegarden rain basin modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Excavate rain gardens to reduce street runoff; basin_cells and overflow_outlet must affect the visible outcome under infiltration and overflow partition finite water.",
+        "Confirm once with {\"iron\":7,\"glass\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-046",
+      "title": "Reedloop Composting Privy",
+      "source_fields": [
+        "compost_grade",
+        "day_epoch",
+        "receipts",
+        "revision",
+        "site_id",
+        "treatment_chambers"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_046",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "treatment_chambers": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "chamber_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "treated_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "waste_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "stage": {
+                "type": "enum",
+                "values": [
+                  "sealed",
+                  "curing",
+                  "mature"
+                ],
+                "default": "sealed"
+              },
+              "last_turn_epoch": {
+                "type": "integer",
+                "min": -1,
+                "max": 9007199254740991,
+                "default": -1
+              }
+            },
+            "default": {
+              "chamber_id": "",
+              "input_kg": 0,
+              "treated_kg": 0,
+              "waste_kg": 0,
+              "stage": "sealed",
+              "last_turn_epoch": -1
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "chamber_id"
+        },
+        "compost_grade": {
+          "type": "object",
+          "fields": {
+            "releasable_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "grade": {
+              "type": "enum",
+              "values": [
+                "none",
+                "low",
+                "high"
+              ],
+              "default": "none"
+            },
+            "release_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            }
+          },
+          "default": {
+            "releasable_kg": 0,
+            "grade": "none",
+            "release_epoch": -1
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "privy_mass_conservation",
+        "privy_maturity_gate",
+        "privy_epoch_gate"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "treatment_chambers": [
+          {
+            "chamber_id": "c1",
+            "input_kg": 100,
+            "treated_kg": 70,
+            "waste_kg": 30,
+            "stage": "mature",
+            "last_turn_epoch": 50
+          }
+        ],
+        "compost_grade": {
+          "releasable_kg": 50,
+          "grade": "high",
+          "release_epoch": 52
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "mass duplication",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "treatment_chambers": [
+              {
+                "chamber_id": "c1",
+                "input_kg": 100,
+                "treated_kg": 80,
+                "waste_kg": 30,
+                "stage": "mature",
+                "last_turn_epoch": 50
+              }
+            ],
+            "compost_grade": {
+              "releasable_kg": 50,
+              "grade": "high",
+              "release_epoch": 52
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "premature fertilizer",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "treatment_chambers": [
+              {
+                "chamber_id": "c1",
+                "input_kg": 100,
+                "treated_kg": 70,
+                "waste_kg": 30,
+                "stage": "curing",
+                "last_turn_epoch": 50
+              }
+            ],
+            "compost_grade": {
+              "releasable_kg": 50,
+              "grade": "high",
+              "release_epoch": 52
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "future release",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "treatment_chambers": [
+              {
+                "chamber_id": "c1",
+                "input_kg": 100,
+                "treated_kg": 70,
+                "waste_kg": 30,
+                "stage": "mature",
+                "last_turn_epoch": 50
+              }
+            ],
+            "compost_grade": {
+              "releasable_kg": 50,
+              "grade": "high",
+              "release_epoch": 60
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "fiber": 3,
+        "dye": 3
+      },
+      "player_verbs": [
+        "preview_reedloop",
+        "adjust_reedloop",
+        "commit_reedloop",
+        "cancel_reedloop",
+        "undo_reedloop"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to maintain fictional sealed sanitation compost chambers; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic reedloop composting privy modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Maintain fictional sealed sanitation compost chambers; treatment_chambers and compost_grade must affect the visible outcome under treatment stages gate fertilizer release.",
+        "Confirm once with {\"fiber\":3,\"dye\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-047",
+      "title": "Skymeadow Living Roof",
+      "source_fields": [
+        "day_epoch",
+        "drainage",
+        "receipts",
+        "revision",
+        "roof_soil_depth",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_047",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "roof_soil_depth": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "section_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "depth_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "area_m2": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "dry_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "wet_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "support_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "section_id": "",
+              "depth_cm": 0,
+              "area_m2": 0,
+              "dry_kg": 0,
+              "wet_kg": 0,
+              "support_kg": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "section_id"
+        },
+        "drainage": {
+          "type": "object",
+          "fields": {
+            "inflow_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "outflow_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "retained_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "capacity_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            }
+          },
+          "default": {
+            "inflow_l": 0,
+            "outflow_l": 0,
+            "retained_l": 0,
+            "capacity_l": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "roof_load_and_depth",
+        "roof_wet_mass",
+        "roof_drainage_conservation"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "roof_soil_depth": [
+          {
+            "section_id": "r1",
+            "depth_cm": 20,
+            "area_m2": 10,
+            "dry_kg": 400,
+            "wet_kg": 550,
+            "support_kg": 700
+          }
+        ],
+        "drainage": {
+          "inflow_l": 100,
+          "outflow_l": 40,
+          "retained_l": 60,
+          "capacity_l": 100
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "roof overloaded",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "roof_soil_depth": [
+              {
+                "section_id": "r1",
+                "depth_cm": 20,
+                "area_m2": 10,
+                "dry_kg": 400,
+                "wet_kg": 550,
+                "support_kg": 500
+              }
+            ],
+            "drainage": {
+              "inflow_l": 100,
+              "outflow_l": 40,
+              "retained_l": 60,
+              "capacity_l": 100
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "impossible wet mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "roof_soil_depth": [
+              {
+                "section_id": "r1",
+                "depth_cm": 20,
+                "area_m2": 10,
+                "dry_kg": 400,
+                "wet_kg": 350,
+                "support_kg": 700
+              }
+            ],
+            "drainage": {
+              "inflow_l": 100,
+              "outflow_l": 40,
+              "retained_l": 60,
+              "capacity_l": 100
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "water not conserved",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "roof_soil_depth": [
+              {
+                "section_id": "r1",
+                "depth_cm": 20,
+                "area_m2": 10,
+                "dry_kg": 400,
+                "wet_kg": 550,
+                "support_kg": 700
+              }
+            ],
+            "drainage": {
+              "inflow_l": 110,
+              "outflow_l": 40,
+              "retained_l": 60,
+              "capacity_l": 100
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "clay": 4,
+        "seed": 1
+      },
+      "player_verbs": [
+        "preview_skymeadow",
+        "adjust_skymeadow",
+        "commit_skymeadow",
+        "cancel_skymeadow",
+        "undo_skymeadow"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to plant a flowering roof meadow for pollinators; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic skymeadow living roof modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Plant a flowering roof meadow for pollinators; roof_soil_depth and drainage must affect the visible outcome under soil weight and drainage constrain roof habitat.",
+        "Confirm once with {\"clay\":4,\"seed\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-048",
+      "title": "Pondbreath Aeration Mill",
+      "source_fields": [
+        "day_epoch",
+        "oxygen_index",
+        "paddle_speed",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_048",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "paddle_speed": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "mill_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "wind_kph": {
+                "type": "integer",
+                "min": 0,
+                "max": 300,
+                "default": 0
+              },
+              "gear_health_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "rpm": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              }
+            },
+            "default": {
+              "mill_id": "",
+              "wind_kph": 0,
+              "gear_health_pct": 0,
+              "rpm": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "mill_id"
+        },
+        "oxygen_index": {
+          "type": "object",
+          "fields": {
+            "initial_ppm": {
+              "type": "integer",
+              "min": 0,
+              "max": 30,
+              "default": 0
+            },
+            "delta_ppm": {
+              "type": "integer",
+              "min": 0,
+              "max": 30,
+              "default": 0
+            },
+            "final_ppm": {
+              "type": "integer",
+              "min": 0,
+              "max": 30,
+              "default": 0
+            },
+            "upper_ppm": {
+              "type": "integer",
+              "min": 0,
+              "max": 30,
+              "default": 0
+            }
+          },
+          "default": {
+            "initial_ppm": 0,
+            "delta_ppm": 0,
+            "final_ppm": 0,
+            "upper_ppm": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "mill_wind_speed",
+        "mill_gear_bound",
+        "mill_oxygen_conservation"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "paddle_speed": [
+          {
+            "mill_id": "m1",
+            "wind_kph": 20,
+            "gear_health_pct": 80,
+            "rpm": 60
+          }
+        ],
+        "oxygen_index": {
+          "initial_ppm": 5,
+          "delta_ppm": 3,
+          "final_ppm": 8,
+          "upper_ppm": 12
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "rpm exceeds wind",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "paddle_speed": [
+              {
+                "mill_id": "m1",
+                "wind_kph": 10,
+                "gear_health_pct": 80,
+                "rpm": 60
+              }
+            ],
+            "oxygen_index": {
+              "initial_ppm": 5,
+              "delta_ppm": 3,
+              "final_ppm": 8,
+              "upper_ppm": 12
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "rpm exceeds gear",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "paddle_speed": [
+              {
+                "mill_id": "m1",
+                "wind_kph": 20,
+                "gear_health_pct": 20,
+                "rpm": 60
+              }
+            ],
+            "oxygen_index": {
+              "initial_ppm": 5,
+              "delta_ppm": 3,
+              "final_ppm": 8,
+              "upper_ppm": 12
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "oxygen invented",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "paddle_speed": [
+              {
+                "mill_id": "m1",
+                "wind_kph": 20,
+                "gear_health_pct": 80,
+                "rpm": 60
+              }
+            ],
+            "oxygen_index": {
+              "initial_ppm": 5,
+              "delta_ppm": 3,
+              "final_ppm": 9,
+              "upper_ppm": 12
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "glass": 5,
+        "wood": 2
+      },
+      "player_verbs": [
+        "preview_pondbreath",
+        "adjust_pondbreath",
+        "commit_pondbreath",
+        "cancel_pondbreath",
+        "undo_pondbreath"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to install wind-powered pond aeration paddles; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic pondbreath aeration mill modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Install wind-powered pond aeration paddles; paddle_speed and oxygen_index must affect the visible outcome under wind and gear condition bound oxygen changes.",
+        "Confirm once with {\"glass\":5,\"wood\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-049",
+      "title": "Slopeweave Erosion Fence",
+      "source_fields": [
+        "day_epoch",
+        "fence_rows",
+        "receipts",
+        "revision",
+        "sediment_captured",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_049",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "fence_rows": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "row_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "upstream_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "trapped_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "downstream_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "max_capture_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "row_id": "",
+              "upstream_kg": 0,
+              "trapped_kg": 0,
+              "downstream_kg": 0,
+              "max_capture_kg": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "row_id"
+        },
+        "sediment_captured": {
+          "type": "object",
+          "fields": {
+            "total_trapped_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "upstream_debit_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            }
+          },
+          "default": {
+            "total_trapped_kg": 0,
+            "upstream_debit_kg": 0,
+            "day_epoch": -1
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "fence_sediment_conservation",
+        "fence_capture_capacity",
+        "fence_authoritative_debit"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "fence_rows": [
+          {
+            "row_id": "f1",
+            "upstream_kg": 100,
+            "trapped_kg": 40,
+            "downstream_kg": 60,
+            "max_capture_kg": 50
+          }
+        ],
+        "sediment_captured": {
+          "total_trapped_kg": 40,
+          "upstream_debit_kg": 100,
+          "day_epoch": 53
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "sediment created",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "fence_rows": [
+              {
+                "row_id": "f1",
+                "upstream_kg": 100,
+                "trapped_kg": 40,
+                "downstream_kg": 70,
+                "max_capture_kg": 50
+              }
+            ],
+            "sediment_captured": {
+              "total_trapped_kg": 40,
+              "upstream_debit_kg": 100,
+              "day_epoch": 53
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "capture over capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "fence_rows": [
+              {
+                "row_id": "f1",
+                "upstream_kg": 100,
+                "trapped_kg": 40,
+                "downstream_kg": 60,
+                "max_capture_kg": 30
+              }
+            ],
+            "sediment_captured": {
+              "total_trapped_kg": 40,
+              "upstream_debit_kg": 100,
+              "day_epoch": 53
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "missing upstream debit",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "fence_rows": [
+              {
+                "row_id": "f1",
+                "upstream_kg": 100,
+                "trapped_kg": 40,
+                "downstream_kg": 60,
+                "max_capture_kg": 50
+              }
+            ],
+            "sediment_captured": {
+              "total_trapped_kg": 40,
+              "upstream_debit_kg": 80,
+              "day_epoch": 53
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "dye": 6,
+        "stone": 3
+      },
+      "player_verbs": [
+        "preview_slopeweave",
+        "adjust_slopeweave",
+        "commit_slopeweave",
+        "cancel_slopeweave",
+        "undo_slopeweave"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to weave contour fences to capture hillside sediment; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic slopeweave erosion fence modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Weave contour fences to capture hillside sediment; fence_rows and sediment_captured must affect the visible outcome under captured sediment must leave upstream erosion ledger.",
+        "Confirm once with {\"dye\":6,\"stone\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-050",
+      "title": "Rootbridge Treehouse Deck",
+      "source_fields": [
+        "day_epoch",
+        "deck_supports",
+        "receipts",
+        "revision",
+        "site_id",
+        "trunk_clearance"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_050",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "deck_supports": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "support_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "capacity_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "load_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "clearance_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "sway_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "anchored": {
+                "type": "boolean",
+                "default": false
+              },
+              "root_distance_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              }
+            },
+            "default": {
+              "support_id": "",
+              "capacity_kg": 0,
+              "load_kg": 0,
+              "clearance_cm": 0,
+              "sway_cm": 0,
+              "anchored": false,
+              "root_distance_cm": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "support_id"
+        },
+        "trunk_clearance": {
+          "type": "object",
+          "fields": {
+            "min_clearance_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 10000,
+              "default": 0
+            },
+            "tree_sway_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000,
+              "default": 0
+            },
+            "required_root_buffer_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 10000,
+              "default": 0
+            }
+          },
+          "default": {
+            "min_clearance_cm": 0,
+            "tree_sway_cm": 0,
+            "required_root_buffer_cm": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "deck_support_capacity",
+        "deck_trunk_sway",
+        "deck_root_buffer"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "deck_supports": [
+          {
+            "support_id": "d1",
+            "capacity_kg": 600,
+            "load_kg": 400,
+            "clearance_cm": 100,
+            "sway_cm": 10,
+            "anchored": true,
+            "root_distance_cm": 300
+          }
+        ],
+        "trunk_clearance": {
+          "min_clearance_cm": 50,
+          "tree_sway_cm": 20,
+          "required_root_buffer_cm": 200
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "overloaded support",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "deck_supports": [
+              {
+                "support_id": "d1",
+                "capacity_kg": 600,
+                "load_kg": 700,
+                "clearance_cm": 100,
+                "sway_cm": 10,
+                "anchored": true,
+                "root_distance_cm": 300
+              }
+            ],
+            "trunk_clearance": {
+              "min_clearance_cm": 50,
+              "tree_sway_cm": 20,
+              "required_root_buffer_cm": 200
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "trunk sway collision",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "deck_supports": [
+              {
+                "support_id": "d1",
+                "capacity_kg": 600,
+                "load_kg": 400,
+                "clearance_cm": 60,
+                "sway_cm": 10,
+                "anchored": true,
+                "root_distance_cm": 300
+              }
+            ],
+            "trunk_clearance": {
+              "min_clearance_cm": 50,
+              "tree_sway_cm": 20,
+              "required_root_buffer_cm": 200
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "reason": "root intrusion",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "deck_supports": [
+              {
+                "support_id": "d1",
+                "capacity_kg": 600,
+                "load_kg": 400,
+                "clearance_cm": 100,
+                "sway_cm": 10,
+                "anchored": true,
+                "root_distance_cm": 150
+              }
+            ],
+            "trunk_clearance": {
+              "min_clearance_cm": 50,
+              "tree_sway_cm": 20,
+              "required_root_buffer_cm": 200
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns local geometry/preview; Principal owns authoritative inventory, settlement receipts, and assembled save; Farming owns hydrology, habitat and conservation; Valley owns terrain/navigation; Village owns resident consent.",
+      "resource_inputs_unapproved": {
+        "seed": 7,
+        "iron": 1
+      },
+      "player_verbs": [
+        "preview_rootbridge",
+        "adjust_rootbridge",
+        "commit_rootbridge",
+        "cancel_rootbridge",
+        "undo_rootbridge"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to build elevated decks without injuring old trees; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic rootbridge treehouse deck modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Build elevated decks without injuring old trees; deck_supports and trunk_clearance must affect the visible outcome under trunk clearance and sway constrain supports.",
+        "Confirm once with {\"seed\":7,\"iron\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Capped local receipts are nonauthoritative; Principal must maintain durable replay protection for inventory debit and refunds.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    }
+  ]
+}
