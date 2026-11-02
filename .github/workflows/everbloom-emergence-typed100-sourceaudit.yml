@@ -1,0 +1,27 @@
+name: Everbloom Emergence E18 pinned 100-source audit
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed100_sourceaudit/**'
+      - '.github/workflows/everbloom-emergence-typed100-sourceaudit.yml'
+permissions:
+  contents: read
+jobs:
+  pinned-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact checkout and compile independent validator
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "EMERGENCE_E18_HEAD=$GITHUB_SHA"
+          python3 -m py_compile docs/innovation/emergence/typed100_sourceaudit/validate_typed100_sources.py
+      - name: Verify 12 immutable Git blobs and reject 27 adversarial projections
+        shell: bash
+        run: |
+          python3 docs/innovation/emergence/typed100_sourceaudit/validate_typed100_sources.py --self-test
