@@ -1,0 +1,2457 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "phase": "B",
+  "status": "typed_design_only_not_playable",
+  "engine": "Godot 4.x",
+  "base_main": "1af1a53217867eb515ed17123d2ad3f8c94a4bb4",
+  "source_catalog": "game/everbloom-construction-phaseB-100-20261102@f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+  "source_blob": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b",
+  "phaseC": "CLOSED until independent 220 semantic audit and Principal approval",
+  "rules": "Synthetic receipts and typed fixtures are NOT gameplay, authoritative transactions, native acceptance or mobile measurements.",
+  "state_contracts": [
+    {
+      "id": "EB-B-101",
+      "title": "Ivyframe Living Trellis",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: train climbing vines around house windows. Existing Godot baseline has no verified ivyframe living trellis gameplay; unlike Phase-A umbrella systems, its separate state transition is sunlight and pruning govern gradual growth.",
+      "player_scenario": "Train climbing vines around house windows. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_ivyframe",
+        "adjust_ivyframe",
+        "commit_ivyframe",
+        "cancel_ivyframe",
+        "undo_ivyframe"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to train climbing vines around house windows; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic ivyframe living trellis modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "iron": 3,
+        "glass": 1
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "trellis_nodes": "trellis_nodes",
+        "vine_age": "vine_age"
+      },
+      "source_invariant": "Unique window anchors, positive sunlight, deterministic vine growth stage and no future pruning.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_101",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "trellis_nodes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "window_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "sun_hours": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000000
+                  },
+                  "attached": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "window_id",
+                  "sun_hours",
+                  "attached"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "vine_age": {
+              "type": "object",
+              "properties": {
+                "days": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "stage": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "last_pruned_epoch": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                }
+              },
+              "required": [
+                "days",
+                "stage",
+                "last_pruned_epoch"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "trellis_nodes",
+            "vine_age"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-101",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-101"
+          ],
+          "trellis_nodes": [
+            {
+              "id": "t1",
+              "window_id": "w1",
+              "sun_hours": 6,
+              "attached": true
+            }
+          ],
+          "vine_age": {
+            "days": 14,
+            "stage": 2,
+            "last_pruned_epoch": 40
+          }
+        },
+        {
+          "site_id": "site-101b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-101b"
+          ],
+          "trellis_nodes": [
+            {
+              "id": "t1",
+              "window_id": "w1",
+              "sun_hours": 6,
+              "attached": true
+            }
+          ],
+          "vine_age": {
+            "days": 14,
+            "stage": 2,
+            "last_pruned_epoch": 40
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "trellis_nodes",
+            0,
+            "sun_hours"
+          ],
+          "value": 0
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "trellis_nodes"
+          ],
+          "value": [
+            {
+              "id": "t1",
+              "window_id": "w1",
+              "sun_hours": 6,
+              "attached": true
+            },
+            {
+              "id": "t2",
+              "window_id": "w1",
+              "sun_hours": 6,
+              "attached": true
+            }
+          ]
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "vine_age",
+            "stage"
+          ],
+          "value": 5
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "vine_age",
+            "last_pruned_epoch"
+          ],
+          "value": 120
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Train climbing vines around house windows; trellis_nodes and vine_age must affect the visible outcome under sunlight and pruning govern gradual growth.",
+        "Confirm once with {\"iron\":3,\"glass\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-102",
+      "title": "Coppergreen Patina Workshop",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: apply finishes and watch copper weather over years. Existing Godot baseline has no verified coppergreen patina workshop gameplay; unlike Phase-A umbrella systems, its separate state transition is moisture and sealant govern deterministic patina.",
+      "player_scenario": "Apply finishes and watch copper weather over years. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_coppergreen",
+        "adjust_coppergreen",
+        "commit_coppergreen",
+        "cancel_coppergreen",
+        "undo_coppergreen"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to apply finishes and watch copper weather over years; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic coppergreen patina workshop modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "fiber": 4,
+        "dye": 2
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "metal_surface": "metal_surface",
+        "patina_age": "patina_age"
+      },
+      "source_invariant": "Patina level=floor(days*moisture*(100-sealant)/10000), bounded by calendar.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_102",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "metal_surface": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "moisture_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "sealant_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "finish": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                }
+              },
+              "required": [
+                "id",
+                "moisture_percent",
+                "sealant_percent",
+                "finish"
+              ],
+              "additional_properties": false
+            },
+            "patina_age": {
+              "type": "object",
+              "properties": {
+                "days": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "level": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "days",
+                "level"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "metal_surface",
+            "patina_age"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-102",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-102"
+          ],
+          "metal_surface": {
+            "id": "p1",
+            "moisture_percent": 60,
+            "sealant_percent": 20,
+            "finish": "raw"
+          },
+          "patina_age": {
+            "days": 14,
+            "level": 6
+          }
+        },
+        {
+          "site_id": "site-102b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-102b"
+          ],
+          "metal_surface": {
+            "id": "p1",
+            "moisture_percent": 60,
+            "sealant_percent": 20,
+            "finish": "raw"
+          },
+          "patina_age": {
+            "days": 14,
+            "level": 6
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "metal_surface",
+            "moisture_percent"
+          ],
+          "value": 101
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "metal_surface",
+            "sealant_percent"
+          ],
+          "value": 101
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "patina_age",
+            "level"
+          ],
+          "value": 99
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "patina_age",
+            "days"
+          ],
+          "value": 120
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Apply finishes and watch copper weather over years; metal_surface and patina_age must affect the visible outcome under moisture and sealant govern deterministic patina.",
+        "Confirm once with {\"fiber\":4,\"dye\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-103",
+      "title": "Suncloth Seasonal Awning",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: adjust woven shades across seasons. Existing Godot baseline has no verified suncloth seasonal awning gameplay; unlike Phase-A umbrella systems, its separate state transition is wind anchors and angle affect wear and shade.",
+      "player_scenario": "Adjust woven shades across seasons. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_suncloth",
+        "adjust_suncloth",
+        "commit_suncloth",
+        "cancel_suncloth",
+        "undo_suncloth"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to adjust woven shades across seasons; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic suncloth seasonal awning modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "clay": 5,
+        "seed": 3
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "awning_angle": "awning_angle",
+        "cloth_integrity": "cloth_integrity"
+      },
+      "source_invariant": "Shade=max(0,100-2*abs(angle-45)), wear=max(0,100-floor(wind*angle/60)); anchors >=2.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_103",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "awning_angle": {
+              "type": "object",
+              "properties": {
+                "degrees": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "wind_kph": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "anchor_count": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "degrees",
+                "wind_kph",
+                "anchor_count"
+              ],
+              "additional_properties": false
+            },
+            "cloth_integrity": {
+              "type": "object",
+              "properties": {
+                "current_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "shade_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "wear_epoch": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                }
+              },
+              "required": [
+                "current_percent",
+                "shade_percent",
+                "wear_epoch"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "awning_angle",
+            "cloth_integrity"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-103",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-103"
+          ],
+          "awning_angle": {
+            "degrees": 30,
+            "wind_kph": 12,
+            "anchor_count": 3
+          },
+          "cloth_integrity": {
+            "current_percent": 94,
+            "shade_percent": 70,
+            "wear_epoch": 56
+          }
+        },
+        {
+          "site_id": "site-103b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-103b"
+          ],
+          "awning_angle": {
+            "degrees": 30,
+            "wind_kph": 12,
+            "anchor_count": 3
+          },
+          "cloth_integrity": {
+            "current_percent": 94,
+            "shade_percent": 70,
+            "wear_epoch": 112
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "awning_angle",
+            "degrees"
+          ],
+          "value": 181
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "awning_angle",
+            "anchor_count"
+          ],
+          "value": 0
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "cloth_integrity",
+            "current_percent"
+          ],
+          "value": 100
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "cloth_integrity",
+            "shade_percent"
+          ],
+          "value": 99
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Adjust woven shades across seasons; awning_angle and cloth_integrity must affect the visible outcome under wind anchors and angle affect wear and shade.",
+        "Confirm once with {\"clay\":5,\"seed\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-104",
+      "title": "Shadowlace Lantern Carving",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: cut original lantern screens casting unique shadows. Existing Godot baseline has no verified shadowlace lantern carving gameplay; unlike Phase-A umbrella systems, its separate state transition is cutout geometry and finite fuel determine projection.",
+      "player_scenario": "Cut original lantern screens casting unique shadows. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_shadowlace",
+        "adjust_shadowlace",
+        "commit_shadowlace",
+        "cancel_shadowlace",
+        "undo_shadowlace"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to cut original lantern screens casting unique shadows; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic shadowlace lantern carving modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "glass": 6,
+        "wood": 1
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "screen_cutouts": "screen_cutouts",
+        "light_source_id": "light_source_id"
+      },
+      "source_invariant": "Unique bounded cutouts, lit fuel required, projection equals twice total cutout area.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_104",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "screen_cutouts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "area_cm2": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000000
+                  },
+                  "x_mm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000000
+                  },
+                  "y_mm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000000
+                  }
+                },
+                "required": [
+                  "id",
+                  "area_cm2",
+                  "x_mm",
+                  "y_mm"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "light_source_id": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "fuel_units": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "lit": {
+                  "type": "boolean"
+                },
+                "projected_area_cm2": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "id",
+                "fuel_units",
+                "lit",
+                "projected_area_cm2"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "screen_cutouts",
+            "light_source_id"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-104",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-104"
+          ],
+          "screen_cutouts": [
+            {
+              "id": "a",
+              "area_cm2": 10,
+              "x_mm": 0,
+              "y_mm": 0
+            },
+            {
+              "id": "b",
+              "area_cm2": 20,
+              "x_mm": 20,
+              "y_mm": 0
+            }
+          ],
+          "light_source_id": {
+            "id": "lamp",
+            "fuel_units": 5,
+            "lit": true,
+            "projected_area_cm2": 60
+          }
+        },
+        {
+          "site_id": "site-104b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-104b"
+          ],
+          "screen_cutouts": [
+            {
+              "id": "a",
+              "area_cm2": 10,
+              "x_mm": 0,
+              "y_mm": 0
+            },
+            {
+              "id": "b",
+              "area_cm2": 20,
+              "x_mm": 20,
+              "y_mm": 0
+            }
+          ],
+          "light_source_id": {
+            "id": "lamp",
+            "fuel_units": 5,
+            "lit": true,
+            "projected_area_cm2": 60
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "screen_cutouts",
+            1,
+            "id"
+          ],
+          "value": "a"
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "screen_cutouts",
+            0,
+            "area_cm2"
+          ],
+          "value": 0
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "light_source_id",
+            "projected_area_cm2"
+          ],
+          "value": 1
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "light_source_id",
+            "fuel_units"
+          ],
+          "value": 0
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Cut original lantern screens casting unique shadows; screen_cutouts and light_source_id must affect the visible outcome under cutout geometry and finite fuel determine projection.",
+        "Confirm once with {\"glass\":6,\"wood\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-105",
+      "title": "Resonant Timber Sound Garden",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: build paths with material-specific footsteps. Existing Godot baseline has no verified resonant timber sound garden gameplay; unlike Phase-A umbrella systems, its separate state transition is surface and gait trigger bounded original audio.",
+      "player_scenario": "Build paths with material-specific footsteps. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_resonant",
+        "adjust_resonant",
+        "commit_resonant",
+        "cancel_resonant",
+        "undo_resonant"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to build paths with material-specific footsteps; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic resonant timber sound garden modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "dye": 7,
+        "stone": 2
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "surface_material": "surface_material",
+        "sound_profile": "sound_profile"
+      },
+      "source_invariant": "Audio clip determined by first path material and gait; one event per step.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_105",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "surface_material": {
+              "type": "object",
+              "properties": {
+                "segments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 128
+                      },
+                      "material": {
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 128
+                      },
+                      "length_cm": {
+                        "type": "integer",
+                        "min": 0,
+                        "max": 1000000
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "material",
+                      "length_cm"
+                    ],
+                    "additional_properties": false
+                  },
+                  "max_items": 64,
+                  "unique_by": "id"
+                }
+              },
+              "required": [
+                "segments"
+              ],
+              "additional_properties": false
+            },
+            "sound_profile": {
+              "type": "object",
+              "properties": {
+                "gait": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "clip_id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "events_per_step": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "muted": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "gait",
+                "clip_id",
+                "events_per_step",
+                "muted"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "surface_material",
+            "sound_profile"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-105",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-105"
+          ],
+          "surface_material": {
+            "segments": [
+              {
+                "id": "a",
+                "material": "timber",
+                "length_cm": 100
+              },
+              {
+                "id": "b",
+                "material": "stone",
+                "length_cm": 80
+              }
+            ]
+          },
+          "sound_profile": {
+            "gait": "walk",
+            "clip_id": "timber_walk",
+            "events_per_step": 1,
+            "muted": false
+          }
+        },
+        {
+          "site_id": "site-105b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-105b"
+          ],
+          "surface_material": {
+            "segments": [
+              {
+                "id": "a",
+                "material": "timber",
+                "length_cm": 100
+              },
+              {
+                "id": "b",
+                "material": "stone",
+                "length_cm": 80
+              }
+            ]
+          },
+          "sound_profile": {
+            "gait": "walk",
+            "clip_id": "timber_walk",
+            "events_per_step": 1,
+            "muted": false
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "surface_material",
+            "segments",
+            0,
+            "material"
+          ],
+          "value": "lava"
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "sound_profile",
+            "clip_id"
+          ],
+          "value": "stone_walk"
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "sound_profile",
+            "events_per_step"
+          ],
+          "value": 3
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "surface_material",
+            "segments",
+            1,
+            "id"
+          ],
+          "value": "a"
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Build paths with material-specific footsteps; surface_material and sound_profile must affect the visible outcome under surface and gait trigger bounded original audio.",
+        "Confirm once with {\"dye\":7,\"stone\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-106",
+      "title": "Mirrorpond Courtyard",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: arrange reflective paving around rain-fed pools. Existing Godot baseline has no verified mirrorpond courtyard gameplay; unlike Phase-A umbrella systems, its separate state transition is cosmetic reflections cannot create stored water.",
+      "player_scenario": "Arrange reflective paving around rain-fed pools. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_mirrorpond",
+        "adjust_mirrorpond",
+        "commit_mirrorpond",
+        "cancel_mirrorpond",
+        "undo_mirrorpond"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to arrange reflective paving around rain-fed pools; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic mirrorpond courtyard modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "seed": 3,
+        "iron": 3
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "pool_capacity": "pool_capacity",
+        "fountain_flow": "fountain_flow"
+      },
+      "source_invariant": "Stored water cannot exceed capacity; recirculated fountain never debits or creates water.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_106",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "pool_capacity": {
+              "type": "object",
+              "properties": {
+                "pool_id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "liters": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "water_liters": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "rain_receipt_id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                }
+              },
+              "required": [
+                "pool_id",
+                "liters",
+                "water_liters",
+                "rain_receipt_id"
+              ],
+              "additional_properties": false
+            },
+            "fountain_flow": {
+              "type": "object",
+              "properties": {
+                "liters_per_tick": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "recirculated": {
+                  "type": "boolean"
+                },
+                "source_id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "water_debit_liters": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "liters_per_tick",
+                "recirculated",
+                "source_id",
+                "water_debit_liters"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "pool_capacity",
+            "fountain_flow"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-106",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-106"
+          ],
+          "pool_capacity": {
+            "pool_id": "pool1",
+            "liters": 100,
+            "water_liters": 30,
+            "rain_receipt_id": "rain-56"
+          },
+          "fountain_flow": {
+            "liters_per_tick": 5,
+            "recirculated": true,
+            "source_id": "pool1",
+            "water_debit_liters": 0
+          }
+        },
+        {
+          "site_id": "site-106b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-106b"
+          ],
+          "pool_capacity": {
+            "pool_id": "pool1",
+            "liters": 100,
+            "water_liters": 30,
+            "rain_receipt_id": "rain-56"
+          },
+          "fountain_flow": {
+            "liters_per_tick": 5,
+            "recirculated": true,
+            "source_id": "pool1",
+            "water_debit_liters": 0
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "pool_capacity",
+            "water_liters"
+          ],
+          "value": 101
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "fountain_flow",
+            "liters_per_tick"
+          ],
+          "value": 31
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "fountain_flow",
+            "water_debit_liters"
+          ],
+          "value": 1
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "fountain_flow",
+            "recirculated"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Arrange reflective paving around rain-fed pools; pool_capacity and fountain_flow must affect the visible outcome under cosmetic reflections cannot create stored water.",
+        "Confirm once with {\"seed\":3,\"iron\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-107",
+      "title": "Frostlace Window Craft",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: design frost patterns on winter windowpanes. Existing Godot baseline has no verified frostlace window craft gameplay; unlike Phase-A umbrella systems, its separate state transition is condensation and heat drive reproducible thaw.",
+      "player_scenario": "Design frost patterns on winter windowpanes. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_frostlace",
+        "adjust_frostlace",
+        "commit_frostlace",
+        "cancel_frostlace",
+        "undo_frostlace"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to design frost patterns on winter windowpanes; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic frostlace window craft modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "wood": 4,
+        "fiber": 1
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "pane_temperature": "pane_temperature",
+        "frost_mask": "frost_mask"
+      },
+      "source_invariant": "Frost only below zero with low heat and sufficient humidity; coverage=10*unique cells.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_107",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "pane_temperature": {
+              "type": "object",
+              "properties": {
+                "celsius_x10": {
+                  "type": "integer",
+                  "min": -500,
+                  "max": 1000000
+                },
+                "heat_units": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "humidity_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "celsius_x10",
+                "heat_units",
+                "humidity_percent"
+              ],
+              "additional_properties": false
+            },
+            "frost_mask": {
+              "type": "object",
+              "properties": {
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000000
+                  },
+                  "max_items": 64,
+                  "unique_items": true
+                },
+                "coverage_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "thaw_epoch": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                }
+              },
+              "required": [
+                "cells",
+                "coverage_percent",
+                "thaw_epoch"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "pane_temperature",
+            "frost_mask"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-107",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-107"
+          ],
+          "pane_temperature": {
+            "celsius_x10": -30,
+            "heat_units": 2,
+            "humidity_percent": 80
+          },
+          "frost_mask": {
+            "cells": [
+              0,
+              1,
+              2
+            ],
+            "coverage_percent": 30,
+            "thaw_epoch": 57
+          }
+        },
+        {
+          "site_id": "site-107b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-107b"
+          ],
+          "pane_temperature": {
+            "celsius_x10": -30,
+            "heat_units": 2,
+            "humidity_percent": 80
+          },
+          "frost_mask": {
+            "cells": [
+              0,
+              1,
+              2
+            ],
+            "coverage_percent": 30,
+            "thaw_epoch": 113
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "pane_temperature",
+            "celsius_x10"
+          ],
+          "value": 10
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "pane_temperature",
+            "heat_units"
+          ],
+          "value": 8
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "frost_mask",
+            "coverage_percent"
+          ],
+          "value": 40
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "frost_mask",
+            "cells"
+          ],
+          "value": [
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Design frost patterns on winter windowpanes; pane_temperature and frost_mask must affect the visible outcome under condensation and heat drive reproducible thaw.",
+        "Confirm once with {\"wood\":4,\"fiber\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-108",
+      "title": "Windwhirl Kinetic Sculpture",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: balance wind-driven rotating garden art. Existing Godot baseline has no verified windwhirl kinetic sculpture gameplay; unlike Phase-A umbrella systems, its separate state transition is wind and bearing wear bound angular speed.",
+      "player_scenario": "Balance wind-driven rotating garden art. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_windwhirl",
+        "adjust_windwhirl",
+        "commit_windwhirl",
+        "cancel_windwhirl",
+        "undo_windwhirl"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to balance wind-driven rotating garden art; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic windwhirl kinetic sculpture modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "stone": 5,
+        "clay": 2
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "rotor_blades": "rotor_blades",
+        "angular_speed": "angular_speed"
+      },
+      "source_invariant": "Balanced rotor count 2..8, bounded rpm=min(limit,floor(wind*blades*(100-wear)/100)).",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_108",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "rotor_blades": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "balanced": {
+                  "type": "boolean"
+                },
+                "wear_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "count",
+                "balanced",
+                "wear_percent"
+              ],
+              "additional_properties": false
+            },
+            "angular_speed": {
+              "type": "object",
+              "properties": {
+                "rpm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "wind_kph": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "limit_rpm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "rpm",
+                "wind_kph",
+                "limit_rpm"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "rotor_blades",
+            "angular_speed"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-108",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-108"
+          ],
+          "rotor_blades": {
+            "count": 4,
+            "balanced": true,
+            "wear_percent": 10
+          },
+          "angular_speed": {
+            "rpm": 60,
+            "wind_kph": 20,
+            "limit_rpm": 60
+          }
+        },
+        {
+          "site_id": "site-108b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-108b"
+          ],
+          "rotor_blades": {
+            "count": 4,
+            "balanced": true,
+            "wear_percent": 10
+          },
+          "angular_speed": {
+            "rpm": 60,
+            "wind_kph": 20,
+            "limit_rpm": 60
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "rotor_blades",
+            "count"
+          ],
+          "value": 0
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "rotor_blades",
+            "balanced"
+          ],
+          "value": false
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "angular_speed",
+            "rpm"
+          ],
+          "value": 61
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "rotor_blades",
+            "wear_percent"
+          ],
+          "value": 101
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Balance wind-driven rotating garden art; rotor_blades and angular_speed must affect the visible outcome under wind and bearing wear bound angular speed.",
+        "Confirm once with {\"stone\":5,\"clay\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-109",
+      "title": "Celestial Roof Aperture",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: align skylights with seasonal constellations. Existing Godot baseline has no verified celestial roof aperture gameplay; unlike Phase-A umbrella systems, its separate state transition is roof occlusion and calendar govern star visibility.",
+      "player_scenario": "Align skylights with seasonal constellations. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_celestial",
+        "adjust_celestial",
+        "commit_celestial",
+        "cancel_celestial",
+        "undo_celestial"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to align skylights with seasonal constellations; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic celestial roof aperture modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "iron": 6,
+        "glass": 3
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "aperture_azimuth": "aperture_azimuth",
+        "star_window": "star_window"
+      },
+      "source_invariant": "Visible iff current epoch within bounded window and roof unobstructed.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_109",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "aperture_azimuth": {
+              "type": "object",
+              "properties": {
+                "degrees": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "roof_clearance": {
+                  "type": "boolean"
+                },
+                "occlusion_percent": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "degrees",
+                "roof_clearance",
+                "occlusion_percent"
+              ],
+              "additional_properties": false
+            },
+            "star_window": {
+              "type": "object",
+              "properties": {
+                "start_epoch": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "end_epoch": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "visible": {
+                  "type": "boolean"
+                },
+                "star_id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                }
+              },
+              "required": [
+                "start_epoch",
+                "end_epoch",
+                "visible",
+                "star_id"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "aperture_azimuth",
+            "star_window"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-109",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-109"
+          ],
+          "aperture_azimuth": {
+            "degrees": 90,
+            "roof_clearance": true,
+            "occlusion_percent": 10
+          },
+          "star_window": {
+            "start_epoch": 56,
+            "end_epoch": 57,
+            "visible": true,
+            "star_id": "star1"
+          }
+        },
+        {
+          "site_id": "site-109b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-109b"
+          ],
+          "aperture_azimuth": {
+            "degrees": 90,
+            "roof_clearance": true,
+            "occlusion_percent": 10
+          },
+          "star_window": {
+            "start_epoch": 112,
+            "end_epoch": 113,
+            "visible": true,
+            "star_id": "star1"
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "aperture_azimuth",
+            "degrees"
+          ],
+          "value": 360
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "aperture_azimuth",
+            "roof_clearance"
+          ],
+          "value": false
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "star_window",
+            "end_epoch"
+          ],
+          "value": 55
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "star_window",
+            "visible"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Align skylights with seasonal constellations; aperture_azimuth and star_window must affect the visible outcome under roof occlusion and calendar govern star visibility.",
+        "Confirm once with {\"iron\":6,\"glass\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    },
+    {
+      "id": "EB-B-110",
+      "title": "Heritage Facade Evolution",
+      "status": "typed_design_only_not_playable",
+      "domain": "architectural_art",
+      "novelty_audit": "Distinct proposed player decision: customize original village-inspired facade motifs. Existing Godot baseline has no verified heritage facade evolution gameplay; unlike Phase-A umbrella systems, its separate state transition is cosmetic changes cannot grant structural bonuses.",
+      "player_scenario": "Customize original village-inspired facade motifs. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_heritage",
+        "adjust_heritage",
+        "commit_heritage",
+        "cancel_heritage",
+        "undo_heritage"
+      ],
+      "feedback": [
+        "Read-only ghost preview",
+        "Color-independent error status",
+        "Authoritative commit only after Phase C"
+      ],
+      "dependencies": [
+        "B16",
+        "E19",
+        "P14"
+      ],
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to customize original village-inspired facade motifs; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic heritage facade evolution modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "fiber": 7,
+        "dye": 1
+      },
+      "material_quote_status": "provisional, never debit",
+      "source_field_mapping": {
+        "facade_palette": "facade_palette",
+        "finish_revision": "finish_revision"
+      },
+      "source_invariant": "Contrasting facade palette, unique motifs, revision consistency, zero structural bonuses.",
+      "authority": {
+        "principal": "Economy, save, replay and 56-day epoch",
+        "construction": "Local preview and original art",
+        "farming": "Weather, ecology, water and finite materials",
+        "village": "Consent and shared access",
+        "valley": "Geometry and collision"
+      },
+      "save_contract": {
+        "namespace": "construction.eb_b_110",
+        "version": 1,
+        "owner": "design only",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "facade_palette": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "trim": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "motif_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "max_items": 64,
+                  "unique_items": true
+                }
+              },
+              "required": [
+                "base",
+                "trim",
+                "motif_ids"
+              ],
+              "additional_properties": false
+            },
+            "finish_revision": {
+              "type": "object",
+              "properties": {
+                "revision": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "source_revision": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "structural_bonus": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                },
+                "weatherproof_bonus": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 1000000
+                }
+              },
+              "required": [
+                "revision",
+                "source_revision",
+                "structural_bonus",
+                "weatherproof_bonus"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "facade_palette",
+            "finish_revision"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-110",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-110"
+          ],
+          "facade_palette": {
+            "base": "ochre",
+            "trim": "cream",
+            "motif_ids": [
+              "leaf",
+              "swirl"
+            ]
+          },
+          "finish_revision": {
+            "revision": 2,
+            "source_revision": 2,
+            "structural_bonus": 0,
+            "weatherproof_bonus": 0
+          }
+        },
+        {
+          "site_id": "site-110b",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-110b"
+          ],
+          "facade_palette": {
+            "base": "ochre",
+            "trim": "cream",
+            "motif_ids": [
+              "leaf",
+              "swirl"
+            ]
+          },
+          "finish_revision": {
+            "revision": 2,
+            "source_revision": 2,
+            "structural_bonus": 0,
+            "weatherproof_bonus": 0
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "domain_denial_1",
+          "path": [
+            "facade_palette",
+            "motif_ids"
+          ],
+          "value": [
+            "leaf",
+            "leaf"
+          ]
+        },
+        {
+          "name": "domain_denial_2",
+          "path": [
+            "finish_revision",
+            "structural_bonus"
+          ],
+          "value": 1
+        },
+        {
+          "name": "domain_denial_3",
+          "path": [
+            "finish_revision",
+            "source_revision"
+          ],
+          "value": 1
+        },
+        {
+          "name": "domain_denial_4",
+          "path": [
+            "facade_palette",
+            "trim"
+          ],
+          "value": "ochre"
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Customize original village-inspired facade motifs; facade_palette and finish_revision must affect the visible outcome under cosmetic changes cannot grant structural bonuses.",
+        "Confirm once with {\"fiber\":7,\"dye\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: design only"
+    }
+  ]
+}
