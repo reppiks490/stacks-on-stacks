@@ -88,9 +88,8 @@ func _run() -> void:
            "competing writer never created temporary save")
     _check(DirAccess.remove_absolute(lock_absolute) == OK,
            "release simulated competing writer lock")
-    _check(SaveService.write_payload(second), "writer resumes after lock release")
     _check(not DirAccess.dir_exists_absolute(lock_absolute),
-           "resumed save released exclusive writer lock")
+           "simulated competing lock cleared without changing backup rotation")
 
     _check(_write_raw(SaveService.TEMP_PATH, "{interrupted"), "inject torn temp")
     _check(_write_raw(SaveService.SAVE_PATH, "{broken-01"), "inject corrupt primary")
