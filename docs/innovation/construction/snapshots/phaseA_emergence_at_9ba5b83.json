@@ -1,0 +1,961 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "phase": "A_20_ideas",
+  "owner": "Emergent Gameplay and Events Inventor",
+  "target_engine": "Godot 4.x",
+  "baseline_main_sha": "39f2fe3f9b6168d09aa01f7e51ea4dbb7e52081a",
+  "construction_reference": {
+    "branch": "game/everbloom-construction-phase1-20261102",
+    "commit_sha": "0c23b576fc255cce5130a547be549986b685c27e",
+    "path": "docs/innovation/construction/phase1_ten_concepts.json"
+  },
+  "status": "emergence_10_specified_pending_cross_loop_review",
+  "gate": "No new innovation gameplay implementation until combined first 20 ideas reviewed, then 200 additional unique concepts fully specified and cross-deduplicated; 220 total.",
+  "concepts": [
+    {
+      "id": "EB-E-001",
+      "title": "Causality Loom — explainable world consequence director",
+      "domain": "causal_world_events",
+      "status": "specified_pending_review",
+      "novelty_audit": "Current quests are static counters and festivals fixed-date; this is a player-readable event graph with bounded competing consequences, not a second festival calendar or construction stage system.",
+      "player_scenario": "Two dry days forecast a pollinator shortage. At the meadow noticeboard the player can plant flowers, request help, or defer; each choice visibly changes habitat and the following week's market.",
+      "player_verbs": [
+        "inspect_cause",
+        "preview_choices",
+        "commit_response",
+        "postpone",
+        "review_outcome"
+      ],
+      "player_loop": [
+        "Two dry days forecast a pollinator shortage. At the meadow noticeboard the player can plant flowers, request help, or defer; each choice visibly changes habitat and the following week's market. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Event prerequisites, exclusivity, priority, cooldown and seed ordering are immutable; evaluate once per monotonic day_epoch and limit to eight activations per dawn.",
+        "Preview is read-only. Command IDs are idempotent; choice and effects share one receipt, with deferred events retried fairly.",
+        "A missing domain effect adapter rejects activation without silently changing farm or village state."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "director_seed:int",
+          "last_epoch:int",
+          "event_instances:[{id,definition,epoch,choice,status}]",
+          "cooldowns:{event_id:epoch}",
+          "pending_effects:[{id,domain,delta}]",
+          "journal:[{cause_ids,choice,outcome}]"
+        ]
+      },
+      "command_contract": [
+        "preview_event(event_id,snapshot)->{eligible,reasons,choices}",
+        "choose_response(instance_id,choice,command_id)->effect_receipt",
+        "advance_director(day_epoch,seed)->{activated,deferred}",
+        "explain_event(instance_id)->cause_chain"
+      ],
+      "service_contracts": [
+        "Principal calendar/save authority; Farming/Village read-only predicates and idempotent domain effect adapters; independent event journal.",
+        "Never mutate game.gd, farm.gd or village.gd without owner-approved adapter and assembled-save regression."
+      ],
+      "controls": {
+        "mouse_keyboard": "Click cause cards, arrows navigate choices, Enter commits, Esc postpones.",
+        "gamepad": "D-pad navigates event graph, A selects, B exits, shoulders move timeline.",
+        "touch": "Tap large cause nodes, swipe consequence timeline, explicit accept/postpone controls."
+      },
+      "original_asset_plan": [
+        "Original inked weather glyphs, pressed-flower event cards and legible causal arrows.",
+        "Original short chimes and low-motion environmental overlays with accessible text explanations."
+      ],
+      "performance_budget": {
+        "desktop": "Up to 256 definitions and eight activations per dawn, deterministic evaluation target <2ms CPU; journal paging 32 cards.",
+        "mobile": "Up to 128 active regional definitions and 16 visible cards, target <4ms CPU per dawn, never per-frame scanning."
+      },
+      "godot_acceptance": [
+        "Two seeded runs choose identical eligible events and priority order.",
+        "Duplicate choice command changes one resource receipt and one journal entry.",
+        "Winter year-one to Spring year-two save/reload preserves monotonic cooldowns and causal history."
+      ],
+      "adversarial_tests": [
+        "Reject cyclic prerequisite graph, unknown choice, negative cooldown, invalid domain delta and reentrant event.",
+        "Stress 500 eligible events: eight activate, remainder defer without event storm or starvation."
+      ],
+      "engine_portability": "JSON event DAG, integer epochs and effect receipts are engine-neutral; Godot noticeboard is a view adapter, Unreal/Unity later require independent parity tests.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "14-24",
+        "risks": [
+          "cross-domain atomic effects",
+          "event starvation",
+          "cause-chain accessibility"
+        ]
+      },
+      "dependencies": [
+        "E04",
+        "P02",
+        "P03",
+        "P04",
+        "V14",
+        "F18"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wildflower_seed": 2
+        },
+        "refund": "Preview and postponement consume nothing; accepted planting consumes exactly two seeds once and failure leaves inventory unchanged."
+      },
+      "cross_loop_boundary": "No B-003 building stages, B-008 construction labor or B-010 housing simulation.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-002",
+      "title": "Riverglass Accord — watershed habitat and fish migration",
+      "domain": "regional_watershed_ecology",
+      "status": "specified_pending_review",
+      "novelty_audit": "Current lake fishing awards a fish, and Farming F02 handles crop-bed moisture. This models regional water quality and migratory fish connectivity, not B-004 roof rainwater capture.",
+      "player_scenario": "A silted tributary blocks silverfin spawning. The player samples three sites, plants reeds and proposes a seasonal catch limit; shoals and market supply respond across seasons.",
+      "player_verbs": [
+        "sample_water",
+        "inspect_passage",
+        "plant_buffer",
+        "set_catch_limit",
+        "observe_migration"
+      ],
+      "player_loop": [
+        "A silted tributary blocks silverfin spawning. The player samples three sites, plants reeds and proposes a seasonal catch limit; shoals and market supply respond across seasons. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Directed segment graph tracks bounded water quality 0..100 and integer fish population; migration conserves fish except explicit births, deaths and catch.",
+        "Turbidity changes after elapsed days and upstream signals; no instant habitat repair. Farm runoff is read-only external input.",
+        "Once-per-epoch catch receipts prevent repeated harvest; low population enforces clear no-catch recovery."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "segments:[{id,downstream,quality,flow}]",
+          "cohorts:[{species,segment,count}]",
+          "buffers:[{segment,plant,health}]",
+          "surveys:[{epoch,site,quality}]",
+          "catch_limits:{season:count}"
+        ]
+      },
+      "command_contract": [
+        "sample_site(site_id,position)->quality_reading",
+        "preview_buffer(segment,plant)->{cost,effect}",
+        "commit_buffer(command_id,segment,plant)->receipt",
+        "advance_migration(day_epoch,weather)->population_ledger"
+      ],
+      "service_contracts": [
+        "Farming hydrology supplies bounded runoff summary; Valley owns sample markers; Principal saves river state.",
+        "Village market may consume sustainable fish signal but cannot independently mint fish stock."
+      ],
+      "controls": {
+        "mouse_keyboard": "E samples at river markers, mouse selects restoration choice on watershed map.",
+        "gamepad": "A samples, D-pad compares segments, shoulders select restoration option.",
+        "touch": "Tap marked sample post, use large site cards and explicit restore/cancel buttons."
+      },
+      "original_asset_plan": [
+        "Original shoal silhouettes, reed meshes and low-poly riverbank detail.",
+        "Original sample-vial icons, sediment gradients and calm river audio with color-independent labels."
+      ],
+      "performance_budget": {
+        "desktop": "At most 24 river segments and 12 fish cohorts; dawn model target <2ms CPU and pooled shoal visuals.",
+        "mobile": "At most 12 rendered segments, 40 pooled fish proxies and <4ms CPU per dawn; no fluid physics."
+      },
+      "godot_acceptance": [
+        "A three-segment migration conserves exactly 100 fish before explicit births/catch.",
+        "Planting reeds improves quality after seven dawns, not immediately.",
+        "Reload after year rollover preserves cohorts, catch limits and survey history."
+      ],
+      "adversarial_tests": [
+        "Reject cyclic downstream graph, negative fish, nonexistent site, duplicate catch and exceeding stock.",
+        "Missing runoff adapter freezes the affected segment with a visible unavailable reason; no fabricated water."
+      ],
+      "engine_portability": "Integer river graph and conservation ledger portable; Godot MultiMesh fish and shoreline shader are replaceable views.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "15-26",
+        "risks": [
+          "population conservation",
+          "hydrology handoff",
+          "water rendering cost"
+        ]
+      },
+      "dependencies": [
+        "E05",
+        "F02",
+        "F15",
+        "P04",
+        "P08"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "reed_seed": 3
+        },
+        "refund": "Sample is free; planting debits three seeds only after valid commit; duplicates and failed actions cannot charge again."
+      },
+      "cross_loop_boundary": "Not B-004 rainroof plumbing, B-002 terrain foundations or Farm's soil moisture model.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-003",
+      "title": "Lantern Letters — consent-based promises and verifiable village stories",
+      "domain": "social_story_causality",
+      "status": "specified_pending_review",
+      "novelty_audit": "Village already has affection and saved resident memory. This adds provenance, confidentiality, delivery and recoverable promise consequences across NPCs, not another gift/affection score.",
+      "player_scenario": "A baker asks the player to deliver a sealed letter. The recipient may decline, ask for evidence or respond; the player's respect for privacy changes later invitations.",
+      "player_verbs": [
+        "accept_promise",
+        "verify_claim",
+        "ask_consent",
+        "deliver_letter",
+        "return_letter",
+        "review_history"
+      ],
+      "player_loop": [
+        "A baker asks the player to deliver a sealed letter. The recipient may decline, ask for evidence or respond; the player's respect for privacy changes later invitations. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Each letter records issuer, recipient, consent scope, deadline epoch and stable receipt; private claims never spread without consent.",
+        "Late delivery offers apology/recovery, not permanent social softlock. Only approved Village interface changes targeted relationship state.",
+        "Duplicate delivery commands are no-ops even after save/reload and across a year boundary."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "letters:[{id,issuer,recipient,consent,deadline_epoch,status}]",
+          "claims:[{id,source,evidence,visibility}]",
+          "delivery_receipts:[{command_id,letter_id,epoch,outcome}]",
+          "promise_history:[{npc_id,trust_delta,reason}]"
+        ]
+      },
+      "command_contract": [
+        "offer_letter(issuer,recipient,epoch)->options",
+        "inspect_provenance(letter_id)->evidence",
+        "deliver_letter(command_id,recipient,letter_id)->receipt",
+        "expire_promises(day_epoch)->recovery_options"
+      ],
+      "service_contracts": [
+        "Village owns NPC identities, schedules, affinity and consent; Principal owns calendar/save.",
+        "Narrative ledger owns letter and claim provenance; no direct modification to village.gd without owner coordination."
+      ],
+      "controls": {
+        "mouse_keyboard": "E talks to issuer/recipient, number keys choose options, R opens promise journal.",
+        "gamepad": "A talks/selects, shoulders show promise journal, B declines disclosure.",
+        "touch": "Tap conversation bubble and large verify/deliver/return cards with clear privacy status."
+      },
+      "original_asset_plan": [
+        "Original sealed lantern envelopes, mailbox props and paper journal art.",
+        "Original page Foley and readable character reaction icons with verified provenance."
+      ],
+      "performance_budget": {
+        "desktop": "Up to 128 active promises, 256 evidence edges and 32 visible cards, expiry target <1ms/day.",
+        "mobile": "Up to 64 active promises and 16 cards, paginated text, expiry target <2ms/day."
+      },
+      "godot_acceptance": [
+        "Consenting delivery modifies only intended NPC trust exactly once.",
+        "Declined disclosure does not propagate claim to unrelated residents.",
+        "Deadline from year one does not reset on year-two Spring and apology remains possible."
+      ],
+      "adversarial_tests": [
+        "Reject forged consent, unknown NPC, duplicate receipt, self-delivery loop and revoked visibility.",
+        "Reject malformed legacy letter without mutating current save or NPC relationship."
+      ],
+      "engine_portability": "Portable consent/provenance graph and receipts; dialogue and mailbox are Godot views only.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "10-17",
+        "risks": [
+          "narrative content",
+          "privacy rules",
+          "NPC schedule synchronization"
+        ]
+      },
+      "dependencies": [
+        "E07",
+        "V03",
+        "V05",
+        "V16",
+        "P02",
+        "P04"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {},
+        "refund": "Basic courier errand is free; optional stipend is paid once on accepted receipt, never on canceled preview."
+      },
+      "cross_loop_boundary": "Not B-005 spatial room memory, B-007 blueprint plans or B-008 building labor.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-004",
+      "title": "Wayfarer Pulse — weather-aware caravan logistics and bounded markets",
+      "domain": "regional_economy",
+      "status": "specified_pending_review",
+      "novelty_audit": "Existing village shops/jobs are local transactions. This adds finite itinerant stock, route risk and escrowed reservations, not B-008 NPC construction labor.",
+      "player_scenario": "Mist delays a mountain caravan. The player escorts the shipment, substitutes local produce or postpones a feast, with visible stock and price consequences.",
+      "player_verbs": [
+        "inspect_route",
+        "reserve_goods",
+        "choose_delivery",
+        "escort_caravan",
+        "settle_trade"
+      ],
+      "player_loop": [
+        "Mist delays a mountain caravan. The player escorts the shipment, substitutes local produce or postpones a feast, with visible stock and price consequences. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Caravan manifests have finite integer stock and seeded arrival epochs; one caravan cannot occupy two towns at once.",
+        "Escrow gold or goods once, never both; cancellation refunds by published bounded policy; delivery receipts cannot be duplicated.",
+        "Price multiplier remains 50..175 percent of base, and severe weather always has a recoverable alternative route."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "routes:[{id,from,to,travel_days,risk}]",
+          "caravans:[{id,route,arrival_epoch,manifest,status}]",
+          "reservations:[{id,item,quantity,escrow,status}]",
+          "trade_receipts:[{command_id,quantity,price,epoch}]",
+          "pressure:{item:bounded_index}"
+        ]
+      },
+      "command_contract": [
+        "quote_order(route,item,quantity,epoch)->{price,eta}",
+        "reserve_order(command_id,quote_revision)->receipt",
+        "resolve_route(caravan_id,weather,epoch)->outcome",
+        "settle_delivery(reservation_id,command_id)->ledger"
+      ],
+      "service_contracts": [
+        "Village shop provides baseline prices, Farming crop availability, Principal inventory/gold authority.",
+        "EventDirector announces disruptions, while caravan scheduler owns unique route instances."
+      ],
+      "controls": {
+        "mouse_keyboard": "Click village route map, arrow keys set quantity, Enter reserves and E greets arrival.",
+        "gamepad": "D-pad selects route, stick sets quantity, A confirms and B cancels.",
+        "touch": "Tap route card, quantity stepper, large reserve/cancel and readable receipt."
+      },
+      "original_asset_plan": [
+        "Original wagon silhouettes, stamped cargo cards and painted map routes.",
+        "Original wheels-and-bells audio and weather-delay icons."
+      ],
+      "performance_budget": {
+        "desktop": "Up to 12 caravans, 32 routes and 256 reservations, dawn update <1ms CPU.",
+        "mobile": "Up to six rendered merchants and 12 visible route cards, dawn update <2ms CPU."
+      },
+      "godot_acceptance": [
+        "Reservation charges escrow once and delivery credits exact stock once.",
+        "Rain delay changes arrival deterministically without duplicate wagon spawn.",
+        "Cancellation and reload return correct escrow and clear pending shipment."
+      ],
+      "adversarial_tests": [
+        "Reject negative quantity, stale quote, insufficient funds, unknown route and duplicate settlement.",
+        "No route remains permanently blocked after bounded severe-weather cycles."
+      ],
+      "engine_portability": "Integer route and escrow ledgers portable; Godot map/merchant visuals are adapters.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "10-18",
+        "risks": [
+          "market exploits",
+          "inventory ownership",
+          "route scheduling"
+        ]
+      },
+      "dependencies": [
+        "E08",
+        "V15",
+        "F17",
+        "P04",
+        "P02"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "gold": 25
+        },
+        "refund": "Before dispatch cancel returns full escrow; later refund follows a bounded quoted policy; rejected or duplicate command changes no balances."
+      },
+      "cross_loop_boundary": "Not B-008 construction contracts or B-009 structural salvage.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-005",
+      "title": "Starpath Almanac — fictional sky navigation and multi-route mysteries",
+      "domain": "sky_exploration_puzzles",
+      "status": "specified_pending_review",
+      "novelty_audit": "The current highlands have static wayfinding signs, not astronomical clue navigation. This is an inference puzzle tied to seasonal observations, not cosmetic weather or terrain construction.",
+      "player_scenario": "On an autumn evening, the player rotates a carved star wheel against mountain silhouettes to reveal a hidden herb grove; winter mist offers an alternate grounded clue.",
+      "player_verbs": [
+        "observe_sky",
+        "rotate_starwheel",
+        "record_bearing",
+        "compare_clues",
+        "solve_mystery"
+      ],
+      "player_loop": [
+        "On an autumn evening, the player rotates a carved star wheel against mountain silhouettes to reveal a hidden herb grove; winter mist offers an alternate grounded clue. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Celestial bearings are fictional, deterministic by seed, season and region, and do not purport to be real navigation.",
+        "Each mystery has two independently accessible clue routes and optional hints; poor weather cannot permanently block completion.",
+        "One mystery completion yields one unique reward receipt; later visits yield lore only."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "sky_seed:int",
+          "observations:[{epoch,region,bearing,clue}]",
+          "mysteries:[{id,clues,status}]",
+          "revealed_landmarks:[id]",
+          "hint_level:{mystery_id:int}"
+        ]
+      },
+      "command_contract": [
+        "observe_sky(region,epoch,weather)->patterns",
+        "align_wheel(pattern,angle)->{matched,clue}",
+        "request_hint(mystery_id)->hint",
+        "resolve_mystery(command_id,clues)->reward_receipt"
+      ],
+      "service_contracts": [
+        "Principal supplies season/weather/time, Valley supplies safe landmarks, Village optional clues.",
+        "Principal inventory owns unique reward and save; sky shader never decides gameplay results."
+      ],
+      "controls": {
+        "mouse_keyboard": "Drag star wheel with mouse, Q/E fine nudges, M opens clues, Enter records bearing.",
+        "gamepad": "Right stick rotates wheel, triggers nudge, A records and shoulder swaps clues.",
+        "touch": "One-finger rotate wheel, visible nudge buttons, high-contrast bearing and optional auto-align."
+      },
+      "original_asset_plan": [
+        "Original night sky glyphs, carved wooden star wheel and skyline silhouettes.",
+        "Original soft chimes and low-particle mobile night-sky alternative."
+      ],
+      "performance_budget": {
+        "desktop": "At most 120 sky points and 16 clue markers, sky calculation <1ms CPU, one cached star map.",
+        "mobile": "At most 64 sky points, no volumetric sky effects, calculation <2ms CPU at 30fps tier."
+      },
+      "godot_acceptance": [
+        "Same seed/year/season yields identical bearings and clue IDs.",
+        "Mist blocks sky route but ground clue still resolves mystery.",
+        "Reload and year rollover cannot grant mystery reward twice."
+      ],
+      "adversarial_tests": [
+        "Reject NaN angle, unknown clue, invalid region and duplicate reward.",
+        "Missing landmark adapter must not teleport player or mutate unrelated world state."
+      ],
+      "engine_portability": "Integer bearings and clue state portable; Godot sky shader/camera is replaceable.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "11-19",
+        "risks": [
+          "puzzle accessibility",
+          "night visuals",
+          "clue authoring"
+        ]
+      },
+      "dependencies": [
+        "E11",
+        "E14",
+        "P02",
+        "P08",
+        "V05"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {},
+        "refund": "Observation and hints cost no scarce items; completion reward uses a single idempotent receipt."
+      },
+      "cross_loop_boundary": "No B-002 terrain sculpting, B-003 house phases or B-010 home climate.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-006",
+      "title": "Wildsign Atlas — ethical wildlife migration and companion tracking",
+      "domain": "wildlife_exploration",
+      "status": "specified_pending_review",
+      "novelty_audit": "Barn animal care exists, but no nonviolent regional wildlife sign tracking. This models migratory cohorts, tracks and optional companion hints, not livestock production.",
+      "player_scenario": "Follow seasonal hoofprints from the woods to the highlands, set a harmless observation hide and ask a trusted companion to locate a distant herd without capturing animals.",
+      "player_verbs": [
+        "inspect_tracks",
+        "compare_signs",
+        "place_hide",
+        "follow_migration",
+        "request_companion_hint",
+        "record_sighting"
+      ],
+      "player_loop": [
+        "Follow seasonal hoofprints from the woods to the highlands, set a harmless observation hide and ask a trusted companion to locate a distant herd without capturing animals. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Wildlife cohort population and waypoint route are stable, bounded and updated once per day; rendered agents are a subset of aggregate state.",
+        "Tracks expire after one to three epochs, sightings credit once per species/season/region, and observation never harms wildlife.",
+        "Companion assistance is optional and cannot lock out players without companions; fallback hints remain available."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "cohorts:[{species,count,route,waypoint}]",
+          "tracks:[{id,cohort,created,expires}]",
+          "sightings:[{species,region,season,year}]",
+          "companion_bonds:{id:trust}",
+          "hides:[{id,region,position}]"
+        ]
+      },
+      "command_contract": [
+        "query_tracks(position,epoch)->signs",
+        "observe_cohort(id,distance,weather)->sighting",
+        "ask_companion(command_id,track_id)->hint",
+        "advance_migration(epoch,seed)->population_ledger"
+      ],
+      "service_contracts": [
+        "Valley supplies spawn-safe regions, Farming Animals remains barn-only, Principal owns save.",
+        "Optional companion adapter supplies trust; event director consumes sightings as read-only triggers."
+      ],
+      "controls": {
+        "mouse_keyboard": "E inspects tracks, R opens atlas, click evidence cards and C asks companion.",
+        "gamepad": "A inspects, shoulder opens atlas, D-pad compares tracks, X asks companion.",
+        "touch": "Tap footprint glyph, large evidence cards and explicit companion hint button."
+      },
+      "original_asset_plan": [
+        "Original low-poly fantasy wildlife silhouettes, tracks and hide marker.",
+        "Original forest rustle audio and reduced-motion directional clue overlays."
+      ],
+      "performance_budget": {
+        "desktop": "At most eight visible wildlife agents and 96 track decals; daily migration <2ms CPU.",
+        "mobile": "At most three rendered agents and 24 decals, offscreen simulation integer-only <3ms/day."
+      },
+      "godot_acceptance": [
+        "Season changes move cohort to next waypoint without losing animals.",
+        "Repeated sighting and reload grant one journal discovery.",
+        "No companion still permits every essential observation via manual clues."
+      ],
+      "adversarial_tests": [
+        "Reject negative cohort, expired track, impossible observation distance and duplicate receipt.",
+        "No agent may spawn inside solid geometry or water; failed placement must preserve state."
+      ],
+      "engine_portability": "Cohort graph and sightings are portable; Godot animation/pathfinding need new adapters after port.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "14-23",
+        "risks": [
+          "wildlife animation cost",
+          "spawn safety",
+          "save continuity"
+        ]
+      },
+      "dependencies": [
+        "E05",
+        "E09",
+        "E10",
+        "P08",
+        "F11"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "cloth": 1,
+          "wood": 2
+        },
+        "refund": "Hide preview costs nothing, commit debits materials once, and dismantle returns bounded salvage without duplication."
+      },
+      "cross_loop_boundary": "Observation hide is a simple marker, not B-001 socket building or B-010 house construction.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-007",
+      "title": "Tradition Seedbank — community-authored evolving celebrations",
+      "domain": "adaptive_rituals",
+      "status": "specified_pending_review",
+      "novelty_audit": "Village currently has fixed original festival dates and rewards. This introduces player-proposed rituals, NPC consent and year-over-year traditions without replacing fixed festival logic.",
+      "player_scenario": "Propose next spring's lantern procession theme, invite musicians and choose a daytime route; residents remember who participated and may change next year's ceremony.",
+      "player_verbs": [
+        "propose_ritual",
+        "gather_votes",
+        "choose_theme",
+        "invite_residents",
+        "host_celebration"
+      ],
+      "player_loop": [
+        "Propose next spring's lantern procession theme, invite musicians and choose a daytime route; residents remember who participated and may change next year's ceremony. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Every proposal has stable ID, consent votes and a single annual occurrence; residents can opt out without penalty.",
+        "Existing four festivals keep calendar priority; conflicting rituals receive alternative dates or smaller fallback gathering.",
+        "Hosting is once per year and contribution materials are debited exactly once after schedule approval."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "traditions:[{id,theme,venue,origin_epoch}]",
+          "votes:[{tradition,resident,choice,epoch}]",
+          "celebrations:[{tradition,year,outcome}]",
+          "invitations:[{resident,tradition,status}]",
+          "annual_cooldowns:{id:epoch}"
+        ]
+      },
+      "command_contract": [
+        "propose_tradition(theme,venue,epoch)->id",
+        "vote_tradition(resident,proposal,choice)->receipt",
+        "preview_schedule(proposal)->alternatives",
+        "host_tradition(command_id,year,contribution)->outcome"
+      ],
+      "service_contracts": [
+        "Village owns resident schedules, consent and fixed festival calendar; Farming supplies optional flowers.",
+        "Principal owns time/save; no edits to festivals.gd until Village authorizes new adapter."
+      ],
+      "controls": {
+        "mouse_keyboard": "E opens community board, arrows choose theme and venue, Enter invites or hosts.",
+        "gamepad": "D-pad selects cards, A proposes, B cancels, shoulder opens history.",
+        "touch": "Tap large theme cards and invite/host controls, readable vote tally."
+      },
+      "original_asset_plan": [
+        "Original lantern ribbons, garlands and paper-cut festival motifs.",
+        "Original instrumental loops and subtitle-ready community announcements."
+      ],
+      "performance_budget": {
+        "desktop": "Up to 16 traditions, 64 annual receipts and 24 pooled crowd silhouettes, scheduling <2ms/day.",
+        "mobile": "At most 12 crowd proxies and 16 traditions; simplified lighting, scheduling <3ms/day."
+      },
+      "godot_acceptance": [
+        "Rejected proposal offers optional smaller ritual without replacing fixed festival.",
+        "Approved theme and opt-outs persist into year two with one occurrence.",
+        "Conflicting rituals choose alternate date and do not duplicate celebration."
+      ],
+      "adversarial_tests": [
+        "Reject duplicate host, invalid vote, nonexistent NPC and invalid 56-day calendar date.",
+        "Legacy save missing traditions loads safely and retains existing festivals."
+      ],
+      "engine_portability": "Proposal/vote/calendar state portable; Godot procession and audio are replaceable views.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "14-25",
+        "risks": [
+          "festival coexistence",
+          "NPC autonomy",
+          "content production"
+        ]
+      },
+      "dependencies": [
+        "E06",
+        "V09",
+        "V03",
+        "P02",
+        "P04"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "flower": 2
+        },
+        "refund": "Proposal and votes cost nothing; successful hosting consumes two flowers once; failed hosting returns all reservations."
+      },
+      "cross_loop_boundary": "Unlike B-008 Village Build Commons, this is a social ritual, not NPC construction.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-008",
+      "title": "Pattern Orchard — authored textile motifs and maker exchange",
+      "domain": "creative_artisan_economy",
+      "status": "specified_pending_review",
+      "novelty_audit": "Crafting currently has fixed recipes; Builder blueprints concern architecture. This lets players weave original bounded pattern grids and exchange crafted fabrics, not house plans.",
+      "player_scenario": "Blend two farm-grown dyes, weave a scarf motif on a loom, then enter it into a village exhibition where NPC tastes affect limited demand.",
+      "player_verbs": [
+        "mix_dye",
+        "choose_weave",
+        "paint_motif",
+        "preview_fabric",
+        "craft_item",
+        "exhibit_design"
+      ],
+      "player_loop": [
+        "Blend two farm-grown dyes, weave a scarf motif on a loom, then enter it into a village exhibition where NPC tastes affect limited demand. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Pattern is an 8x8 integer grid with at most six palette colors; no user-supplied scripts or copied external images.",
+        "Preview never debits resources. Craft consumes fiber/dye once and creates an item with stable pattern snapshot.",
+        "Market demand is bounded and buyback cannot generate instant unlimited currency."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "patterns:[{id,grid_8x8,palette,author_tag}]",
+          "dye_mixes:[{id,plants,ratio}]",
+          "crafted:[{instance,pattern,quality,epoch}]",
+          "exhibitions:[{pattern,year,receipt}]",
+          "orders:[{id,item,quantity,status}]"
+        ]
+      },
+      "command_contract": [
+        "preview_pattern(grid,palette)->{valid,cost,render_key}",
+        "commit_textile(command_id,pattern,materials)->item_receipt",
+        "enter_exhibition(item,year)->receipt",
+        "fulfill_order(order,command_id)->currency_ledger"
+      ],
+      "service_contracts": [
+        "Farming supplies dye plants/fiber, Village consumes exhibition entries, Principal owns inventory and money.",
+        "Renderer derives texture from integer pattern; do not import unlicensed design graphics."
+      ],
+      "controls": {
+        "mouse_keyboard": "Click loom cells, drag dye swatches, Ctrl+Z undo, Enter crafts.",
+        "gamepad": "D-pad selects cell, A paints, shoulders change palette, X previews.",
+        "touch": "Tap enlarged grid, numbered swatches and visible undo/commit controls."
+      },
+      "original_asset_plan": [
+        "Original generated weave textures and botanical swatches.",
+        "Original carved loom and shuttle Foley with colorblind-friendly patterns."
+      ],
+      "performance_budget": {
+        "desktop": "At most 128 patterns and 64x64 cached preview per visible item; regenerate only on edit.",
+        "mobile": "At most 32 visible previews, 32x32 textures and no per-frame regeneration."
+      },
+      "godot_acceptance": [
+        "Identical grid and dyes produce identical render key and properties.",
+        "One craft consumes exact fiber and dye inputs; preview/cancel cost nothing.",
+        "Exhibition entry and sale issue one receipt across save/reload."
+      ],
+      "adversarial_tests": [
+        "Reject grid larger than 8x8, invalid palette, missing dye and duplicate item instance.",
+        "Deleted pattern must not orphan crafted item's immutable pattern snapshot."
+      ],
+      "engine_portability": "Integer grids and palette IDs portable; Godot ImageTexture generated as a view.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "9-16",
+        "risks": [
+          "texture caching",
+          "economic arbitrage",
+          "art scope"
+        ]
+      },
+      "dependencies": [
+        "E13",
+        "F16",
+        "V15",
+        "P04",
+        "P15"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "fiber": 1,
+          "dye_plant": 2
+        },
+        "refund": "Commit consumes one fiber and two plants only if valid; canceled design consumes nothing; sold item removed before payout."
+      },
+      "cross_loop_boundary": "Not B-007 house blueprints, B-010 interior decorating or B-009 salvage.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-009",
+      "title": "Mistwake Passage — accessible canoe routes and hidden wetlands",
+      "domain": "water_traversal",
+      "status": "specified_pending_review",
+      "novelty_audit": "Lake currently serves fishing with static water geometry. This adds safe route planning, paddling and accessible alternate paths, not construction foundations or roof plumbing.",
+      "player_scenario": "A mist bank closes a direct canoe route. The player follows floating markers along a slower shoreline path to a herb island, with optional autopaddle for touch users.",
+      "player_verbs": [
+        "launch_canoe",
+        "inspect_depth",
+        "set_waypoint",
+        "paddle",
+        "moor",
+        "switch_route"
+      ],
+      "player_loop": [
+        "A mist bank closes a direct canoe route. The player follows floating markers along a slower shoreline path to a herb island, with optional autopaddle for touch users. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "Water routes form finite graph with depth/current/weather constraints; no teleport or crossing impassable terrain.",
+        "Each accepted edge charges bounded stamina once; interrupted load restores last safe mooring without lost inventory.",
+        "Critical destinations have an alternate assisted or walking route; no frame-perfect control requirement."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "moorings:[{id,position,region}]",
+          "routes:[{id,from,to,depth,current}]",
+          "canoe:{mooring,route,progress,assist}",
+          "discovered:[{route,epoch}]",
+          "travel_receipts:[{command_id,edge,energy}]"
+        ]
+      },
+      "command_contract": [
+        "preview_route(from,to,weather)->{safe,cost}",
+        "start_paddle(command_id,route)->receipt",
+        "advance_canoe(ticks,input)->state",
+        "moor(command_id,mooring)->safe_state"
+      ],
+      "service_contracts": [
+        "Valley owns lake geometry, Principal player position/stamina/save, exploration journal owns discovered routes.",
+        "No modification to valley.gd or player controller before explicit interface agreement."
+      ],
+      "controls": {
+        "mouse_keyboard": "WASD paddles, M opens route map, E moors, Shift toggles assisted mode.",
+        "gamepad": "Left stick paddles, A moors, shoulder cycles waypoint, X toggles assist.",
+        "touch": "Two large paddle controls or one-tap waypoint autopaddle, clear moor/stop buttons."
+      },
+      "original_asset_plan": [
+        "Original carved canoe, painted depth ripples and floating route lanterns.",
+        "Original water-lap audio and low-motion camera alternative."
+      ],
+      "performance_budget": {
+        "desktop": "At most 24 water edges, one canoe proxy and 16 pooled ripples; path solve <1ms CPU.",
+        "mobile": "At most 12 visible edges, four ripples and kinematic canoe; path solve <2ms CPU."
+      },
+      "godot_acceptance": [
+        "Shallow route rejects canoe and offers valid alternative.",
+        "Duplicate route command charges stamina once and reload restores safe state.",
+        "Assist mode reaches every essential destination without timing challenge."
+      ],
+      "adversarial_tests": [
+        "Reject unknown mooring, negative energy, invalid progress and duplicate edge receipt.",
+        "On interrupted scene load, recover to safe mooring and conserve all inventory."
+      ],
+      "engine_portability": "Integer route graph and travel receipts portable; Godot movement and water effects are adapters.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "13-23",
+        "risks": [
+          "player controller ownership",
+          "navigation accessibility",
+          "mobile movement"
+        ]
+      },
+      "dependencies": [
+        "E09",
+        "P07",
+        "P08",
+        "P11",
+        "P04"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {},
+        "refund": "No canoe purchase required in baseline; edge stamina charged once, canceled preview is free."
+      },
+      "cross_loop_boundary": "Not B-002 foundations, B-001 click-and-stick placement or structural boat crafting.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    },
+    {
+      "id": "EB-E-010",
+      "title": "Neighbor Chorus — consent-aware offline collaborative chores",
+      "domain": "offline_social_cooperation",
+      "status": "specified_pending_review",
+      "novelty_audit": "Village offers paid shifts and Builder plans NPC construction crews. This coordinates optional nonconstruction chores with NPC schedules, autonomy and fair settlements.",
+      "player_scenario": "Invite two villagers to gather apples and prepare supper. One prefers cooking, another is busy; negotiate roles and share a transparent reward while retaining solo completion.",
+      "player_verbs": [
+        "invite_helper",
+        "propose_chore",
+        "negotiate_schedule",
+        "assign_role",
+        "work_together",
+        "settle_rewards"
+      ],
+      "player_loop": [
+        "Invite two villagers to gather apples and prepare supper. One prefers cooking, another is busy; negotiate roles and share a transparent reward while retaining solo completion. The player must receive visible feedback after every accepted choice and may inspect a persistent consequence journal."
+      ],
+      "simulation_rules": [
+        "NPCs opt in based on schedule, skill and consent; declining never harms relationship and does not abandon required village job.",
+        "Each work step has unique receipt and bounded units; repeated commands never exceed task target.",
+        "Solo path always exists; shared compensation conserves gold and goods and never makes balances negative."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "projects:[{id,task,target,progress,status}]",
+          "invites:[{project,resident,consent,expiry}]",
+          "assignments:[{resident,task,epoch,units}]",
+          "work_receipts:[{command_id,project,resident,units}]",
+          "settlements:[{project,payouts,status}]"
+        ]
+      },
+      "command_contract": [
+        "preview_invitation(resident,project,epoch)->availability",
+        "invite_helper(command_id,resident,project)->consent_receipt",
+        "advance_chore(project,worker,units,command_id)->receipt",
+        "settle_project(project,command_id)->ledger"
+      ],
+      "service_contracts": [
+        "Village owns consent/schedules, Farming owns harvest inputs, Principal owns energy/inventory/save.",
+        "Coordinator owns project ledger only; B-008 retains exclusive construction labor."
+      ],
+      "controls": {
+        "mouse_keyboard": "E invites NPC, J opens chore planner, click roles, Enter confirms.",
+        "gamepad": "A talks, shoulder opens planner, D-pad selects roles, B exits.",
+        "touch": "Tap resident prompt, use three-card chore planner and explicit settle button."
+      },
+      "original_asset_plan": [
+        "Original picnic baskets, orchard task cards and communal meal props.",
+        "Original friendly work audio motifs and readable contribution icons."
+      ],
+      "performance_budget": {
+        "desktop": "At most four helpers, 12 projects and 64 work receipts, scheduler <1ms/day.",
+        "mobile": "At most two rendered helpers, 12 simulated projects and simplified animation, scheduler <2ms/day."
+      },
+      "godot_acceptance": [
+        "NPC decline preserves schedule and solo completion remains possible.",
+        "Player and helpers complete exactly ten units after duplicates and save/reload.",
+        "Settlement consumes goods and pays rewards once with targeted NPC memory."
+      ],
+      "adversarial_tests": [
+        "Reject unavailable helper, expired invitation, duplicate work, over-target progress and negative payout.",
+        "Helper cancels mid-project without trapping inventory or punishing player socially."
+      ],
+      "engine_portability": "Project/consent/receipt state portable; Godot NPC choreography and UI are replaceable.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "11-20",
+        "risks": [
+          "NPC scheduling",
+          "work duplication",
+          "player agency"
+        ]
+      },
+      "dependencies": [
+        "E16",
+        "V02",
+        "V03",
+        "F16",
+        "P04",
+        "P07"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "apple": 3
+        },
+        "refund": "Invitation is free; supper consumes three apples once at settlement, failure leaves resources intact."
+      },
+      "cross_loop_boundary": "Explicitly excludes B-008 construction labor, structural contracts and house materials.",
+      "implementation_phases": [
+        "Pure deterministic domain rules and JSON schema plus mutation tests after 220 gate.",
+        "Godot adapter and original visual feedback plus native acceptance after 220 gate.",
+        "Cross-domain assembled-save regression, controller/touch parity and device performance measurement before release."
+      ]
+    }
+  ]
+}
