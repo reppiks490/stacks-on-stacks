@@ -7,11 +7,17 @@ const LABELS := {
         "missing":"Walk near a neighbor before asking a question.",
         "changed":"The neighbor is no longer close enough to talk.",
         "hint":"Choose a topic • 1–4 or D-pad + A • C/X: language • Esc/B to leave",
+        "work_chapter":"Work memory", "trust_chapter":"Trust memory",
+        "chapter_ready":"Ready to discuss", "shift_left":"shift(s) to complete",
+        "friendship_left":"friendship points to earn",
         "language":"Español","language_tip":"Switch conversation language (C or controller X)"},
     "es":{"open":"Preguntar [U]","title":"Elige una conversación","cancel":"Ahora no",
         "missing":"Acércate a un vecino antes de hacer una pregunta.",
         "changed":"El vecino ya no está lo bastante cerca para hablar.",
         "hint":"Elige tema • 1–4 o mando + A • C/X: idioma • Esc/B para salir",
+        "work_chapter":"Recuerdo del trabajo", "trust_chapter":"Recuerdo de confianza",
+        "chapter_ready":"Listo para conversar", "shift_left":"turno(s) por completar",
+        "friendship_left":"puntos de amistad por ganar",
         "language":"English","language_tip":"Cambiar idioma de conversación (C o botón X)"}
 }
 var village
@@ -19,6 +25,7 @@ var opener: Button
 var panel: PanelContainer
 var title_label: Label
 var hint_label: Label
+var progress_label: Label
 var cancel_button: Button
 var language_button: Button
 var feedback_label: Label
@@ -82,9 +89,17 @@ func setup(owner) -> void:
     style.set_content_margin_all(14)
     panel.add_theme_stylebox_override("panel", style)
     surface.add_child(panel)
+    # The chapter tracker must never push choices off a short mobile viewport.
+    # Focusable buttons inside ScrollContainer remain keyboard/gamepad reachable.
+    var scroll := ScrollContainer.new()
+    scroll.name = "ConversationScroll"
+    scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    panel.add_child(scroll)
     var layout := VBoxContainer.new()
+    layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     layout.add_theme_constant_override("separation", 12)
-    panel.add_child(layout)
+    scroll.add_child(layout)
     title_label = Label.new()
     title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     title_label.add_theme_font_size_override("font_size", 21)
@@ -92,6 +107,12 @@ func setup(owner) -> void:
     hint_label = Label.new()
     hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     layout.add_child(hint_label)
+    progress_label = Label.new()
+    progress_label.name = "EarnedChapterProgress"
+    progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    progress_label.add_theme_font_size_override("font_size", 15)
+    progress_label.custom_minimum_size.y = 48.0
+    layout.add_child(progress_label)
     for index in range(4):
         var button := Button.new()
         button.name = "ConversationChoice%d" % (index + 1)
@@ -140,6 +161,26 @@ func _refresh_locale() -> void:
         if index < topic_buttons.size():
             topic_buttons[index].text = "%d. %s" % [
                 index + 1, str(labels_by_id.get(topic_ids[index], topic_ids[index]))]
+    _refresh_chapter_progress()
+
+## A readable, localized tracker of real prerequisite deficits, not dialogue
+## spoilers or an alternate reward path. No state mutation and no save keys.
+func _refresh_chapter_progress() -> void:
+    if progress_label == null or village == null or active_resident_id.is_empty():
+        return
+    var lines := PackedStringArray()
+    for chapter in village.chapter_progress(active_resident_id):
+        var title: String = _t("work_chapter") if str(chapter["id"]) == "shift_reflection" else _t("trust_chapter")
+        if bool(chapter["unlocked"]):
+            lines.append("%s: %s" % [title, _t("chapter_ready")])
+            continue
+        var requirements := PackedStringArray()
+        if int(chapter["jobs_remaining"]) > 0:
+            requirements.append("%d %s" % [int(chapter["jobs_remaining"]), _t("shift_left")])
+        if int(chapter["friendship_remaining"]) > 0:
+            requirements.append("%d %s" % [int(chapter["friendship_remaining"]), _t("friendship_left")])
+        lines.append("%s: %s" % [title, ", ".join(requirements)])
+    progress_label.text = "\n".join(lines)
 
 func _toggle_locale() -> void:
     if village == null or panel == null or not panel.visible:
