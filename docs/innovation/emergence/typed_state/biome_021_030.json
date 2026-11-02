@@ -1,0 +1,1266 @@
+{
+  "schema_version": 1,
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "source": {
+    "branch": "game/everbloom-emergence-phaseB-100-20261102",
+    "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+    "path": "docs/innovation/emergence/phaseB_011_050.json",
+    "blob_sha": "a5def76918e77e0ded7e3e8085444698b4e0b549"
+  },
+  "base_main": "60ddc826630dc7e7279b4f9d2cf7e7ca39a40eec",
+  "owner": "Emergence",
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "state_contracts": [
+    {
+      "id": "EB-E-021",
+      "title": "Mycelium Neighbor Network",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "network_nodes",
+        "log_receipts",
+        "connectivity",
+        "regrowth_epoch"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_021",
+      "fields": {
+        "network_nodes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "node_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "habitat_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "active": {
+                "type": "boolean",
+                "default": true
+              }
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "node_id"
+        },
+        "log_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "log_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "node_a": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "node_b": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "kind": {
+                "type": "enum",
+                "values": [
+                  "retained",
+                  "restored",
+                  "removed"
+                ],
+                "default": "retained"
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "log_id"
+        },
+        "connectivity": {
+          "type": "integer",
+          "min": 0,
+          "max": 128,
+          "default": 0
+        },
+        "regrowth_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "node_references",
+        "distinct_log_edges",
+        "connectivity_count",
+        "epoch_covers_receipts"
+      ],
+      "migration": "Legacy missing namespace defaults to no observed fungal network. Actual trees/logs remain Valley-owned; receipt effects require verified world object IDs.",
+      "negative": "Duplicated log receipts, missing endpoints or forged connectivity cannot create extra links.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-022",
+      "title": "Migratory Seed Hitchhikers",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "tagged_seeds",
+        "carrier_routes",
+        "dispersal_epoch",
+        "germinations"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_022",
+      "fields": {
+        "tagged_seeds": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "seed_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "species_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "origin_cell": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "seed_id"
+        },
+        "carrier_routes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "seed_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "carrier_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "from_cell": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "to_cell": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "seed_id"
+        },
+        "dispersal_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "germinations": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "seed_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "cell_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "seed_id"
+        }
+      },
+      "rule_codes": [
+        "seed_route_refs",
+        "seed_germination_refs",
+        "route_epoch_covers",
+        "germination_route_match"
+      ],
+      "migration": "Seed and carrier observations are read-only until Farming/Valley confirms habitat and species IDs; one route and one germination receipt per seed per snapshot.",
+      "negative": "A seed cannot germinate in two cells or before its verified carrier route.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-023",
+      "title": "Mosslight Microhabitats",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "plot_ids",
+        "shade_state",
+        "moisture_observations",
+        "score"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_023",
+      "fields": {
+        "plot_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "nullable": false,
+            "min_length": 1,
+            "max_length": 80,
+            "default": "unassigned"
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "$value"
+        },
+        "shade_state": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "plot_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "shade_level": {
+                "type": "integer",
+                "min": 0,
+                "max": 4,
+                "default": 0
+              }
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "plot_id"
+        },
+        "moisture_observations": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "observation_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "plot_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "moisture_pct": {
+                "type": "number",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "shade_snapshot": {
+                "type": "integer",
+                "min": 0,
+                "max": 4,
+                "default": 0
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "observation_id"
+        },
+        "score": {
+          "type": "number",
+          "min": 0,
+          "max": 1,
+          "default": 0
+        }
+      },
+      "rule_codes": [
+        "shade_plot_refs",
+        "observation_plot_refs",
+        "comparison_requires_two_plots"
+      ],
+      "migration": "Moisture is an observation only; Farming owns actual water. Clearing shade cannot leave an authoritative permanent irrigation bonus.",
+      "negative": "A single shaded plot or repeated observations of one plot cannot produce a controlled comparison score.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-024",
+      "title": "Beetle Bark Rescue",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "tree_id",
+        "beetle_mix",
+        "intervention_receipts",
+        "season_epoch"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_024",
+      "fields": {
+        "tree_id": {
+          "type": "string",
+          "nullable": true,
+          "min_length": 0,
+          "max_length": 80,
+          "default": null
+        },
+        "beetle_mix": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "species_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "role": {
+                "type": "enum",
+                "values": [
+                  "beneficial",
+                  "harmful",
+                  "neutral"
+                ],
+                "default": "neutral"
+              },
+              "population": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              }
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "species_id"
+        },
+        "intervention_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "species_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "delta": {
+                "type": "integer",
+                "min": -1000,
+                "max": 1000,
+                "default": 0
+              },
+              "owner_effect_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "id"
+        },
+        "season_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "tree_required",
+        "intervention_species_refs",
+        "season_epoch_covers"
+      ],
+      "migration": "Valley owns tree identity and wildlife counts. Emergence may display bounded populations and unique intervention requests, not apply deltas without owner authorization. Source lacks initial population ledger, so full conservation remains a separate owner gate.",
+      "negative": "Malformed population, duplicate receipt or intervention on an unknown species must fail; historical delta conservation cannot be certified from source-only fields.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-025",
+      "title": "Meadow Song Diversity",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "species_signals",
+        "heard_cells",
+        "diversity_index",
+        "signal_provenance",
+        "accessibility_mode"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_025",
+      "fields": {
+        "species_signals": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "signal_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "species_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "cell_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "verified": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "signal_id"
+        },
+        "heard_cells": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "nullable": false,
+            "min_length": 1,
+            "max_length": 80,
+            "default": "unassigned"
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "$value"
+        },
+        "diversity_index": {
+          "type": "number",
+          "min": 0,
+          "max": 1,
+          "default": 0
+        },
+        "signal_provenance": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "signal_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "source": {
+                "type": "enum",
+                "values": [
+                  "visual",
+                  "audio",
+                  "caption",
+                  "track"
+                ],
+                "default": "visual"
+              },
+              "observed_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "signal_id"
+        },
+        "accessibility_mode": {
+          "type": "enum",
+          "values": [
+            "audio",
+            "captions",
+            "visual"
+          ],
+          "default": "captions"
+        }
+      },
+      "rule_codes": [
+        "signal_provenance_refs",
+        "heard_cell_refs",
+        "diversity_unique_species"
+      ],
+      "migration": "Signals are original, rights-verified observations; caption/visual modes must allow identical progression without playing audio.",
+      "negative": "Repeating one species or disabling audio cannot inflate or block the diversity index.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-026",
+      "title": "Turtle Crossing Steward",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "crossing_id",
+        "window_epoch",
+        "escort_state",
+        "detour"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_026",
+      "fields": {
+        "crossing_id": {
+          "type": "string",
+          "nullable": true,
+          "min_length": 0,
+          "max_length": 80,
+          "default": null
+        },
+        "window_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "escort_state": {
+          "type": "enum",
+          "values": [
+            "idle",
+            "scheduled",
+            "active",
+            "completed",
+            "failed"
+          ],
+          "default": "idle"
+        },
+        "detour": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "path_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "reachable": {
+                "type": "boolean",
+                "default": false
+              },
+              "owner_confirmed": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "max_items": 12,
+          "default": [],
+          "unique_by": "path_id"
+        }
+      },
+      "rule_codes": [
+        "crossing_active_requirements",
+        "reachable_detour"
+      ],
+      "migration": "Valley owns authoritative pathfinding and navigation graph; detour preview requires owner-confirmed reachable paths, not a local boolean alone.",
+      "negative": "An active crossing with no verified reachable detour must fail closed.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-027",
+      "title": "Wildflower Succession Diary",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "patch_id",
+        "succession_stage",
+        "last_epoch",
+        "observations"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_027",
+      "fields": {
+        "patch_id": {
+          "type": "string",
+          "nullable": true,
+          "min_length": 0,
+          "max_length": 80,
+          "default": null
+        },
+        "succession_stage": {
+          "type": "enum",
+          "values": [
+            "dormant",
+            "pioneer",
+            "meadow",
+            "shrub",
+            "woodland"
+          ],
+          "default": "dormant"
+        },
+        "last_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "observations": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "stage": {
+                "type": "enum",
+                "values": [
+                  "pioneer",
+                  "meadow",
+                  "shrub",
+                  "woodland"
+                ],
+                "default": "pioneer"
+              }
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "receipt_id"
+        }
+      },
+      "rule_codes": [
+        "patch_history",
+        "stage_monotonic",
+        "stage_matches_last",
+        "epoch_matches_last"
+      ],
+      "migration": "Habitat succession is observed locally; Valley/Farming must authorize actual vegetation transitions and world mesh changes.",
+      "negative": "Out-of-order stages, two advances on one day, or skipped stages after reload are rejected.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-028",
+      "title": "Nocturnal Pollination Pact",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "garden_id",
+        "dark_hours",
+        "moth_visits",
+        "credits"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_028",
+      "fields": {
+        "garden_id": {
+          "type": "string",
+          "nullable": true,
+          "min_length": 0,
+          "max_length": 80,
+          "default": null
+        },
+        "dark_hours": {
+          "type": "integer",
+          "min": 0,
+          "max": 12,
+          "default": 0
+        },
+        "moth_visits": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "garden_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "moth_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "id"
+        },
+        "credits": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "visit_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "owner_effect_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "visit_id"
+        }
+      },
+      "rule_codes": [
+        "garden_required",
+        "credit_visit_refs",
+        "darkness_gate",
+        "credit_epoch_match"
+      ],
+      "migration": "Farming owns actual pollination/harvest bonuses. Credits are unique visit-linked owner-effect receipts, not an integer balance; this is a proposed interpretation of source 'credits' field.",
+      "negative": "One moth visit cannot issue two credits; no credit when valid dark-hours window is absent.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-029",
+      "title": "River Pebble Sorting Study",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "sample_sites",
+        "substrate_class",
+        "confidence",
+        "advice"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_029",
+      "fields": {
+        "sample_sites": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "site_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "cell_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "site_id"
+        },
+        "substrate_class": {
+          "type": "enum",
+          "values": [
+            "unknown",
+            "sand",
+            "silt",
+            "gravel",
+            "pebble",
+            "mixed"
+          ],
+          "default": "unknown"
+        },
+        "confidence": {
+          "type": "number",
+          "min": 0,
+          "max": 1,
+          "default": 0
+        },
+        "advice": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "site_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "nursery_prediction": {
+                "type": "enum",
+                "values": [
+                  "low",
+                  "moderate",
+                  "high"
+                ],
+                "default": "low"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "site_id"
+        }
+      },
+      "rule_codes": [
+        "advice_site_refs",
+        "confidence_requires_samples",
+        "advice_requires_substrate"
+      ],
+      "migration": "Knowledge-only projections. Valley/Farming own fish population, water and spawning grounds; predictions never mutate fish state.",
+      "negative": "An incorrect prediction cannot write fish stocks or create unsupported confidence.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    },
+    {
+      "id": "EB-E-030",
+      "title": "Winter Dormancy Sanctuaries",
+      "domain": "biome_stewardship",
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 2,
+      "source_fields": [
+        "refuge_ids",
+        "occupants",
+        "season_lock",
+        "detour_path"
+      ],
+      "additions": [
+        "lock_start_epoch",
+        "lock_end_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_030",
+      "fields": {
+        "refuge_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "nullable": false,
+            "min_length": 1,
+            "max_length": 80,
+            "default": "unassigned"
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "$value"
+        },
+        "occupants": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "animal_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "refuge_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "arrival_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "animal_id"
+        },
+        "season_lock": {
+          "type": "enum",
+          "values": [
+            "open",
+            "winter",
+            "protected"
+          ],
+          "default": "open"
+        },
+        "detour_path": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "path_id": {
+                "type": "string",
+                "nullable": false,
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "reachable": {
+                "type": "boolean",
+                "default": false
+              },
+              "owner_confirmed": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "path_id"
+        },
+        "lock_start_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "lock_end_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "occupant_refuge_refs",
+        "protected_requires_detour",
+        "lock_epoch_bounds"
+      ],
+      "migration": "Valley owns routes and wildlife; Principal calendar owns season. Proposed v2 lock epochs prevent reopening a protected refuge on winter rollover. Active legacy v1 state without dates requires Principal migration decision.",
+      "negative": "Winter rollover cannot reopen a refuge early or strand the player; a missing verified detour is rejected.",
+      "authority": "Emergence stores only derived ecological observations, choice receipts and bounded projections. Farming owns crops, soil and yield; Valley/Principal own world navigation, wildlife and weather; Village owns NPC schedules; no Emergence-side resource mutation.",
+      "receipt_contract": {
+        "command_id": "unique 1..96-character stable id",
+        "expected_revision": "nonnegative JSON-safe integer",
+        "day_epoch": "Principal monotonic 56-day calendar",
+        "effect_digest": "immutable authoritative-owner effects hash, idempotent across reload"
+      },
+      "controls": {
+        "keyboard_mouse": "inspect, preview, remappable confirm/cancel",
+        "controller": "focus with stick/D-pad, confirm/cancel",
+        "touch": "tap inspect, large buttons, long-press details",
+        "accessibility": "captions and visual alternatives to audio/color, no precision drag"
+      },
+      "native_gate": "NOT NATIVE TESTED. Requires Principal approved optional namespace, atomic nested save rejection, owner-authorized effects, 112-day replay, keyboard/controller/touch parity and measured performance before Phase C."
+    }
+  ]
+}
