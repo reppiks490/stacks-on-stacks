@@ -23,6 +23,8 @@ var social_journal
 var job_panel
 ## V05: original optional player-selected conversation topics, presentation only.
 var topic_panel
+## V06: optional gift-selection UI; item authority remains in _gift().
+var gift_panel
 
 func setup(host) -> void:
     game = host
@@ -78,6 +80,11 @@ func setup(host) -> void:
     topic_panel.set_script(load("res://scripts/village_topic_panel.gd"))
     add_child(topic_panel)
     topic_panel.setup(self)
+    gift_panel = CanvasLayer.new()
+    gift_panel.name = "VillageGiftPanel"
+    gift_panel.set_script(load("res://scripts/village_gift_panel.gd"))
+    add_child(gift_panel)
+    gift_panel.setup(self)
 
 func _fresh_memory() -> Dictionary:
     return {"talks":0, "gifts":0, "jobs":0, "festivals":0,
@@ -280,14 +287,24 @@ func _record_memory(rid: String, field: String) -> void:
     record[field] = maxi(0, int(record.get(field, 0))) + 1
     memories[rid] = record
 
-func _gift(resident: Dictionary, rid: String, epoch: int) -> String:
+func _gift(resident: Dictionary, rid: String, epoch: int, requested_item: String = "") -> String:
     if int(last_gift.get(rid, -1)) == epoch:
         return "%s smiles. One gift each day is enough." % resident["name"]
     var found: String = ""
-    for gift in resident["preferences"]:
-        if int(game.inventory.get(gift, 0)) > 0:
-            found = str(gift)
-            break
+    if not requested_item.is_empty():
+        # Explicit player choice must be a resident-approved item. Do not
+        # silently substitute another gift or debit inventory on rejection.
+        if not resident["preferences"].has(requested_item):
+            return "%s does not accept that gift." % resident["name"]
+        if int(game.inventory.get(requested_item, 0)) <= 0:
+            return "You do not have %s to give." % requested_item
+        found = requested_item
+    else:
+        # Preserve the historical G-key automatic gift route unchanged.
+        for gift in resident["preferences"]:
+            if int(game.inventory.get(gift, 0)) > 0:
+                found = str(gift)
+                break
     if found == "":
         return "Bring %s a thoughtful local gift." % resident["name"]
     if not game.consume_item(found, 1):
@@ -381,7 +398,7 @@ func act(action: String, position: Vector3, topic: String = "") -> String:
     var rid: String = str(selected["id"])
     var epoch: int = game.day_epoch()
     if action == "gift":
-        return _gift(selected, rid, epoch)
+        return _gift(selected, rid, epoch, topic)
     if action == "job":
         return _job(selected, rid, epoch)
     if action != "talk":
