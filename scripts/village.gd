@@ -3,6 +3,8 @@ extends Node3D
 ## The calendar belongs to game.gd. This module never advances it or writes files.
 const SEASONS := ["Spring", "Summer", "Autumn", "Winter"]
 const LIFE_PATH := "res://data/village_life.json"
+const DIALOGUE_LOG_LIMIT := 12
+const DIALOGUE_TEXT_LIMIT := 256
 var game
 var residents: Array = []
 var affection: Dictionary = {}
@@ -65,7 +67,7 @@ func _fresh_memory() -> Dictionary:
     return {"talks":0, "gifts":0, "jobs":0, "festivals":0,
             "last_gift_item":"", "last_gift_epoch":-1,
             "last_gift_favorite":false, "recalled_gift_epoch":-1,
-            "gift_recollections":0}
+            "gift_recollections":0, "dialogue_log":[]}
 
 func _host_property(name: String, fallback: Variant) -> Variant:
     if game == null:
@@ -222,6 +224,23 @@ func _conditional_dialogue(resident: Dictionary, profile: Dictionary, rid: Strin
             return result
     return ""
 
+## Store only actual spoken lines, one per resident per monotonic day.
+## The capped log is a memory artifact, not a reward or second talk action.
+func _record_dialogue(rid: String, epoch: int, line: String) -> void:
+    if line.is_empty():
+        return
+    var record: Dictionary = memories.get(rid, _fresh_memory())
+    var history: Array = record.get("dialogue_log", []).duplicate(true)
+    for entry in history:
+        if entry is Dictionary and int(entry.get("epoch", -1)) == epoch:
+            return
+    history.append({"epoch":epoch, "locale":dialogue_locale,
+                    "text":line.substr(0, DIALOGUE_TEXT_LIMIT)})
+    while history.size() > DIALOGUE_LOG_LIMIT:
+        history.pop_front()
+    record["dialogue_log"] = history
+    memories[rid] = record
+
 func _record_memory(rid: String, field: String) -> void:
     var record: Dictionary = memories.get(rid, _fresh_memory())
     record[field] = maxi(0, int(record.get(field, 0))) + 1
@@ -312,8 +331,10 @@ func act(action: String, position: Vector3) -> String:
             celebration = " You joined %s. %s" % [
                 str(festival["name"]), str(festival["narration"])]
     var points: int = int(affection.get(rid, 0))
+    var spoken: String = _dialogue(selected, rid, epoch)
+    _record_dialogue(rid, epoch, spoken)
     return "%s: “%s” (friendship %d — %s)%s" % [
-        selected["name"], _dialogue(selected, rid, epoch), points,
+        selected["name"], spoken, points,
         _friendship_tier(points), celebration]
 
 func next_day() -> void:
@@ -335,7 +356,8 @@ func social_recap() -> Array:
             "jobs":int(record.get("jobs", 0)),
             "festivals":int(record.get("festivals", 0)),
             "last_gift_item":str(record.get("last_gift_item", "")),
-            "gift_recollections":int(record.get("gift_recollections", 0))
+            "gift_recollections":int(record.get("gift_recollections", 0)),
+            "dialogue_log":record.get("dialogue_log", []).duplicate(true)
         })
     return result
 
@@ -383,6 +405,23 @@ func load_state(state: Dictionary) -> void:
             record["last_gift_favorite"] = saved_favorite if typeof(saved_favorite) == TYPE_BOOL else inferred_favorite
             record["recalled_gift_epoch"] = clampi(int(incoming.get("recalled_gift_epoch", -1)), -1, int(record["last_gift_epoch"]))
             record["gift_recollections"] = clampi(int(incoming.get("gift_recollections", 0)), 0, 1000000)
+            # Optional historical dialogue log. Reject malformed or future-dated
+            # entries rather than inventing conversation history on old saves.
+            var raw_history: Variant = incoming.get("dialogue_log", [])
+            if raw_history is Array:
+                var clean_history: Array = []
+                var previous_epoch: int = 0
+                for raw in raw_history.slice(maxi(0, raw_history.size() - DIALOGUE_LOG_LIMIT)):
+                    if not (raw is Dictionary):
+                        continue
+                    var day: int = int(raw.get("epoch", -1))
+                    var line: String = str(raw.get("text", ""))
+                    var locale: String = str(raw.get("locale", ""))
+                    if day <= previous_epoch or day > game.day_epoch() or line.is_empty() or line.length() > DIALOGUE_TEXT_LIMIT or not locale in ["en", "es"]:
+                        continue
+                    clean_history.append({"epoch":day, "locale":locale, "text":line})
+                    previous_epoch = day
+                record["dialogue_log"] = clean_history
         memories[rid] = record
     festival_visits.clear()
     var visits: Variant = state.get("festivals", {})
