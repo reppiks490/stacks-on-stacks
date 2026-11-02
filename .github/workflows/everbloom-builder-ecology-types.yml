@@ -1,0 +1,20 @@
+name: Everbloom B041-B050 ecological landscape design contract validation
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/typed_state/ecology_041_050.json'
+      - 'docs/innovation/construction/typed_state/validate_ecology_041_050.py'
+      - 'docs/innovation/construction/typed_state/ECOLOGY_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-builder-ecology-types.yml'
+permissions:
+  contents: read
+jobs:
+  ecology-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Strict B041-B050 state fixtures and targeted negative cases
+        run: python3 docs/innovation/construction/typed_state/validate_ecology_041_050.py
+      - name: Syntax check
+        run: python3 -m py_compile docs/innovation/construction/typed_state/validate_ecology_041_050.py
