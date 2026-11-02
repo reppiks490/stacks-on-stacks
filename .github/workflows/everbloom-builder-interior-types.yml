@@ -1,0 +1,22 @@
+name: EVERBLOOM Builder B021-B030 interior design contract audit
+on:
+  push:
+    branches:
+      - game/everbloom-construction-b19-interior-types-20261102
+    paths:
+      - 'docs/innovation/construction/typed_state/interior_021_030.json'
+      - 'docs/innovation/construction/typed_state/validate_interior_021_030.py'
+      - 'docs/innovation/construction/typed_state/INTERIOR_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-builder-interior-types.yml'
+permissions:
+  contents: read
+jobs:
+  strict-offline-design-validator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile offline Python contract validator
+        run: python3 -m py_compile docs/innovation/construction/typed_state/validate_interior_021_030.py
+      - name: Verify 10 proposed interior state contracts and adversarial cases
+        run: python3 docs/innovation/construction/typed_state/validate_interior_021_030.py --self-test
