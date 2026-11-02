@@ -188,7 +188,7 @@ def self_test(data):
         mutate("negative revision", lambda s: s.update({"revision": -1}))
         mutate("fractional epoch", lambda s: s.update({"day_epoch": 1.25}))
         mutate("overflow epoch", lambda s: s.update({"day_epoch": MAX_EPOCH + 1}))
-        mutate("control character site", lambda s: s.update({"site_id": "site\\nA"}))
+        mutate("control character site", lambda s: s.update({"site_id": "site\nA"}))
         mutate("empty receipt", lambda s: s.update({"receipts": [""]}))
         mutate("receipt overflow", lambda s: s.update({"receipts": ["x" + str(i) for i in range(129)]}))
         mutate("missing site", lambda s: s.update({"site_id": ""}))
