@@ -59,7 +59,8 @@
         "touch": "Tap select, drag ghost, two-finger rotate, visible precision/snap toggles, confirm/cancel buttons; never rely on long-press alone."
       },
       "original_asset_plan": [
-        "Original procedural beams, translucent ghost material, socket glyphs, haptic/audio feedback from self-authored samples, color-independent valid/invalid icons."
+        "Original procedural beams, translucent ghost material, socket glyphs",
+        "haptic/audio feedback from self-authored samples, color-independent valid/invalid icons."
       ],
       "performance_budget": {
         "desktop": "At most 1 active ghost, 64 nearby sockets queried, 1ms CPU preview budget at 60fps target.",
@@ -147,7 +148,8 @@
         "touch": "Tap footprint corners, drag supports, bottom style selector, large commit and back controls."
       },
       "original_asset_plan": [
-        "Original mossy retaining blocks, wood pier variants, ground contour decals, rainwater flow arrows and support-pressure indicators."
+        "Original mossy retaining blocks, wood pier variants",
+        "ground contour decals, rainwater flow arrows and support-pressure indicators."
       ],
       "performance_budget": {
         "desktop": "<=128 footprint samples and 40 support nodes in preview, <=3ms CPU on desktop.",
@@ -237,7 +239,8 @@
         "touch": "Bottom step cards, tap highlighted joint, pinch camera, dedicated undo and inspect."
       },
       "original_asset_plan": [
-        "Original beam joinery, framing joints, roof shingles, worksite signage, cloth tarps and stage-specific construction sounds."
+        "Original beam joinery, framing joints, roof shingles",
+        "worksite signage, cloth tarps and stage-specific construction sounds."
       ],
       "performance_budget": {
         "desktop": "<=300 structural nodes and 600 render instances per small home; mesh batching target <3ms render submission.",
@@ -324,7 +327,8 @@
         "touch": "Drag ridge handles, pitch slider, tap source/target sockets, toggle rainfall overlay."
       },
       "original_asset_plan": [
-        "Original ceramic tiles, straw thatch, rain chains, animated droplet decals, water gauges, moss accumulation and soft rain audio."
+        "Original ceramic tiles, straw thatch, rain chains",
+        "animated droplet decals, water gauges, moss accumulation and soft rain audio."
       ],
       "performance_budget": {
         "desktop": "Roof graph <=100 planes, water flow once per day; preview under 2ms CPU.",
@@ -413,7 +417,8 @@
         "touch": "Tap enclosed floor, room function cards, large resident consent dialogue buttons."
       },
       "original_asset_plan": [
-        "Original interior wallpapers, cozy lamps, curtain variants, furniture kits, warmth/light overlays and localized room labels."
+        "Original interior wallpapers, cozy lamps, curtain variants",
+        "furniture kits, warmth/light overlays and localized room labels."
       ],
       "performance_budget": {
         "desktop": "Room detection event-driven; <=50 rooms/house; <=2ms rebuild when wall topology changes.",
@@ -502,7 +507,8 @@
         "touch": "Tap two endpoints, draw safe fictional route, visible color-independent capacity indicators."
       },
       "original_asset_plan": [
-        "Original glowing fiber ribbons, hearth runes, water sigils, warm bloom particles, low-motion alternatives and capacity icons."
+        "Original glowing fiber ribbons, hearth runes, water sigils",
+        "warm bloom particles, low-motion alternatives and capacity icons."
       ],
       "performance_budget": {
         "desktop": "<=150 graph nodes and 300 edges per settlement; solve on graph edits or hourly simulation ticks.",
@@ -591,7 +597,8 @@
         "touch": "Template cards with preview, drag-and-rotate ghost, prominent cost and cancel buttons."
       },
       "original_asset_plan": [
-        "Original parchment-blueprint UI, line-art 3D hologram, material icons, construction stamps and compact thumbnail renders."
+        "Original parchment-blueprint UI, line-art 3D hologram",
+        "material icons, construction stamps and compact thumbnail renders."
       ],
       "performance_budget": {
         "desktop": "<=500 template parts, preview instancing under 5ms when moved; cache normalized graph.",
@@ -679,7 +686,8 @@
         "touch": "Large notice-board timeline cards, drag worker portrait to day slot, confirm payments."
       },
       "original_asset_plan": [
-        "Original village notice board, modular scaffolds, workwear, tool animations, construction dust, celebratory banners and localized dialogues."
+        "Original village notice board, modular scaffolds, workwear",
+        "tool animations, construction dust, celebratory banners and localized dialogues."
       ],
       "performance_budget": {
         "desktop": "<=20 concurrent civic sites, 12 workers/site, event-driven progress; <=1ms simulation tick.",
@@ -769,7 +777,8 @@
         "touch": "Tap component, step-by-step safe removal cards, hold-to-confirm demolition with alternate accessible button."
       },
       "original_asset_plan": [
-        "Original worn wood/stone texture tiers, highlighted load paths, scaffold props, repair bench and salvage sorting visuals."
+        "Original worn wood/stone texture tiers, highlighted load paths",
+        "scaffold props, repair bench and salvage sorting visuals."
       ],
       "performance_budget": {
         "desktop": "Graph traversal O(parts+edges) per selected part, <=400 part home; no per-frame topology scan.",
@@ -856,7 +865,8 @@
         "touch": "Season cards, clear before/after diagrams, accessible repair controls with no tiny handles."
       },
       "original_asset_plan": [
-        "Original seasonal wall patinas, snow caps, vine growth, green roofs, shutters, pergolas and subtle weather VFX with reduced-motion options."
+        "Original seasonal wall patinas, snow caps, vine growth",
+        "green roofs, shutters, pergolas and subtle weather VFX with reduced-motion options."
       ],
       "performance_budget": {
         "desktop": "Once-per-day per-building wear; <=200 structures per region, cached overlays and no continuous degradation loops.",
