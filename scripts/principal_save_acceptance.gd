@@ -100,7 +100,9 @@ func _run() -> void:
     integrated["village"]["festivals"] = {"2:seed_lantern_walk": true}
     integrated["village"]["memories"] = {
         "mira": {"talks": 5, "gifts": 1, "jobs": 1, "festivals": 1,
-                 "last_gift_item": "wild_herb", "last_gift_epoch": 56}}
+                 "last_gift_item": "wild_herb", "last_gift_epoch": 56,
+                 "last_gift_favorite": true, "recalled_gift_epoch": 56,
+                 "gift_recollections": 1}}
     _check(SaveService.validate_payload(integrated),
            "valid ecology + village-life state was rejected")
     bad = integrated.duplicate(true)
@@ -122,6 +124,51 @@ func _run() -> void:
     bad["village"]["memories"]["mira"]["jobs"] = "unbounded"
     _check(not SaveService.validate_payload(bad), "malformed employment memory accepted")
 
+    # New optional Village recollection fields must reject tampering rather
+    # than being silently converted/clamped by Village.load_state().
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["last_gift_favorite"] = 1
+    _check(not SaveService.validate_payload(bad), "numeric favorite flag accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["last_gift_favorite"] = "yes"
+    _check(not SaveService.validate_payload(bad), "string favorite flag accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["recalled_gift_epoch"] = "56"
+    _check(not SaveService.validate_payload(bad), "string recall epoch accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["recalled_gift_epoch"] = 56.5
+    _check(not SaveService.validate_payload(bad), "fractional recall epoch accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["recalled_gift_epoch"] = -2
+    _check(not SaveService.validate_payload(bad), "negative invalid recall epoch accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["recalled_gift_epoch"] = 113
+    _check(not SaveService.validate_payload(bad), "future recall epoch accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"].erase("last_gift_epoch")
+    _check(not SaveService.validate_payload(bad), "recollection without gift accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["recalled_gift_epoch"] = 55
+    _check(not SaveService.validate_payload(bad), "recollection before gift accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["gift_recollections"] = -1
+    _check(not SaveService.validate_payload(bad), "negative recollection count accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["gift_recollections"] = 1.5
+    _check(not SaveService.validate_payload(bad), "fractional recollection count accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["gift_recollections"] = 1000001
+    _check(not SaveService.validate_payload(bad), "unbounded recollection count accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["gift_recollections"] = "many"
+    _check(not SaveService.validate_payload(bad), "string recollection count accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["last_gift_epoch"] = 113
+    _check(not SaveService.validate_payload(bad), "future last-gift epoch accepted")
+    bad = integrated.duplicate(true)
+    bad["village"]["memories"]["mira"]["last_gift_item"] = 7
+    _check(not SaveService.validate_payload(bad), "numeric gift item accepted")
+
     # This is the actual assembled Game coordinator and its real domain saves,
     # running on a disposable CI user:// filesystem; never a live player's slot.
     for file_path: String in [SaveService.SAVE_PATH, SaveService.BACKUP_PATH,
@@ -142,6 +189,11 @@ func _run() -> void:
     session.gold = 901
     session.inventory["turnip"] = 17
     session.village.memories["mira"]["talks"] = 9
+    session.village.memories["mira"]["last_gift_item"] = "wild_herb"
+    session.village.memories["mira"]["last_gift_epoch"] = 130
+    session.village.memories["mira"]["last_gift_favorite"] = true
+    session.village.memories["mira"]["recalled_gift_epoch"] = 130
+    session.village.memories["mira"]["gift_recollections"] = 2
     session.animals.paddocks[0]["forage"] = 5
     session.save_game(false)
     _check(FileAccess.file_exists(SaveService.SAVE_PATH),
@@ -152,12 +204,24 @@ func _run() -> void:
            "assembled grazing state did not persist")
     _check(saved.get("village", {}).get("memories", {}).has("mira"),
            "assembled village memory did not persist")
+    # Invalid in-memory payload must not replace the last valid on-disk
+    # snapshot or mutate the assembled player's state.
+    var saved_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
+    bad = saved.duplicate(true)
+    bad["village"]["memories"]["mira"]["last_gift_favorite"] = "tampered"
+    _check(not SaveService.write_payload(bad), "invalid assembled gift memory written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == saved_bytes,
+           "invalid gift memory modified authoritative save bytes")
+    _check(session.gold == 901, "rejected save mutated active game currency")
     session.gold = 0
     session.inventory["turnip"] = 0
     session.year = 1
     session.day = 1
     session.animals.paddocks[0]["forage"] = 0
     session.village.memories["mira"]["talks"] = 0
+    session.village.memories["mira"]["last_gift_favorite"] = false
+    session.village.memories["mira"]["recalled_gift_epoch"] = -1
+    session.village.memories["mira"]["gift_recollections"] = 0
     session.load_game()
     _check(session.gold == 901, "assembled game currency failed to restore")
     _check(int(session.inventory["turnip"]) == 17,
@@ -168,6 +232,10 @@ func _run() -> void:
            "assembled paddock failed to restore")
     _check(int(session.village.memories["mira"]["talks"]) == 9,
            "assembled village memory failed to restore")
+    _check(session.village.memories["mira"]["last_gift_favorite"] == true
+           and int(session.village.memories["mira"]["recalled_gift_epoch"]) == 130
+           and int(session.village.memories["mira"]["gift_recollections"]) == 2,
+           "assembled gift recollection failed to roundtrip exactly")
     _check(SaveService.validate_payload(base), "mutating deep duplicates corrupted valid fixture")
     print("PRINCIPAL SAVE VALIDATION: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)

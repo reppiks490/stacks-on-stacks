@@ -57,6 +57,23 @@ class SaveIntegrationContract(unittest.TestCase):
                       '"compost_counter"', '"worked"', '"memories"'):
             self.assertIn(token, boundary)
 
+    def test_village_recollection_fields_are_validated_by_principal_boundary(self):
+        service = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(
+            encoding="utf-8")
+        for field in ("last_gift_favorite", "recalled_gift_epoch",
+                      "gift_recollections"):
+            self.assertIn(field, service)
+            self.assertIn(field, native)
+        for case in ("numeric favorite flag accepted",
+                     "future recall epoch accepted",
+                     "recollection without gift accepted",
+                     "recollection before gift accepted",
+                     "unbounded recollection count accepted",
+                     "invalid assembled gift memory written",
+                     "assembled gift recollection failed to roundtrip exactly"):
+            self.assertIn(case, native)
+
     def test_original_village_job_has_player_input_dispatch(self):
         game = (ROOT / "scripts/game.gd").read_text(encoding="utf-8")
         hud = (ROOT / "scripts/hud.gd").read_text(encoding="utf-8")

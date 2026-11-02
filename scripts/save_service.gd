@@ -148,6 +148,12 @@ static func validate_payload(payload: Dictionary) -> bool:
         if typeof(social_state["memories"]) != TYPE_DICTIONARY:
             return false
         var memory_records: Dictionary = social_state["memories"]
+        # Keep the schema-1 memory additions optional for older player saves.
+        # New gift-recollection epochs must be bounded by the saved calendar.
+        var current_epoch: float = minf(
+                MAX_SAFE_INTEGER,
+                (float(payload.get("year", 1)) - 1.0) * 56.0
+                + float(payload["season"]) * 14.0 + float(payload["day"]))
         for rid in memory_records:
             if typeof(memory_records[rid]) != TYPE_DICTIONARY:
                 return false
@@ -157,9 +163,24 @@ static func validate_payload(payload: Dictionary) -> bool:
                         memory[attribute], 0.0, MAX_SAFE_INTEGER):
                     return false
             if memory.has("last_gift_epoch") and not _whole_in_range(
-                    memory["last_gift_epoch"], -1.0, MAX_SAFE_INTEGER):
+                    memory["last_gift_epoch"], -1.0, current_epoch):
                 return false
             if memory.has("last_gift_item") and typeof(memory["last_gift_item"]) != TYPE_STRING:
+                return false
+            if memory.has("last_gift_favorite") and typeof(memory["last_gift_favorite"]) != TYPE_BOOL:
+                return false
+            if memory.has("recalled_gift_epoch") and not _whole_in_range(
+                    memory["recalled_gift_epoch"], -1.0, current_epoch):
+                return false
+            if memory.has("gift_recollections") and not _whole_in_range(
+                    memory["gift_recollections"], 0.0, 1000000.0):
+                return false
+            # A recollection cannot precede its referenced gift, nor refer to
+            # a nonexistent gift. Reject malformed snapshots before load_state
+            # silently clamps them into plausible but historically false data.
+            var gift_epoch: float = float(memory.get("last_gift_epoch", -1))
+            var recall_epoch: float = float(memory.get("recalled_gift_epoch", -1))
+            if recall_epoch >= 0.0 and (gift_epoch < 0.0 or recall_epoch < gift_epoch):
                 return false
 
     var livestock: Variant = payload.get("animals", null)
