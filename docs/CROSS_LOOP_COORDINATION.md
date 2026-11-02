@@ -28,3 +28,10 @@
 - **Source of truth:** issues and exact branch SHA/CI logs; writing this ledger is not proof that another loop acknowledged it. No force pushes, history deletion, PR creation, paid tools, or proprietary extracted assets.
 
 **Updated principal gate:** native negative-save runner expanded from 19 to 24 assertions, including hostile nested Village/Farm/Animal state and invalid social-contact flags; require native PASS at the final source SHA. The original 19-case PASS is not proof of the later 24-case addition.
+
+
+## Principal live-save/job integration handoff
+
+Principal branch `game/everbloom-principal-live-save-job-20261102` is based on accepted main merge `ddb081d8` and exclusively edits `scripts/save_service.gd`, `scripts/principal_save_acceptance.gd`, `scripts/game.gd`, `scripts/hud.gd`, the dedicated Principal native workflow and Principal coordination docs. Farming's `__paddocks__` array must be accepted and validated rather than silently discarded. This bug escaped both isolated principal and farming suites, proving why assembled-game save tests are mandatory.
+
+Village Engineer: the original paid shift `village.act("job", ...)` is now dispatched by the Principal via `K`; update Village-owned `docs/VILLAGE_SYSTEMS.md` after integration proof, and keep player money/energy and once-per-day debit logic in Village. QA: validate actual full assembled save and load over multiple years, old saves, restoration, festivals, grazing and player-entered inputs. No Codex, PR, publication, branch deletions or force pushes.

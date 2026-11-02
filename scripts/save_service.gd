@@ -122,7 +122,7 @@ static func validate_payload(payload: Dictionary) -> bool:
     if typeof(villagers) != TYPE_DICTIONARY:
         return false
     var social_state: Dictionary = villagers
-    for attribute: String in ["affection", "talked", "gifted"]:
+    for attribute: String in ["affection", "talked", "gifted", "worked"]:
         if not social_state.has(attribute):
             continue
         if typeof(social_state[attribute]) != TYPE_DICTIONARY:
@@ -133,37 +133,57 @@ static func validate_payload(payload: Dictionary) -> bool:
             var upper_bound: float = 1000.0 if attribute == "affection" else MAX_SAFE_INTEGER
             if not _whole_in_range(values[rid], lower_bound, upper_bound):
                 return false
+    if social_state.has("festivals"):
+        if typeof(social_state["festivals"]) != TYPE_DICTIONARY:
+            return false
+        var festival_records: Dictionary = social_state["festivals"]
+        for key in festival_records:
+            if typeof(festival_records[key]) != TYPE_BOOL:
+                return false
+    if social_state.has("memories"):
+        if typeof(social_state["memories"]) != TYPE_DICTIONARY:
+            return false
+        var memory_records: Dictionary = social_state["memories"]
+        for rid in memory_records:
+            if typeof(memory_records[rid]) != TYPE_DICTIONARY:
+                return false
+            var memory: Dictionary = memory_records[rid]
+            for attribute: String in ["talks", "gifts", "jobs", "festivals"]:
+                if memory.has(attribute) and not _whole_in_range(
+                        memory[attribute], 0.0, MAX_SAFE_INTEGER):
+                    return false
+            if memory.has("last_gift_epoch") and not _whole_in_range(
+                    memory["last_gift_epoch"], -1.0, MAX_SAFE_INTEGER):
+                return false
+            if memory.has("last_gift_item") and typeof(memory["last_gift_item"]) != TYPE_STRING:
+                return false
 
     var livestock: Variant = payload.get("animals", null)
     if typeof(livestock) != TYPE_DICTIONARY:
         return false
-    # Farming's schema-1 livestock now persists exactly three physical paddocks.
-    # This is a reserved typed array, NOT a normal animal record. Validate its
-    # contents rather than letting the animal-dictionary guard reject all saves.
-    # Legacy saves without a paddock snapshot remain compatible.
-    if livestock.has("__paddocks__"):
-        var pens: Variant = livestock["__paddocks__"]
-        if typeof(pens) != TYPE_ARRAY:
-            return false
-        var paddock_records: Array = pens
-        if paddock_records.size() != 3:
-            return false
-        for pen in paddock_records:
-            if typeof(pen) != TYPE_DICTIONARY:
-                return false
-            var record: Dictionary = pen
-            if record.size() != 1 or not record.has("forage"):
-                return false
-            if not _whole_in_range(record["forage"], 0.0, 7.0):
-                return false
     for id in livestock:
+        # Farming ecology stores grazing capacity at a reserved top-level key.
+        # This is intentionally an Array, unlike per-animal Dictionary records.
         if id == "__paddocks__":
+            if typeof(livestock[id]) != TYPE_ARRAY:
+                return false
+            var paddock_records: Array = livestock[id]
+            if paddock_records.size() != 3:
+                return false
+            for paddock in paddock_records:
+                if typeof(paddock) != TYPE_DICTIONARY:
+                    return false
+                var record: Dictionary = paddock
+                if record.size() != 1 or not record.has("forage"):
+                    return false
+                if not _whole_in_range(record["forage"], 0.0, 7.0):
+                    return false
             continue
         if typeof(livestock[id]) != TYPE_DICTIONARY:
             return false
         var animal: Dictionary = livestock[id]
         for attribute: String in ["bond", "happiness", "health", "hunger", "cleanliness",
-                                  "production_counter", "neglect_days"]:
+                                  "production_counter", "neglect_days", "compost_counter"]:
             if animal.has(attribute) and not _whole_in_range(animal[attribute], 0.0, MAX_SAFE_INTEGER):
                 return false
         if animal.has("last_care") and not _whole_in_range(
