@@ -1,0 +1,3110 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "phase": "B",
+  "status": "typed_design_only_not_playable",
+  "engine": "Godot 4.x",
+  "base_main": "a23694581967c980c7352fb08444578947703431",
+  "source_catalog": "game/everbloom-construction-phaseB-100-20261102@f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+  "source_blob": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b",
+  "phaseC": "CLOSED pending independent 220-concept audit and Principal approval",
+  "rules": "Design contracts only; no actual resource debits, native gameplay, save migrations or device performance measurements.",
+  "state_contracts": [
+    {
+      "id": "EB-B-081",
+      "title": "Floodline Emergency Walkway",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: build raised walkways ahead of seasonal flooding. Existing Godot baseline has no verified floodline emergency walkway gameplay; unlike Phase-A umbrella systems, its separate state transition is water depth and evacuation paths gate safety.",
+      "player_scenario": "Build raised walkways ahead of seasonal flooding. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_floodline",
+        "adjust_floodline",
+        "commit_floodline",
+        "cancel_floodline",
+        "undo_floodline"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to build raised walkways ahead of seasonal flooding; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic floodline emergency walkway modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "dye": 3,
+        "stone": 2
+      },
+      "source_field_mapping": {
+        "walkway_elevation": "route_nodes[*].elevation_cm",
+        "evac_routes": "links"
+      },
+      "source_invariant": "Water depth and evacuation paths gate safety.",
+      "save_contract": {
+        "namespace": "construction.eb_b_081",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "water_depth_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 10000
+            },
+            "evac_origin": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "route_nodes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "elevation_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 20000
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 1000
+                  },
+                  "shelter": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "elevation_cm",
+                  "capacity",
+                  "shelter"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "to": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "open": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to",
+                  "open"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "water_depth_cm",
+            "evac_origin",
+            "route_nodes",
+            "links"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-81",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-81"
+          ],
+          "water_depth_cm": 120,
+          "evac_origin": "n0",
+          "route_nodes": [
+            {
+              "id": "n0",
+              "elevation_cm": 160,
+              "capacity": 8,
+              "shelter": false
+            },
+            {
+              "id": "n1",
+              "elevation_cm": 180,
+              "capacity": 16,
+              "shelter": true
+            }
+          ],
+          "links": [
+            {
+              "from": "n0",
+              "to": "n1",
+              "open": true
+            }
+          ]
+        },
+        {
+          "site_id": "site-81-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-81-v2"
+          ],
+          "water_depth_cm": 120,
+          "evac_origin": "n0",
+          "route_nodes": [
+            {
+              "id": "n0",
+              "elevation_cm": 160,
+              "capacity": 8,
+              "shelter": false
+            },
+            {
+              "id": "n1",
+              "elevation_cm": 180,
+              "capacity": 16,
+              "shelter": true
+            }
+          ],
+          "links": [
+            {
+              "from": "n0",
+              "to": "n1",
+              "open": true
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "submerged_origin",
+          "path": [
+            "water_depth_cm"
+          ],
+          "value": 170
+        },
+        {
+          "name": "blocked_evacuation",
+          "path": [
+            "links",
+            0,
+            "open"
+          ],
+          "value": false
+        },
+        {
+          "name": "missing_shelter",
+          "path": [
+            "route_nodes",
+            1,
+            "shelter"
+          ],
+          "value": false
+        },
+        {
+          "name": "unusable_node",
+          "path": [
+            "route_nodes",
+            0,
+            "capacity"
+          ],
+          "value": 0
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Build raised walkways ahead of seasonal flooding; walkway_elevation and evac_routes must affect the visible outcome under water depth and evacuation paths gate safety.",
+        "Confirm once with {\"dye\":3,\"stone\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-082",
+      "title": "Frostlight Winter Relief Hall",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: open heated village shelters during cold spells. Existing Godot baseline has no verified frostlight winter relief hall gameplay; unlike Phase-A umbrella systems, its separate state transition is fuel capacity and consent bound warmth benefit.",
+      "player_scenario": "Open heated village shelters during cold spells. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_frostlight",
+        "adjust_frostlight",
+        "commit_frostlight",
+        "cancel_frostlight",
+        "undo_frostlight"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to open heated village shelters during cold spells; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic frostlight winter relief hall modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "seed": 4,
+        "iron": 3
+      },
+      "source_field_mapping": {
+        "heating_fuel": "fuel_ledger",
+        "guest_receipts": "occupants[*].consent"
+      },
+      "source_invariant": "Fuel capacity and consent bound warmth benefit.",
+      "save_contract": {
+        "namespace": "construction.eb_b_082",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "fuel_ledger": {
+              "type": "object",
+              "properties": {
+                "credited": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "used": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "remaining": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                }
+              },
+              "required": [
+                "credited",
+                "used",
+                "remaining"
+              ],
+              "additional_properties": false
+            },
+            "rooms": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 64
+                  },
+                  "heat_demand": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000
+                  },
+                  "heat_supply": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000
+                  },
+                  "exit_clear": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "capacity",
+                  "heat_demand",
+                  "heat_supply",
+                  "exit_clear"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 32,
+              "unique_by": "id"
+            },
+            "occupants": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "resident_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "room_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "consent": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "resident_id",
+                  "room_id",
+                  "consent"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "resident_id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "fuel_ledger",
+            "rooms",
+            "occupants"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-82",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-82"
+          ],
+          "fuel_ledger": {
+            "credited": 20,
+            "used": 5,
+            "remaining": 15
+          },
+          "rooms": [
+            {
+              "id": "r1",
+              "capacity": 3,
+              "heat_demand": 8,
+              "heat_supply": 10,
+              "exit_clear": true
+            }
+          ],
+          "occupants": [
+            {
+              "resident_id": "npc1",
+              "room_id": "r1",
+              "consent": true
+            }
+          ]
+        },
+        {
+          "site_id": "site-82-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-82-v2"
+          ],
+          "fuel_ledger": {
+            "credited": 20,
+            "used": 5,
+            "remaining": 15
+          },
+          "rooms": [
+            {
+              "id": "r1",
+              "capacity": 3,
+              "heat_demand": 8,
+              "heat_supply": 10,
+              "exit_clear": true
+            }
+          ],
+          "occupants": [
+            {
+              "resident_id": "npc1",
+              "room_id": "r1",
+              "consent": true
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "fuel_multiplication",
+          "path": [
+            "fuel_ledger",
+            "remaining"
+          ],
+          "value": 17
+        },
+        {
+          "name": "insufficient_heat",
+          "path": [
+            "rooms",
+            0,
+            "heat_supply"
+          ],
+          "value": 4
+        },
+        {
+          "name": "blocked_egress",
+          "path": [
+            "rooms",
+            0,
+            "exit_clear"
+          ],
+          "value": false
+        },
+        {
+          "name": "no_resident_consent",
+          "path": [
+            "occupants",
+            0,
+            "consent"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Open heated village shelters during cold spells; heating_fuel and guest_receipts must affect the visible outcome under fuel capacity and consent bound warmth benefit.",
+        "Confirm once with {\"seed\":4,\"iron\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-083",
+      "title": "Sunrise Festival Pavilion",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: assemble modular stages for village performances. Existing Godot baseline has no verified sunrise festival pavilion gameplay; unlike Phase-A umbrella systems, its separate state transition is village bookings and capacity govern events.",
+      "player_scenario": "Assemble modular stages for village performances. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_sunrise",
+        "adjust_sunrise",
+        "commit_sunrise",
+        "cancel_sunrise",
+        "undo_sunrise"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to assemble modular stages for village performances; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic sunrise festival pavilion modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "wood": 5,
+        "fiber": 1
+      },
+      "source_field_mapping": {
+        "pavilion_modules": "stages",
+        "festival_slot": "performances"
+      },
+      "source_invariant": "Village bookings and capacity govern events.",
+      "save_contract": {
+        "namespace": "construction.eb_b_083",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "stages": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 1000
+                  },
+                  "max_load": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 10000
+                  },
+                  "current_load": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 10000
+                  },
+                  "exit_clear": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "capacity",
+                  "max_load",
+                  "current_load",
+                  "exit_clear"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 32,
+              "unique_by": "id"
+            },
+            "performances": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "stage_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "start_epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "end_epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "attendance": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000
+                  },
+                  "performer_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "consent": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "stage_id",
+                  "start_epoch",
+                  "end_epoch",
+                  "attendance",
+                  "performer_id",
+                  "consent"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "stages",
+            "performances"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-83",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-83"
+          ],
+          "stages": [
+            {
+              "id": "s1",
+              "capacity": 20,
+              "max_load": 100,
+              "current_load": 50,
+              "exit_clear": true
+            }
+          ],
+          "performances": [
+            {
+              "id": "p1",
+              "stage_id": "s1",
+              "start_epoch": 30,
+              "end_epoch": 31,
+              "attendance": 10,
+              "performer_id": "npc1",
+              "consent": true
+            }
+          ]
+        },
+        {
+          "site_id": "site-83-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-83-v2"
+          ],
+          "stages": [
+            {
+              "id": "s1",
+              "capacity": 20,
+              "max_load": 100,
+              "current_load": 50,
+              "exit_clear": true
+            }
+          ],
+          "performances": [
+            {
+              "id": "p1",
+              "stage_id": "s1",
+              "start_epoch": 30,
+              "end_epoch": 31,
+              "attendance": 10,
+              "performer_id": "npc1",
+              "consent": true
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "overloaded_stage",
+          "path": [
+            "stages",
+            0,
+            "current_load"
+          ],
+          "value": 150
+        },
+        {
+          "name": "over_capacity",
+          "path": [
+            "performances",
+            0,
+            "attendance"
+          ],
+          "value": 30
+        },
+        {
+          "name": "missing_performer_consent",
+          "path": [
+            "performances",
+            0,
+            "consent"
+          ],
+          "value": false
+        },
+        {
+          "name": "blocked_stage_exit",
+          "path": [
+            "stages",
+            0,
+            "exit_clear"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Assemble modular stages for village performances; pavilion_modules and festival_slot must affect the visible outcome under village bookings and capacity govern events.",
+        "Confirm once with {\"wood\":5,\"fiber\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-084",
+      "title": "Memory Grove Remembrance Craft",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: co-design consensual memorial gardens with residents. Existing Godot baseline has no verified memory grove remembrance craft gameplay; unlike Phase-A umbrella systems, its separate state transition is dedications require permission and preserve memories.",
+      "player_scenario": "Co-design consensual memorial gardens with residents. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_memory",
+        "adjust_memory",
+        "commit_memory",
+        "cancel_memory",
+        "undo_memory"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to co-design consensual memorial gardens with residents; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic memory grove remembrance craft modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "stone": 6,
+        "clay": 2
+      },
+      "source_field_mapping": {
+        "dedication_ids": "dedications[*].id",
+        "consent_receipts": "permissions[*].id"
+      },
+      "source_invariant": "Dedications require permission and preserve memories.",
+      "save_contract": {
+        "namespace": "construction.eb_b_084",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "plots": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "guardian_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "consent": {
+                    "type": "boolean"
+                  },
+                  "protected": {
+                    "type": "boolean"
+                  },
+                  "plant_count": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000
+                  }
+                },
+                "required": [
+                  "id",
+                  "guardian_id",
+                  "consent",
+                  "protected",
+                  "plant_count"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "permissions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "author_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "plot_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "author_id",
+                  "plot_id",
+                  "active"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "id"
+            },
+            "dedications": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "plot_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "author_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "permission_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  }
+                },
+                "required": [
+                  "id",
+                  "plot_id",
+                  "author_id",
+                  "permission_id"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "plots",
+            "permissions",
+            "dedications"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-84",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-84"
+          ],
+          "plots": [
+            {
+              "id": "plot1",
+              "guardian_id": "npc1",
+              "consent": true,
+              "protected": false,
+              "plant_count": 2
+            }
+          ],
+          "permissions": [
+            {
+              "id": "perm1",
+              "author_id": "a1",
+              "plot_id": "plot1",
+              "active": true
+            }
+          ],
+          "dedications": [
+            {
+              "id": "ded1",
+              "plot_id": "plot1",
+              "author_id": "a1",
+              "permission_id": "perm1"
+            }
+          ]
+        },
+        {
+          "site_id": "site-84-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-84-v2"
+          ],
+          "plots": [
+            {
+              "id": "plot1",
+              "guardian_id": "npc1",
+              "consent": true,
+              "protected": false,
+              "plant_count": 2
+            }
+          ],
+          "permissions": [
+            {
+              "id": "perm1",
+              "author_id": "a1",
+              "plot_id": "plot1",
+              "active": true
+            }
+          ],
+          "dedications": [
+            {
+              "id": "ded1",
+              "plot_id": "plot1",
+              "author_id": "a1",
+              "permission_id": "perm1"
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "protected_grove",
+          "path": [
+            "plots",
+            0,
+            "protected"
+          ],
+          "value": true
+        },
+        {
+          "name": "guardian_rejected",
+          "path": [
+            "plots",
+            0,
+            "consent"
+          ],
+          "value": false
+        },
+        {
+          "name": "permission_revoked",
+          "path": [
+            "permissions",
+            0,
+            "active"
+          ],
+          "value": false
+        },
+        {
+          "name": "orphan_dedication",
+          "path": [
+            "dedications",
+            0,
+            "plot_id"
+          ],
+          "value": "absent"
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Co-design consensual memorial gardens with residents; dedication_ids and consent_receipts must affect the visible outcome under dedications require permission and preserve memories.",
+        "Confirm once with {\"stone\":6,\"clay\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-085",
+      "title": "Tempest Beacon Watchtower",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: build optical warning towers for coastal storms. Existing Godot baseline has no verified tempest beacon watchtower gameplay; unlike Phase-A umbrella systems, its separate state transition is fuel and sightlines determine warning reach.",
+      "player_scenario": "Build optical warning towers for coastal storms. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_tempest",
+        "adjust_tempest",
+        "commit_tempest",
+        "cancel_tempest",
+        "undo_tempest"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to build optical warning towers for coastal storms; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic tempest beacon watchtower modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "iron": 7,
+        "glass": 3
+      },
+      "source_field_mapping": {
+        "beacon_height": "towers[*].height_cm",
+        "warning_radius": "towers[*].visibility_route"
+      },
+      "source_invariant": "Fuel and sightlines determine warning reach.",
+      "save_contract": {
+        "namespace": "construction.eb_b_085",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "towers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "height_cm": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 50000
+                  },
+                  "powered": {
+                    "type": "boolean"
+                  },
+                  "structure_ok": {
+                    "type": "boolean"
+                  },
+                  "visibility_route": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  }
+                },
+                "required": [
+                  "id",
+                  "height_cm",
+                  "powered",
+                  "structure_ok",
+                  "visibility_route"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "routes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "target": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  }
+                },
+                "required": [
+                  "id",
+                  "visible",
+                  "target"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "id"
+            },
+            "alerts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "tower_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "event_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  }
+                },
+                "required": [
+                  "id",
+                  "tower_id",
+                  "event_id",
+                  "epoch"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "towers",
+            "routes",
+            "alerts"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-85",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-85"
+          ],
+          "towers": [
+            {
+              "id": "tower1",
+              "height_cm": 900,
+              "powered": true,
+              "structure_ok": true,
+              "visibility_route": "route1"
+            }
+          ],
+          "routes": [
+            {
+              "id": "route1",
+              "visible": true,
+              "target": "village"
+            }
+          ],
+          "alerts": [
+            {
+              "id": "alert1",
+              "tower_id": "tower1",
+              "event_id": "storm1",
+              "epoch": 15
+            }
+          ]
+        },
+        {
+          "site_id": "site-85-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-85-v2"
+          ],
+          "towers": [
+            {
+              "id": "tower1",
+              "height_cm": 900,
+              "powered": true,
+              "structure_ok": true,
+              "visibility_route": "route1"
+            }
+          ],
+          "routes": [
+            {
+              "id": "route1",
+              "visible": true,
+              "target": "village"
+            }
+          ],
+          "alerts": [
+            {
+              "id": "alert1",
+              "tower_id": "tower1",
+              "event_id": "storm1",
+              "epoch": 15
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "power_failure",
+          "path": [
+            "towers",
+            0,
+            "powered"
+          ],
+          "value": false
+        },
+        {
+          "name": "blocked_sightline",
+          "path": [
+            "routes",
+            0,
+            "visible"
+          ],
+          "value": false
+        },
+        {
+          "name": "future_alert",
+          "path": [
+            "alerts",
+            0,
+            "epoch"
+          ],
+          "value": 90
+        },
+        {
+          "name": "broken_structure",
+          "path": [
+            "towers",
+            0,
+            "structure_ok"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Build optical warning towers for coastal storms; beacon_height and warning_radius must affect the visible outcome under fuel and sightlines determine warning reach.",
+        "Confirm once with {\"iron\":7,\"glass\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-086",
+      "title": "Wanderers Gallery Installation",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: host traveling artists in modular galleries. Existing Godot baseline has no verified wanderers gallery installation gameplay; unlike Phase-A umbrella systems, its separate state transition is licenses and visitor routes govern displays.",
+      "player_scenario": "Host traveling artists in modular galleries. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_wanderers",
+        "adjust_wanderers",
+        "commit_wanderers",
+        "cancel_wanderers",
+        "undo_wanderers"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to host traveling artists in modular galleries; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic wanderers gallery installation modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "fiber": 3,
+        "dye": 1
+      },
+      "source_field_mapping": {
+        "exhibit_slots": "bays",
+        "license_receipts": "works[*].rights_verified"
+      },
+      "source_invariant": "Licenses and visitor routes govern displays.",
+      "save_contract": {
+        "namespace": "construction.eb_b_086",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "bays": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 100
+                  },
+                  "exit_clear": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "capacity",
+                  "exit_clear"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 32,
+              "unique_by": "id"
+            },
+            "works": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "artist_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "bay_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "consent": {
+                    "type": "boolean"
+                  },
+                  "rights_verified": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "artist_id",
+                  "bay_id",
+                  "consent",
+                  "rights_verified"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "id"
+            },
+            "bookings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "bay_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "artist_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "start_epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "end_epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "permission": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "bay_id",
+                  "artist_id",
+                  "start_epoch",
+                  "end_epoch",
+                  "permission"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "bays",
+            "works",
+            "bookings"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-86",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-86"
+          ],
+          "bays": [
+            {
+              "id": "bay1",
+              "capacity": 2,
+              "exit_clear": true
+            }
+          ],
+          "works": [
+            {
+              "id": "art1",
+              "artist_id": "npc1",
+              "bay_id": "bay1",
+              "consent": true,
+              "rights_verified": true
+            }
+          ],
+          "bookings": [
+            {
+              "id": "bk1",
+              "bay_id": "bay1",
+              "artist_id": "npc1",
+              "start_epoch": 30,
+              "end_epoch": 31,
+              "permission": true
+            }
+          ]
+        },
+        {
+          "site_id": "site-86-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-86-v2"
+          ],
+          "bays": [
+            {
+              "id": "bay1",
+              "capacity": 2,
+              "exit_clear": true
+            }
+          ],
+          "works": [
+            {
+              "id": "art1",
+              "artist_id": "npc1",
+              "bay_id": "bay1",
+              "consent": true,
+              "rights_verified": true
+            }
+          ],
+          "bookings": [
+            {
+              "id": "bk1",
+              "bay_id": "bay1",
+              "artist_id": "npc1",
+              "start_epoch": 30,
+              "end_epoch": 31,
+              "permission": true
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "unlicensed_art",
+          "path": [
+            "works",
+            0,
+            "rights_verified"
+          ],
+          "value": false
+        },
+        {
+          "name": "unconsented_art",
+          "path": [
+            "works",
+            0,
+            "consent"
+          ],
+          "value": false
+        },
+        {
+          "name": "blocked_gallery_exit",
+          "path": [
+            "bays",
+            0,
+            "exit_clear"
+          ],
+          "value": false
+        },
+        {
+          "name": "booking_permission_denied",
+          "path": [
+            "bookings",
+            0,
+            "permission"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Host traveling artists in modular galleries; exhibit_slots and license_receipts must affect the visible outcome under licenses and visitor routes govern displays.",
+        "Confirm once with {\"fiber\":3,\"dye\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-087",
+      "title": "Heritage Renovation Excavation",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: excavate carefully around historic village ruins. Existing Godot baseline has no verified heritage renovation excavation gameplay; unlike Phase-A umbrella systems, its separate state transition is artifacts retain provenance and protected context.",
+      "player_scenario": "Excavate carefully around historic village ruins. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_heritage",
+        "adjust_heritage",
+        "commit_heritage",
+        "cancel_heritage",
+        "undo_heritage"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to excavate carefully around historic village ruins; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic heritage renovation excavation modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "clay": 4,
+        "seed": 2
+      },
+      "source_field_mapping": {
+        "artifact_context": "finds[*].provenance_receipt",
+        "heritage_flags": "zones[*].protected"
+      },
+      "source_invariant": "Artifacts retain provenance and protected context.",
+      "save_contract": {
+        "namespace": "construction.eb_b_087",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "zones": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "protected": {
+                    "type": "boolean"
+                  },
+                  "surveyed": {
+                    "type": "boolean"
+                  },
+                  "permit_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "max_depth_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 10000
+                  },
+                  "dig_depth_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 10000
+                  }
+                },
+                "required": [
+                  "id",
+                  "protected",
+                  "surveyed",
+                  "permit_id",
+                  "max_depth_cm",
+                  "dig_depth_cm"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "permits": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "zone_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "zone_id",
+                  "active"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "finds": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "zone_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "provenance_receipt": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  }
+                },
+                "required": [
+                  "id",
+                  "zone_id",
+                  "provenance_receipt"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "zones",
+            "permits",
+            "finds"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-87",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-87"
+          ],
+          "zones": [
+            {
+              "id": "zone1",
+              "protected": false,
+              "surveyed": true,
+              "permit_id": "permit1",
+              "max_depth_cm": 100,
+              "dig_depth_cm": 50
+            }
+          ],
+          "permits": [
+            {
+              "id": "permit1",
+              "zone_id": "zone1",
+              "active": true
+            }
+          ],
+          "finds": [
+            {
+              "id": "find1",
+              "zone_id": "zone1",
+              "provenance_receipt": "receipt1"
+            }
+          ]
+        },
+        {
+          "site_id": "site-87-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-87-v2"
+          ],
+          "zones": [
+            {
+              "id": "zone1",
+              "protected": false,
+              "surveyed": true,
+              "permit_id": "permit1",
+              "max_depth_cm": 100,
+              "dig_depth_cm": 50
+            }
+          ],
+          "permits": [
+            {
+              "id": "permit1",
+              "zone_id": "zone1",
+              "active": true
+            }
+          ],
+          "finds": [
+            {
+              "id": "find1",
+              "zone_id": "zone1",
+              "provenance_receipt": "receipt1"
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "protected_excavation",
+          "path": [
+            "zones",
+            0,
+            "protected"
+          ],
+          "value": true
+        },
+        {
+          "name": "missing_survey",
+          "path": [
+            "zones",
+            0,
+            "surveyed"
+          ],
+          "value": false
+        },
+        {
+          "name": "excess_depth",
+          "path": [
+            "zones",
+            0,
+            "dig_depth_cm"
+          ],
+          "value": 150
+        },
+        {
+          "name": "permit_revoked",
+          "path": [
+            "permits",
+            0,
+            "active"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Excavate carefully around historic village ruins; artifact_context and heritage_flags must affect the visible outcome under artifacts retain provenance and protected context.",
+        "Confirm once with {\"clay\":4,\"seed\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-088",
+      "title": "Moonshift Safe Construction",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: schedule urgent night repairs with work lights. Existing Godot baseline has no verified moonshift safe construction gameplay; unlike Phase-A umbrella systems, its separate state transition is crew fatigue and noise limits constrain shifts.",
+      "player_scenario": "Schedule urgent night repairs with work lights. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_moonshift",
+        "adjust_moonshift",
+        "commit_moonshift",
+        "cancel_moonshift",
+        "undo_moonshift"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to schedule urgent night repairs with work lights; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic moonshift safe construction modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "glass": 5,
+        "wood": 3
+      },
+      "source_field_mapping": {
+        "night_light_map": "shifts[*].lighting_lux",
+        "crew_fatigue": "crews[*].fatigue"
+      },
+      "source_invariant": "Crew fatigue and noise limits constrain shifts.",
+      "save_contract": {
+        "namespace": "construction.eb_b_088",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "crews": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "consent": {
+                    "type": "boolean"
+                  },
+                  "fatigue": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 100
+                  },
+                  "max_fatigue": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 100
+                  }
+                },
+                "required": [
+                  "id",
+                  "consent",
+                  "fatigue",
+                  "max_fatigue"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 32,
+              "unique_by": "id"
+            },
+            "shifts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "crew_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "start_min": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1439
+                  },
+                  "duration_min": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 480
+                  },
+                  "break_min": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 480
+                  },
+                  "lighting_lux": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1000
+                  },
+                  "noise_permission": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "crew_id",
+                  "epoch",
+                  "start_min",
+                  "duration_min",
+                  "break_min",
+                  "lighting_lux",
+                  "noise_permission"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "crews",
+            "shifts"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-88",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-88"
+          ],
+          "crews": [
+            {
+              "id": "crew1",
+              "consent": true,
+              "fatigue": 20,
+              "max_fatigue": 100
+            }
+          ],
+          "shifts": [
+            {
+              "id": "shift1",
+              "crew_id": "crew1",
+              "epoch": 30,
+              "start_min": 1200,
+              "duration_min": 90,
+              "break_min": 20,
+              "lighting_lux": 150,
+              "noise_permission": true
+            }
+          ]
+        },
+        {
+          "site_id": "site-88-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-88-v2"
+          ],
+          "crews": [
+            {
+              "id": "crew1",
+              "consent": true,
+              "fatigue": 20,
+              "max_fatigue": 100
+            }
+          ],
+          "shifts": [
+            {
+              "id": "shift1",
+              "crew_id": "crew1",
+              "epoch": 30,
+              "start_min": 1200,
+              "duration_min": 90,
+              "break_min": 20,
+              "lighting_lux": 150,
+              "noise_permission": true
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "crew_refusal",
+          "path": [
+            "crews",
+            0,
+            "consent"
+          ],
+          "value": false
+        },
+        {
+          "name": "unsafe_lighting",
+          "path": [
+            "shifts",
+            0,
+            "lighting_lux"
+          ],
+          "value": 10
+        },
+        {
+          "name": "no_noise_permission",
+          "path": [
+            "shifts",
+            0,
+            "noise_permission"
+          ],
+          "value": false
+        },
+        {
+          "name": "daytime_shift",
+          "path": [
+            "shifts",
+            0,
+            "start_min"
+          ],
+          "value": 800
+        },
+        {
+          "name": "fatigue_over_limit",
+          "path": [
+            "crews",
+            0,
+            "fatigue"
+          ],
+          "value": 101
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Schedule urgent night repairs with work lights; night_light_map and crew_fatigue must affect the visible outcome under crew fatigue and noise limits constrain shifts.",
+        "Confirm once with {\"glass\":5,\"wood\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-089",
+      "title": "Mosaic Commons Collaborative Mural",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: create mosaics with npc artist contributions. Existing Godot baseline has no verified mosaic commons collaborative mural gameplay; unlike Phase-A umbrella systems, its separate state transition is contributor ownership and tile debits persist.",
+      "player_scenario": "Create mosaics with NPC artist contributions. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_mosaic",
+        "adjust_mosaic",
+        "commit_mosaic",
+        "cancel_mosaic",
+        "undo_mosaic"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to create mosaics with npc artist contributions; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic mosaic commons collaborative mural modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "dye": 6,
+        "stone": 1
+      },
+      "source_field_mapping": {
+        "mural_grid": "tiles[*].cell_id",
+        "artist_ids": "permissions[*].artist_id"
+      },
+      "source_invariant": "Contributor ownership and tile debits persist.",
+      "save_contract": {
+        "namespace": "construction.eb_b_089",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "panels": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 1000
+                  }
+                },
+                "required": [
+                  "id",
+                  "capacity"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "permissions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "panel_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "artist_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "panel_id",
+                  "artist_id",
+                  "active"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 128,
+              "unique_by": "id"
+            },
+            "tiles": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "cell_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "panel_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "artist_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "permission_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "pigment_used": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 100
+                  }
+                },
+                "required": [
+                  "cell_id",
+                  "panel_id",
+                  "artist_id",
+                  "permission_id",
+                  "pigment_used"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 256,
+              "unique_by": "cell_id"
+            },
+            "pigments": {
+              "type": "object",
+              "properties": {
+                "credited": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "used": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "remaining": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                }
+              },
+              "required": [
+                "credited",
+                "used",
+                "remaining"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "panels",
+            "permissions",
+            "tiles",
+            "pigments"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-89",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-89"
+          ],
+          "panels": [
+            {
+              "id": "panel1",
+              "capacity": 5
+            }
+          ],
+          "permissions": [
+            {
+              "id": "perm1",
+              "panel_id": "panel1",
+              "artist_id": "npc1",
+              "active": true
+            }
+          ],
+          "tiles": [
+            {
+              "cell_id": "cell1",
+              "panel_id": "panel1",
+              "artist_id": "npc1",
+              "permission_id": "perm1",
+              "pigment_used": 3
+            }
+          ],
+          "pigments": {
+            "credited": 10,
+            "used": 3,
+            "remaining": 7
+          }
+        },
+        {
+          "site_id": "site-89-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-89-v2"
+          ],
+          "panels": [
+            {
+              "id": "panel1",
+              "capacity": 5
+            }
+          ],
+          "permissions": [
+            {
+              "id": "perm1",
+              "panel_id": "panel1",
+              "artist_id": "npc1",
+              "active": true
+            }
+          ],
+          "tiles": [
+            {
+              "cell_id": "cell1",
+              "panel_id": "panel1",
+              "artist_id": "npc1",
+              "permission_id": "perm1",
+              "pigment_used": 3
+            }
+          ],
+          "pigments": {
+            "credited": 10,
+            "used": 3,
+            "remaining": 7
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "revoked_contributor",
+          "path": [
+            "permissions",
+            0,
+            "active"
+          ],
+          "value": false
+        },
+        {
+          "name": "pigment_multiplication",
+          "path": [
+            "pigments",
+            "remaining"
+          ],
+          "value": 8
+        },
+        {
+          "name": "zero_cost_tile",
+          "path": [
+            "tiles",
+            0,
+            "pigment_used"
+          ],
+          "value": 0
+        },
+        {
+          "name": "wrong_panel",
+          "path": [
+            "tiles",
+            0,
+            "panel_id"
+          ],
+          "value": "missing"
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Create mosaics with NPC artist contributions; mural_grid and artist_ids must affect the visible outcome under contributor ownership and tile debits persist.",
+        "Confirm once with {\"dye\":6,\"stone\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    },
+    {
+      "id": "EB-B-090",
+      "title": "Starlit Pop-up Picturehouse",
+      "domain": "community_events",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: unfold outdoor screens for community storytelling. Existing Godot baseline has no verified starlit pop-up picturehouse gameplay; unlike Phase-A umbrella systems, its separate state transition is weather and accessible seating gate shows.",
+      "player_scenario": "Unfold outdoor screens for community storytelling. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_starlit",
+        "adjust_starlit",
+        "commit_starlit",
+        "cancel_starlit",
+        "undo_starlit"
+      ],
+      "feedback": [
+        "Valid/invalid placement ghost plus textual reason",
+        "Previewed event consequence and resource quote",
+        "Authoritative receipt only after approved integration"
+      ],
+      "dependencies": [
+        "B18",
+        "E04",
+        "V09"
+      ],
+      "authority": {
+        "construction": "Design proposal, ghost, placement and local bounded state",
+        "principal": "Save, monotonic day_epoch, authoritative inventory and idempotent receipts",
+        "village": "Resident consent, scheduling, cultural memory and event bookings",
+        "farming": "Weather, ecology and finite resource provenance",
+        "valley": "Coordinates, walkable routes, visibility and collision"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to unfold outdoor screens for community storytelling; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic starlit pop-up picturehouse modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "seed": 7,
+        "iron": 2
+      },
+      "source_field_mapping": {
+        "screen_angle": "screens[*].angle_deg",
+        "seat_map": "screens[*].accessible_seats"
+      },
+      "source_invariant": "Weather and accessible seating gate shows.",
+      "save_contract": {
+        "namespace": "construction.eb_b_090",
+        "version": 1,
+        "owner": "Construction proposal only; no SaveService registration",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "max_items": 64
+            },
+            "screens": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 500
+                  },
+                  "accessible_seats": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 500
+                  },
+                  "angle_deg": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 180
+                  },
+                  "stable": {
+                    "type": "boolean"
+                  },
+                  "weather_safe": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "capacity",
+                  "accessible_seats",
+                  "angle_deg",
+                  "stable",
+                  "weather_safe"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 32,
+              "unique_by": "id"
+            },
+            "shows": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "screen_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 96
+                  },
+                  "epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "start_min": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 1439
+                  },
+                  "end_min": {
+                    "type": "integer",
+                    "min": 1,
+                    "max": 1440
+                  },
+                  "attendees": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 500
+                  },
+                  "accessible_attendees": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 500
+                  },
+                  "rights_verified": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "screen_id",
+                  "epoch",
+                  "start_min",
+                  "end_min",
+                  "attendees",
+                  "accessible_attendees",
+                  "rights_verified"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "screens",
+            "shows"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-90",
+          "revision": 0,
+          "day_epoch": 30,
+          "receipts": [
+            "receipt-90"
+          ],
+          "screens": [
+            {
+              "id": "screen1",
+              "capacity": 12,
+              "accessible_seats": 2,
+              "angle_deg": 30,
+              "stable": true,
+              "weather_safe": true
+            }
+          ],
+          "shows": [
+            {
+              "id": "show1",
+              "screen_id": "screen1",
+              "epoch": 30,
+              "start_min": 1100,
+              "end_min": 1200,
+              "attendees": 10,
+              "accessible_attendees": 2,
+              "rights_verified": true
+            }
+          ]
+        },
+        {
+          "site_id": "site-90-variant",
+          "revision": 1,
+          "day_epoch": 57,
+          "receipts": [
+            "receipt-90-v2"
+          ],
+          "screens": [
+            {
+              "id": "screen1",
+              "capacity": 12,
+              "accessible_seats": 2,
+              "angle_deg": 30,
+              "stable": true,
+              "weather_safe": true
+            }
+          ],
+          "shows": [
+            {
+              "id": "show1",
+              "screen_id": "screen1",
+              "epoch": 30,
+              "start_min": 1100,
+              "end_min": 1200,
+              "attendees": 10,
+              "accessible_attendees": 2,
+              "rights_verified": true
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "unstable_screen",
+          "path": [
+            "screens",
+            0,
+            "stable"
+          ],
+          "value": false
+        },
+        {
+          "name": "unlicensed_story",
+          "path": [
+            "shows",
+            0,
+            "rights_verified"
+          ],
+          "value": false
+        },
+        {
+          "name": "inaccessible_seating",
+          "path": [
+            "shows",
+            0,
+            "accessible_attendees"
+          ],
+          "value": 3
+        },
+        {
+          "name": "unsafe_weather",
+          "path": [
+            "screens",
+            0,
+            "weather_safe"
+          ],
+          "value": false
+        },
+        {
+          "name": "overbooked_show",
+          "path": [
+            "shows",
+            0,
+            "attendees"
+          ],
+          "value": 15
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Unfold outdoor screens for community storytelling; screen_angle and seat_map must affect the visible outcome under weather and accessible seating gate shows.",
+        "Confirm once with {\"seed\":7,\"iron\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED; this contract is NOT executable gameplay"
+    }
+  ]
+}
