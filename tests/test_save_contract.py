@@ -89,6 +89,17 @@ class SaveIntegrationContract(unittest.TestCase):
                      "assembled festival award failed to roundtrip without duplication"):
             self.assertIn(case, native)
 
+    def test_festival_award_registry_matches_original_catalog(self):
+        import json
+        catalog = json.loads((ROOT / "data/festivals.json").read_text(encoding="utf-8"))
+        service = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        registry = service.split("const FESTIVAL_EVENT_IDS := [", 1)[1].split("]", 1)[0]
+        import re
+        registered = re.findall(r'"([a-z0-9_]+)"', registry)
+        expected = [entry["id"] for entry in catalog["festivals"]]
+        self.assertEqual(len(registered), len(set(registered)))
+        self.assertEqual(set(registered), set(expected))
+
     def test_original_village_job_has_player_input_dispatch(self):
         game = (ROOT / "scripts/game.gd").read_text(encoding="utf-8")
         hud = (ROOT / "scripts/hud.gd").read_text(encoding="utf-8")
