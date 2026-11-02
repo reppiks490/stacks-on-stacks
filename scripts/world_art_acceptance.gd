@@ -66,6 +66,15 @@ func _run() -> void:
     _check(valley.last_weather == "Rain", "weather response applies")
     _check(valley.lake_surface.material_override.albedo_color == Color("#4f8296"), "rain darkens lake")
 
+    var meadow_count: int = valley.flower_instances.multimesh.instance_count
+    host.season_index = 3
+    valley._process(0.016)
+    _check(valley.last_season == 3, "winter palette transition")
+    _check(valley.flower_instances.multimesh.instance_count == meadow_count, "season change preserves batch size")
+    host.season_index = 1
+    valley._process(0.016)
+    _check(valley.last_season == 1, "summer palette transition")
+    _check(valley.flower_instances.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "batched meadow shadow budget")
     host.season_index = 0
     host.weather = "Clear"
     valley._process(0.016)
