@@ -1,0 +1,2294 @@
+{
+  "schema_version": 1,
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "source": {
+    "branch": "game/everbloom-emergence-phaseB-100-20261102",
+    "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+    "path": "docs/innovation/emergence/phaseB_051_110.json",
+    "blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac"
+  },
+  "base_main": "86aa22c9e7806d85f42b95a8fbd27bbba122a556",
+  "owner": "Emergence",
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "state_contracts": [
+    {
+      "id": "EB-E-051",
+      "title": "Fogbell Landmark Bearings",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "marker_ids",
+        "bearings",
+        "visibility_epoch",
+        "route_receipt"
+      ],
+      "additions": [
+        "route_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_51",
+      "fields": {
+        "marker_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 3,
+          "unique_by": "$value",
+          "default": []
+        },
+        "bearings": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "marker_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "degrees": {
+                "type": "integer",
+                "min": 0,
+                "max": 359,
+                "default": 0
+              },
+              "quality": {
+                "type": "integer",
+                "min": 1,
+                "max": 100,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 3,
+          "unique_by": "marker_id",
+          "default": []
+        },
+        "visibility_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "route_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "route_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "marker_ids": [],
+            "bearings": [],
+            "visibility_epoch": -1,
+            "route_receipt": null,
+            "route_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "marker_ids": [
+              "bell_n",
+              "bell_e",
+              "bell_w"
+            ],
+            "bearings": [
+              {
+                "marker_id": "bell_n",
+                "degrees": 0,
+                "quality": 90
+              },
+              {
+                "marker_id": "bell_e",
+                "degrees": 120,
+                "quality": 85
+              },
+              {
+                "marker_id": "bell_w",
+                "degrees": 240,
+                "quality": 80
+              }
+            ],
+            "visibility_epoch": 57,
+            "route_receipt": "route-51",
+            "route_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "one_marker",
+          "patch": {
+            "marker_ids": [
+              "bell_n"
+            ]
+          }
+        },
+        {
+          "name": "missing_bearing",
+          "patch": {
+            "bearings": [
+              {
+                "marker_id": "bell_n",
+                "degrees": 0,
+                "quality": 90
+              }
+            ]
+          }
+        },
+        {
+          "name": "wrong_marker",
+          "patch": {
+            "bearings": [
+              {
+                "marker_id": "other",
+                "degrees": 0,
+                "quality": 90
+              },
+              {
+                "marker_id": "bell_e",
+                "degrees": 120,
+                "quality": 85
+              },
+              {
+                "marker_id": "bell_w",
+                "degrees": 240,
+                "quality": 80
+              }
+            ]
+          }
+        },
+        {
+          "name": "receipt_without_epoch",
+          "patch": {
+            "route_epoch": -1
+          }
+        },
+        {
+          "name": "future_route",
+          "patch": {
+            "route_epoch": 56
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Navigate thick valley fog using three audible and visible landmark signals; plot independent bearings on a map to find the correct safe route",
+      "player_verbs": [
+        "navigate_fogbell_landmark_bearings",
+        "preview_fogbell_landmark_bearings",
+        "confirm_fogbell_landmark_bearings",
+        "review_fogbell_landmark_bearings",
+        "cancel_fogbell_landmark_bearings"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Fogbell Landmark Bearings; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "Repeated signal from one bell cannot count as three bearings",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-052",
+      "title": "Tidal Cave Memory",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "cave_id",
+        "opening_window",
+        "charted_rooms",
+        "exit_reservation"
+      ],
+      "additions": [
+        "player_inside",
+        "safe_exit_anchor",
+        "return_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_52",
+      "fields": {
+        "cave_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "opening_window": {
+          "type": "object",
+          "fields": {
+            "epoch": {
+              "type": "integer",
+              "min": 1,
+              "max": 9007199254740991,
+              "default": 1
+            },
+            "start_minute": {
+              "type": "integer",
+              "min": 0,
+              "max": 1439,
+              "default": 0
+            },
+            "end_minute": {
+              "type": "integer",
+              "min": 1,
+              "max": 1440,
+              "default": 1
+            }
+          },
+          "default": null,
+          "nullable": true
+        },
+        "charted_rooms": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "exit_reservation": {
+          "type": "object",
+          "fields": {
+            "anchor_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96,
+              "default": ""
+            },
+            "valid_until_epoch": {
+              "type": "integer",
+              "min": 1,
+              "max": 9007199254740991,
+              "default": 1
+            },
+            "valid_until_minute": {
+              "type": "integer",
+              "min": 0,
+              "max": 1440,
+              "default": 0
+            },
+            "receipt_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 96,
+              "default": ""
+            }
+          },
+          "default": null,
+          "nullable": true
+        },
+        "player_inside": {
+          "type": "boolean",
+          "default": false
+        },
+        "safe_exit_anchor": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "return_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "cave_id": "",
+            "opening_window": null,
+            "charted_rooms": [],
+            "exit_reservation": null,
+            "player_inside": false,
+            "safe_exit_anchor": "",
+            "return_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "cave_id": "cave-a",
+            "opening_window": {
+              "epoch": 57,
+              "start_minute": 200,
+              "end_minute": 400
+            },
+            "charted_rooms": [
+              "entrance",
+              "alcove"
+            ],
+            "exit_reservation": {
+              "anchor_id": "shore",
+              "valid_until_epoch": 57,
+              "valid_until_minute": 450,
+              "receipt_id": "exit-1"
+            },
+            "player_inside": true,
+            "safe_exit_anchor": "shore",
+            "return_epoch": -1
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "window_inverted",
+          "patch": {
+            "opening_window": {
+              "epoch": 57,
+              "start_minute": 500,
+              "end_minute": 400
+            }
+          }
+        },
+        {
+          "name": "no_exit_reservation",
+          "patch": {
+            "exit_reservation": null
+          }
+        },
+        {
+          "name": "anchor_mismatch",
+          "patch": {
+            "safe_exit_anchor": "unknown"
+          }
+        },
+        {
+          "name": "exit_expires_early",
+          "patch": {
+            "exit_reservation": {
+              "anchor_id": "shore",
+              "valid_until_epoch": 57,
+              "valid_until_minute": 300,
+              "receipt_id": "exit-1"
+            }
+          }
+        },
+        {
+          "name": "inside_already_returned",
+          "patch": {
+            "return_epoch": 57
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Chart a fictional cave that opens only during bounded low-water windows; reserve a return path before entering so the cave never traps a visitor",
+      "player_verbs": [
+        "chart_tidal_cave_memory",
+        "preview_tidal_cave_memory",
+        "confirm_tidal_cave_memory",
+        "review_tidal_cave_memory",
+        "cancel_tidal_cave_memory"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Tidal Cave Memory; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "Loading inside a closed cave must provide safe return",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-053",
+      "title": "Snowtrack Weight Shift",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "snow_cells",
+        "footwear_id",
+        "route_steps",
+        "habitat_alerts"
+      ],
+      "additions": [
+        "stamina_spent"
+      ],
+      "save_namespace": "emergence.eb_e_53",
+      "fields": {
+        "snow_cells": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "depth_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 300,
+                "default": 0
+              },
+              "protected_burrow": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "cell_id",
+          "default": []
+        },
+        "footwear_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "route_steps": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "stamina_cost": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "stepped": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "cell_id",
+          "default": []
+        },
+        "habitat_alerts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "stamina_spent": {
+          "type": "integer",
+          "min": 0,
+          "max": 10000,
+          "default": 0
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "snow_cells": [],
+            "footwear_id": "",
+            "route_steps": [],
+            "habitat_alerts": [],
+            "stamina_spent": 0
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "snow_cells": [
+              {
+                "cell_id": "c1",
+                "depth_cm": 35,
+                "protected_burrow": false
+              },
+              {
+                "cell_id": "c2",
+                "depth_cm": 10,
+                "protected_burrow": true
+              }
+            ],
+            "footwear_id": "snowshoes",
+            "route_steps": [
+              {
+                "cell_id": "c1",
+                "stamina_cost": 3,
+                "stepped": true
+              }
+            ],
+            "habitat_alerts": [
+              "c2"
+            ],
+            "stamina_spent": 3
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "protected_burrow_stepped",
+          "patch": {
+            "route_steps": [
+              {
+                "cell_id": "c2",
+                "stamina_cost": 2,
+                "stepped": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "free_stamina",
+          "patch": {
+            "stamina_spent": 0
+          }
+        },
+        {
+          "name": "unknown_cell",
+          "patch": {
+            "route_steps": [
+              {
+                "cell_id": "unknown",
+                "stamina_cost": 3,
+                "stepped": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "no_footwear",
+          "patch": {
+            "footwear_id": ""
+          }
+        },
+        {
+          "name": "false_habitat_alert",
+          "patch": {
+            "habitat_alerts": [
+              "c1"
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Choose footwear and careful stepping patterns to cross soft snow without damaging wildlife burrows",
+      "player_verbs": [
+        "choose_snowtrack_weight_shift",
+        "preview_snowtrack_weight_shift",
+        "confirm_snowtrack_weight_shift",
+        "review_snowtrack_weight_shift",
+        "cancel_snowtrack_weight_shift"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Snowtrack Weight Shift; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "Repeated stepping cannot ignore stamina or clip through barriers",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-054",
+      "title": "Canopy Echo Route",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "call_ids",
+        "route_nodes",
+        "visited_edges",
+        "overlook_flag"
+      ],
+      "additions": [
+        "visual_fallback",
+        "discovery_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_54",
+      "fields": {
+        "call_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "route_nodes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "node_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "call_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "visual_hint": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": ""
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "node_id",
+          "default": []
+        },
+        "visited_edges": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "from": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "to": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": null,
+          "default": []
+        },
+        "overlook_flag": {
+          "type": "boolean",
+          "default": false
+        },
+        "visual_fallback": {
+          "type": "boolean",
+          "default": true
+        },
+        "discovery_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "call_ids": [],
+            "route_nodes": [],
+            "visited_edges": [],
+            "overlook_flag": false,
+            "visual_fallback": true,
+            "discovery_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "call_ids": [
+              "a",
+              "b",
+              "c"
+            ],
+            "route_nodes": [
+              {
+                "node_id": "n1",
+                "call_id": "a",
+                "visual_hint": "stripe"
+              },
+              {
+                "node_id": "n2",
+                "call_id": "b",
+                "visual_hint": "leaf"
+              },
+              {
+                "node_id": "n3",
+                "call_id": "c",
+                "visual_hint": "ribbon"
+              }
+            ],
+            "visited_edges": [
+              {
+                "from": "n1",
+                "to": "n2"
+              },
+              {
+                "from": "n2",
+                "to": "n3"
+              }
+            ],
+            "overlook_flag": true,
+            "visual_fallback": true,
+            "discovery_receipt": "disc-54"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "audio_only",
+          "patch": {
+            "visual_fallback": false
+          }
+        },
+        {
+          "name": "bad_edge",
+          "patch": {
+            "visited_edges": [
+              {
+                "from": "n1",
+                "to": "missing"
+              }
+            ]
+          }
+        },
+        {
+          "name": "missing_receipt",
+          "patch": {
+            "discovery_receipt": null
+          }
+        },
+        {
+          "name": "no_route",
+          "patch": {
+            "visited_edges": []
+          }
+        },
+        {
+          "name": "duplicate_call",
+          "patch": {
+            "call_ids": [
+              "a",
+              "a",
+              "c"
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Follow birds' directional calls to locate an elevated natural overlook without constructing platforms",
+      "player_verbs": [
+        "follow_canopy_echo_route",
+        "preview_canopy_echo_route",
+        "confirm_canopy_echo_route",
+        "review_canopy_echo_route",
+        "cancel_canopy_echo_route"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Canopy Echo Route; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "Muted audio cannot softlock the route; inaccessible bird calls must have a complete visual alternative",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-055",
+      "title": "Stone Layer Fieldbook",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "outcrop_ids",
+        "strata_notes",
+        "confidence",
+        "path_hint"
+      ],
+      "additions": [
+        "hint_region",
+        "unlock_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_55",
+      "fields": {
+        "outcrop_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "strata_notes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "outcrop_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "stratum": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "confidence": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "outcrop_id",
+          "default": []
+        },
+        "confidence": {
+          "type": "enum",
+          "values": [
+            "unknown",
+            "partial",
+            "verified"
+          ],
+          "default": "unknown"
+        },
+        "path_hint": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "hint_region": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "unlock_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "outcrop_ids": [],
+            "strata_notes": [],
+            "confidence": "unknown",
+            "path_hint": "",
+            "hint_region": "",
+            "unlock_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "outcrop_ids": [
+              "o1",
+              "o2"
+            ],
+            "strata_notes": [
+              {
+                "outcrop_id": "o1",
+                "stratum": "A",
+                "confidence": 80
+              },
+              {
+                "outcrop_id": "o2",
+                "stratum": "B",
+                "confidence": 90
+              }
+            ],
+            "confidence": "verified",
+            "path_hint": "north ridge",
+            "hint_region": "north",
+            "unlock_receipt": "unlock-55"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "one_outcrop",
+          "patch": {
+            "outcrop_ids": [
+              "o1"
+            ]
+          }
+        },
+        {
+          "name": "no_unlock_receipt",
+          "patch": {
+            "unlock_receipt": null
+          }
+        },
+        {
+          "name": "wrong_note_outcrop",
+          "patch": {
+            "strata_notes": [
+              {
+                "outcrop_id": "wrong",
+                "stratum": "A",
+                "confidence": 80
+              }
+            ]
+          }
+        },
+        {
+          "name": "missing_region",
+          "patch": {
+            "hint_region": ""
+          }
+        },
+        {
+          "name": "unknown_confidence_with_unlock",
+          "patch": {
+            "confidence": "unknown"
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Identify fictional geological strata from exposed valley outcrops and infer hidden safe paths",
+      "player_verbs": [
+        "identify_stone_layer_fieldbook",
+        "preview_stone_layer_fieldbook",
+        "confirm_stone_layer_fieldbook",
+        "review_stone_layer_fieldbook",
+        "cancel_stone_layer_fieldbook"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Stone Layer Fieldbook; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "One photographed outcrop cannot unlock unrelated regions",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-056",
+      "title": "Fallen Leaf Drift Navigation",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "wind_epoch",
+        "leaf_vectors",
+        "clue_cells",
+        "discovery"
+      ],
+      "additions": [
+        "seed",
+        "discovery_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_56",
+      "fields": {
+        "wind_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "leaf_vectors": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "dx": {
+                "type": "integer",
+                "min": -10,
+                "max": 10,
+                "default": 0
+              },
+              "dy": {
+                "type": "integer",
+                "min": -10,
+                "max": 10,
+                "default": 0
+              }
+            }
+          },
+          "max_items": 8,
+          "unique_by": "cell_id",
+          "default": []
+        },
+        "clue_cells": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 8,
+          "unique_by": "$value",
+          "default": []
+        },
+        "discovery": {
+          "type": "boolean",
+          "default": false
+        },
+        "seed": {
+          "type": "integer",
+          "min": 0,
+          "max": 2147483647,
+          "default": 0
+        },
+        "discovery_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "wind_epoch": -1,
+            "leaf_vectors": [],
+            "clue_cells": [],
+            "discovery": false,
+            "seed": 0,
+            "discovery_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "wind_epoch": 57,
+            "leaf_vectors": [
+              {
+                "cell_id": "w1",
+                "dx": 1,
+                "dy": 0
+              },
+              {
+                "cell_id": "w2",
+                "dx": 0,
+                "dy": 1
+              },
+              {
+                "cell_id": "w3",
+                "dx": -1,
+                "dy": 0
+              }
+            ],
+            "clue_cells": [
+              "w1",
+              "w2",
+              "w3"
+            ],
+            "discovery": true,
+            "seed": 321,
+            "discovery_receipt": "disc-56"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "no_wind_epoch",
+          "patch": {
+            "wind_epoch": -1
+          }
+        },
+        {
+          "name": "unknown_clue",
+          "patch": {
+            "clue_cells": [
+              "w1",
+              "w2",
+              "wrong"
+            ]
+          }
+        },
+        {
+          "name": "no_discovery_receipt",
+          "patch": {
+            "discovery_receipt": null
+          }
+        },
+        {
+          "name": "insufficient_clues",
+          "patch": {
+            "clue_cells": [
+              "w1",
+              "w2"
+            ]
+          }
+        },
+        {
+          "name": "bad_seed",
+          "patch": {
+            "seed": -1
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Use wind and leaf movement to find a hidden meadow entrance in autumn; compare the deterministic daily wind clues with an accessible map hint",
+      "player_verbs": [
+        "use_fallen_leaf_drift_navigation",
+        "preview_fallen_leaf_drift_navigation",
+        "confirm_fallen_leaf_drift_navigation",
+        "review_fallen_leaf_drift_navigation",
+        "cancel_fallen_leaf_drift_navigation"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Fallen Leaf Drift Navigation; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "Reload cannot reroll a clue to farm rewards",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-057",
+      "title": "Echo Pool Depth Walk",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "pool_id",
+        "depth_samples",
+        "route_points",
+        "shore_anchor"
+      ],
+      "additions": [
+        "safe_return",
+        "survey_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_57",
+      "fields": {
+        "pool_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "depth_samples": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "waypoint": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "depth_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 500,
+                "default": 0
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "waypoint",
+          "default": []
+        },
+        "route_points": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "shore_anchor": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "safe_return": {
+          "type": "boolean",
+          "default": false
+        },
+        "survey_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "pool_id": "",
+            "depth_samples": [],
+            "route_points": [],
+            "shore_anchor": "",
+            "safe_return": false,
+            "survey_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "pool_id": "pool1",
+            "depth_samples": [
+              {
+                "waypoint": "p1",
+                "depth_cm": 10,
+                "epoch": 57
+              },
+              {
+                "waypoint": "p2",
+                "depth_cm": 30,
+                "epoch": 57
+              }
+            ],
+            "route_points": [
+              "p1",
+              "p2"
+            ],
+            "shore_anchor": "shore1",
+            "safe_return": true,
+            "survey_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "unsafe_depth",
+          "patch": {
+            "depth_samples": [
+              {
+                "waypoint": "p1",
+                "depth_cm": 100,
+                "epoch": 57
+              },
+              {
+                "waypoint": "p2",
+                "depth_cm": 30,
+                "epoch": 57
+              }
+            ]
+          }
+        },
+        {
+          "name": "no_shore",
+          "patch": {
+            "shore_anchor": ""
+          }
+        },
+        {
+          "name": "unknown_waypoint",
+          "patch": {
+            "route_points": [
+              "p1",
+              "unknown"
+            ]
+          }
+        },
+        {
+          "name": "return_blocked",
+          "patch": {
+            "safe_return": false
+          }
+        },
+        {
+          "name": "stale_sample",
+          "patch": {
+            "depth_samples": [
+              {
+                "waypoint": "p1",
+                "depth_cm": 10,
+                "epoch": 56
+              },
+              {
+                "waypoint": "p2",
+                "depth_cm": 30,
+                "epoch": 57
+              }
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Measure shallow stepping-stone depths and plan a safe foot route across seasonal pools",
+      "player_verbs": [
+        "measure_echo_pool_depth_walk",
+        "preview_echo_pool_depth_walk",
+        "confirm_echo_pool_depth_walk",
+        "review_echo_pool_depth_walk",
+        "cancel_echo_pool_depth_walk"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Echo Pool Depth Walk; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "Depth change cannot strand player on invalid waypoint",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-058",
+      "title": "Glowspore Twilight Trail",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "spore_nodes",
+        "glow_window",
+        "trail_progress",
+        "grove_found"
+      ],
+      "additions": [
+        "reward_receipt",
+        "discovery_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_58",
+      "fields": {
+        "spore_nodes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "node_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "glow": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "node_id",
+          "default": []
+        },
+        "glow_window": {
+          "type": "object",
+          "fields": {
+            "epoch": {
+              "type": "integer",
+              "min": 1,
+              "max": 9007199254740991,
+              "default": 1
+            },
+            "start_minute": {
+              "type": "integer",
+              "min": 0,
+              "max": 1439,
+              "default": 0
+            },
+            "end_minute": {
+              "type": "integer",
+              "min": 1,
+              "max": 1440,
+              "default": 1
+            }
+          },
+          "default": null,
+          "nullable": true
+        },
+        "trail_progress": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "grove_found": {
+          "type": "boolean",
+          "default": false
+        },
+        "reward_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "discovery_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "spore_nodes": [],
+            "glow_window": null,
+            "trail_progress": [],
+            "grove_found": false,
+            "reward_receipt": null,
+            "discovery_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "spore_nodes": [
+              {
+                "node_id": "s1",
+                "glow": true
+              },
+              {
+                "node_id": "s2",
+                "glow": true
+              },
+              {
+                "node_id": "s3",
+                "glow": true
+              }
+            ],
+            "glow_window": {
+              "epoch": 57,
+              "start_minute": 1000,
+              "end_minute": 1150
+            },
+            "trail_progress": [
+              "s1",
+              "s2",
+              "s3"
+            ],
+            "grove_found": true,
+            "reward_receipt": "reward-58",
+            "discovery_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "no_glow_window",
+          "patch": {
+            "glow_window": null
+          }
+        },
+        {
+          "name": "unknown_spore",
+          "patch": {
+            "trail_progress": [
+              "s1",
+              "s2",
+              "wrong"
+            ]
+          }
+        },
+        {
+          "name": "no_reward_receipt",
+          "patch": {
+            "reward_receipt": null
+          }
+        },
+        {
+          "name": "no_discovery_epoch",
+          "patch": {
+            "discovery_epoch": -1
+          }
+        },
+        {
+          "name": "incomplete_trail",
+          "patch": {
+            "trail_progress": [
+              "s1",
+              "s2"
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Trace harmless fictional bioluminescent spores to discover an evening-only grove",
+      "player_verbs": [
+        "trace_glowspore_twilight_trail",
+        "preview_glowspore_twilight_trail",
+        "confirm_glowspore_twilight_trail",
+        "review_glowspore_twilight_trail",
+        "cancel_glowspore_twilight_trail"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Glowspore Twilight Trail; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "Repeated trail resets cannot mint gathering rewards",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-059",
+      "title": "Windward Kite Survey",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "anchor_id",
+        "tether_length",
+        "wind_epoch",
+        "sketch_cells"
+      ],
+      "additions": [
+        "camera_region",
+        "launch_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_59",
+      "fields": {
+        "anchor_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "tether_length": {
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 0
+        },
+        "wind_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "sketch_cells": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "visibility": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "privacy_zone": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "cell_id",
+          "default": []
+        },
+        "camera_region": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "launch_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "anchor_id": "",
+            "tether_length": 0,
+            "wind_epoch": -1,
+            "sketch_cells": [],
+            "camera_region": "",
+            "launch_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "anchor_id": "ridge",
+            "tether_length": 20,
+            "wind_epoch": 57,
+            "sketch_cells": [
+              {
+                "cell_id": "v1",
+                "visibility": 70,
+                "privacy_zone": false
+              }
+            ],
+            "camera_region": "public_valley",
+            "launch_receipt": "launch-59"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "private_interiors",
+          "patch": {
+            "sketch_cells": [
+              {
+                "cell_id": "v1",
+                "visibility": 70,
+                "privacy_zone": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "no_tether",
+          "patch": {
+            "tether_length": 0
+          }
+        },
+        {
+          "name": "missing_wind",
+          "patch": {
+            "wind_epoch": -1
+          }
+        },
+        {
+          "name": "private_camera",
+          "patch": {
+            "camera_region": "npc_private"
+          }
+        },
+        {
+          "name": "missing_launch_receipt",
+          "patch": {
+            "launch_receipt": null
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Pilot a small observation kite to reveal nearby terrain contours without granting free-flight traversal",
+      "player_verbs": [
+        "pilot_windward_kite_survey",
+        "preview_windward_kite_survey",
+        "confirm_windward_kite_survey",
+        "review_windward_kite_survey",
+        "cancel_windward_kite_survey"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Windward Kite Survey; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "A gust cannot move the camera through private NPC interiors",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    },
+    {
+      "id": "EB-E-060",
+      "title": "Lost Footpath Reconciliation",
+      "domain": "exploration_navigation",
+      "mission_ids": [
+        "E03",
+        "E09",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "historic_map",
+        "route_nodes",
+        "consent_ids",
+        "opening_receipt"
+      ],
+      "additions": [
+        "required_consent_ids",
+        "path_open",
+        "approval_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_60",
+      "fields": {
+        "historic_map": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "route_nodes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "node_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": ""
+              },
+              "land_status": {
+                "type": "enum",
+                "values": [
+                  "public",
+                  "consent_required",
+                  "protected"
+                ],
+                "default": "public"
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "node_id",
+          "default": []
+        },
+        "consent_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "opening_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "required_consent_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "default": ""
+          },
+          "max_items": 16,
+          "unique_by": "$value",
+          "default": []
+        },
+        "path_open": {
+          "type": "boolean",
+          "default": false
+        },
+        "approval_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "inactive_state_cleared",
+        "authority_and_referential_integrity",
+        "calendar_and_safety_gates",
+        "receipt_and_completion_consistency"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "historic_map": "",
+            "route_nodes": [],
+            "consent_ids": [],
+            "opening_receipt": null,
+            "required_consent_ids": [],
+            "path_open": false,
+            "approval_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "historic_map": "oldmap",
+            "route_nodes": [
+              {
+                "node_id": "r1",
+                "land_status": "public"
+              },
+              {
+                "node_id": "r2",
+                "land_status": "consent_required"
+              }
+            ],
+            "consent_ids": [
+              "owner1"
+            ],
+            "opening_receipt": "open-60",
+            "required_consent_ids": [
+              "owner1"
+            ],
+            "path_open": true,
+            "approval_epoch": 57
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "consent_missing",
+          "patch": {
+            "consent_ids": []
+          }
+        },
+        {
+          "name": "protected_route",
+          "patch": {
+            "route_nodes": [
+              {
+                "node_id": "r1",
+                "land_status": "protected"
+              },
+              {
+                "node_id": "r2",
+                "land_status": "consent_required"
+              }
+            ]
+          }
+        },
+        {
+          "name": "no_opening_receipt",
+          "patch": {
+            "opening_receipt": null
+          }
+        },
+        {
+          "name": "no_approval_epoch",
+          "patch": {
+            "approval_epoch": -1
+          }
+        },
+        {
+          "name": "duplicate_consent",
+          "patch": {
+            "consent_ids": [
+              "owner1",
+              "owner1"
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive; present malformed/unknown fields reject atomically; no automatic migration or live save wiring before Principal approval.",
+      "authority": "Emergence owns proposed exploration journal and decision projections; Principal/Valley own navigation, world coordinates, actor movement, calendar and authoritative command receipts; Farming owns habitats and resources; Village owns NPC privacy and consent.",
+      "receipt_contract": {
+        "command_id": "globally immutable; Principal deduplicates across reload",
+        "expected_revision": "stale revision rejects atomically",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "Principal-authorized immutable settlement; preview never issues rewards"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Compare old maps with present vegetation to reopen a historic pedestrian trail through community consent",
+      "player_verbs": [
+        "compare_lost_footpath_reconciliation",
+        "preview_lost_footpath_reconciliation",
+        "confirm_lost_footpath_reconciliation",
+        "review_lost_footpath_reconciliation",
+        "cancel_lost_footpath_reconciliation"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Valley/Principal own navigation, water/terrain; Emergence owns discovery state",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic exploration_navigation cues, legible iconography and optional original ambient audio for Lost Footpath Reconciliation; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "negative": "One missing consent cannot silently enable blocked path",
+      "native_gate": "NOT NATIVE TESTED: no new Godot feature; requires joint 220 gate, Principal/Valley/Farming/Village signoff, native save/replay, keyboard/controller/touch parity, measured device performance and provenance."
+    }
+  ]
+}
