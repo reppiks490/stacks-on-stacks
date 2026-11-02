@@ -398,5 +398,139 @@
         }
       }
     ]
+  },
+  "conversation_topics": {
+    "mira": {
+      "herb_habitat": {
+        "label": {
+          "en": "Ask about the herb garden",
+          "es": "Preguntar por el jardín de hierbas"
+        },
+        "reply": {
+          "en": "I leave the first mint flowers for pollinators. Their visits tell me the garden is healthy.",
+          "es": "Dejo las primeras flores de menta para los polinizadores. Sus visitas me dicen que el jardín está sano."
+        }
+      },
+      "clinic": {
+        "label": {
+          "en": "Ask about the hillside clinic",
+          "es": "Preguntar por la clínica de la colina"
+        },
+        "reply": {
+          "en": "The clinic needs patience more than rare remedies. I keep simple herbs labeled for anyone who asks.",
+          "es": "La clínica necesita paciencia más que remedios raros. Etiqueto hierbas sencillas para quien las necesite."
+        }
+      }
+    },
+    "rowan": {
+      "bridge": {
+        "label": {
+          "en": "Ask about the old bridge",
+          "es": "Preguntar por el puente antiguo"
+        },
+        "reply": {
+          "en": "I check each joint before replacing a beam. Keeping the old bridge safe means respecting its history.",
+          "es": "Reviso cada unión antes de cambiar una viga. Cuidar el puente significa respetar su historia."
+        }
+      },
+      "woodcraft": {
+        "label": {
+          "en": "Ask about reclaimed timber",
+          "es": "Preguntar por la madera recuperada"
+        },
+        "reply": {
+          "en": "A crooked board can become a fine bench when you follow its grain instead of fighting it.",
+          "es": "Una tabla torcida puede ser un buen banco si sigues la veta en vez de luchar contra ella."
+        }
+      }
+    },
+    "celia": {
+      "bread": {
+        "label": {
+          "en": "Ask about the morning bread",
+          "es": "Preguntar por el pan de la mañana"
+        },
+        "reply": {
+          "en": "I save a little dough from yesterday. It gives today's loaf a memory of the last one.",
+          "es": "Guardo un poco de masa de ayer. Así el pan de hoy conserva un recuerdo del anterior."
+        }
+      },
+      "shared_table": {
+        "label": {
+          "en": "Ask about the shared table",
+          "es": "Preguntar por la mesa común"
+        },
+        "reply": {
+          "en": "There is always room for another chair. No one has to bring a meal to deserve a welcome.",
+          "es": "Siempre cabe otra silla. Nadie tiene que traer comida para merecer una bienvenida."
+        }
+      }
+    },
+    "orion": {
+      "lake": {
+        "label": {
+          "en": "Ask about the lake reeds",
+          "es": "Preguntar por los juncos del lago"
+        },
+        "reply": {
+          "en": "The reeds shelter young fish. I steer the boat wide so their nursery stays quiet.",
+          "es": "Los juncos protegen a los peces jóvenes. Alejo la barca para dejar tranquila su cuna."
+        }
+      },
+      "weather": {
+        "label": {
+          "en": "Ask about changing weather",
+          "es": "Preguntar por el tiempo cambiante"
+        },
+        "reply": {
+          "en": "I watch the far shore before I watch the clouds. The water notices a storm first.",
+          "es": "Miro la orilla lejana antes que las nubes. El agua nota primero la tormenta."
+        }
+      }
+    },
+    "alba": {
+      "shy_animals": {
+        "label": {
+          "en": "Ask about timid animals",
+          "es": "Preguntar por los animales tímidos"
+        },
+        "reply": {
+          "en": "I sit nearby without reaching out. Trust grows when an animal chooses to approach.",
+          "es": "Me siento cerca sin alargar la mano. La confianza crece cuando el animal decide acercarse."
+        }
+      },
+      "winter_care": {
+        "label": {
+          "en": "Ask about winter shelter",
+          "es": "Preguntar por el refugio invernal"
+        },
+        "reply": {
+          "en": "Dry bedding and fresh water matter more than fancy fences when the frost arrives.",
+          "es": "La cama seca y el agua fresca importan más que las cercas elegantes cuando llega la helada."
+        }
+      }
+    },
+    "soren": {
+      "archive": {
+        "label": {
+          "en": "Ask about the public archive",
+          "es": "Preguntar por el archivo público"
+        },
+        "reply": {
+          "en": "A village archive should hold the stories people choose to share, never the ones they ask us to keep private.",
+          "es": "Un archivo del pueblo debe guardar las historias que la gente decide compartir, nunca las que pide mantener en privado."
+        }
+      },
+      "map": {
+        "label": {
+          "en": "Ask about the valley map",
+          "es": "Preguntar por el mapa del valle"
+        },
+        "reply": {
+          "en": "The oldest map has blank paths. Perhaps the people who walked them preferred discovery to certainty.",
+          "es": "El mapa más antiguo tiene senderos en blanco. Quizá quienes los recorrieron preferían descubrir antes que saber."
+        }
+      }
+    }
   }
 }

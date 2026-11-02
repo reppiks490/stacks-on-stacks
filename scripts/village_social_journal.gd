@@ -372,6 +372,9 @@ func _toggle_locale() -> void:
 func open_journal() -> void:
     if panel == null or panel.visible:
         return
+    # Two modal overlays must never compete over pause ownership.
+    if village != null and village.topic_panel != null and village.topic_panel.panel != null and village.topic_panel.panel.visible:
+        return
     refresh()
     paused_before_open = get_tree().paused
     get_tree().paused = true

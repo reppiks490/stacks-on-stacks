@@ -21,6 +21,8 @@ var dialogue_locale: String = "en"
 var social_journal
 ## V07: first-party work interaction adapter; Village remains authoritative.
 var job_panel
+## V05: original optional player-selected conversation topics, presentation only.
+var topic_panel
 
 func setup(host) -> void:
     game = host
@@ -71,6 +73,11 @@ func setup(host) -> void:
     job_panel.set_script(load("res://scripts/village_job_panel.gd"))
     add_child(job_panel)
     job_panel.setup(self)
+    topic_panel = CanvasLayer.new()
+    topic_panel.name = "VillageTopicPanel"
+    topic_panel.set_script(load("res://scripts/village_topic_panel.gd"))
+    add_child(topic_panel)
+    topic_panel.setup(self)
 
 func _fresh_memory() -> Dictionary:
     return {"talks":0, "gifts":0, "jobs":0, "festivals":0,
@@ -188,7 +195,7 @@ func _gift_memory_dialogue(profile: Dictionary, rid: String, epoch: int) -> Stri
     memories[rid] = record
     return line % item
 
-func _dialogue(resident: Dictionary, rid: String, epoch: int) -> String:
+func _dialogue(resident: Dictionary, rid: String, epoch: int, topic: String = "") -> String:
     var profile: Dictionary = _profile(rid)
     if not _active_festival().is_empty():
         return str(profile.get("festival_line", "The whole valley is here tonight."))
@@ -197,6 +204,17 @@ func _dialogue(resident: Dictionary, rid: String, epoch: int) -> String:
     var recollection: String = _gift_memory_dialogue(profile, rid, epoch)
     if not recollection.is_empty():
         return recollection
+    # Player-selected topics follow festival, rain and outstanding gift memories.
+    # Invalid topic IDs fall through to the existing authored conversation.
+    if not topic.is_empty():
+        var topic_catalog: Dictionary = life_data.get("conversation_topics", {})
+        var options: Dictionary = topic_catalog.get(rid, {})
+        if options.has(topic):
+            var topic_data: Dictionary = options[topic]
+            var replies: Dictionary = topic_data.get("reply", {})
+            var chosen: String = str(replies.get(dialogue_locale, replies.get("en", "")))
+            if not chosen.is_empty():
+                return chosen
     var contextual: String = _conditional_dialogue(resident, profile, rid)
     if not contextual.is_empty():
         return contextual
@@ -309,7 +327,22 @@ func _job(resident: Dictionary, rid: String, epoch: int) -> String:
     return "Helped %s with %s. Earned %d petals." % [
         resident["name"], str(profile.get("job_task", "community repairs")), pay]
 
-func act(action: String, position: Vector3) -> String:
+## Read-only, deterministic topic menu. No new save keys or side effects.
+func available_topics(rid: String) -> Array:
+    var catalog: Dictionary = life_data.get("conversation_topics", {})
+    var options: Dictionary = catalog.get(rid, {})
+    var keys: Array = options.keys()
+    keys.sort()
+    var result: Array = []
+    for key in keys:
+        var entry: Dictionary = options[key]
+        var labels: Dictionary = entry.get("label", {})
+        var label: String = str(labels.get(dialogue_locale, labels.get("en", "")))
+        if not label.is_empty():
+            result.append({"id":str(key), "label":label})
+    return result
+
+func act(action: String, position: Vector3, topic: String = "") -> String:
     var selected: Dictionary = {}
     var best_distance: float = 4.2
     for resident in residents:
@@ -345,7 +378,7 @@ func act(action: String, position: Vector3) -> String:
             celebration = " You joined %s. %s" % [
                 str(festival["name"]), str(festival["narration"])]
     var points: int = int(affection.get(rid, 0))
-    var spoken: String = _dialogue(selected, rid, epoch)
+    var spoken: String = _dialogue(selected, rid, epoch, topic)
     _record_dialogue(rid, epoch, spoken)
     return "%s: “%s” (friendship %d — %s)%s" % [
         selected["name"], spoken, points,

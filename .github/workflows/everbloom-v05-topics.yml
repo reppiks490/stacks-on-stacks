@@ -1,0 +1,50 @@
+name: Everbloom V05 native player-selected conversation acceptance
+on:
+  push:
+    paths:
+      - 'scripts/village.gd'
+      - 'scripts/village_topic_panel.gd'
+      - 'scripts/village_topic_panel_acceptance.gd'
+      - 'scripts/village_social_journal.gd'
+      - 'data/village_life.json'
+      - 'docs/VILLAGE_V05_TOPIC_CHOICES.md'
+      - '.github/workflows/everbloom-v05-topics.yml'
+permissions:
+  contents: read
+jobs:
+  topic-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      XDG_DATA_HOME: /tmp/everbloom-v05-topics
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Native project import and GDScript parse
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee v05_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' v05_import.log; then exit 1; fi
+      - name: Actual Game topic UI and year-spanning save acceptance
+        run: |
+          set -euo pipefail
+          timeout 75s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://scripts/village_topic_panel_acceptance.gd 2>&1 | tee v05_native.log
+          grep -Eq '^EVERBLOOM V05 TOPIC NATIVE: [0-9]+ assertions, 0 failures$' v05_native.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open|V05 TOPIC FAILED:' v05_native.log; then exit 1; fi
+      - name: Archive native diagnostics for exact SHA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-v05-topics-${{ github.sha }}
+          path: |
+            v05_import.log
+            v05_native.log
+          if-no-files-found: ignore
+          retention-days: 14
