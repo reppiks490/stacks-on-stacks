@@ -1,0 +1,911 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "phase": "A_20_ideas",
+  "owner": "Construction Inventor",
+  "target_engine": "Godot 4.x",
+  "baseline_main_sha": "39f2fe3f9b6168d09aa01f7e51ea4dbb7e52081a",
+  "status": "construction_10_specified_pending_cross_loop_review",
+  "gate": "No construction gameplay implementation until the combined 20 ideas, then 200 additional ideas, are fully specified and cross-deduplicated; 220 total.",
+  "concepts": [
+    {
+      "id": "EB-B-001",
+      "title": "Joinery Loom — six-mode tactile placement",
+      "domain": "construction_input",
+      "status": "specified_pending_review",
+      "novelty_audit": "Existing game only draws static farmhouse primitives and has no construction or multi-mode snapping; this unifies snap/freeform/blueprint under one reversible action model rather than six incompatible editors.",
+      "player_scenario": "Player selects a timber post, drags its translucent ghost near a wall anchor, holds a precision modifier to nudge 5 cm, switches to freeform when a socket is unsuitable, and commits or cancels without losing materials.",
+      "player_verbs": [
+        "inspect_socket",
+        "begin_ghost",
+        "cycle_mode",
+        "nudge",
+        "rotate",
+        "confirm",
+        "cancel",
+        "undo",
+        "redo"
+      ],
+      "player_loop": [
+        "Pick a part from inventory; choose socket, magnetic, grid, freeform, guided blueprint or continuous paint; inspect ghost validity and cost; confirm atomic placement; undo if needed."
+      ],
+      "simulation_rules": [
+        "Canonical world transform quantized to 0.01m and yaw to 1 degree for saved commands; preview never consumes inventory; only committed server-authoritative local action reserves resources; typed sockets take precedence in socket mode; no placement through occupied solid volumes; freeform still obeys collision and support rules; undo must restore previous transform and exact resource counts."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "site_id:string",
+          "part_id:string",
+          "mode:enum(socket,magnet,grid,freeform,blueprint,continuous)",
+          "ghost_transform:{position_m:[float,float,float],rotation_deg:[float,float,float]}",
+          "snap_target_id:string|null",
+          "placement_sequence:int",
+          "undo_log:[command_id]"
+        ]
+      },
+      "command_contract": [
+        "preview_part(site_id,part_id,mode,transform)->{valid,reasons,anchors,material_quote}",
+        "commit_placement(command_id,preview_revision)->{accepted,structure_id,inventory_delta}",
+        "cancel_ghost()->no_side_effect",
+        "undo(command_id)->exact_inverse_if_no_dependents"
+      ],
+      "service_contracts": [
+        "ConstructionPlacementService: proposal/validation/commit/rollback only; InputAdapter maps all devices into intent verbs; InventoryService owns debit; StructureGraph owns anchors; GameSave owns persistence."
+      ],
+      "controls": {
+        "mouse_keyboard": "Left-click pick/confirm, right-click cancel, wheel rotate, Shift precision, Tab cycle mode, Ctrl+Z undo.",
+        "gamepad": "Left stick moves ghost on plane, right stick rotates, shoulder cycles mode, A confirms, B cancels, D-pad nudges.",
+        "touch": "Tap select, drag ghost, two-finger rotate, visible precision/snap toggles, confirm/cancel buttons; never rely on long-press alone."
+      },
+      "original_asset_plan": [
+        "Original procedural beams, translucent ghost material, socket glyphs",
+        "haptic/audio feedback from self-authored samples, color-independent valid/invalid icons."
+      ],
+      "performance_budget": {
+        "desktop": "At most 1 active ghost, 64 nearby sockets queried, 1ms CPU preview budget at 60fps target.",
+        "mobile": "At most 1 ghost, 24 nearby sockets queried, 2ms CPU preview budget at 30fps target; no per-frame mesh regeneration."
+      },
+      "godot_acceptance": [
+        "Given 2 wood and valid post anchor, preview costs 2 but inventory unchanged until confirm; confirm places exactly one post and deducts 2 wood.",
+        "Repeat the identical command ID twice and assert exactly one post and one debit.",
+        "Replay placement, cancel, undo, save/load and verify identical world transforms and inventory."
+      ],
+      "adversarial_tests": [
+        "Zero wood, occupied anchor, unsupported freeform, invalid mode, NaN transform and rapid double confirm must reject without mutation.",
+        "Undo a load-bearing post with dependents must reject or cascade only after explicit consent; no silent orphan geometry."
+      ],
+      "engine_portability": "Portable canonical placement commands, numeric transforms, typed socket graph and validation reasons; Godot uses Node3D/RayCast3D adapters, Unreal/Unity adapters consume same serialized commands; physics parity must be retested.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-15",
+        "risks": [
+          "touch precision",
+          "snap oscillation",
+          "graph and inventory atomicity"
+        ]
+      },
+      "dependencies": [
+        "B01",
+        "B02",
+        "B03",
+        "B13",
+        "P07",
+        "F19"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 2
+        },
+        "refund": "Full refund on canceled preview; exact debit reversal on valid undo; never duplicate consumed material."
+      }
+    },
+    {
+      "id": "EB-B-002",
+      "title": "Groundweave — sculpt-to-foundation terrain kit",
+      "domain": "terrain_construction",
+      "status": "specified_pending_review",
+      "novelty_audit": "Current flat valley terrain and farmhouse lack terrain-aware building. The novelty is a player-editable support lattice that suggests terracing, stilts or retaining edges based on sampled slope and erosion exposure.",
+      "player_scenario": "Player outlines a hillside cabin footprint, previews three alternative foundations and their costs, adjusts supports by dragging handles, and watches rain channels change before committing.",
+      "player_verbs": [
+        "outline_footprint",
+        "probe_slope",
+        "choose_foundation",
+        "drag_pier",
+        "toggle_drain",
+        "confirm",
+        "inspect_erosion"
+      ],
+      "player_loop": [
+        "Draw footprint; sample heights and soil; compare pad/terrace/pier alternatives; adjust supports and drainage; reserve stone/wood; build terrain-safe supports; inspect rain resilience."
+      ],
+      "simulation_rules": [
+        "Sample footprint at 0.5m intervals, deterministic triangulation order; no support with negative embed depth; enforce 2m path clearance, lake/field exclusion and slope caps; terrace operations must not modify farmland without explicit authorization; terrain change and support construction are a single undoable transaction."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "footprint_polygon_m:[[float,float]]",
+          "foundation_style:enum(pad,terrace,pier)",
+          "sampled_height_digest:string",
+          "supports:[{anchor,depth_m,capacity}]",
+          "drain_channels:[segment]",
+          "terrain_revision:int"
+        ]
+      },
+      "command_contract": [
+        "quote_foundation(footprint,terrain_revision)->alternatives",
+        "preview_supports(style,handles)->{valid,erosion_risk,materials}",
+        "commit_foundation(revision,quote)->transaction",
+        "rollback_foundation(id)->restored_terrain_digest"
+      ],
+      "service_contracts": [
+        "TerrainQuery read-only height/slope/soil; FarmOccupancy read-only plot protection; StructureGraph receives supports; Inventory owns stone/wood; SaveService stores geometry and revision."
+      ],
+      "controls": {
+        "mouse_keyboard": "Draw polygon by click, drag handles, scroll styles, Enter commit, Esc cancel.",
+        "gamepad": "Move cursor with left stick, A place vertex, X style, shoulder handle selection, B undo vertex.",
+        "touch": "Tap footprint corners, drag supports, bottom style selector, large commit and back controls."
+      },
+      "original_asset_plan": [
+        "Original mossy retaining blocks, wood pier variants",
+        "ground contour decals, rainwater flow arrows and support-pressure indicators."
+      ],
+      "performance_budget": {
+        "desktop": "<=128 footprint samples and 40 support nodes in preview, <=3ms CPU on desktop.",
+        "mobile": "<=64 samples and 20 supports, <=5ms CPU on mobile; precompute erosion only when edited."
+      },
+      "godot_acceptance": [
+        "Sloped 6x8m footprint produces pad, pier and terrace quotes with distinct valid support graphs.",
+        "Committing a pier foundation changes no protected farm bed and persists identical heights/supports after reload.",
+        "Changing weather from clear to rain updates erosion risk without silently changing built structure."
+      ],
+      "adversarial_tests": [
+        "Reject footprint intersecting lake, zero-area polygon, duplicate vertices, invalid heights, stale terrain revision and unavailable materials.",
+        "Undo must restore exact terrain revision and original soil cells even after cancel."
+      ],
+      "engine_portability": "Store support graph and footprint in engine-neutral meters; Godot TerrainQuery may initially use flat-plane stub but must mark slope simulation unverified; future Unreal landscape/Unity terrain adapters are not drop-in.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "12-22",
+        "risks": [
+          "terrain mutation",
+          "soil conservation",
+          "navmesh updates"
+        ]
+      },
+      "dependencies": [
+        "B01",
+        "B04",
+        "B07",
+        "F01",
+        "F02",
+        "P08"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "stone": 12,
+          "wood": 8
+        },
+        "refund": "Quoted quantities reserved atomically; demolition salvage based on actual intact supports."
+      }
+    },
+    {
+      "id": "EB-B-003",
+      "title": "Framewright — inspectable house assembly timeline",
+      "domain": "staged_building",
+      "status": "specified_pending_review",
+      "novelty_audit": "Existing farmhouse is one static mesh cluster. Here every structural phase is an interactive, inspectable construction step with dependencies, partial occupancy and NPC help.",
+      "player_scenario": "Player raises foundation posts, braces a frame, sets walls and roof, opens a door, then decorates; unfinished buildings remain visible and safe through multiple seasons.",
+      "player_verbs": [
+        "survey",
+        "place_frame",
+        "brace",
+        "install_wall",
+        "install_roof",
+        "install_opening",
+        "finish",
+        "inspect_stage"
+      ],
+      "player_loop": [
+        "Plan structure; place foundation; erect beams; add braces and walls; roof; weatherproof openings; furnish; each stage yields playable visual and gameplay consequences."
+      ],
+      "simulation_rules": [
+        "Stage graph FOUNDATION->FRAME->SHELL->WEATHERTIGHT->HABITABLE; missing required braces block heavy roof; each part has stable ID and prerequisite anchors; no automatic instant house completion; weather exposure affects unfinished materials; player can pause and resume without reset."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "building_id:string",
+          "phase:enum",
+          "part_graph:[{id,type,parent,integrity,material}]",
+          "construction_queue:[command]",
+          "work_progress_ticks:int",
+          "habitable_flags:{shelter,door,roof}"
+        ]
+      },
+      "command_contract": [
+        "next_buildable_parts(graph)->list",
+        "apply_build_step(part,materials,work_ticks)->result",
+        "validate_habitability(graph)->flags",
+        "restore_partial_build(snapshot)->same_graph"
+      ],
+      "service_contracts": [
+        "StructureGraph authoritative part IDs and load edges; VillageJob can supply optional labor; FarmInventory supplies resources; WorldRenderer shows stages; Principal Save owns serialized lifecycle."
+      ],
+      "controls": {
+        "mouse_keyboard": "Hover part and click place; R rotate; Tab stage timeline; E inspect joints.",
+        "gamepad": "Radial build palette, D-pad phase selection, A place, Y inspect, B back.",
+        "touch": "Bottom step cards, tap highlighted joint, pinch camera, dedicated undo and inspect."
+      },
+      "original_asset_plan": [
+        "Original beam joinery, framing joints, roof shingles",
+        "worksite signage, cloth tarps and stage-specific construction sounds."
+      ],
+      "performance_budget": {
+        "desktop": "<=300 structural nodes and 600 render instances per small home; mesh batching target <3ms render submission.",
+        "mobile": "<=150 nodes visible, merged static geometry at settled stages; LOD and low-poly framing."
+      },
+      "godot_acceptance": [
+        "Building cannot become habitable before supported roof, doorway and weatherproof shell are complete.",
+        "Save after frame-only stage and reload exact part graph, resources and active construction stage.",
+        "Apply roof before bracing and receive actionable missing-brace reason."
+      ],
+      "adversarial_tests": [
+        "Reject cycles in part dependency graph, nonexistent parent, negative work ticks, part duplicate ID and zero-resource completion.",
+        "Interrupted save mid-build must restore last committed stage and not auto-finish."
+      ],
+      "engine_portability": "Serializable stage DAG and material transactions independent of Godot; Godot Node3D visual hierarchy is derived from part graph; Unreal/Unity need separate mesh and animation adapters.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "15-28",
+        "risks": [
+          "partial-stage navmesh",
+          "save compatibility",
+          "authoring many modular assets"
+        ]
+      },
+      "dependencies": [
+        "B01",
+        "B03",
+        "B07",
+        "B12",
+        "B15",
+        "P04"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 30,
+          "stone": 12
+        },
+        "refund": "Costs charged per completed step; unfinished plan has zero material charge; each part ledger tracks actual paid units."
+      }
+    },
+    {
+      "id": "EB-B-004",
+      "title": "Rainroof Atelier — weather-reactive roof craft",
+      "domain": "roof_ecology",
+      "status": "specified_pending_review",
+      "novelty_audit": "Beyond decorative roof variants, players engineer roof slope, overhang, gutter and rainbarrel paths that measurably alter crop water availability and house weather exposure.",
+      "player_scenario": "Player tests two roof pitches in a rainstorm, installs a gutter to a barrel, then uses harvested rain to irrigate a greenhouse.",
+      "player_verbs": [
+        "edit_pitch",
+        "extend_eave",
+        "attach_gutter",
+        "route_downspout",
+        "place_cistern",
+        "simulate_rain",
+        "collect_water"
+      ],
+      "player_loop": [
+        "Shape roof geometry; preview drainage arrows; route gutter sockets; attach cistern; see daily rainfall capture; use stored water in farm irrigation."
+      ],
+      "simulation_rules": [
+        "Only sealed roof planes collect water; captured volume bounded by rainfall*projected_area*efficiency; water not created from clear weather; overflow routed to ground; disconnected gutter yields zero cistern capture; winter freeze reduces flow and may damage unprotected fittings."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "roof_planes:[{id,polygon,pitch_deg,material,seal}]",
+          "gutter_graph:[{from,to,capacity_l}]",
+          "cisterns:[{id,capacity_l,stored_l}]",
+          "rain_epoch:int"
+        ]
+      },
+      "command_contract": [
+        "simulate_rain(roof,weather,day_epoch)->water_ledger",
+        "edit_roof(pitch,eave)->validated_geometry",
+        "connect_gutter(socket_a,socket_b)->graph",
+        "withdraw_water(liters)->farm_transfer"
+      ],
+      "service_contracts": [
+        "RoofGraph owns geometry; HydrologyService (Farming F02) supplies rainfall ledger; InventoryService owns gutters/cisterns; FarmWater adapter consumes transferred water; calendar day_epoch prevents duplicate harvest."
+      ],
+      "controls": {
+        "mouse_keyboard": "Drag roof ridge/eaves, wheel pitch, click socket route, H view water arrows.",
+        "gamepad": "Shoulder roof plane, left stick adjust pitch, A attach, X toggle rain overlay.",
+        "touch": "Drag ridge handles, pitch slider, tap source/target sockets, toggle rainfall overlay."
+      },
+      "original_asset_plan": [
+        "Original ceramic tiles, straw thatch, rain chains",
+        "animated droplet decals, water gauges, moss accumulation and soft rain audio."
+      ],
+      "performance_budget": {
+        "desktop": "Roof graph <=100 planes, water flow once per day; preview under 2ms CPU.",
+        "mobile": "Roof graph <=40 planes, simplified flow arrows; no per-frame fluid physics."
+      },
+      "godot_acceptance": [
+        "Given 10mm rain, sealed 20m² roof and 80% efficiency, capture equals 160 liters before gutter/cistern limits.",
+        "Disconnected gutter stores zero water and overflow does not disappear from accounting.",
+        "Year rollover and save/load do not grant rainfall twice for same day_epoch."
+      ],
+      "adversarial_tests": [
+        "Reject negative rain, zero-area polygons, reverse-flow cycle, over-capacity cistern, and a second collect action on same epoch.",
+        "Clear-weather and snow/frozen cases must not create liquid water."
+      ],
+      "engine_portability": "Water ledger uses fixed integer milliliters and plane areas; renderer adapters for Godot/Unreal/Unity differ but water conservation and graph are portable.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "10-18",
+        "risks": [
+          "hydrology interface alignment",
+          "roof geometry complexity",
+          "fluid balance"
+        ]
+      },
+      "dependencies": [
+        "B05",
+        "B08",
+        "F02",
+        "F08",
+        "P02"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 6,
+          "stone": 4
+        },
+        "refund": "Water is transferred, never minted; materials charged for each physical gutter/barrel."
+      }
+    },
+    {
+      "id": "EB-B-005",
+      "title": "Roomheart — spatial rooms that remember life",
+      "domain": "housing_social",
+      "status": "specified_pending_review",
+      "novelty_audit": "Current village relationship scores are disconnected from houses. This creates recognized rooms with functional purpose, privacy, warmth and residents' learned preferences.",
+      "player_scenario": "Player partitions a loft into a kitchen and cozy bedroom; a villager moves into the bedroom after an invited household event and adjusts their schedule and comfort.",
+      "player_verbs": [
+        "draw_room",
+        "place_door",
+        "assign_function",
+        "furnish",
+        "invite_resident",
+        "inspect_comfort",
+        "reassign_room"
+      ],
+      "player_loop": [
+        "Build enclosure; assign room function based on fixtures; furnish; evaluate light/warmth/space; invite consenting NPC; observe changed home routine and dialogue."
+      ],
+      "simulation_rules": [
+        "A room must be closed polygon with navigable door, minimum area and roof coverage; comfort combines light, shelter, heating and preference weights, clamped 0..100; room use cannot overwrite NPC consent or existing housing; no occupied resident can be removed by deleting room without relocation workflow."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "room_id:string",
+          "boundary_parts:[part_id]",
+          "function:enum(kitchen,bedroom,studio,greenhouse,storage)",
+          "fixture_ids:[id]",
+          "comfort:int",
+          "resident_ids:[npc_id]",
+          "accessibility_flags:{door,width,reachable}"
+        ]
+      },
+      "command_contract": [
+        "detect_rooms(structure_graph)->rooms",
+        "score_comfort(room,weather,fixtures)->int",
+        "assign_resident(room,npc,consent_token)->result",
+        "invalidate_room(room)->relocation_required"
+      ],
+      "service_contracts": [
+        "StructureGraph room detector; VillageLife resident schedule/consent authority; Weather/Heating read-only comfort input; SaveService persists assignments; HUD shows room feedback."
+      ],
+      "controls": {
+        "mouse_keyboard": "Click enclosure, choose function from room panel, drag furnishings, inspect comfort bars.",
+        "gamepad": "Focus room by D-pad, radial function selector, A assign, Y inspect resident needs.",
+        "touch": "Tap enclosed floor, room function cards, large resident consent dialogue buttons."
+      },
+      "original_asset_plan": [
+        "Original interior wallpapers, cozy lamps, curtain variants",
+        "furniture kits, warmth/light overlays and localized room labels."
+      ],
+      "performance_budget": {
+        "desktop": "Room detection event-driven; <=50 rooms/house; <=2ms rebuild when wall topology changes.",
+        "mobile": "<=20 rooms/house; no continuous comfort recomputation; recompute at day/weather changes."
+      },
+      "godot_acceptance": [
+        "Two enclosed rooms with door connectivity produce separate room IDs and correct comfort changes.",
+        "A consented NPC moves to a valid bedroom and schedule changes persist through save/load.",
+        "Deleting occupied bedroom requires explicit relocation and never deletes NPC identity."
+      ],
+      "adversarial_tests": [
+        "Reject room with no door, nonmanifold boundary, zero area, unreachable entrance, non-consenting NPC and duplicate room assignment.",
+        "Annual time progression must not forget household membership."
+      ],
+      "engine_portability": "Portable polygon room and resident assignment model; Godot NavigationServer3D, Unreal NavMesh and Unity NavMesh require parity tests.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "15-30",
+        "risks": [
+          "room detection",
+          "NPC pathing",
+          "consent UX"
+        ]
+      },
+      "dependencies": [
+        "B06",
+        "B09",
+        "B10",
+        "B15",
+        "V02",
+        "V12",
+        "P04"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 8
+        },
+        "refund": "Fixtures have explicit inventories and cannot be counted in two rooms; moving room boundaries preserves item ownership."
+      }
+    },
+    {
+      "id": "EB-B-006",
+      "title": "Hearth Threads — visible household utility weaving",
+      "domain": "fictional_utilities",
+      "status": "specified_pending_review",
+      "novelty_audit": "Unlike static lamps, players connect fictionalized, nontechnical utility tokens to room sockets, routing heat, light and water through an inspectable network with capacity and seasonal demand.",
+      "player_scenario": "Player runs a magical warmth-thread from a hearth to a bedroom, sees cold spots fade, then reroutes it around a blocked doorway.",
+      "player_verbs": [
+        "place_source",
+        "route_thread",
+        "join_socket",
+        "inspect_capacity",
+        "switch_priority",
+        "disconnect",
+        "repair"
+      ],
+      "player_loop": [
+        "Place a source; connect colored thread sockets; assign priority; inspect room warmth/light/water; resolve broken links by rerouting."
+      ],
+      "simulation_rules": [
+        "This is explicitly fictional game logic, not real-world electrical or plumbing instructions; graph nodes have integer capacity units, directed edges and losses; output cannot exceed source generation; cycles resolved deterministically or rejected; failed connection never debits materials; disconnected rooms revert to ambient comfort."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "network_id:string",
+          "nodes:[{id,type,capacity,production}]",
+          "edges:[{from,to,loss,enabled}]",
+          "priorities:[room_id]",
+          "last_simulated_epoch:int",
+          "resource_ledger:{generated,delivered,lost,stored}"
+        ]
+      },
+      "command_contract": [
+        "validate_thread_graph(nodes,edges)->reasons",
+        "solve_utility_flow(day_epoch,weather)->ledger",
+        "connect_socket(a,b)->atomic_graph_edit",
+        "disconnect_edge(id)->recomputed_supply"
+      ],
+      "service_contracts": [
+        "StructureGraph supplies typed sockets; Roomheart consumes delivered heat/light; Weather supplies demand; Inventory owns materials; no physical-world hazardous engineering specifications."
+      ],
+      "controls": {
+        "mouse_keyboard": "Click source then destination socket, drag route around obstacles, press U for capacity overlay.",
+        "gamepad": "Select source with A, steer routed ghost with stick, A attach, X cycle utility type.",
+        "touch": "Tap two endpoints, draw safe fictional route, visible color-independent capacity indicators."
+      },
+      "original_asset_plan": [
+        "Original glowing fiber ribbons, hearth runes, water sigils",
+        "warm bloom particles, low-motion alternatives and capacity icons."
+      ],
+      "performance_budget": {
+        "desktop": "<=150 graph nodes and 300 edges per settlement; solve on graph edits or hourly simulation ticks.",
+        "mobile": "<=60 nodes and 120 edges per active area; precomputed simple glow, no particle-heavy route simulation."
+      },
+      "godot_acceptance": [
+        "A 10-unit source with 2-unit loss delivers at most 8 units to its sink.",
+        "A disconnected bedroom loses supplied warmth and shows a clear reason.",
+        "Save/load and yearly replay do not create stored utility units."
+      ],
+      "adversarial_tests": [
+        "Reject negative capacities, nonexistent endpoints, duplicate edge IDs, cycle exploits, overflow, invalid type sockets and broken source nodes.",
+        "Disconnect/undo restores resource ledger exactly without energy duplication."
+      ],
+      "engine_portability": "Graph solver and integer accounting portable; Godot uses MultiMesh ribbons and room shader effects, Unreal/Unity use native rendering adapters.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "9-18",
+        "risks": [
+          "network flow solver",
+          "UI clarity",
+          "mobile VFX"
+        ]
+      },
+      "dependencies": [
+        "B03",
+        "B08",
+        "B15",
+        "V12",
+        "P06"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 3,
+          "stone": 2
+        },
+        "refund": "Utility tokens consumed on physical node creation; thread relocation charges only incremental length with deterministic refunds."
+      }
+    },
+    {
+      "id": "EB-B-007",
+      "title": "Memory Blueprints — replayable house patterns",
+      "domain": "blueprints",
+      "status": "specified_pending_review",
+      "novelty_audit": "Instead of opaque instant prefab placement, a blueprint stores a semantic construction graph, lets players compare affordable build stages, and adapts to local terrain without cloning paid resources.",
+      "player_scenario": "Player saves a custom cottage blueprint, carries it to a new valley plot, previews foundation substitutions and asks neighbors to help assemble its stages.",
+      "player_verbs": [
+        "capture_pattern",
+        "version_pattern",
+        "preview_adaptation",
+        "compare_costs",
+        "place_plan",
+        "build_stage",
+        "share_locally"
+      ],
+      "player_loop": [
+        "Capture built part graph; normalize origin and stable sockets; version template; place ghost on new plot; resolve terrain and budget; schedule staged assembly."
+      ],
+      "simulation_rules": [
+        "Blueprints are plans not item containers; no items copied when saving a blueprint; instance IDs freshly generated; template graph canonical ordering; substitutions require explicit approval; invalid version/schema rejected; user-authored exports contain no protected external meshes or assets."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "blueprint_id:string",
+          "schema_version:int",
+          "revision:int",
+          "normalized_parts:[{type,transform,sockets}]",
+          "material_bill:{item:quantity}",
+          "allowed_substitutions:[rule]",
+          "provenance:{creator,asset_license_refs}"
+        ]
+      },
+      "command_contract": [
+        "capture_blueprint(structure)->canonical_template",
+        "preview_blueprint(template,plot)->{adapters,cost,errors}",
+        "instantiate_plan(template,plot)->unpaid_build_plan",
+        "advance_plan(plan,materials)->paid_part"
+      ],
+      "service_contracts": [
+        "StructureGraph supplies parts; TerrainQuery validates adaptation; Inventory owns resource debits; ConstructionStage service tracks progress; SaveService owns blueprint revisions."
+      ],
+      "controls": {
+        "mouse_keyboard": "B opens blueprint library, click capture, drag plan ghost, mousewheel rotate, click stage commit.",
+        "gamepad": "Radial blueprint library, left stick move, shoulder rotate, A confirm plan, X view cost.",
+        "touch": "Template cards with preview, drag-and-rotate ghost, prominent cost and cancel buttons."
+      },
+      "original_asset_plan": [
+        "Original parchment-blueprint UI, line-art 3D hologram",
+        "material icons, construction stamps and compact thumbnail renders."
+      ],
+      "performance_budget": {
+        "desktop": "<=500 template parts, preview instancing under 5ms when moved; cache normalized graph.",
+        "mobile": "<=200 visible template parts, LOD silhouette preview, no per-frame topology rebuild."
+      },
+      "godot_acceptance": [
+        "Capture and instantiate a 20-part blueprint; plan consumes zero wood until construction stage advances.",
+        "Adapting to sloped ground generates explicit foundation substitutions and updated cost.",
+        "Save/reload blueprint revision and plan without duplicated parts or missing ownership."
+      ],
+      "adversarial_tests": [
+        "Reject cyclic template, malicious external resource path, negative bill, invalid schema and conflicting site occupancy.",
+        "Cancel a partially paid plan returns only unspent reservations and does not refund completed consumed work."
+      ],
+      "engine_portability": "Engine-neutral graph JSON, transform units and license references; renderer/physics and asset paths remapped by future Unreal/Unity importers.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "9-17",
+        "risks": [
+          "versioned imports",
+          "part ID remapping",
+          "security of user files"
+        ]
+      },
+      "dependencies": [
+        "B11",
+        "B12",
+        "B13",
+        "P04",
+        "P06"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 0
+        },
+        "refund": "Capturing/placing a plan is free; executing each physical step consumes validated inventory."
+      }
+    },
+    {
+      "id": "EB-B-008",
+      "title": "Village Build Commons — community construction economy",
+      "domain": "community_build",
+      "status": "specified_pending_review",
+      "novelty_audit": "Existing Village paid shifts do not alter structures. This introduces transparent, NPC-scheduled cooperative construction where each helper has availability, skill, wages and social consequences.",
+      "player_scenario": "Player posts a village bridge repair, donates lumber, hires two neighbors for weekend shifts, and sees scaffolding and a repaired crossing appear as milestones finish.",
+      "player_verbs": [
+        "post_project",
+        "donate_materials",
+        "request_help",
+        "schedule_shift",
+        "inspect_progress",
+        "resolve_dispute",
+        "complete"
+      ],
+      "player_loop": [
+        "Choose civic project; publish budget; solicit NPC help; deliver materials; schedule work; observe staged site progress; celebrate or mediate setbacks."
+      ],
+      "simulation_rules": [
+        "NPC participation requires availability and relationship/contract agreement; labor hours capped per day_epoch; pay only for completed work; no duplicate donation reward; progress advances by scheduled work and weather constraints; cancellation refunds unspent materials but not paid labor; no coercive social penalties for declining."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "project_id:string",
+          "site_id:string",
+          "milestones:[{id,required_parts,work_hours,status}]",
+          "donations:{npc_or_player:{item:qty}}",
+          "worker_shifts:[{npc_id,epoch,hours,wage}]",
+          "progress:int",
+          "reputation_effects:[event_id]"
+        ]
+      },
+      "command_contract": [
+        "propose_public_work(type,site)->quote",
+        "reserve_donation(donor,item,qty)->receipt",
+        "schedule_labor(npc,epoch)->accepted_or_reason",
+        "advance_project(epoch)->milestone_changes"
+      ],
+      "service_contracts": [
+        "VillageLife owns NPC consent/schedule, FarmEconomy owns wages and material ledger, ConstructionStage owns milestone graph, WorldPathing owns bridge navigation, SaveService owns records."
+      ],
+      "controls": {
+        "mouse_keyboard": "Open notice board, click project and resources, calendar drag shifts, inspect scaffold hotspots.",
+        "gamepad": "Notice-board cards, D-pad select shift, A assign, Y inspect costs.",
+        "touch": "Large notice-board timeline cards, drag worker portrait to day slot, confirm payments."
+      },
+      "original_asset_plan": [
+        "Original village notice board, modular scaffolds, workwear",
+        "tool animations, construction dust, celebratory banners and localized dialogues."
+      ],
+      "performance_budget": {
+        "desktop": "<=20 concurrent civic sites, 12 workers/site, event-driven progress; <=1ms simulation tick.",
+        "mobile": "<=5 active visible sites, simplified worker animations, shared meshes and no real-time crowd physics."
+      },
+      "godot_acceptance": [
+        "Two workers with 4-hour shifts advance exactly 8 worker-hours and receive exactly 8 hours of agreed pay.",
+        "Declining NPC or unavailable schedule causes no debit or reputation penalty.",
+        "Bridge repair changes traversal path only after structural milestone acceptance and persists after reload."
+      ],
+      "adversarial_tests": [
+        "Reject duplicate shift IDs, overlapping worker shifts, negative wages, donation double-submit and unavailable materials.",
+        "Cancel/restart must not mint resources or leave orphaned navigation connections."
+      ],
+      "engine_portability": "Serializable civic project graph and schedules portable; Godot uses navigation region adapters, Unreal/Unity require platform-specific path rebuild and animation retargeting.",
+      "effort_estimate": {
+        "size": "XL",
+        "estimated_engineering_days": "15-28",
+        "risks": [
+          "cross-domain transactions",
+          "NPC schedule complexity",
+          "navigation rebuild"
+        ]
+      },
+      "dependencies": [
+        "B12",
+        "B18",
+        "V02",
+        "V07",
+        "V10",
+        "F17",
+        "P04"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 20,
+          "stone": 15
+        },
+        "refund": "Donation receipts keyed by donor+transaction ID; wages charged once per fulfilled shift; unspent donation refunds on cancellation."
+      }
+    },
+    {
+      "id": "EB-B-009",
+      "title": "Salvage Ledger — reversible renovation with provenance",
+      "domain": "deconstruction",
+      "status": "specified_pending_review",
+      "novelty_audit": "Construction undo usually ignores downstream dependencies. This system previews safe detach order, material wear and recoverable salvage, so renovations become a strategic loop instead of infinite refunds.",
+      "player_scenario": "Player remodels an old barn: removes a roof after supporting beams, salvages weathered planks, repairs them, and rebuilds a greenhouse without duplicating stock.",
+      "player_verbs": [
+        "inspect_dependencies",
+        "brace",
+        "mark_demolition",
+        "preview_salvage",
+        "detach",
+        "repair",
+        "reinstall",
+        "undo_safe"
+      ],
+      "player_loop": [
+        "Inspect structure; plan safe disassembly; add temporary braces; remove parts in dependency order; recover quality-rated materials; refurbish or trade; reconstruct."
+      ],
+      "simulation_rules": [
+        "Detach only leaf parts or after validated support substitution; salvage return <= original paid units minus wear/loss; salvage quality 0..100; repeated demolition ID is idempotent; any refund requires actual part removal; temporary braces cost resources and are returned only when removed; restore must not produce duplicate part IDs."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "part_provenance:{part_id,original_cost,material_quality,install_epoch}",
+          "salvage_receipts:[{txn_id,part_id,item,qty,quality}]",
+          "temporary_support_ids:[id]",
+          "deconstruction_plan:[part_id]",
+          "wear:int"
+        ]
+      },
+      "command_contract": [
+        "preview_detach(part)->{support_risks,salvage_quote}",
+        "commit_detach(part,txn_id)->receipt",
+        "repair_materials(receipt,inputs)->quality",
+        "undo_detach(txn_id)->validated_reinstall"
+      ],
+      "service_contracts": [
+        "StructureGraph computes dependencies; Inventory owns salvage and repairs; WeatherWear service computes quality; SaveService persists receipts; ConstructionStage tracks partial buildings."
+      ],
+      "controls": {
+        "mouse_keyboard": "Click part with dismantle tool, see dependency highlights, Shift add brace, Enter confirm.",
+        "gamepad": "Radial renovate mode, A inspect, X brace, Y salvage preview, A confirm.",
+        "touch": "Tap component, step-by-step safe removal cards, hold-to-confirm demolition with alternate accessible button."
+      },
+      "original_asset_plan": [
+        "Original worn wood/stone texture tiers, highlighted load paths",
+        "scaffold props, repair bench and salvage sorting visuals."
+      ],
+      "performance_budget": {
+        "desktop": "Graph traversal O(parts+edges) per selected part, <=400 part home; no per-frame topology scan.",
+        "mobile": "<=160 active parts, incremental dependency cache and low-resolution wear variants."
+      },
+      "godot_acceptance": [
+        "Removing a 4-wood beam at 25% loss yields at most 3 wood-equivalent salvage and removes beam exactly once.",
+        "Attempting to detach sole roof support returns explicit blocking dependencies.",
+        "Save, load and replay same demolition transaction does not award salvage again."
+      ],
+      "adversarial_tests": [
+        "Reject repeat transaction ID, salvage above paid amount, detached parent with dependents, negative wear, stale graph revision and interrupted repair.",
+        "Undo of salvage already spent must fail with an actionable debt/repair plan, not silently duplicate materials."
+      ],
+      "engine_portability": "Provenance and deterministic salvage arithmetic independent of engine; geometry and particles require Godot/Unreal/Unity adapters.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "9-16",
+        "risks": [
+          "transaction ordering",
+          "wear balance",
+          "undo dependencies"
+        ]
+      },
+      "dependencies": [
+        "B07",
+        "B13",
+        "F19",
+        "P04"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 0
+        },
+        "refund": "Conservation law: recovered<=paid, each part removed once, quality loss explicit, material spent on repair never generated freely."
+      }
+    },
+    {
+      "id": "EB-B-010",
+      "title": "Seasonwright Homes — structures that respond to climate",
+      "domain": "seasonal_buildings",
+      "status": "specified_pending_review",
+      "novelty_audit": "Current valley has seasonal weather but homes are inert. This adds visible aging, seasonal shelter choices, recoverable maintenance and habitat benefits without punishing cozy play.",
+      "player_scenario": "Player reinforces a cottage before winter, adds a shaded veranda for summer, and chooses a green roof that attracts pollinators while raising upkeep.",
+      "player_verbs": [
+        "inspect_exposure",
+        "choose_upgrade",
+        "install_insulation",
+        "add_veranda",
+        "plant_roof",
+        "repair",
+        "compare_seasons"
+      ],
+      "player_loop": [
+        "Observe seasonal exposure; select upgrades; preview shelter/pollinator/crop effects and costs; install; see weather-dependent visual and NPC comfort feedback."
+      ],
+      "simulation_rules": [
+        "Wear per day bounded 0..100 and computed from weather+material+protection once per day_epoch; no instant catastrophic collapse; each upgrade has explicit tradeoff; player gets warnings and recovery paths; pollinator benefit bounded by habitat distance; decorative appearance cannot silently alter farm output without approved farm adapter."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "building_id:string",
+          "exposure_faces:[{face,wind,rain,sun}]",
+          "upgrades:[{id,type,condition}]",
+          "wear_by_part:{part_id:int}",
+          "last_weather_epoch:int",
+          "shelter_score:int",
+          "habitat_score:int"
+        ]
+      },
+      "command_contract": [
+        "evaluate_exposure(building,weather,epoch)->wear_delta",
+        "quote_upgrade(type)->materials",
+        "apply_upgrade(id)->structure_and_inventory_txn",
+        "report_habitat(building)->bounded_pollination_modifier"
+      ],
+      "service_contracts": [
+        "Weather/Calendar supplies monotonic epoch; StructureGraph owns upgrades; VillageLife reads shelter/comfort; FarmPollination adapter receives bounded modifier; SaveService stores wear and epoch."
+      ],
+      "controls": {
+        "mouse_keyboard": "Click house seasonal overlay, compare ghost upgrades, Enter install, R repair.",
+        "gamepad": "Open home status, D-pad season tab, A inspect/upgrade, Y compare.",
+        "touch": "Season cards, clear before/after diagrams, accessible repair controls with no tiny handles."
+      },
+      "original_asset_plan": [
+        "Original seasonal wall patinas, snow caps, vine growth",
+        "green roofs, shutters, pergolas and subtle weather VFX with reduced-motion options."
+      ],
+      "performance_budget": {
+        "desktop": "Once-per-day per-building wear; <=200 structures per region, cached overlays and no continuous degradation loops.",
+        "mobile": "<=50 visible structures, baked material variants, no dynamic snow accumulation geometry."
+      },
+      "godot_acceptance": [
+        "Same building in winter with/without insulation shows bounded shelter differences and deterministic wear.",
+        "Two calls in same day_epoch cannot double-charge wear or farm bonus.",
+        "Save at Winter day 14 and reload Spring year+1 retains upgrades, condition and correct epoch."
+      ],
+      "adversarial_tests": [
+        "Reject invalid upgrade dependency, duplicate epoch processing, negative wear, unlicensed art dependency and missing farm modifier adapter.",
+        "When pollinator system absent, upgrade remains cosmetic/comfort-only and no invented yield gain is claimed."
+      ],
+      "engine_portability": "Portable weather-driven wear rules, structural upgrades and habitat modifiers; renderer and material systems require Godot/Unreal/Unity separate implementations.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "10-19",
+        "risks": [
+          "farm-village effect reconciliation",
+          "seasonal art workload",
+          "mobile material cost"
+        ]
+      },
+      "dependencies": [
+        "B15",
+        "B16",
+        "B18",
+        "F14",
+        "V12",
+        "P02"
+      ],
+      "economy_and_resource_contract": {
+        "resource_inputs": {
+          "wood": 8,
+          "stone": 3
+        },
+        "refund": "Upgrades charge exact quoted items; repairs consume material and cannot generate positive net resources."
+      }
+    }
+  ]
+}
