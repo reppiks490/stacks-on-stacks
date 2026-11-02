@@ -59,6 +59,34 @@ func _valid(payload: Variant) -> bool:
             return false
     return true
 
+
+## JSON.parse_string represents JSON numbers as floats in Godot; normalize only exact
+## integral bounded JSON numbers, then apply the same strict nested validator.
+## Direct load_state still rejects floats and never silently clamps input.
+func _json_integer(value: Variant) -> Variant:
+    if typeof(value) == TYPE_FLOAT and not is_nan(value) and not is_inf(value):
+        if value >= -1.0 and value <= float(MAX_EPOCH) and floor(value) == value:
+            return int(value)
+    return value
+
+func load_json(json_text: String) -> bool:
+    var parsed: Variant = JSON.parse_string(json_text)
+    if typeof(parsed) != TYPE_DICTIONARY:
+        return false
+    var payload: Dictionary = (parsed as Dictionary).duplicate(true)
+    for key in ["schema", "last_epoch"]:
+        if payload.has(key):
+            payload[key] = _json_integer(payload[key])
+    if typeof(payload.get("beds")) == TYPE_ARRAY:
+        for i in range(payload["beds"].size()):
+            if typeof(payload["beds"][i]) != TYPE_DICTIONARY:
+                continue
+            var bed: Dictionary = payload["beds"][i]
+            for key in BED_FIELDS:
+                if key != "crop" and bed.has(key):
+                    bed[key] = _json_integer(bed[key])
+    return load_state(payload)
+
 func save_state() -> Dictionary:
     return _state.duplicate(true)
 
