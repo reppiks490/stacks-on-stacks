@@ -45,5 +45,25 @@ class SaveIntegrationContract(unittest.TestCase):
                           "coordinates.size() != 3", "inventory[id]"):
             self.assertIn(invariant, code)
 
+    def test_assembled_ecology_and_village_roundtrip_is_native(self):
+        native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(encoding="utf-8")
+        for token in ('"__paddocks__"', '"compost_counter"', '"worked"', '"memories"',
+                      'load("res://scripts/game.gd").new()', "session.save_game(false)",
+                      "session.load_game()", "session.animals.paddocks",
+                      "session.village.memories"):
+            self.assertIn(token, native)
+        boundary = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        for token in ('if id == "__paddocks__":', 'paddock.get("forage", null)',
+                      '"compost_counter"', '"worked"', '"memories"'):
+            self.assertIn(token, boundary)
+
+    def test_original_village_job_has_player_input_dispatch(self):
+        game = (ROOT / "scripts/game.gd").read_text(encoding="utf-8")
+        hud = (ROOT / "scripts/hud.gd").read_text(encoding="utf-8")
+        self.assertIn('"job":[KEY_K]', game)
+        self.assertIn('event.is_action_pressed("job")', game)
+        self.assertIn('village.act("job", hero.global_position)', game)
+        self.assertIn("K Job", hud)
+
 if __name__ == "__main__":
     unittest.main()
