@@ -17,7 +17,7 @@
 | B039 Signpost | `sign_graph`, `language_keys` | Reachable destinations, referenced localized keys, required English/Spanish pairs. |
 | B040 Apprentice Classroom | `class_stations`, `mentor_slots` | Station capacity, assigned mentor, nonoverlapping lesson intervals on each day. |
 
-All states additionally require exact field shapes, strict JSON primitive types, finite bounded integers, unique list IDs, valid non-control text, 56-day-year monotonic `day_epoch`, and exact JSON roundtrip. The test runner exercises an inactive default and a nonempty valid state per feature, three feature-specific invalid states, and twelve common hostile mutations per feature. This is **design contract verification**, not a working Godot gameplay system.
+All states additionally require exact field shapes, strict JSON primitive types, finite bounded integers, unique list IDs, valid non-control text, 56-day-year monotonic `day_epoch`, and exact JSON roundtrip. The test runner exercises an inactive default and a nonempty valid state per feature, three feature-specific invalid states, and thirteen common hostile mutations per feature. This is **design contract verification**, not a working Godot gameplay system.
 
 ## Authority and integration gates
 
