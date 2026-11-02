@@ -12,6 +12,19 @@
 
 **Integration alert 2026-11-02:** `cde73ab` already has substantive `scripts/game.gd`, `farm.gd`, `village.gd`, `animals.gd`, `valley.gd`, `farmer.gd`, `hud.gd`. Do not overwrite these with a parallel starter implementation. The first native CI failed before Godot due to missing `tools/validate_project.py`; QA supplied and merged a stronger validator and tests. Exact-head native CI for the reconciled merge `63370c98` passed ([run 41397716313](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41397716313)).
 
-**Critical shared bug:** day index still repeats inside animal/village modules each year, causing once-per-day actions to be falsely blocked on later years. Principal adds `year` and `day_epoch()`; Village and Farming/Animal lanes must update uses of `game.season_index*14+game.day` to `game.day_epoch()` after the principal branch is integrated. Do not independently edit `game.gd`.
+**Updated calendar handoff (2026-11-02):** Farming/Animal lane integrated `game.day_epoch()` in `scripts/animals.gd` and `scripts/farm.gd`; CI runs 41398474611 and 41398474589 passed at canonical merge `bfd389a`. **Village lane has now submitted** commit `df15d515` replacing `season_index*14+day` with `game.day_epoch()` for gifts and talks, plus `tests/native_village_calendar_test.gd` and a separate non-Codex native workflow. Principal must confirm exact-head CI before declaring acceptance. Do not independently modify `scripts/game.gd`.
 
 **Safe sequencing:** Read branch heads/workflows/issues → choose own files → commit on isolated branch → source/native CI → issue handoff with exact commit/run IDs → principal reconciliation → fast-forward merge only when gates pass. No PRs unless all auto-review triggers are audited and non-Codex. No unlicensed copyrighted assets, no fabricated native/mobile/perf results, no paid actions, no other repository edits.
+
+## Principal save-integrity isolation (2026-11-02)
+
+- Claimed branch: `game/everbloom-principal-save-integrity-20261102`, based on canonical `main` `bfd389a`.
+- **Exclusive files:** `scripts/save_service.gd`, `scripts/principal_save_acceptance.gd`, `tests/test_save_contract.py`, `docs/ARCHITECTURE.md`, `docs/CROSS_LOOP_COORDINATION.md`, `docs/MASTER_PLAN.md` and dedicated `.github/workflows/everbloom-principal-save-integrity.yml`. Other lanes should not overwrite these while reconciliation is pending.
+- [Native 19-assertion acceptance PASS at 8b4cea2](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41399615671). The final branch SHA still requires exact-head general CI confirmation prior to integration.
+- QA: maintain existing main workflow; expand engine-driven invalid-nested-state, full-state conservation, interrupted-write and Windows locking tests. New principal CI is a narrow dedicated workflow and does not invoke Codex.
+- Farming: retain tested soil/husbandry epoch behavior; no principal edits planned in `farm.gd` or `animals.gd`.
+- Village: year-two friendship/gift gating is implemented in separate `df15d515`; confirm its native CI and continue owning social save migration. Do not alter principal-owned save service.
+- Art: own original assets/provenance; do not take this principal branch as evidence of authored visual completion.
+- **Source of truth:** issues and exact branch SHA/CI logs; writing this ledger is not proof that another loop acknowledged it. No force pushes, history deletion, PR creation, paid tools, or proprietary extracted assets.
+
+**Updated principal gate:** native negative-save runner expanded from 19 to 24 assertions, including hostile nested Village/Farm/Animal state and invalid social-contact flags; require native PASS at the final source SHA. The original 19-case PASS is not proof of the later 24-case addition.

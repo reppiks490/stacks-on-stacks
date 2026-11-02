@@ -30,3 +30,11 @@ Never claim a finished game, polished AAA artwork, native/mobile compatibility o
 
 ## No-sample production targets (not current completion)
 At least 4 genuinely different seasons, complete time and weather cycles, expanded living world, distinctive farm/animal/plant assets, 20+ villagers with schedules, meaningful families, independent farm economy, 40+ crops, 15+ animals, 30+ festivals and many years of progression. These are long-term targets; do not fake completion through schema-only stubs.
+
+## Principal integration milestone — numerical preservation and calendar contracts
+
+The second-year gameplay gate requires no social, farming or animal once-per-day collision when year increases. It must be demonstrated through engine-driven runtime tests, not only source inspection. Farming and husbandry have native acceptance for a 56-day progression; village talk/gift year-two migration landed separately at `df15d515`, with native verification and combined integration still to be confirmed.
+
+Persistence must be fail-closed for malformed schema/negative or fractional inventory, impossible calendar values, non-finite coordinates and unknown schema; never auto-migrate by silently truncating valuable items/currency. Preserve pre-year schema-1 saves with a documented default year of one. The isolated principal save-integrity suite implements 19 native negative-payload assertions, while the wider crash/file-lock/full-state correctness gate remains open. All future feature lines must include reproducible native tests, original asset provenance, accurate issue handoffs and a current-sha QA ledger; source presence is not proof of finished gameplay.
+
+**Save-integrity extension:** nested persisted farming, villager, and animal numeric/types must be rejected or explicitly migrated before any session mutation. The expanded 24-case Godot regression is a development gate and is not a replacement for adversarial full-save fuzzing, crash durability or manual recovery UX.
