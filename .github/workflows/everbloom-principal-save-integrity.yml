@@ -4,6 +4,7 @@ on:
     paths:
       - 'scripts/save_service.gd'
       - 'scripts/principal_save_acceptance.gd'
+      - 'scripts/principal_recovery_acceptance.gd'
       - '.github/workflows/everbloom-principal-save-integrity.yml'
 permissions:
   contents: read
@@ -11,6 +12,8 @@ jobs:
   save-integrity-native:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    env:
+      XDG_DATA_HOME: /tmp/everbloom-principal-save-integrity
     steps:
       - uses: actions/checkout@v4
       - name: Download checksum-pinned official Godot 4.7.2
@@ -32,6 +35,16 @@ jobs:
           timeout 45s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://scripts/principal_save_acceptance.gd 2>&1 | tee principal_save_contract.log
           grep -q 'PRINCIPAL SAVE VALIDATION: 42 assertions, 0 failures' principal_save_contract.log
           if grep -E 'SCRIPT ERROR:|Parse Error:|PRINCIPAL SAVE VALIDATION FAIL:' principal_save_contract.log; then exit 1; fi
+      - name: Native corrupt-primary quarantine and resumed-save acceptance
+        env:
+          XDG_DATA_HOME: /tmp/everbloom-principal-recovery-resume
+        run: |
+          set -euo pipefail
+          mkdir -p "$XDG_DATA_HOME"
+          timeout 45s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://scripts/principal_recovery_acceptance.gd 2>&1 | tee principal_recovery.log
+          grep -q 'PRINCIPAL RECOVERY RESUME:' principal_recovery.log
+          grep -q '0 failures' principal_recovery.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|PRINCIPAL RECOVERY FAIL:' principal_recovery.log; then exit 1; fi
       - name: Archive principal native diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -40,5 +53,6 @@ jobs:
           path: |
             principal_save_import.log
             principal_save_contract.log
+            principal_recovery.log
           if-no-files-found: ignore
           retention-days: 14
