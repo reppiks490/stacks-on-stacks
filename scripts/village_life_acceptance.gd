@@ -73,6 +73,19 @@ func _run() -> void:
 
     # A fresh calendar day isolates lunch admission from yesterday's paid shift cap.
     host.day = 2
+    host.minute_of_day = 600.0
+    reloaded.sync_schedule(true)
+    var recollection_spot: Vector3 = reloaded.residents[0]["node"].global_position
+    var remembered_line: String = reloaded.act("talk", recollection_spot)
+    _check("herb journal" in remembered_line and "bluebell" in remembered_line, "authored favorite-gift recollection on later day")
+    _check(int(reloaded.memories[rid]["recalled_gift_epoch"]) == 1, "recollection keyed to original monotonic gift epoch")
+    _check(int(reloaded.memories[rid]["gift_recollections"]) == 1, "one personal recollection counted")
+    _check("herb journal" not in reloaded.act("talk", recollection_spot), "same-day repeat dialogue cannot repeat gift memory")
+    var recollection_save: Variant = JSON.parse_string(JSON.stringify(reloaded.save_state()))
+    if recollection_save is Dictionary:
+        reloaded.load_state(recollection_save)
+    _check(int(reloaded.memories[rid]["gift_recollections"]) == 1, "recollection counter survives JSON reload")
+    _check("herb journal" not in reloaded.act("talk", recollection_spot), "reloaded memory cannot repeat recollection")
     host.minute_of_day = 750.0
     reloaded.sync_schedule(true)
     _check(str(reloaded.residents[0]["place"]) == "village_square", "midday break at square")
@@ -143,5 +156,62 @@ func _run() -> void:
         host.advance_day()
     _check(host.year == 4 and host.day == 1, "full-year calendar rollover")
     _check(host.gold >= 0 and host.energy >= 0.0, "economy conserved")
+
+    # A gift on the last day of year four must be remembered in year five.
+    host.year = 4
+    host.season_index = 3
+    host.day = 14
+    host.minute_of_day = 600.0
+    third.sync_schedule(true)
+    var rowan_spot: Vector3 = third.residents[1]["node"].global_position
+    var wood_before: int = int(host.inventory["wood"])
+    _check("treasured favorite" in third.act("gift", rowan_spot).to_lower(), "year-end favorite gift given")
+    _check(int(host.inventory["wood"]) == wood_before - 1, "year-end gift conserves inventory")
+    var year_end_save: Variant = JSON.parse_string(JSON.stringify(third.save_state()))
+    var fourth = load("res://scripts/village.gd").new()
+    root.add_child(fourth)
+    fourth.setup(host)
+    if year_end_save is Dictionary:
+        fourth.load_state(year_end_save)
+    host.year = 5
+    host.season_index = 0
+    host.day = 1
+    fourth.sync_schedule(true)
+    var rowan_new_spot: Vector3 = fourth.residents[1]["node"].global_position
+    var year_five_line: String = fourth.act("talk", rowan_new_spot)
+    _check("wood" in year_five_line and "lovely grain" in year_five_line, "gift memory crosses year boundary")
+    _check(int(fourth.memories["rowan"]["recalled_gift_epoch"]) == 224, "recollection uses absolute day 224")
+    _check(int(fourth.memories["rowan"]["gift_recollections"]) == 1, "year-spanning memory recalled once")
+    _check("lovely grain" not in fourth.act("talk", rowan_new_spot), "no duplicate year-spanning recollection")
+    _check(int(host.inventory["wood"]) == wood_before - 1, "memory dialogue does not consume another gift")
+
+    # Older schema-1 memory records lack the new keys; infer favorite safely.
+    if year_end_save is Dictionary:
+        var legacy_save: Dictionary = year_end_save.duplicate(true)
+        var legacy_rowan: Dictionary = legacy_save["memories"]["rowan"]
+        legacy_rowan.erase("last_gift_favorite")
+        legacy_rowan.erase("recalled_gift_epoch")
+        legacy_rowan.erase("gift_recollections")
+        var legacy = load("res://scripts/village.gd").new()
+        root.add_child(legacy)
+        legacy.setup(host)
+        legacy.load_state(legacy_save)
+        _check(legacy.memories["rowan"]["last_gift_favorite"] == true, "legacy favorite inferred from original catalog")
+        legacy.sync_schedule(true)
+        _check("lovely grain" in legacy.act("talk", legacy.residents[1]["node"].global_position), "legacy gift history remains narratively reachable")
+
+    # A preferred (non-favorite) gift has its own authored later-day reaction.
+    host.day = 2
+    host.inventory["wild_herb"] = 0
+    host.inventory["bluebell"] = 4
+    fourth.sync_schedule(true)
+    var soren_spot: Vector3 = fourth.residents[5]["node"].global_position
+    _check("thoughtful choice" in fourth.act("gift", soren_spot).to_lower(), "non-favorite preferred gift accepted")
+    _check(fourth.memories["soren"]["last_gift_favorite"] == false, "non-favorite intent saved")
+    host.day = 3
+    fourth.sync_schedule(true)
+    _check("archive shelves" in fourth.act("talk", fourth.residents[5]["node"].global_position), "distinct preferred-gift memory voiced")
+    _check(int(fourth.memories["soren"]["gift_recollections"]) == 1, "preferred gift recollection once")
+
     print("EVERBLOOM VILLAGE LIFE NATIVE ACCEPTANCE: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)

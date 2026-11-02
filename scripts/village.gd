@@ -54,7 +54,9 @@ func setup(host) -> void:
 
 func _fresh_memory() -> Dictionary:
     return {"talks":0, "gifts":0, "jobs":0, "festivals":0,
-            "last_gift_item":"", "last_gift_epoch":-1}
+            "last_gift_item":"", "last_gift_epoch":-1,
+            "last_gift_favorite":false, "recalled_gift_epoch":-1,
+            "gift_recollections":0}
 
 func _host_property(name: String, fallback: Variant) -> Variant:
     if game == null:
@@ -143,12 +145,36 @@ func _friendship_tier(points: int) -> String:
             tier = str(row.get("name", tier))
     return tier
 
+## Recollection is a one-time dialogue response, not a second friendship reward.
+## A gift given today can only be reflected on a later monotonic calendar day.
+func _gift_memory_dialogue(profile: Dictionary, rid: String, epoch: int) -> String:
+    var record: Dictionary = memories.get(rid, _fresh_memory())
+    var gifted_epoch: int = int(record.get("last_gift_epoch", -1))
+    if gifted_epoch < 0 or gifted_epoch >= epoch:
+        return ""
+    if int(record.get("recalled_gift_epoch", -1)) >= gifted_epoch:
+        return ""
+    var item: String = str(record.get("last_gift_item", ""))
+    if item.is_empty():
+        return ""
+    var line_key: String = "gift_memory_favorite" if bool(record.get("last_gift_favorite", false)) else "gift_memory_preferred"
+    var line: String = str(profile.get(line_key, ""))
+    if line.is_empty():
+        return ""
+    record["recalled_gift_epoch"] = gifted_epoch
+    record["gift_recollections"] = mini(1000000, maxi(0, int(record.get("gift_recollections", 0))) + 1)
+    memories[rid] = record
+    return line % item
+
 func _dialogue(resident: Dictionary, rid: String, epoch: int) -> String:
     var profile: Dictionary = _profile(rid)
     if not _active_festival().is_empty():
         return str(profile.get("festival_line", "The whole valley is here tonight."))
     if _weather() == "Rain":
         return str(profile.get("rain_line", "The rain sounds lovely on the rooftops."))
+    var recollection: String = _gift_memory_dialogue(profile, rid, epoch)
+    if not recollection.is_empty():
+        return recollection
     if int(affection.get(rid, 0)) >= 220:
         return str(profile.get("bond_line", "I'm glad you came by."))
     if str(resident.get("place", "")) == str(profile.get("workplace", "")):
@@ -183,6 +209,7 @@ func _gift(resident: Dictionary, rid: String, epoch: int) -> String:
     var memory: Dictionary = memories.get(rid, _fresh_memory())
     memory["last_gift_item"] = found
     memory["last_gift_epoch"] = epoch
+    memory["last_gift_favorite"] = favorite
     memories[rid] = memory
     _record_memory(rid, "gifts")
     game.add_restoration(2)
@@ -287,6 +314,18 @@ func load_state(state: Dictionary) -> void:
                 record[field] = clampi(int(incoming.get(field, 0)), 0, 1000000)
             record["last_gift_item"] = str(incoming.get("last_gift_item", ""))
             record["last_gift_epoch"] = clampi(int(incoming.get("last_gift_epoch", -1)), -1, game.day_epoch())
+            # Old schema-1 saves have no favorite flag: infer it from the
+            # original resident catalog instead of changing their gift history.
+            var favorite_item: String = ""
+            for resident in residents:
+                if str(resident["id"]) == str(rid):
+                    favorite_item = str(resident.get("gift", ""))
+                    break
+            var inferred_favorite: bool = not favorite_item.is_empty() and record["last_gift_item"] == favorite_item
+            var saved_favorite: Variant = incoming.get("last_gift_favorite", inferred_favorite)
+            record["last_gift_favorite"] = saved_favorite if typeof(saved_favorite) == TYPE_BOOL else inferred_favorite
+            record["recalled_gift_epoch"] = clampi(int(incoming.get("recalled_gift_epoch", -1)), -1, int(record["last_gift_epoch"]))
+            record["gift_recollections"] = clampi(int(incoming.get("gift_recollections", 0)), 0, 1000000)
         memories[rid] = record
     festival_visits.clear()
     var visits: Variant = state.get("festivals", {})

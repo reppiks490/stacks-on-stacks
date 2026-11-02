@@ -68,7 +68,9 @@
       },
       "bond_line": "I remember the small kindnesses you never announce.",
       "festival_line": "The lantern path feels warmer when neighbors walk it together.",
-      "job_task": "sorting healing herbs"
+      "job_task": "sorting healing herbs",
+      "gift_memory_favorite": "I tucked the %s into my herb journal. Its color still makes me smile.",
+      "gift_memory_preferred": "I used the %s you brought while sorting my field notes. That was thoughtful."
     },
     "rowan": {
       "workplace": "carpentry_yard",
@@ -85,7 +87,9 @@
       },
       "bond_line": "You helped this place feel worth building for.",
       "festival_line": "I made the festival benches from reclaimed orchard wood.",
-      "job_task": "sanding reclaimed boards"
+      "job_task": "sanding reclaimed boards",
+      "gift_memory_favorite": "That %s you brought had a lovely grain. I saved it for a careful repair.",
+      "gift_memory_preferred": "The %s you shared helped me finish a small piece of work. Thank you."
     },
     "celia": {
       "workplace": "bakery",
@@ -102,7 +106,9 @@
       },
       "bond_line": "I saved the corner piece for you. I know you like the crisp edge.",
       "festival_line": "We set an extra place at the long table for newcomers.",
-      "job_task": "kneading festival dough"
+      "job_task": "kneading festival dough",
+      "gift_memory_favorite": "I kept the %s you brought for a special kitchen experiment. It made the morning brighter.",
+      "gift_memory_preferred": "Your %s gave me a new idea for the village table."
     },
     "orion": {
       "workplace": "lake_pier",
@@ -119,7 +125,9 @@
       },
       "bond_line": "You understand that patience is a kind of courage.",
       "festival_line": "The lake lanterns are made from paper, not promises.",
-      "job_task": "repairing fishing lines"
+      "job_task": "repairing fishing lines",
+      "gift_memory_favorite": "I remember that %s. It reminded me why the lake deserves patient hands.",
+      "gift_memory_preferred": "The %s you shared made a long afternoon by the pier feel shorter."
     },
     "alba": {
       "workplace": "barn_path",
@@ -136,7 +144,9 @@
       },
       "bond_line": "You notice when a small creature needs help. That matters.",
       "festival_line": "The festival garlands are woven with fallen leaves, never fresh nests.",
-      "job_task": "brushing and feeding animals"
+      "job_task": "brushing and feeding animals",
+      "gift_memory_favorite": "The %s you brought helped me make the barn feel welcoming.",
+      "gift_memory_preferred": "I remember your %s. The little acts of care matter here."
     },
     "soren": {
       "workplace": "archive",
@@ -153,7 +163,9 @@
       },
       "bond_line": "I trust you with stories that are not mine to give away lightly.",
       "festival_line": "I will read the names of the people who planted this square.",
-      "job_task": "mending the village archive"
+      "job_task": "mending the village archive",
+      "gift_memory_favorite": "I wrote a note about the %s you brought, so its story would not be lost.",
+      "gift_memory_preferred": "Your %s has found a place in my memory, even if not on the archive shelves."
     }
   },
   "festivals": [
