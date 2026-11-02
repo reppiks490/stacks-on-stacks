@@ -1,0 +1,2919 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "base_main": "1e456d5e31963575a81dda39d4a20058d98c86ce",
+  "source": {
+    "commit": "f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+    "path": "docs/innovation/construction/phaseB_100_concepts.json",
+    "blob_sha": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b"
+  },
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "migration_policy": "Optional construction namespace; absent legacy defaults inactive. Present invalid nested state must fail atomically, not clamp; Principal owns assembled migration.",
+  "state_contracts": [
+    {
+      "id": "EB-B-031",
+      "title": "Spanwright Bridge Competition",
+      "source_fields": [
+        "bridge_spans",
+        "council_vote",
+        "day_epoch",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_31",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "bridge_spans": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "span_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "length_cm": {
+                "type": "integer",
+                "min": 100,
+                "max": 1200,
+                "default": 0
+              },
+              "clearance_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "load_kg": {
+                "type": "integer",
+                "min": 1,
+                "max": 10000,
+                "default": 0
+              },
+              "left_capacity_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "right_capacity_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "certified": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "span_id": "",
+              "length_cm": 0,
+              "clearance_cm": 0,
+              "load_kg": 0,
+              "left_capacity_kg": 0,
+              "right_capacity_kg": 0,
+              "certified": false
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "span_id"
+        },
+        "council_vote": {
+          "type": "object",
+          "fields": {
+            "status": {
+              "type": "enum",
+              "values": [
+                "pending",
+                "approved",
+                "rejected"
+              ],
+              "default": "pending"
+            },
+            "approval_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            },
+            "approved_revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000000,
+              "default": 0
+            }
+          },
+          "default": {
+            "status": "pending",
+            "approval_epoch": -1,
+            "approved_revision": 0
+          }
+        }
+      },
+      "rules": [
+        "bridge_load_support",
+        "bridge_river_clearance",
+        "council_authorization"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "bridge_spans": [
+          {
+            "span_id": "s1",
+            "length_cm": 600,
+            "clearance_cm": 220,
+            "load_kg": 500,
+            "left_capacity_kg": 700,
+            "right_capacity_kg": 800,
+            "certified": true
+          }
+        ],
+        "council_vote": {
+          "status": "approved",
+          "approval_epoch": 3,
+          "approved_revision": 1
+        }
+      },
+      "invalid_examples": [
+        {
+          "reason": "unsupported bridge",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "bridge_spans": [
+              {
+                "span_id": "s1",
+                "length_cm": 600,
+                "clearance_cm": 220,
+                "load_kg": 500,
+                "left_capacity_kg": 300,
+                "right_capacity_kg": 800,
+                "certified": true
+              }
+            ],
+            "council_vote": {
+              "status": "approved",
+              "approval_epoch": 3,
+              "approved_revision": 1
+            }
+          }
+        },
+        {
+          "reason": "false council approval",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "bridge_spans": [
+              {
+                "span_id": "s1",
+                "length_cm": 600,
+                "clearance_cm": 220,
+                "load_kg": 500,
+                "left_capacity_kg": 700,
+                "right_capacity_kg": 800,
+                "certified": true
+              }
+            ],
+            "council_vote": {
+              "status": "approved",
+              "approval_epoch": 3,
+              "approved_revision": 0
+            }
+          }
+        },
+        {
+          "reason": "river clearance",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "bridge_spans": [
+              {
+                "span_id": "s1",
+                "length_cm": 600,
+                "clearance_cm": 80,
+                "load_kg": 500,
+                "left_capacity_kg": 700,
+                "right_capacity_kg": 800,
+                "certified": true
+              }
+            ],
+            "council_vote": {
+              "status": "approved",
+              "approval_epoch": 3,
+              "approved_revision": 1
+            }
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "clay": 3,
+        "seed": 3
+      },
+      "player_verbs": [
+        "preview_spanwright",
+        "adjust_spanwright",
+        "commit_spanwright",
+        "cancel_spanwright",
+        "undo_spanwright"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to design footbridge spans and request council approval; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic spanwright bridge competition modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Design footbridge spans and request council approval; bridge_spans and council_vote must affect the visible outcome under abutment support and river clearance bound use.",
+        "Confirm once with {\"clay\":3,\"seed\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-032",
+      "title": "Reedwalk Boardwalk Ecology",
+      "source_fields": [
+        "day_epoch",
+        "nesting_buffer",
+        "receipts",
+        "revision",
+        "site_id",
+        "walkway_segments"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_32",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "walkway_segments": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "segment_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "from_node": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "to_node": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "pier_x_cm": {
+                "type": "integer",
+                "min": -100000,
+                "max": 100000,
+                "default": 0
+              },
+              "pier_z_cm": {
+                "type": "integer",
+                "min": -100000,
+                "max": 100000,
+                "default": 0
+              },
+              "width_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 500,
+                "default": 0
+              }
+            },
+            "default": {
+              "segment_id": "",
+              "from_node": "",
+              "to_node": "",
+              "pier_x_cm": 0,
+              "pier_z_cm": 0,
+              "width_cm": 0
+            }
+          },
+          "max_items": 48,
+          "default": [],
+          "unique_by": "segment_id"
+        },
+        "nesting_buffer": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "nest_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "x_cm": {
+                "type": "integer",
+                "min": -100000,
+                "max": 100000,
+                "default": 0
+              },
+              "z_cm": {
+                "type": "integer",
+                "min": -100000,
+                "max": 100000,
+                "default": 0
+              },
+              "radius_cm": {
+                "type": "integer",
+                "min": 50,
+                "max": 10000,
+                "default": 0
+              }
+            },
+            "default": {
+              "nest_id": "",
+              "x_cm": 0,
+              "z_cm": 0,
+              "radius_cm": 0
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "nest_id"
+        }
+      },
+      "rules": [
+        "walkway_nodes",
+        "habitat_pier_exclusion"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "walkway_segments": [
+          {
+            "segment_id": "w1",
+            "from_node": "A",
+            "to_node": "B",
+            "pier_x_cm": 1000,
+            "pier_z_cm": 1000,
+            "width_cm": 120
+          }
+        ],
+        "nesting_buffer": [
+          {
+            "nest_id": "nest1",
+            "x_cm": 0,
+            "z_cm": 0,
+            "radius_cm": 300
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "pier in nesting buffer",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "walkway_segments": [
+              {
+                "segment_id": "w1",
+                "from_node": "A",
+                "to_node": "B",
+                "pier_x_cm": 100,
+                "pier_z_cm": 100,
+                "width_cm": 120
+              }
+            ],
+            "nesting_buffer": [
+              {
+                "nest_id": "nest1",
+                "x_cm": 0,
+                "z_cm": 0,
+                "radius_cm": 300
+              }
+            ]
+          }
+        },
+        {
+          "reason": "self connected walkway",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "walkway_segments": [
+              {
+                "segment_id": "w1",
+                "from_node": "A",
+                "to_node": "A",
+                "pier_x_cm": 1000,
+                "pier_z_cm": 1000,
+                "width_cm": 120
+              }
+            ],
+            "nesting_buffer": [
+              {
+                "nest_id": "nest1",
+                "x_cm": 0,
+                "z_cm": 0,
+                "radius_cm": 300
+              }
+            ]
+          }
+        },
+        {
+          "reason": "narrow passage",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "walkway_segments": [
+              {
+                "segment_id": "w1",
+                "from_node": "A",
+                "to_node": "B",
+                "pier_x_cm": 1000,
+                "pier_z_cm": 1000,
+                "width_cm": 60
+              }
+            ],
+            "nesting_buffer": [
+              {
+                "nest_id": "nest1",
+                "x_cm": 0,
+                "z_cm": 0,
+                "radius_cm": 300
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "glass": 4,
+        "wood": 1
+      },
+      "player_verbs": [
+        "preview_reedwalk",
+        "adjust_reedwalk",
+        "commit_reedwalk",
+        "cancel_reedwalk",
+        "undo_reedwalk"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to raise wetland paths around sensitive nests; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic reedwalk boardwalk ecology modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Raise wetland paths around sensitive nests; walkway_segments and nesting_buffer must affect the visible outcome under pier placement respects habitat exclusion buffers.",
+        "Confirm once with {\"glass\":4,\"wood\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-033",
+      "title": "Gatherhall Modular Community Space",
+      "source_fields": [
+        "day_epoch",
+        "exit_graph",
+        "hall_zones",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_33",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "hall_zones": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "zone_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "capacity": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "occupied": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "exit_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              }
+            },
+            "default": {
+              "zone_id": "",
+              "capacity": 0,
+              "occupied": 0,
+              "exit_id": ""
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "zone_id"
+        },
+        "exit_graph": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "exit_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "width_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "open": {
+                "type": "boolean",
+                "default": false
+              },
+              "capacity": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              }
+            },
+            "default": {
+              "exit_id": "",
+              "width_cm": 0,
+              "open": false,
+              "capacity": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "exit_id"
+        }
+      },
+      "rules": [
+        "hall_capacity",
+        "hall_egress",
+        "hall_exit_throughput"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "hall_zones": [
+          {
+            "zone_id": "stage",
+            "capacity": 20,
+            "occupied": 12,
+            "exit_id": "east"
+          }
+        ],
+        "exit_graph": [
+          {
+            "exit_id": "east",
+            "width_cm": 120,
+            "open": true,
+            "capacity": 30
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "overcrowded zone",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "hall_zones": [
+              {
+                "zone_id": "stage",
+                "capacity": 20,
+                "occupied": 21,
+                "exit_id": "east"
+              }
+            ],
+            "exit_graph": [
+              {
+                "exit_id": "east",
+                "width_cm": 120,
+                "open": true,
+                "capacity": 30
+              }
+            ]
+          }
+        },
+        {
+          "reason": "closed emergency exit",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "hall_zones": [
+              {
+                "zone_id": "stage",
+                "capacity": 20,
+                "occupied": 12,
+                "exit_id": "east"
+              }
+            ],
+            "exit_graph": [
+              {
+                "exit_id": "east",
+                "width_cm": 120,
+                "open": false,
+                "capacity": 30
+              }
+            ]
+          }
+        },
+        {
+          "reason": "overstated exit capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "hall_zones": [
+              {
+                "zone_id": "stage",
+                "capacity": 20,
+                "occupied": 12,
+                "exit_id": "east"
+              }
+            ],
+            "exit_graph": [
+              {
+                "exit_id": "east",
+                "width_cm": 120,
+                "open": true,
+                "capacity": 300
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "dye": 5,
+        "stone": 2
+      },
+      "player_verbs": [
+        "preview_gatherhall",
+        "adjust_gatherhall",
+        "commit_gatherhall",
+        "cancel_gatherhall",
+        "undo_gatherhall"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to configure public stages and accessible exits; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic gatherhall modular community space modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Configure public stages and accessible exits; hall_zones and exit_graph must affect the visible outcome under capacity and egress limit attendance.",
+        "Confirm once with {\"dye\":5,\"stone\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-034",
+      "title": "Foldaway Market Stall Network",
+      "source_fields": [
+        "day_epoch",
+        "receipts",
+        "revision",
+        "site_id",
+        "stall_modules",
+        "vendor_slots"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_34",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "stall_modules": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "stall_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "path_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "folded": {
+                "type": "boolean",
+                "default": false
+              },
+              "wind_kph": {
+                "type": "integer",
+                "min": 0,
+                "max": 300,
+                "default": 0
+              },
+              "owner_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              }
+            },
+            "default": {
+              "stall_id": "",
+              "path_id": "",
+              "folded": false,
+              "wind_kph": 0,
+              "owner_id": ""
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "stall_id"
+        },
+        "vendor_slots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "slot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "stall_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "vendor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "start_min": {
+                "type": "integer",
+                "min": 0,
+                "max": 1439,
+                "default": 0
+              },
+              "end_min": {
+                "type": "integer",
+                "min": 1,
+                "max": 1440,
+                "default": 0
+              }
+            },
+            "default": {
+              "slot_id": "",
+              "stall_id": "",
+              "vendor_id": "",
+              "start_min": 0,
+              "end_min": 0
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "slot_id"
+        }
+      },
+      "rules": [
+        "storm_stall_fold",
+        "vendor_slot_refs",
+        "vendor_time_exclusive"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "stall_modules": [
+          {
+            "stall_id": "stall1",
+            "path_id": "marketA",
+            "folded": false,
+            "wind_kph": 20,
+            "owner_id": "village"
+          }
+        ],
+        "vendor_slots": [
+          {
+            "slot_id": "slot1",
+            "stall_id": "stall1",
+            "vendor_id": "vendor1",
+            "start_min": 480,
+            "end_min": 600
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "storm stall unfolded",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "stall_modules": [
+              {
+                "stall_id": "stall1",
+                "path_id": "marketA",
+                "folded": false,
+                "wind_kph": 90,
+                "owner_id": "village"
+              }
+            ],
+            "vendor_slots": [
+              {
+                "slot_id": "slot1",
+                "stall_id": "stall1",
+                "vendor_id": "vendor1",
+                "start_min": 480,
+                "end_min": 600
+              }
+            ]
+          }
+        },
+        {
+          "reason": "orphan vendor slot",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "stall_modules": [
+              {
+                "stall_id": "stall1",
+                "path_id": "marketA",
+                "folded": false,
+                "wind_kph": 20,
+                "owner_id": "village"
+              }
+            ],
+            "vendor_slots": [
+              {
+                "slot_id": "slot1",
+                "stall_id": "missing",
+                "vendor_id": "vendor1",
+                "start_min": 480,
+                "end_min": 600
+              }
+            ]
+          }
+        },
+        {
+          "reason": "overlapping vendor schedule",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "stall_modules": [
+              {
+                "stall_id": "stall1",
+                "path_id": "marketA",
+                "folded": false,
+                "wind_kph": 20,
+                "owner_id": "village"
+              }
+            ],
+            "vendor_slots": [
+              {
+                "slot_id": "slot1",
+                "stall_id": "stall1",
+                "vendor_id": "vendor1",
+                "start_min": 480,
+                "end_min": 600
+              },
+              {
+                "slot_id": "slot2",
+                "stall_id": "stall1",
+                "vendor_id": "vendor2",
+                "start_min": 550,
+                "end_min": 650
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "seed": 6,
+        "iron": 3
+      },
+      "player_verbs": [
+        "preview_foldaway",
+        "adjust_foldaway",
+        "commit_foldaway",
+        "cancel_foldaway",
+        "undo_foldaway"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to expand market stalls then fold them before storms; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic foldaway market stall network modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Expand market stalls then fold them before storms; stall_modules and vendor_slots must affect the visible outcome under vendor time slots and footpaths are exclusive.",
+        "Confirm once with {\"seed\":6,\"iron\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-035",
+      "title": "Lanternline Village Lighting",
+      "source_fields": [
+        "day_epoch",
+        "fuel_tanks",
+        "lantern_nodes",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_35",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "lantern_nodes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lantern_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "tank_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "lit": {
+                "type": "boolean",
+                "default": false
+              },
+              "fuel_burn_ml": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "route_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "visibility_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 5000,
+                "default": 0
+              }
+            },
+            "default": {
+              "lantern_id": "",
+              "tank_id": "",
+              "lit": false,
+              "fuel_burn_ml": 0,
+              "route_id": "",
+              "visibility_cm": 0
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "lantern_id"
+        },
+        "fuel_tanks": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "tank_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "remaining_ml": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              },
+              "capacity_ml": {
+                "type": "integer",
+                "min": 1,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "tank_id": "",
+              "remaining_ml": 0,
+              "capacity_ml": 0
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "tank_id"
+        }
+      },
+      "rules": [
+        "lantern_tank_refs",
+        "fuel_burn_budget",
+        "lantern_visibility"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "lantern_nodes": [
+          {
+            "lantern_id": "lamp1",
+            "tank_id": "tank1",
+            "lit": true,
+            "fuel_burn_ml": 10,
+            "route_id": "north",
+            "visibility_cm": 400
+          }
+        ],
+        "fuel_tanks": [
+          {
+            "tank_id": "tank1",
+            "remaining_ml": 30,
+            "capacity_ml": 100
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "fuel exhausted",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "lantern_nodes": [
+              {
+                "lantern_id": "lamp1",
+                "tank_id": "tank1",
+                "lit": true,
+                "fuel_burn_ml": 10,
+                "route_id": "north",
+                "visibility_cm": 400
+              }
+            ],
+            "fuel_tanks": [
+              {
+                "tank_id": "tank1",
+                "remaining_ml": 5,
+                "capacity_ml": 100
+              }
+            ]
+          }
+        },
+        {
+          "reason": "unlit lamp emitting light",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "lantern_nodes": [
+              {
+                "lantern_id": "lamp1",
+                "tank_id": "tank1",
+                "lit": false,
+                "fuel_burn_ml": 10,
+                "route_id": "north",
+                "visibility_cm": 400
+              }
+            ],
+            "fuel_tanks": [
+              {
+                "tank_id": "tank1",
+                "remaining_ml": 30,
+                "capacity_ml": 100
+              }
+            ]
+          }
+        },
+        {
+          "reason": "orphan fuel tank",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "lantern_nodes": [
+              {
+                "lantern_id": "lamp1",
+                "tank_id": "missing",
+                "lit": true,
+                "fuel_burn_ml": 10,
+                "route_id": "north",
+                "visibility_cm": 400
+              }
+            ],
+            "fuel_tanks": [
+              {
+                "tank_id": "tank1",
+                "remaining_ml": 30,
+                "capacity_ml": 100
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "wood": 7,
+        "fiber": 1
+      },
+      "player_verbs": [
+        "preview_lanternline",
+        "adjust_lanternline",
+        "commit_lanternline",
+        "cancel_lanternline",
+        "undo_lanternline"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to place fuelled lanterns along dark village routes; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic lanternline village lighting modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Place fuelled lanterns along dark village routes; lantern_nodes and fuel_tanks must affect the visible outcome under finite fuel and sightlines determine visibility.",
+        "Confirm once with {\"wood\":7,\"fiber\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-036",
+      "title": "Stormhaven Public Shelters",
+      "source_fields": [
+        "capacity",
+        "day_epoch",
+        "receipts",
+        "revision",
+        "shelter_anchors",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_36",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "shelter_anchors": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "anchor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "wind_rating_kph": {
+                "type": "integer",
+                "min": 0,
+                "max": 300,
+                "default": 0
+              },
+              "forecast_kph": {
+                "type": "integer",
+                "min": 0,
+                "max": 300,
+                "default": 0
+              },
+              "seats": {
+                "type": "integer",
+                "min": 0,
+                "max": 500,
+                "default": 0
+              },
+              "occupants": {
+                "type": "integer",
+                "min": 0,
+                "max": 500,
+                "default": 0
+              },
+              "usable": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "anchor_id": "",
+              "wind_rating_kph": 0,
+              "forecast_kph": 0,
+              "seats": 0,
+              "occupants": 0,
+              "usable": false
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "anchor_id"
+        },
+        "capacity": {
+          "type": "object",
+          "fields": {
+            "total_seats": {
+              "type": "integer",
+              "min": 0,
+              "max": 16000,
+              "default": 0
+            },
+            "protected_occupants": {
+              "type": "integer",
+              "min": 0,
+              "max": 16000,
+              "default": 0
+            }
+          },
+          "default": {
+            "total_seats": 0,
+            "protected_occupants": 0
+          }
+        }
+      },
+      "rules": [
+        "shelter_wind_rating",
+        "shelter_capacity",
+        "shelter_totals"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "shelter_anchors": [
+          {
+            "anchor_id": "canopy1",
+            "wind_rating_kph": 100,
+            "forecast_kph": 50,
+            "seats": 20,
+            "occupants": 10,
+            "usable": true
+          }
+        ],
+        "capacity": {
+          "total_seats": 20,
+          "protected_occupants": 10
+        }
+      },
+      "invalid_examples": [
+        {
+          "reason": "unrated canopy used",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "shelter_anchors": [
+              {
+                "anchor_id": "canopy1",
+                "wind_rating_kph": 100,
+                "forecast_kph": 150,
+                "seats": 20,
+                "occupants": 10,
+                "usable": true
+              }
+            ],
+            "capacity": {
+              "total_seats": 20,
+              "protected_occupants": 10
+            }
+          }
+        },
+        {
+          "reason": "overfilled canopy",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "shelter_anchors": [
+              {
+                "anchor_id": "canopy1",
+                "wind_rating_kph": 100,
+                "forecast_kph": 50,
+                "seats": 20,
+                "occupants": 21,
+                "usable": true
+              }
+            ],
+            "capacity": {
+              "total_seats": 20,
+              "protected_occupants": 10
+            }
+          }
+        },
+        {
+          "reason": "aggregate occupancy mismatch",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "shelter_anchors": [
+              {
+                "anchor_id": "canopy1",
+                "wind_rating_kph": 100,
+                "forecast_kph": 50,
+                "seats": 20,
+                "occupants": 10,
+                "usable": true
+              }
+            ],
+            "capacity": {
+              "total_seats": 20,
+              "protected_occupants": 11
+            }
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "stone": 3,
+        "clay": 2
+      },
+      "player_verbs": [
+        "preview_stormhaven",
+        "adjust_stormhaven",
+        "commit_stormhaven",
+        "cancel_stormhaven",
+        "undo_stormhaven"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to anchor temporary storm canopies in plazas; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic stormhaven public shelters modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Anchor temporary storm canopies in plazas; shelter_anchors and capacity must affect the visible outcome under wind rating and capacity bound protection.",
+        "Confirm once with {\"stone\":3,\"clay\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-037",
+      "title": "Pocketgarden Stewardship Plots",
+      "source_fields": [
+        "day_epoch",
+        "harvest_receipts",
+        "plot_owners",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_37",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "plot_owners": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "plot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "owner_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "consent_receipt": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "consent_epoch": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "harvest_quota": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "plot_id": "",
+              "owner_id": "",
+              "consent_receipt": "",
+              "consent_epoch": 0,
+              "harvest_quota": 0
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "plot_id"
+        },
+        "harvest_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "plot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "actor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "day_epoch": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "quantity": {
+                "type": "integer",
+                "min": 1,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "receipt_id": "",
+              "plot_id": "",
+              "actor_id": "",
+              "day_epoch": 0,
+              "quantity": 0
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "receipt_id"
+        }
+      },
+      "rules": [
+        "harvest_consent",
+        "harvest_quota",
+        "harvest_epoch"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "plot_owners": [
+          {
+            "plot_id": "plot1",
+            "owner_id": "resident1",
+            "consent_receipt": "consent1",
+            "consent_epoch": 2,
+            "harvest_quota": 10
+          }
+        ],
+        "harvest_receipts": [
+          {
+            "receipt_id": "h1",
+            "plot_id": "plot1",
+            "actor_id": "resident1",
+            "day_epoch": 3,
+            "quantity": 4
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "unauthorized harvester",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "plot_owners": [
+              {
+                "plot_id": "plot1",
+                "owner_id": "resident1",
+                "consent_receipt": "consent1",
+                "consent_epoch": 2,
+                "harvest_quota": 10
+              }
+            ],
+            "harvest_receipts": [
+              {
+                "receipt_id": "h1",
+                "plot_id": "plot1",
+                "actor_id": "intruder",
+                "day_epoch": 3,
+                "quantity": 4
+              }
+            ]
+          }
+        },
+        {
+          "reason": "overharvest",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "plot_owners": [
+              {
+                "plot_id": "plot1",
+                "owner_id": "resident1",
+                "consent_receipt": "consent1",
+                "consent_epoch": 2,
+                "harvest_quota": 10
+              }
+            ],
+            "harvest_receipts": [
+              {
+                "receipt_id": "h1",
+                "plot_id": "plot1",
+                "actor_id": "resident1",
+                "day_epoch": 3,
+                "quantity": 11
+              }
+            ]
+          }
+        },
+        {
+          "reason": "future harvest",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "plot_owners": [
+              {
+                "plot_id": "plot1",
+                "owner_id": "resident1",
+                "consent_receipt": "consent1",
+                "consent_epoch": 2,
+                "harvest_quota": 10
+              }
+            ],
+            "harvest_receipts": [
+              {
+                "receipt_id": "h1",
+                "plot_id": "plot1",
+                "actor_id": "resident1",
+                "day_epoch": 4,
+                "quantity": 4
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "iron": 4,
+        "glass": 3
+      },
+      "player_verbs": [
+        "preview_pocketgarden",
+        "adjust_pocketgarden",
+        "commit_pocketgarden",
+        "cancel_pocketgarden",
+        "undo_pocketgarden"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to assign communal garden beds to residents; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic pocketgarden stewardship plots modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Assign communal garden beds to residents; plot_owners and harvest_receipts must affect the visible outcome under village consent gates harvest permissions.",
+        "Confirm once with {\"iron\":4,\"glass\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-038",
+      "title": "Waystation Transit Shelter",
+      "source_fields": [
+        "day_epoch",
+        "receipts",
+        "revision",
+        "route_links",
+        "site_id",
+        "waystation_ids"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_38",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "waystation_ids": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "station_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "route_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "open": {
+                "type": "boolean",
+                "default": false
+              },
+              "capacity": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "occupancy": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              }
+            },
+            "default": {
+              "station_id": "",
+              "route_id": "",
+              "open": false,
+              "capacity": 0,
+              "occupancy": 0
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "station_id"
+        },
+        "route_links": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "link_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "from_station": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "to_station": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "travel_minutes": {
+                "type": "integer",
+                "min": 1,
+                "max": 1440,
+                "default": 0
+              },
+              "active": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "link_id": "",
+              "from_station": "",
+              "to_station": "",
+              "travel_minutes": 0,
+              "active": false
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "link_id"
+        }
+      },
+      "rules": [
+        "station_occupancy",
+        "route_endpoint_refs",
+        "route_open_endpoints"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "waystation_ids": [
+          {
+            "station_id": "A",
+            "route_id": "ridge",
+            "open": true,
+            "capacity": 10,
+            "occupancy": 4
+          },
+          {
+            "station_id": "B",
+            "route_id": "ridge",
+            "open": true,
+            "capacity": 10,
+            "occupancy": 0
+          }
+        ],
+        "route_links": [
+          {
+            "link_id": "A-B",
+            "from_station": "A",
+            "to_station": "B",
+            "travel_minutes": 30,
+            "active": true
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "station over capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "waystation_ids": [
+              {
+                "station_id": "A",
+                "route_id": "ridge",
+                "open": true,
+                "capacity": 10,
+                "occupancy": 11
+              },
+              {
+                "station_id": "B",
+                "route_id": "ridge",
+                "open": true,
+                "capacity": 10,
+                "occupancy": 0
+              }
+            ],
+            "route_links": [
+              {
+                "link_id": "A-B",
+                "from_station": "A",
+                "to_station": "B",
+                "travel_minutes": 30,
+                "active": true
+              }
+            ]
+          }
+        },
+        {
+          "reason": "unknown route endpoint",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "waystation_ids": [
+              {
+                "station_id": "A",
+                "route_id": "ridge",
+                "open": true,
+                "capacity": 10,
+                "occupancy": 4
+              },
+              {
+                "station_id": "B",
+                "route_id": "ridge",
+                "open": true,
+                "capacity": 10,
+                "occupancy": 0
+              }
+            ],
+            "route_links": [
+              {
+                "link_id": "A-B",
+                "from_station": "A",
+                "to_station": "C",
+                "travel_minutes": 30,
+                "active": true
+              }
+            ]
+          }
+        },
+        {
+          "reason": "closed active destination",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "waystation_ids": [
+              {
+                "station_id": "A",
+                "route_id": "ridge",
+                "open": true,
+                "capacity": 10,
+                "occupancy": 4
+              },
+              {
+                "station_id": "B",
+                "route_id": "ridge",
+                "open": false,
+                "capacity": 10,
+                "occupancy": 0
+              }
+            ],
+            "route_links": [
+              {
+                "link_id": "A-B",
+                "from_station": "A",
+                "to_station": "B",
+                "travel_minutes": 30,
+                "active": true
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "fiber": 5,
+        "dye": 1
+      },
+      "player_verbs": [
+        "preview_waystation",
+        "adjust_waystation",
+        "commit_waystation",
+        "cancel_waystation",
+        "undo_waystation"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to build route shelters for seasonal travelers; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic waystation transit shelter modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Build route shelters for seasonal travelers; waystation_ids and route_links must affect the visible outcome under connected paths and schedules govern arrivals.",
+        "Confirm once with {\"fiber\":5,\"dye\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-039",
+      "title": "Signpost Wayfinding Atelier",
+      "source_fields": [
+        "day_epoch",
+        "language_keys",
+        "receipts",
+        "revision",
+        "sign_graph",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_39",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "sign_graph": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "sign_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "node_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "destination_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "route_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "language_key": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              }
+            },
+            "default": {
+              "sign_id": "",
+              "node_id": "",
+              "destination_id": "",
+              "route_id": "",
+              "language_key": ""
+            }
+          },
+          "max_items": 48,
+          "default": [],
+          "unique_by": "sign_id"
+        },
+        "language_keys": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "key": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "locale": {
+                "type": "enum",
+                "values": [
+                  "en",
+                  "es"
+                ],
+                "default": "en"
+              },
+              "text": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 120,
+                "default": ""
+              }
+            },
+            "default": {
+              "key": "",
+              "locale": "en",
+              "text": ""
+            }
+          },
+          "max_items": 96,
+          "default": [],
+          "unique_by": "key"
+        }
+      },
+      "rules": [
+        "sign_destination_refs",
+        "sign_translation_refs",
+        "sign_locale_pair"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "sign_graph": [
+          {
+            "sign_id": "signA",
+            "node_id": "A",
+            "destination_id": "B",
+            "route_id": "village",
+            "language_key": "market"
+          },
+          {
+            "sign_id": "signB",
+            "node_id": "B",
+            "destination_id": "A",
+            "route_id": "village",
+            "language_key": "market"
+          }
+        ],
+        "language_keys": [
+          {
+            "key": "market",
+            "locale": "en",
+            "text": "Market"
+          },
+          {
+            "key": "market",
+            "locale": "es",
+            "text": "Mercado"
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "unreachable sign destination",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "sign_graph": [
+              {
+                "sign_id": "signA",
+                "node_id": "A",
+                "destination_id": "Z",
+                "route_id": "village",
+                "language_key": "market"
+              },
+              {
+                "sign_id": "signB",
+                "node_id": "B",
+                "destination_id": "A",
+                "route_id": "village",
+                "language_key": "market"
+              }
+            ],
+            "language_keys": [
+              {
+                "key": "market",
+                "locale": "en",
+                "text": "Market"
+              },
+              {
+                "key": "market",
+                "locale": "es",
+                "text": "Mercado"
+              }
+            ]
+          }
+        },
+        {
+          "reason": "missing translation key",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "sign_graph": [
+              {
+                "sign_id": "signA",
+                "node_id": "A",
+                "destination_id": "B",
+                "route_id": "village",
+                "language_key": "missing"
+              },
+              {
+                "sign_id": "signB",
+                "node_id": "B",
+                "destination_id": "A",
+                "route_id": "village",
+                "language_key": "market"
+              }
+            ],
+            "language_keys": [
+              {
+                "key": "market",
+                "locale": "en",
+                "text": "Market"
+              },
+              {
+                "key": "market",
+                "locale": "es",
+                "text": "Mercado"
+              }
+            ]
+          }
+        },
+        {
+          "reason": "missing Spanish translation",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "sign_graph": [
+              {
+                "sign_id": "signA",
+                "node_id": "A",
+                "destination_id": "B",
+                "route_id": "village",
+                "language_key": "market"
+              },
+              {
+                "sign_id": "signB",
+                "node_id": "B",
+                "destination_id": "A",
+                "route_id": "village",
+                "language_key": "market"
+              }
+            ],
+            "language_keys": [
+              {
+                "key": "market",
+                "locale": "en",
+                "text": "Market"
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "clay": 6,
+        "seed": 2
+      },
+      "player_verbs": [
+        "preview_signpost",
+        "adjust_signpost",
+        "commit_signpost",
+        "cancel_signpost",
+        "undo_signpost"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to position tactile multilingual destination signs; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic signpost wayfinding atelier modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Position tactile multilingual destination signs; sign_graph and language_keys must affect the visible outcome under directions must resolve in current navigation graph.",
+        "Confirm once with {\"clay\":6,\"seed\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    },
+    {
+      "id": "EB-B-040",
+      "title": "Apprentice Maker Classroom",
+      "source_fields": [
+        "class_stations",
+        "day_epoch",
+        "mentor_slots",
+        "receipts",
+        "revision",
+        "site_id"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_40",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "class_stations": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "station_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "skill": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "capacity": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "occupied": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "mentor_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 80,
+                "default": ""
+              }
+            },
+            "default": {
+              "station_id": "",
+              "skill": "",
+              "capacity": 0,
+              "occupied": 0,
+              "mentor_id": ""
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "station_id"
+        },
+        "mentor_slots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "slot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "mentor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "station_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "start_min": {
+                "type": "integer",
+                "min": 0,
+                "max": 1439,
+                "default": 0
+              },
+              "end_min": {
+                "type": "integer",
+                "min": 1,
+                "max": 1440,
+                "default": 0
+              },
+              "day_epoch": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              }
+            },
+            "default": {
+              "slot_id": "",
+              "mentor_id": "",
+              "station_id": "",
+              "start_min": 0,
+              "end_min": 0,
+              "day_epoch": 0
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "slot_id"
+        }
+      },
+      "rules": [
+        "class_capacity",
+        "mentor_station_refs",
+        "mentor_time_exclusive"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 3,
+        "receipts": [
+          "cmdA"
+        ],
+        "class_stations": [
+          {
+            "station_id": "loom1",
+            "skill": "weaving",
+            "capacity": 5,
+            "occupied": 3,
+            "mentor_id": "teacher1"
+          }
+        ],
+        "mentor_slots": [
+          {
+            "slot_id": "lesson1",
+            "mentor_id": "teacher1",
+            "station_id": "loom1",
+            "start_min": 540,
+            "end_min": 600,
+            "day_epoch": 3
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "class overfilled",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "class_stations": [
+              {
+                "station_id": "loom1",
+                "skill": "weaving",
+                "capacity": 5,
+                "occupied": 6,
+                "mentor_id": "teacher1"
+              }
+            ],
+            "mentor_slots": [
+              {
+                "slot_id": "lesson1",
+                "mentor_id": "teacher1",
+                "station_id": "loom1",
+                "start_min": 540,
+                "end_min": 600,
+                "day_epoch": 3
+              }
+            ]
+          }
+        },
+        {
+          "reason": "mentor mismatch",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "class_stations": [
+              {
+                "station_id": "loom1",
+                "skill": "weaving",
+                "capacity": 5,
+                "occupied": 3,
+                "mentor_id": "teacher1"
+              }
+            ],
+            "mentor_slots": [
+              {
+                "slot_id": "lesson1",
+                "mentor_id": "other",
+                "station_id": "loom1",
+                "start_min": 540,
+                "end_min": 600,
+                "day_epoch": 3
+              }
+            ]
+          }
+        },
+        {
+          "reason": "double booked mentor",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 3,
+            "receipts": [
+              "cmdA"
+            ],
+            "class_stations": [
+              {
+                "station_id": "loom1",
+                "skill": "weaving",
+                "capacity": 5,
+                "occupied": 3,
+                "mentor_id": "teacher1"
+              }
+            ],
+            "mentor_slots": [
+              {
+                "slot_id": "lesson1",
+                "mentor_id": "teacher1",
+                "station_id": "loom1",
+                "start_min": 540,
+                "end_min": 600,
+                "day_epoch": 3
+              },
+              {
+                "slot_id": "lesson2",
+                "mentor_id": "teacher1",
+                "station_id": "loom1",
+                "start_min": 550,
+                "end_min": 610,
+                "day_epoch": 3
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns civic structure geometry and local design; Principal owns economy, settlement, save; Village owns resident consent/schedules; Farming owns ecological/hydrology effects; Valley owns navigation.",
+      "resource_inputs_unapproved": {
+        "glass": 7,
+        "wood": 3
+      },
+      "player_verbs": [
+        "preview_apprentice",
+        "adjust_apprentice",
+        "commit_apprentice",
+        "cancel_apprentice",
+        "undo_apprentice"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to equip workstations and schedule mentor lessons; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic apprentice maker classroom modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Equip workstations and schedule mentor lessons; class_stations and mentor_slots must affect the visible outcome under mentor availability and capacity gate teaching.",
+        "Confirm once with {\"glass\":7,\"wood\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Bounded local receipts are nonauthoritative; Principal durable settlement receipt required to prevent replay or double debit.",
+      "native_gate": "Not tested in native Godot. Phase C closed pending Principal joint 220 approval."
+    }
+  ]
+}
