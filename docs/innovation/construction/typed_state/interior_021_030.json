@@ -1,0 +1,2332 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "base_main": "21d325eb4f05c90f37c1047a76a48b2a90767e31",
+  "source": {
+    "branch": "game/everbloom-construction-phaseB-100-20261102",
+    "commit": "f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+    "path": "docs/innovation/construction/phaseB_100_concepts.json",
+    "blob_sha": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b"
+  },
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "migration_policy": "Optional construction namespace: absent legacy fields default inactive; reject malformed present nested state atomically. Principal owns assembled save migrations.",
+  "state_contracts": [
+    {
+      "id": "EB-B-021",
+      "title": "Whisperwall Acoustic Studio",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "absorption_map",
+        "noise_map",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_021",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "absorption_map": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "room_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "baffle_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "absorption_permille": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "door_open": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "room_id": "",
+              "baffle_id": "",
+              "absorption_permille": 0,
+              "door_open": false
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "room_id"
+        },
+        "noise_map": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "room_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "source_db10": {
+                "type": "integer",
+                "min": 0,
+                "max": 1200,
+                "default": 0
+              },
+              "spill_db10": {
+                "type": "integer",
+                "min": 0,
+                "max": 1200,
+                "default": 0
+              }
+            },
+            "default": {
+              "room_id": "",
+              "source_db10": 0,
+              "spill_db10": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "room_id"
+        }
+      },
+      "rules": [
+        "acoustic_room_link",
+        "acoustic_spill_formula"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "absorption_map": [
+          {
+            "room_id": "roomA",
+            "baffle_id": "baffleA",
+            "absorption_permille": 500,
+            "door_open": false
+          }
+        ],
+        "noise_map": [
+          {
+            "room_id": "roomA",
+            "source_db10": 800,
+            "spill_db10": 400
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "spill not conserved",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "absorption_map": [
+              {
+                "room_id": "roomA",
+                "baffle_id": "baffleA",
+                "absorption_permille": 500,
+                "door_open": false
+              }
+            ],
+            "noise_map": [
+              {
+                "room_id": "roomA",
+                "source_db10": 800,
+                "spill_db10": 900
+              }
+            ]
+          }
+        },
+        {
+          "reason": "unmatched room",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "absorption_map": [
+              {
+                "room_id": "roomA",
+                "baffle_id": "baffleA",
+                "absorption_permille": 500,
+                "door_open": false
+              }
+            ],
+            "noise_map": [
+              {
+                "room_id": "other",
+                "source_db10": 800,
+                "spill_db10": 400
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Village owns privacy/comfort outcomes; Construction owns baffle state; Principal owns material debits.",
+      "resource_inputs_unapproved": {
+        "iron": 3,
+        "glass": 2
+      },
+      "player_verbs": [
+        "preview_whisperwall",
+        "adjust_whisperwall",
+        "commit_whisperwall",
+        "cancel_whisperwall",
+        "undo_whisperwall"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to hang baffles to tune music privacy between rooms; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic whisperwall acoustic studio modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Hang baffles to tune music privacy between rooms; absorption_map and noise_map must affect the visible outcome under door state and absorption determine spill.",
+        "Confirm once with {\"iron\":3,\"glass\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-022",
+      "title": "Daywell Light Shaft Planner",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "shaft_polygon",
+        "light_map",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_022",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "shaft_polygon": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "x_cm": {
+                "type": "integer",
+                "min": -200000,
+                "max": 200000,
+                "default": 0
+              },
+              "z_cm": {
+                "type": "integer",
+                "min": -200000,
+                "max": 200000,
+                "default": 0
+              }
+            },
+            "default": {
+              "x_cm": 0,
+              "z_cm": 0
+            }
+          },
+          "max_items": 24,
+          "default": []
+        },
+        "light_map": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "room_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "sun_deg": {
+                "type": "integer",
+                "min": 0,
+                "max": 90,
+                "default": 0
+              },
+              "occlusion_permille": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "lux10": {
+                "type": "integer",
+                "min": 0,
+                "max": 900,
+                "default": 0
+              }
+            },
+            "default": {
+              "room_id": "",
+              "sun_deg": 0,
+              "occlusion_permille": 0,
+              "lux10": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "room_id"
+        }
+      },
+      "rules": [
+        "shaft_polygon_simple",
+        "light_requires_shaft",
+        "daylight_formula"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "shaft_polygon": [
+          {
+            "x_cm": 0,
+            "z_cm": 0
+          },
+          {
+            "x_cm": 200,
+            "z_cm": 0
+          },
+          {
+            "x_cm": 200,
+            "z_cm": 200
+          },
+          {
+            "x_cm": 0,
+            "z_cm": 200
+          }
+        ],
+        "light_map": [
+          {
+            "room_id": "roomA",
+            "sun_deg": 45,
+            "occlusion_permille": 200,
+            "lux10": 360
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "crossed shaft",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "shaft_polygon": [
+              {
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 200,
+                "z_cm": 200
+              },
+              {
+                "x_cm": 200,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 0,
+                "z_cm": 200
+              }
+            ],
+            "light_map": [
+              {
+                "room_id": "roomA",
+                "sun_deg": 45,
+                "occlusion_permille": 200,
+                "lux10": 360
+              }
+            ]
+          }
+        },
+        {
+          "reason": "wrong daylight",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "shaft_polygon": [
+              {
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 200,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 200,
+                "z_cm": 200
+              },
+              {
+                "x_cm": 0,
+                "z_cm": 200
+              }
+            ],
+            "light_map": [
+              {
+                "room_id": "roomA",
+                "sun_deg": 45,
+                "occlusion_permille": 200,
+                "lux10": 800
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Principal owns sun/calendar; Valley owns floor occlusion; Construction owns shaft geometry.",
+      "resource_inputs_unapproved": {
+        "fiber": 4,
+        "dye": 3
+      },
+      "player_verbs": [
+        "preview_daywell",
+        "adjust_daywell",
+        "commit_daywell",
+        "cancel_daywell",
+        "undo_daywell"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to cut skylight shafts through upper floors; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic daywell light shaft planner modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Cut skylight shafts through upper floors; shaft_polygon and light_map must affect the visible outcome under sun angle and occlusion control daylight.",
+        "Confirm once with {\"fiber\":4,\"dye\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-023",
+      "title": "Sliding Habitat Partitions",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "divider_tracks",
+        "room_revision",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_023",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "divider_tracks": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "track_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "from_room": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "to_room": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "position_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 20000,
+                "default": 0
+              },
+              "length_cm": {
+                "type": "integer",
+                "min": 1,
+                "max": 20000,
+                "default": 1
+              },
+              "exit_clear": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "track_id": "",
+              "from_room": "",
+              "to_room": "",
+              "position_cm": 0,
+              "length_cm": 1,
+              "exit_clear": false
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "track_id"
+        },
+        "room_revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        }
+      },
+      "rules": [
+        "track_room_distinct",
+        "divider_position",
+        "exit_clear",
+        "room_revision_match"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "divider_tracks": [
+          {
+            "track_id": "t1",
+            "from_room": "kitchen",
+            "to_room": "hall",
+            "position_cm": 100,
+            "length_cm": 300,
+            "exit_clear": true
+          }
+        ],
+        "room_revision": 1
+      },
+      "invalid_examples": [
+        {
+          "reason": "blocked exit",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "divider_tracks": [
+              {
+                "track_id": "t1",
+                "from_room": "kitchen",
+                "to_room": "hall",
+                "position_cm": 100,
+                "length_cm": 300,
+                "exit_clear": false
+              }
+            ],
+            "room_revision": 1
+          }
+        },
+        {
+          "reason": "stale room graph",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "divider_tracks": [
+              {
+                "track_id": "t1",
+                "from_room": "kitchen",
+                "to_room": "hall",
+                "position_cm": 100,
+                "length_cm": 300,
+                "exit_clear": true
+              }
+            ],
+            "room_revision": 0
+          }
+        }
+      ],
+      "authority": "Valley owns navigation graph; Village owns occupancy/schedules; Construction owns track edits.",
+      "resource_inputs_unapproved": {
+        "clay": 5,
+        "seed": 1
+      },
+      "player_verbs": [
+        "preview_sliding",
+        "adjust_sliding",
+        "commit_sliding",
+        "cancel_sliding",
+        "undo_sliding"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to slide room dividers for changing household uses; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic sliding habitat partitions modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Slide room dividers for changing household uses; divider_tracks and room_revision must affect the visible outcome under room graph and exits update on committed moves.",
+        "Confirm once with {\"clay\":5,\"seed\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-024",
+      "title": "Shelfspace Inventory Geometry",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "shelf_cells",
+        "stored_ids",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_024",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "shelf_cells": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "capacity_g": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000000,
+                "default": 1
+              },
+              "capacity_cm3": {
+                "type": "integer",
+                "min": 1,
+                "max": 2000000,
+                "default": 1
+              },
+              "used_g": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              },
+              "used_cm3": {
+                "type": "integer",
+                "min": 0,
+                "max": 2000000,
+                "default": 0
+              }
+            },
+            "default": {
+              "cell_id": "",
+              "capacity_g": 1,
+              "capacity_cm3": 1,
+              "used_g": 0,
+              "used_cm3": 0
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "cell_id"
+        },
+        "stored_ids": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "item_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "mass_g": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000000,
+                "default": 1
+              },
+              "volume_cm3": {
+                "type": "integer",
+                "min": 1,
+                "max": 2000000,
+                "default": 1
+              }
+            },
+            "default": {
+              "item_id": "",
+              "cell_id": "",
+              "mass_g": 1,
+              "volume_cm3": 1
+            }
+          },
+          "max_items": 96,
+          "default": [],
+          "unique_by": "item_id"
+        }
+      },
+      "rules": [
+        "shelf_exact_ledger",
+        "shelf_capacity",
+        "shelf_refs"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "shelf_cells": [
+          {
+            "cell_id": "c1",
+            "capacity_g": 1000,
+            "capacity_cm3": 10000,
+            "used_g": 300,
+            "used_cm3": 500
+          }
+        ],
+        "stored_ids": [
+          {
+            "item_id": "itemA",
+            "cell_id": "c1",
+            "mass_g": 300,
+            "volume_cm3": 500
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "phantom shelf mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "shelf_cells": [
+              {
+                "cell_id": "c1",
+                "capacity_g": 1000,
+                "capacity_cm3": 10000,
+                "used_g": 400,
+                "used_cm3": 500
+              }
+            ],
+            "stored_ids": [
+              {
+                "item_id": "itemA",
+                "cell_id": "c1",
+                "mass_g": 300,
+                "volume_cm3": 500
+              }
+            ]
+          }
+        },
+        {
+          "reason": "orphan item",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "shelf_cells": [
+              {
+                "cell_id": "c1",
+                "capacity_g": 1000,
+                "capacity_cm3": 10000,
+                "used_g": 300,
+                "used_cm3": 500
+              }
+            ],
+            "stored_ids": [
+              {
+                "item_id": "itemA",
+                "cell_id": "missing",
+                "mass_g": 300,
+                "volume_cm3": 500
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Principal inventory owns items and canonical quantities; Construction owns geometry and capacity.",
+      "resource_inputs_unapproved": {
+        "glass": 6,
+        "wood": 2
+      },
+      "player_verbs": [
+        "preview_shelfspace",
+        "adjust_shelfspace",
+        "commit_shelfspace",
+        "cancel_shelfspace",
+        "undo_shelfspace"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to build weight-rated shelves and arrange stored goods; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic shelfspace inventory geometry modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Build weight-rated shelves and arrange stored goods; shelf_cells and stored_ids must affect the visible outcome under physical mass and volume constrain capacity.",
+        "Confirm once with {\"glass\":6,\"wood\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-025",
+      "title": "Coolcell Pantry Design",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "vent_state",
+        "food_lots",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_025",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "vent_state": {
+          "type": "object",
+          "fields": {
+            "open": {
+              "type": "boolean",
+              "default": false
+            },
+            "humidity_permille": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000,
+              "default": 500
+            },
+            "temp_c_x10": {
+              "type": "integer",
+              "min": -300,
+              "max": 600,
+              "default": 180
+            }
+          },
+          "default": {
+            "open": false,
+            "humidity_permille": 500,
+            "temp_c_x10": 180
+          }
+        },
+        "food_lots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "quantity": {
+                "type": "integer",
+                "min": 1,
+                "max": 100000,
+                "default": 1
+              },
+              "remaining_days": {
+                "type": "integer",
+                "min": 0,
+                "max": 560,
+                "default": 0
+              },
+              "spoilage_permille": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              },
+              "last_checked_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            },
+            "default": {
+              "lot_id": "",
+              "quantity": 1,
+              "remaining_days": 0,
+              "spoilage_permille": 0,
+              "last_checked_epoch": 1
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "lot_id"
+        }
+      },
+      "rules": [
+        "food_epoch_bound",
+        "food_spoilage_floor"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "vent_state": {
+          "open": false,
+          "humidity_permille": 600,
+          "temp_c_x10": 180
+        },
+        "food_lots": [
+          {
+            "lot_id": "lotA",
+            "quantity": 10,
+            "remaining_days": 7,
+            "spoilage_permille": 0,
+            "last_checked_epoch": 1
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "future inspection",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "vent_state": {
+              "open": false,
+              "humidity_permille": 600,
+              "temp_c_x10": 180
+            },
+            "food_lots": [
+              {
+                "lot_id": "lotA",
+                "quantity": 10,
+                "remaining_days": 7,
+                "spoilage_permille": 0,
+                "last_checked_epoch": 2
+              }
+            ]
+          }
+        },
+        {
+          "reason": "understated spoilage risk",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "vent_state": {
+              "open": false,
+              "humidity_permille": 950,
+              "temp_c_x10": 180
+            },
+            "food_lots": [
+              {
+                "lot_id": "lotA",
+                "quantity": 10,
+                "remaining_days": 7,
+                "spoilage_permille": 0,
+                "last_checked_epoch": 1
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Farming owns food lot decay and ownership; Construction owns pantry ventilation proposal; Principal owns inventory.",
+      "resource_inputs_unapproved": {
+        "dye": 7,
+        "stone": 3
+      },
+      "player_verbs": [
+        "preview_coolcell",
+        "adjust_coolcell",
+        "commit_coolcell",
+        "cancel_coolcell",
+        "undo_coolcell"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to tune pantry insulation and airflow for stored crops; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic coolcell pantry design modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Tune pantry insulation and airflow for stored crops; vent_state and food_lots must affect the visible outcome under humidity and temperature bound spoilage.",
+        "Confirm once with {\"dye\":7,\"stone\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-026",
+      "title": "Kitchen Triangle Chore Layout",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "fixture_positions",
+        "route_cost",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_026",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "fixture_positions": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "kind": {
+                "type": "enum",
+                "values": [
+                  "sink",
+                  "prep",
+                  "stove"
+                ],
+                "default": "sink"
+              },
+              "x_cm": {
+                "type": "integer",
+                "min": -100000,
+                "max": 100000,
+                "default": 0
+              },
+              "z_cm": {
+                "type": "integer",
+                "min": -100000,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "kind": "sink",
+              "x_cm": 0,
+              "z_cm": 0
+            }
+          },
+          "max_items": 3,
+          "default": [],
+          "unique_by": "kind"
+        },
+        "route_cost": {
+          "type": "object",
+          "fields": {
+            "distance_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "seconds": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            }
+          },
+          "default": {
+            "distance_cm": 0,
+            "seconds": 0
+          }
+        }
+      },
+      "rules": [
+        "kitchen_fixture_set",
+        "kitchen_route_exact"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "fixture_positions": [
+          {
+            "kind": "sink",
+            "x_cm": 0,
+            "z_cm": 0
+          },
+          {
+            "kind": "prep",
+            "x_cm": 100,
+            "z_cm": 0
+          },
+          {
+            "kind": "stove",
+            "x_cm": 100,
+            "z_cm": 100
+          }
+        ],
+        "route_cost": {
+          "distance_cm": 400,
+          "seconds": 5
+        }
+      },
+      "invalid_examples": [
+        {
+          "reason": "route underpriced",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "fixture_positions": [
+              {
+                "kind": "sink",
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "kind": "prep",
+                "x_cm": 100,
+                "z_cm": 0
+              },
+              {
+                "kind": "stove",
+                "x_cm": 100,
+                "z_cm": 100
+              }
+            ],
+            "route_cost": {
+              "distance_cm": 400,
+              "seconds": 1
+            }
+          }
+        },
+        {
+          "reason": "missing stove",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "fixture_positions": [
+              {
+                "kind": "sink",
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "kind": "prep",
+                "x_cm": 100,
+                "z_cm": 0
+              }
+            ],
+            "route_cost": {
+              "distance_cm": 400,
+              "seconds": 5
+            }
+          }
+        }
+      ],
+      "authority": "Village owns chore scheduling; Valley owns traversability; Construction owns fixture coordinates.",
+      "resource_inputs_unapproved": {
+        "seed": 3,
+        "iron": 1
+      },
+      "player_verbs": [
+        "preview_kitchen",
+        "adjust_kitchen",
+        "commit_kitchen",
+        "cancel_kitchen",
+        "undo_kitchen"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to move cooking fixtures to optimize preparation routes; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic kitchen triangle chore layout modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Move cooking fixtures to optimize preparation routes; fixture_positions and route_cost must affect the visible outcome under unblocked walking distance determines chore time.",
+        "Confirm once with {\"seed\":3,\"iron\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-027",
+      "title": "Washhouse Greywater Loop",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "wash_tank",
+        "filter_state",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_027",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "wash_tank": {
+          "type": "object",
+          "fields": {
+            "input_ml": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "untreated_ml": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "treated_ml": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "used_ml": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            }
+          },
+          "default": {
+            "input_ml": 0,
+            "untreated_ml": 0,
+            "treated_ml": 0,
+            "used_ml": 0
+          }
+        },
+        "filter_state": {
+          "type": "object",
+          "fields": {
+            "capacity_ml": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "processed_ml": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "remaining_ml": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            }
+          },
+          "default": {
+            "capacity_ml": 0,
+            "processed_ml": 0,
+            "remaining_ml": 0
+          }
+        }
+      },
+      "rules": [
+        "wash_mass_balance",
+        "filter_capacity_balance"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "wash_tank": {
+          "input_ml": 1000,
+          "untreated_ml": 200,
+          "treated_ml": 500,
+          "used_ml": 300
+        },
+        "filter_state": {
+          "capacity_ml": 1000,
+          "processed_ml": 800,
+          "remaining_ml": 200
+        }
+      },
+      "invalid_examples": [
+        {
+          "reason": "water duplication",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "wash_tank": {
+              "input_ml": 1000,
+              "untreated_ml": 200,
+              "treated_ml": 900,
+              "used_ml": 300
+            },
+            "filter_state": {
+              "capacity_ml": 1000,
+              "processed_ml": 800,
+              "remaining_ml": 200
+            }
+          }
+        },
+        {
+          "reason": "filter overcapacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "wash_tank": {
+              "input_ml": 1000,
+              "untreated_ml": 200,
+              "treated_ml": 500,
+              "used_ml": 300
+            },
+            "filter_state": {
+              "capacity_ml": 1000,
+              "processed_ml": 1001,
+              "remaining_ml": 200
+            }
+          }
+        }
+      ],
+      "authority": "Farming/Valley own water withdrawals and runoff; Principal owns resource settlement; Construction owns fictional filter geometry.",
+      "resource_inputs_unapproved": {
+        "wood": 4,
+        "fiber": 2
+      },
+      "player_verbs": [
+        "preview_washhouse",
+        "adjust_washhouse",
+        "commit_washhouse",
+        "cancel_washhouse",
+        "undo_washhouse"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to route washing water through finite reed filters; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic washhouse greywater loop modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Route washing water through finite reed filters; wash_tank and filter_state must affect the visible outcome under clean grey and treated volumes must reconcile.",
+        "Confirm once with {\"wood\":4,\"fiber\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-028",
+      "title": "Dyehouse Color Laboratory",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "pigment_recipe",
+        "wall_finish",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_028",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "pigment_recipe": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "pigment_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "quantity_g": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000000,
+                "default": 1
+              },
+              "rgb_hex": {
+                "type": "string",
+                "min_length": 6,
+                "max_length": 6,
+                "default": "000000"
+              }
+            },
+            "default": {
+              "pigment_id": "",
+              "quantity_g": 1,
+              "rgb_hex": "000000"
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "pigment_id"
+        },
+        "wall_finish": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "wall_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "pigment_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "coats": {
+                "type": "integer",
+                "min": 1,
+                "max": 12,
+                "default": 1
+              },
+              "applied_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            },
+            "default": {
+              "wall_id": "",
+              "pigment_id": "",
+              "coats": 1,
+              "applied_epoch": 1
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "wall_id"
+        }
+      },
+      "rules": [
+        "pigment_recipe_ref",
+        "pigment_mass_budget",
+        "finish_epoch",
+        "pigment_hex"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "pigment_recipe": [
+          {
+            "pigment_id": "berry",
+            "quantity_g": 30,
+            "rgb_hex": "AA44CC"
+          }
+        ],
+        "wall_finish": [
+          {
+            "wall_id": "w1",
+            "pigment_id": "berry",
+            "coats": 2,
+            "applied_epoch": 1
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "unfunded coats",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "pigment_recipe": [
+              {
+                "pigment_id": "berry",
+                "quantity_g": 30,
+                "rgb_hex": "AA44CC"
+              }
+            ],
+            "wall_finish": [
+              {
+                "wall_id": "w1",
+                "pigment_id": "berry",
+                "coats": 4,
+                "applied_epoch": 1
+              }
+            ]
+          }
+        },
+        {
+          "reason": "future finish",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "pigment_recipe": [
+              {
+                "pigment_id": "berry",
+                "quantity_g": 30,
+                "rgb_hex": "AA44CC"
+              }
+            ],
+            "wall_finish": [
+              {
+                "wall_id": "w1",
+                "pigment_id": "berry",
+                "coats": 2,
+                "applied_epoch": 2
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Farming owns botanical pigments; Principal owns dye debit; Construction owns finish geometry.",
+      "resource_inputs_unapproved": {
+        "stone": 5,
+        "clay": 3
+      },
+      "player_verbs": [
+        "preview_dyehouse",
+        "adjust_dyehouse",
+        "commit_dyehouse",
+        "cancel_dyehouse",
+        "undo_dyehouse"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to blend botanical pigments and preview wall finishes; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic dyehouse color laboratory modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Blend botanical pigments and preview wall finishes; pigment_recipe and wall_finish must affect the visible outcome under only confirmed color recipes consume dye.",
+        "Confirm once with {\"stone\":5,\"clay\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-029",
+      "title": "Hearthguard Firebreak Layout",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "clearance_mask",
+        "firebreak_tiles",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_029",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "clearance_mask": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "distance_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 5000,
+                "default": 0
+              },
+              "combustible": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "cell_id": "",
+              "distance_cm": 0,
+              "combustible": false
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "cell_id"
+        },
+        "firebreak_tiles": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "material": {
+                "type": "enum",
+                "values": [
+                  "stone",
+                  "clay",
+                  "iron"
+                ],
+                "default": "stone"
+              },
+              "heat_rating": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              }
+            },
+            "default": {
+              "cell_id": "",
+              "material": "stone",
+              "heat_rating": 0
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "cell_id"
+        }
+      },
+      "rules": [
+        "firebreak_cell_refs",
+        "firebreak_coverage"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "clearance_mask": [
+          {
+            "cell_id": "near",
+            "distance_cm": 80,
+            "combustible": true
+          }
+        ],
+        "firebreak_tiles": [
+          {
+            "cell_id": "near",
+            "material": "stone",
+            "heat_rating": 250
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "unprotected hearth",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "clearance_mask": [
+              {
+                "cell_id": "near",
+                "distance_cm": 80,
+                "combustible": true
+              }
+            ],
+            "firebreak_tiles": []
+          }
+        },
+        {
+          "reason": "orphan firebreak",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "clearance_mask": [
+              {
+                "cell_id": "near",
+                "distance_cm": 80,
+                "combustible": true
+              }
+            ],
+            "firebreak_tiles": [
+              {
+                "cell_id": "far",
+                "material": "stone",
+                "heat_rating": 250
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns fictional hearth layout; Valley owns collision; Village owns household comfort; not real fire safety advice.",
+      "resource_inputs_unapproved": {
+        "iron": 6,
+        "glass": 1
+      },
+      "player_verbs": [
+        "preview_hearthguard",
+        "adjust_hearthguard",
+        "commit_hearthguard",
+        "cancel_hearthguard",
+        "undo_hearthguard"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to lay heat-safe surrounds around a household hearth; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic hearthguard firebreak layout modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Lay heat-safe surrounds around a household hearth; clearance_mask and firebreak_tiles must affect the visible outcome under material and distance bound fictional heat exposure.",
+        "Confirm once with {\"iron\":6,\"glass\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    },
+    {
+      "id": "EB-B-030",
+      "title": "Gentlepath Interior Ramp Kit",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "ramp_sections",
+        "access_routes",
+        "receipts"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_030",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "ramp_sections": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "section_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "rise_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 500,
+                "default": 0
+              },
+              "run_cm": {
+                "type": "integer",
+                "min": 1,
+                "max": 30000,
+                "default": 1
+              },
+              "width_cm": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000,
+                "default": 1
+              },
+              "landing_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 2000,
+                "default": 0
+              }
+            },
+            "default": {
+              "section_id": "",
+              "rise_cm": 0,
+              "run_cm": 1,
+              "width_cm": 1,
+              "landing_cm": 0
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "section_id"
+        },
+        "access_routes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "route_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "section_ids": {
+                "type": "list",
+                "items": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 80,
+                  "default": ""
+                },
+                "max_items": 16,
+                "default": []
+              },
+              "passable": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "route_id": "",
+              "section_ids": [],
+              "passable": false
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "route_id"
+        }
+      },
+      "rules": [
+        "ramp_slope_width_landing",
+        "ramp_route_refs",
+        "ramp_route_nonempty"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "ramp_sections": [
+          {
+            "section_id": "r1",
+            "rise_cm": 20,
+            "run_cm": 300,
+            "width_cm": 110,
+            "landing_cm": 150
+          }
+        ],
+        "access_routes": [
+          {
+            "route_id": "route1",
+            "section_ids": [
+              "r1"
+            ],
+            "passable": true
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "ramp too steep",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "ramp_sections": [
+              {
+                "section_id": "r1",
+                "rise_cm": 20,
+                "run_cm": 100,
+                "width_cm": 110,
+                "landing_cm": 150
+              }
+            ],
+            "access_routes": [
+              {
+                "route_id": "route1",
+                "section_ids": [
+                  "r1"
+                ],
+                "passable": true
+              }
+            ]
+          }
+        },
+        {
+          "reason": "unknown route section",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "ramp_sections": [
+              {
+                "section_id": "r1",
+                "rise_cm": 20,
+                "run_cm": 300,
+                "width_cm": 110,
+                "landing_cm": 150
+              }
+            ],
+            "access_routes": [
+              {
+                "route_id": "route1",
+                "section_ids": [
+                  "missing"
+                ],
+                "passable": true
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Valley owns traversable navigation; Village owns accessibility needs; Construction owns ramp shape.",
+      "resource_inputs_unapproved": {
+        "fiber": 7,
+        "dye": 2
+      },
+      "player_verbs": [
+        "preview_gentlepath",
+        "adjust_gentlepath",
+        "commit_gentlepath",
+        "cancel_gentlepath",
+        "undo_gentlepath"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to replace steps with ramps for varied mobility needs; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic gentlepath interior ramp kit modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Replace steps with ramps for varied mobility needs; ramp_sections and access_routes must affect the visible outcome under slope and landing width gate accessible routes.",
+        "Confirm once with {\"fiber\":7,\"dye\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local bounded receipts are NOT an authoritative anti-replay ledger; Principal must provide durable command settlement and debit idempotence.",
+      "native_gate": "Not tested in native Godot. Phase C closed until full 220 joint approval and native assembled-save/input/performance verification."
+    }
+  ]
+}
