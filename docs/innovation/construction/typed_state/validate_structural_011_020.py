@@ -153,6 +153,7 @@ def validate_state(contract, st):
     require(type(st) is dict and set(st) == set(fields), contract["id"] + ": unknown/missing state keys")
     for key, spec in fields.items():
         validate_value(spec, st[key], contract["id"] + "." + key)
+    require(len(st["receipts"]) == len(set(st["receipts"])), "duplicate settlement receipt")
     require(not st["receipts"] or (bool(st["site_id"]) and st["day_epoch"] >= 1 and st["revision"] >= 1),
             "committed receipt without site/epoch/revision")
     for rule in contract["rules"]:
