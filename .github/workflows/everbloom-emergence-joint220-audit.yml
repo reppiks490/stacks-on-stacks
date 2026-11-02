@@ -1,0 +1,27 @@
+name: EVERBLOOM Emergence E18 joint 220 frozen-ledger negative QA
+on:
+  push:
+    branches:
+      - game/everbloom-emergence-e18-joint220-semantic-audit-20261102
+    paths:
+      - 'docs/innovation/emergence/joint220_audit/**'
+      - '.github/workflows/everbloom-emergence-joint220-audit.yml'
+permissions:
+  contents: read
+jobs:
+  independent-semantic-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Print exact checked-out source commit
+        run: |
+          echo "JOINT220_AUDIT_HEAD=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Compile and run offline cross-feature adversarial checks
+        run: |
+          python -m py_compile docs/innovation/emergence/joint220_audit/validate_joint220.py
+          python docs/innovation/emergence/joint220_audit/validate_joint220.py --self-test
