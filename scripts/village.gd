@@ -19,6 +19,8 @@ var life_data: Dictionary = {}
 var dialogue_locale: String = "en"
 ## Presentation adapter; authoritative social data stays in this domain.
 var social_journal
+## V07: first-party work interaction adapter; Village remains authoritative.
+var job_panel
 
 func setup(host) -> void:
     game = host
@@ -63,6 +65,11 @@ func setup(host) -> void:
     social_journal.set_script(load("res://scripts/village_social_journal.gd"))
     add_child(social_journal)
     social_journal.setup(self)
+    job_panel = CanvasLayer.new()
+    job_panel.name = "VillageJobPanel"
+    job_panel.set_script(load("res://scripts/village_job_panel.gd"))
+    add_child(job_panel)
+    job_panel.setup(self)
 
 func _fresh_memory() -> Dictionary:
     return {"talks":0, "gifts":0, "jobs":0, "festivals":0,
