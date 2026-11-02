@@ -1,0 +1,23 @@
+name: Everbloom Construction B101-B110 typed art contracts
+on:
+  push:
+    branches:
+      - game/everbloom-construction-b19-art-types-20261102
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Confirm exact SHA and validate typed design contracts
+        run: |
+          set -euo pipefail
+          echo "ART_CONTRACT_HEAD=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python -m py_compile docs/innovation/construction/typed_state/validate_art_101_110.py
+          python docs/innovation/construction/typed_state/validate_art_101_110.py
