@@ -1,0 +1,44 @@
+name: Everbloom F12 native herd-lineage acceptance
+on:
+  push:
+    paths:
+      - 'scripts/farm_herd_lineage.gd'
+      - 'scripts/farm_lineage_acceptance.gd'
+      - 'docs/FARM_F12_HERD_LINEAGE.md'
+      - '.github/workflows/everbloom-f12-lineage.yml'
+permissions:
+  contents: read
+jobs:
+  herd-lineage-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Import and parse Godot project at checked-out HEAD
+        run: |
+          set -euo pipefail
+          echo "F12_CHECKOUT_SHA=$(git rev-parse HEAD)"
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --editor --path . --import --quit 2>&1 | tee /tmp/f12-import.log
+      - name: Native 112-day lineage, gestation and save acceptance
+        run: |
+          set -euo pipefail
+          echo "F12_CHECKOUT_SHA=$(git rev-parse HEAD)"
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://scripts/farm_lineage_acceptance.gd 2>&1 | tee /tmp/f12-native.log
+          grep -E 'F12 NATIVE HERD LINEAGE: [0-9]+ assertions, 0 failures' /tmp/f12-native.log
+      - name: Upload exact-head native logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-f12-herd-lineage-logs
+          path: |
+            /tmp/f12-import.log
+            /tmp/f12-native.log
+          if-no-files-found: ignore
