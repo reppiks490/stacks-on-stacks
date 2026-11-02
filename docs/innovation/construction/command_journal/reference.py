@@ -58,7 +58,7 @@ def part_cost(kind):
 
 def check_placement(state, part):
     kind = part["kind"]
-    require(kind in PARTS, "unknown part kind")
+    require(isinstance(kind, str) and kind in PARTS, "unknown part kind")
     parent = part["parent"]
     socket = part["socket"]
     if kind == "foundation":
@@ -319,6 +319,26 @@ class ReferenceAcceptance(unittest.TestCase):
                 s = load(save(s))
         self.assertEqual(s, replay(s["commands"]))
         self.assertEqual(digest(s), digest(load(save(s))))
+
+    def test_malformed_kind_rejected_without_runtime_exception(self):
+        s = self.build()
+        for kind in ([], {}, 4, None, True):
+            self.assert_rejected_atomic(s, place("bad", 3, "badpart", kind, [8, 0], "f", "ne"))
+
+    def test_journal_mutation_and_missing_receipt_rejected(self):
+        s = self.build()
+        altered = copy.deepcopy(s)
+        altered["commands"][1]["receipt"] = "r_found"
+        with self.assertRaises(Rejected):
+            load(canonical(altered))
+        altered = copy.deepcopy(s)
+        altered["commands"].pop()
+        with self.assertRaises(Rejected):
+            load(canonical(altered))
+        altered = copy.deepcopy(s)
+        altered["commands"][2]["position"] = [30, 30]
+        with self.assertRaises(Rejected):
+            load(canonical(altered))
 
     def test_hostile_command_fields(self):
         s = self.build()
