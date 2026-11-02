@@ -5,6 +5,8 @@ var game
 var opener: Button
 var panel: PanelContainer
 var report_label: Label
+var report_scroll: ScrollContainer
+var title_label: Label
 var refresh_button: Button
 var close_button: Button
 var last_report: Dictionary = {}
@@ -53,16 +55,24 @@ func setup(owner) -> void:
     var column := VBoxContainer.new()
     column.add_theme_constant_override("separation", 12)
     panel.add_child(column)
-    var title := Label.new()
-    title.name = "SaveHealthTitle"
-    title.text = "Valley Save Health"
-    title.add_theme_font_size_override("font_size", 24)
-    column.add_child(title)
+    title_label = Label.new()
+    title_label.name = "SaveHealthTitle"
+    title_label.add_theme_font_size_override("font_size", 24)
+    column.add_child(title_label)
+    # The report may exceed a phone-sized viewport. Keep the actions visible
+    # while allowing touch dragging, wheel scrolling and focus-driven navigation.
+    report_scroll = ScrollContainer.new()
+    report_scroll.name = "SaveHealthScroll"
+    report_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    report_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    report_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+    report_scroll.follow_focus = true
+    column.add_child(report_scroll)
     report_label = Label.new()
     report_label.name = "SaveHealthReport"
     report_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    report_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-    column.add_child(report_label)
+    report_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    report_scroll.add_child(report_label)
     var row := HBoxContainer.new()
     column.add_child(row)
     refresh_button = Button.new()
@@ -82,19 +92,43 @@ func setup(owner) -> void:
 
 func _refresh_locale() -> void:
     locale = "es" if game != null and game.village != null and str(game.village.dialogue_locale) == "es" else "en"
+    title_label.text = _t("Valley Save Health", "Estado de guardado del valle")
     opener.text = _t("Save Health [Y]", "Estado de guardado [Y]")
     refresh_button.text = _t("Refresh inspection", "Actualizar inspección")
     close_button.text = _t("Return to valley", "Volver al valle")
     if not last_report.is_empty():
         report_label.text = _format_report(last_report)
 
+# Translate stable machine codes at the UI boundary; preserve the original
+# diagnostic dictionary for deterministic tests and support tooling.
+func _human_status(code: String) -> String:
+    match code:
+        "valid":
+            return _t("healthy", "válido")
+        "missing":
+            return _t("not present", "no existe")
+        "malformed_json":
+            return _t("damaged file (unreadable JSON)", "archivo dañado (JSON ilegible)")
+        "invalid_payload":
+            return _t("invalid save data", "datos de guardado inválidos")
+        "unreadable":
+            return _t("cannot read file", "no se puede leer el archivo")
+        "primary":
+            return _t("primary save", "guardado principal")
+        "backup":
+            return _t("recovery backup", "copia de recuperación")
+        "none":
+            return _t("none", "ninguna")
+        _:
+            return _t("unknown status", "estado desconocido")
+
 func _format_report(report: Dictionary) -> String:
     var lines: Array[String] = []
-    lines.append(_t("Primary save: ", "Guardado principal: ") + str(report.get("primary_status", "unknown")))
-    lines.append(_t("Recovery backup: ", "Copia de recuperación: ") + str(report.get("backup_status", "unknown")))
-    lines.append(_t("Interrupted temporary: ", "Archivo temporal: ") + str(report.get("temp_status", "unknown")))
-    lines.append(_t("Load source: ", "Fuente de carga: ") + str(report.get("selected_source", "none")))
-    lines.append(_t("Writer lock: ", "Bloqueo de escritura: ") + str(report.get("writer_lock_present", false)))
+    lines.append(_t("Primary save: ", "Guardado principal: ") + _human_status(str(report.get("primary_status", "unknown"))))
+    lines.append(_t("Recovery backup: ", "Copia de recuperación: ") + _human_status(str(report.get("backup_status", "unknown"))))
+    lines.append(_t("Interrupted temporary: ", "Archivo temporal: ") + _human_status(str(report.get("temp_status", "unknown"))))
+    lines.append(_t("Load source: ", "Fuente de carga: ") + _human_status(str(report.get("selected_source", "none"))))
+    lines.append(_t("Writer lock: ", "Bloqueo de escritura: ") + _t("present", "presente") if bool(report.get("writer_lock_present", false)) else _t("absent", "ausente"))
     lines.append(_t("Preserved corrupt files: ", "Archivos dañados conservados: ") + "%d / %d" % [
         int(report.get("quarantine_occupied", 0)), int(report.get("quarantine_capacity", 0))])
     if bool(report.get("writer_lock_present", false)):
@@ -118,6 +152,7 @@ func _format_report(report: Dictionary) -> String:
 func refresh_report() -> void:
     last_report = SaveService.inspect_save_health()
     report_label.text = _format_report(last_report)
+    report_scroll.scroll_vertical = 0
 
 func _blocked() -> bool:
     if game == null or game.village == null:
