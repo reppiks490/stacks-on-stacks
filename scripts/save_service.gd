@@ -363,6 +363,57 @@ static func validate_payload(payload: Dictionary) -> bool:
             return false
     return true
 
+## Read-only support diagnostics: never mutates save slots, writer locks, or gameplay.
+## These are observations, not proof of fsync durability or a stale lock.
+static func _slot_health(path: String) -> String:
+    if not FileAccess.file_exists(path):
+        return "missing"
+    var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+    if file == null:
+        return "unreadable"
+    var raw: String = file.get_as_text()
+    file.close()
+    var parser: JSON = JSON.new()
+    if parser.parse(raw) != OK:
+        return "malformed_json"
+    if typeof(parser.data) != TYPE_DICTIONARY:
+        return "invalid_payload"
+    if not validate_payload(parser.data):
+        return "invalid_payload"
+    return "valid"
+
+## Stable, non-destructive recovery signals for future HUD and support adapters.
+## Never infer that a lock is stale, even when the primary is damaged.
+static func inspect_save_health() -> Dictionary:
+    var primary_status: String = _slot_health(SAVE_PATH)
+    var backup_status: String = _slot_health(BACKUP_PATH)
+    var temp_status: String = _slot_health(TEMP_PATH)
+    var writer_lock: bool = DirAccess.dir_exists_absolute(
+            ProjectSettings.globalize_path(WRITE_LOCK_PATH))
+    var occupied_quarantine: int = 0
+    for slot in range(1, MAX_QUARANTINE_SLOTS + 1):
+        if FileAccess.file_exists("%s%03d" % [QUARANTINE_PREFIX, slot]):
+            occupied_quarantine += 1
+    var selected_source: String = "none"
+    var recovery_reason: String = "no_valid_snapshot"
+    if primary_status == "valid":
+        selected_source = "primary"
+        recovery_reason = "primary_healthy"
+    elif backup_status == "valid":
+        selected_source = "backup"
+        recovery_reason = ("primary_missing_backup_available" if primary_status == "missing"
+                else "primary_unavailable_backup_available")
+    return {
+        "primary_status": primary_status,
+        "backup_status": backup_status,
+        "temp_status": temp_status,
+        "selected_source": selected_source,
+        "recovery_reason": recovery_reason,
+        "writer_lock_present": writer_lock,
+        "quarantine_occupied": occupied_quarantine,
+        "quarantine_capacity": MAX_QUARANTINE_SLOTS
+    }
+
 static func _read_one(path: String) -> Dictionary:
     if not FileAccess.file_exists(path):
         return {}
