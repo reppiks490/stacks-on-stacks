@@ -101,9 +101,10 @@ func _interact_near_player() -> void:
     var closest: Node3D
     var best := 3.4
     for candidate in get_tree().get_nodes_in_group("interactables"):
-        if not is_instance_valid(candidate):
+        if not is_instance_valid(candidate) or not (candidate is Node3D):
             continue
-        var distance := player.global_position.distance_to(candidate.global_position)
+        var candidate_3d: Node3D = candidate as Node3D
+        var distance: float = player.global_position.distance_to(candidate_3d.global_position)
         if distance < best:
             closest = candidate
             best = distance
