@@ -78,6 +78,7 @@ func _run() -> void:
     _check(ui.is_open and ui.last_report.get("selected_source") == "primary", "touch opens healthy report")
     _check("Primary is readable" in ui.report_label.text, "healthy status visible")
     game._unhandled_input(_key(KEY_P))
+    game.save_game(false)
     _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == primary_bytes and
            FileAccess.get_file_as_string(SaveService.BACKUP_PATH) == backup_bytes,
            "modal prevents keyboard save and preserves bytes")
@@ -88,6 +89,9 @@ func _run() -> void:
     ui._input(_joy(JOY_BUTTON_START))
     _check(ui.is_open and paused, "controller Start opens modal")
     _check(ui.last_report.get("selected_source") == "backup", "backup selected after torn primary")
+    var before_blocked_load: int = game.gold
+    game.load_game()
+    _check(game.gold == before_blocked_load, "direct load blocked while inspecting")
     _check("older progress" in ui.report_label.text, "backup age uncertainty visible")
     _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == damaged_bytes and
            FileAccess.get_file_as_string(SaveService.BACKUP_PATH) == backup_bytes,

@@ -282,6 +282,11 @@ func add_restoration(points: int) -> void:
     restoration = mini(100, restoration + maxi(0, points))
 
 func save_game(with_feedback: bool = true) -> void:
+    # Read-only diagnostics must not trigger an overlapping save transaction.
+    if save_health_panel != null and save_health_panel.is_open:
+        if with_feedback:
+            _show("Close Save Health before saving.")
+        return
     var payload: Dictionary = {
         "schema":1,"year":year,"day":day,"season":season_index,"minute":minute_of_day,
         "gold":gold,"energy":energy,"weather":weather,"restoration":restoration,
@@ -299,6 +304,10 @@ func save_game(with_feedback: bool = true) -> void:
         _show("Your valley progress was saved locally.")
 
 func load_game() -> void:
+    # A diagnostic modal is observation-only; do not mutate live state while open.
+    if save_health_panel != null and save_health_panel.is_open:
+        _show("Close Save Health before loading.")
+        return
     var content: Dictionary = SaveService.read_payload()
     if content.is_empty():
         _show("No valid primary or backup save; current session preserved.")
