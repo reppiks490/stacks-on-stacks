@@ -118,6 +118,27 @@ class SaveIntegrationContract(unittest.TestCase):
         self.assertEqual(len(registered), len(set(registered)))
         self.assertEqual(set(registered), set(expected))
 
+    def test_nested_domain_bounds_are_lossless_and_native_tested(self):
+        boundary = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(encoding="utf-8")
+        farm = (ROOT / "scripts/farm.gd").read_text(encoding="utf-8")
+        animals = (ROOT / "scripts/animals.gd").read_text(encoding="utf-8")
+        for field in ("age", "watered_days", "moisture", "fertility",
+                      "weeds", "stress", "rotation_bonus", "seed_vigor"):
+            self.assertIn(f'"{field}"', boundary)
+            self.assertIn(f'plot["{field}"] = clampi', farm) if field != "watered_days" else self.assertIn('plot["watered_days"] = clampi', farm)
+            self.assertIn(f'"{field}"', native)
+        for field in ("bond", "happiness", "health", "hunger", "cleanliness",
+                      "production_counter", "neglect_days", "compost_counter"):
+            self.assertIn(f'"{field}"', boundary)
+            self.assertIn(f'"{field}"', animals)
+            self.assertIn(f'"{field}"', native)
+        for token in ('const FARM_LIMITS', 'const PRODUCTION_MAX', 'const ANIMAL_LIMITS',
+                      'soil.has("last_family")', 'not PRODUCTION_MAX.has(id)',
+                      '"assembled out-of-range soil was written"',
+                      '"assembled out-of-range livestock was written"'):
+            self.assertIn(token, boundary + native)
+
     def test_original_village_job_has_player_input_dispatch(self):
         game = (ROOT / "scripts/game.gd").read_text(encoding="utf-8")
         hud = (ROOT / "scripts/hud.gd").read_text(encoding="utf-8")
