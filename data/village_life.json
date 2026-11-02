@@ -240,5 +240,163 @@
       "at": 750,
       "name": "chosen family"
     }
-  ]
+  ],
+  "dialogue_branches": {
+    "mira": [
+      {
+        "id": "mira_trusted_colleague",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 80,
+          "at_work": true
+        },
+        "text": {
+          "en": "After we sorted those herbs together, I found a quiet place for the seedlings you saved.",
+          "es": "Después de ordenar aquellas hierbas, encontré un rincón tranquilo para las plántulas que salvaste."
+        }
+      },
+      {
+        "id": "mira_first_shift",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 0,
+          "at_work": true
+        },
+        "text": {
+          "en": "Thank you for helping in the garden. The young mint has room to breathe now.",
+          "es": "Gracias por ayudar en el jardín. La menta joven ya tiene espacio para crecer."
+        }
+      }
+    ],
+    "rowan": [
+      {
+        "id": "rowan_trusted_colleague",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 80,
+          "at_work": true
+        },
+        "text": {
+          "en": "You've become someone I trust with the bridge's oldest beams. We'll repair them without rushing.",
+          "es": "Ya confío en ti para cuidar las vigas más antiguas del puente. Las repararemos sin prisas."
+        }
+      },
+      {
+        "id": "rowan_first_shift",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 0,
+          "at_work": true
+        },
+        "text": {
+          "en": "The boards you sanded fit the market bench. Come see how steady it feels.",
+          "es": "Las tablas que lijaste encajan en el banco del mercado. Ven a ver qué firme quedó."
+        }
+      }
+    ],
+    "celia": [
+      {
+        "id": "celia_trusted_colleague",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 80,
+          "at_work": true
+        },
+        "text": {
+          "en": "You've earned a place beside the oven when we plan the village's shared table.",
+          "es": "Te has ganado un lugar junto al horno cuando preparamos la mesa común del pueblo."
+        }
+      },
+      {
+        "id": "celia_first_shift",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 0,
+          "at_work": true
+        },
+        "text": {
+          "en": "That dough you kneaded rose beautifully. Even the early customers noticed.",
+          "es": "La masa que amasaste subió de maravilla. Hasta los primeros clientes lo notaron."
+        }
+      }
+    ],
+    "orion": [
+      {
+        "id": "orion_trusted_colleague",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 80,
+          "at_work": true
+        },
+        "text": {
+          "en": "I trust your judgment by the lake. Together we'll leave enough fish for the next season.",
+          "es": "Confío en tu criterio junto al lago. Dejaremos suficientes peces para la próxima estación."
+        }
+      },
+      {
+        "id": "orion_first_shift",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 0,
+          "at_work": true
+        },
+        "text": {
+          "en": "The nets you helped mend are ready, and not a single reed was trampled.",
+          "es": "Las redes que ayudaste a remendar están listas, y no pisamos ni un solo junco."
+        }
+      }
+    ],
+    "nella": [
+      {
+        "id": "nella_trusted_colleague",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 80,
+          "at_work": true
+        },
+        "text": {
+          "en": "You know each animal's pace now. The timid ones come closer when you arrive.",
+          "es": "Ya conoces el ritmo de cada animal. Los tímidos se acercan cuando llegas."
+        }
+      },
+      {
+        "id": "nella_first_shift",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 0,
+          "at_work": true
+        },
+        "text": {
+          "en": "Your help made the barn calmer today. Even the smallest chick settled down.",
+          "es": "Tu ayuda tranquilizó el establo hoy. Hasta el pollito más pequeño se serenó."
+        }
+      }
+    ],
+    "soren": [
+      {
+        "id": "soren_trusted_colleague",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 80,
+          "at_work": true
+        },
+        "text": {
+          "en": "You've helped preserve the archive with care. I can show you the valley's oldest public map.",
+          "es": "Has cuidado el archivo con esmero. Puedo mostrarte el mapa público más antiguo del valle."
+        }
+      },
+      {
+        "id": "soren_first_shift",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 0,
+          "at_work": true
+        },
+        "text": {
+          "en": "Those pages you mended will outlast this winter. Thank you for working so gently.",
+          "es": "Las páginas que reparaste resistirán este invierno. Gracias por trabajar con tanto cuidado."
+        }
+      }
+    ]
+  }
 }
