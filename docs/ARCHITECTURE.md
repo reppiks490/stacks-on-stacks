@@ -99,3 +99,39 @@ At canonical starting point `main@95e54aa1ba1ae516e9b10c7608f48b6441baa465`, the
 Village V03/V06 added optional `last_gift_favorite` (boolean), `recalled_gift_epoch` (integer day index), and `gift_recollections` (bounded count). The Principal save boundary validates these fields **when present** without requiring them in preexisting schema-1 saves. Both gift and recall epochs must be between -1 and the snapshot's 56-day-year monotonic calendar epoch (capped to JSON's exact integer range); a nonnegative recall must reference a real gift and cannot predate that gift. Recollection counts must be integral in [0, 1,000,000], matching Village's runtime saturation limit. Invalid types, impossible chronology, and future-dated histories are rejected before writing or loading rather than silently coerced. The Village domain retains ownership of dialogue, memory production, and legacy favorite inference; no schema version increment or Village source edit is required.
 
 Native regression adds hostile memory mutations, verifies invalid assembled snapshots leave authoritative bytes and active currency untouched, and roundtrips favorite/recalled epoch/count through real Game save/load. The Principal dedicated CI acceptance uses a strict anchored zero-failure summary rather than a brittle assertion-count literal; native execution at the exact changed SHA is required before calling this integrated. Windows locking, multi-writer isolation, power-loss durability and full migration coverage remain open.
+
+## P04/P05 nested loader-admission parity — 2026-11-02 (isolated candidate)
+
+**Problem:** Previously the central schema-1 validator accepted farm ages, soil
+moisture/fertility, weed/stress counters, animal health/production, and Village
+memory counts outside the corresponding loader ranges. A subsequent
+`load_game()` silently clamped those accepted values. Unknown farm fields and
+animal IDs could also be ignored, so a valid-looking snapshot was not guaranteed
+to survive an assembled-game roundtrip.
+
+**Bounded contract:** Principal now validates each optional original soil field
+against the explicit loader maxima (age/watered days/moisture/fertility 100,
+weeds 5, stress 9, rotation bonus 1, seed vigor 2, last family 32 characters);
+validates livestock health/bond/happiness/hunger/cleanliness 100, neglect 365,
+compost 2 and species-specific production counters (hen 1, cow 2, sheep 3);
+rejects unknown nested soil fields/animal IDs/animal fields rather than silently
+discarding them; and caps Village memory action counters at the existing
+1,000,000 loader limit. Existing optional schema-1 fields and empty legacy farm
+fixtures remain accepted. These limits mirror **current Godot 4.x loaders**;
+any future Farming/Village field or animal species must update its owner,
+Principal admission, native regression and migration together.
+
+**Proof gate:** The isolated branch must pass the native Principal adversarial
+suite, assembled 112-day QA, festival integration and general Python/Godot CI
+at a single exact commit before canonical integration. Native tests include
+positive upper bounds, each out-of-range field, unknown fields/species,
+two non-hen production cycles and actual assembled invalid-write rejection
+without modifying authoritative save bytes, currency, inventory or paddocks.
+Passing headless CI does not prove physical hardware, power-loss durability,
+multi-writer exclusion, Windows file locking or schema-2 migrations.
+
+**Independent Village handoff:** Village currently clamps
+`recalled_gift_epoch` to `last_gift_epoch` on load, although recollection may
+legitimately occur later. The Village owner must correct that separate
+lossy loader behavior with its own multi-epoch native roundtrip; Principal
+should not reject legitimate later recollections to hide the defect.
