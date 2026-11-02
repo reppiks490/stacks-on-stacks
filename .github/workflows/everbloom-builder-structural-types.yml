@@ -1,0 +1,20 @@
+name: EVERBLOOM Builder B011-B020 typed structural design audit
+on:
+  push:
+    branches:
+      - game/everbloom-construction-b19-typed-state-20261102
+    paths:
+      - 'docs/innovation/construction/typed_state/**'
+      - '.github/workflows/everbloom-builder-structural-types.yml'
+permissions:
+  contents: read
+jobs:
+  offline-design-validator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile standalone Python validator
+        run: python3 -m py_compile docs/innovation/construction/typed_state/validate_structural_011_020.py
+      - name: Validate B011-B020 contracts and adversarial fixtures
+        run: python3 docs/innovation/construction/typed_state/validate_structural_011_020.py --self-test
