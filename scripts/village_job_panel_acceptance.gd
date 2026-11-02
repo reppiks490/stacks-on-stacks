@@ -55,12 +55,12 @@ func _run() -> void:
     village.social_journal.open_journal()
     var blocked_gold: int = game.gold
     var blocked_energy: float = game.energy
-    _check(get_tree().paused, "journal pauses game")
+    _check(paused, "journal pauses game")
     _check(ui._perform_job().is_empty(), "work blocked while modal journal is open")
     _check(game.gold == blocked_gold and is_equal_approx(game.energy, blocked_energy),
             "modal cannot bypass payment or energy gates")
     village.social_journal.close_journal()
-    _check(not get_tree().paused, "closing journal restores game pause state")
+    _check(not paused, "closing journal restores game pause state")
 
     game.year = 2
     game.season_index = 0
