@@ -1,0 +1,46 @@
+name: Everbloom F13 native rotational-pasture acceptance
+on:
+  push:
+    paths:
+      - 'scripts/farm_pasture_rotation.gd'
+      - 'scripts/farm_pasture_acceptance.gd'
+      - 'docs/FARM_F13_ROTATIONAL_PASTURE.md'
+      - '.github/workflows/everbloom-f13-pasture.yml'
+permissions:
+  contents: read
+jobs:
+  pasture-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Native project import and parse
+        run: |
+          set -euo pipefail
+          echo "F13_CHECKOUT_SHA=$(git rev-parse HEAD)"
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --editor --path . --import --quit 2>&1 | tee /tmp/f13-import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' /tmp/f13-import.log; then exit 1; fi
+      - name: Native 112-day pasture, grazing and conservation acceptance
+        run: |
+          set -euo pipefail
+          echo "F13_CHECKOUT_SHA=$(git rev-parse HEAD)"
+          timeout 90s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://scripts/farm_pasture_acceptance.gd 2>&1 | tee /tmp/f13-native.log
+          grep -E 'F13 NATIVE ROTATIONAL PASTURE: [0-9]+ assertions, 0 failures' /tmp/f13-native.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|F13 NATIVE FAILED:' /tmp/f13-native.log; then exit 1; fi
+      - name: Upload exact-head native logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-f13-pasture-logs
+          path: |
+            /tmp/f13-import.log
+            /tmp/f13-native.log
+          if-no-files-found: ignore
