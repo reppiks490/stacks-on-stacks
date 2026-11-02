@@ -11,6 +11,15 @@ const BACKUP_PATH: String = "user://everbloom_save_v1.json.bak"
 const QUARANTINE_PREFIX: String = "user://everbloom_save_v1.json.corrupt."
 const MAX_QUARANTINE_SLOTS: int = 8
 const SCHEMA: int = 1
+# Canonical original festival IDs. Update this schema boundary and its catalog
+# parity test together when a new festival is authored; unknown awards cannot
+# be silently discarded by Festival.load_state().
+const FESTIVAL_EVENT_IDS := [
+    "spring_seed_exchange", "spring_garden_table", "spring_bluebell_evening",
+    "summer_lake_promenade", "summer_berry_picnic", "summer_lantern_making",
+    "autumn_carrot_fair", "autumn_pumpkin_story", "autumn_wool_market",
+    "winter_hearth_market", "winter_woodwork_day", "winter_starlight_feast"
+]
 
 static func _is_number(value: Variant) -> bool:
     return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
@@ -190,6 +199,8 @@ static func validate_payload(payload: Dictionary) -> bool:
         if typeof(payload["festivals"]) != TYPE_DICTIONARY:
             return false
         var festival_state: Dictionary = payload["festivals"]
+        if festival_state.size() != 2:
+            return false
         if not _whole_in_range(festival_state.get("schema", null), 1.0, 1.0):
             return false
         if typeof(festival_state.get("awarded", null)) != TYPE_ARRAY:
@@ -211,6 +222,8 @@ static func validate_payload(payload: Dictionary) -> bool:
                 return false
             var event_id: String = parts[1]
             if event_id.is_empty() or event_id.length() > 64:
+                return false
+            if not FESTIVAL_EVENT_IDS.has(event_id):
                 return false
             for i in range(event_id.length()):
                 if not "abcdefghijklmnopqrstuvwxyz0123456789_".contains(event_id.substr(i, 1)):
