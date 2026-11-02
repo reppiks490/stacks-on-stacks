@@ -133,6 +133,8 @@ static func validate_payload(payload: Dictionary) -> bool:
         return false
     # Nonempty snapshots with any other bed count are ignored wholesale by
     # Farm.load_state(); accepting them would silently lose planted crops.
+    # Empty arrays are a pre-farm compatibility concession, not a valid
+    # representation of an already planted 30-bed farm.
     if not field_records.is_empty() and field_records.size() != FARM_BED_COUNT:
         return false
     # Farm.load_state() clamps these ranges. An accepted save must never

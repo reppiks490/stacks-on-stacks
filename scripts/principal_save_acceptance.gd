@@ -439,6 +439,14 @@ func _run() -> void:
             DirAccess.remove_absolute(ProjectSettings.globalize_path(file_path))
     var session = load("res://scripts/game.gd").new()
     root.add_child(session)
+    var game_crop_ids: Array = session.crop_definitions.keys()
+    game_crop_ids.sort()
+    var admission_crop_ids: Array = SaveService.CROP_IDS.duplicate()
+    admission_crop_ids.sort()
+    _check(game_crop_ids == admission_crop_ids,
+           "assembled crop catalog differs from save admission registry")
+    _check(session.farm.beds.size() == SaveService.FARM_BED_COUNT,
+           "assembled bed count differs from save admission")
     _check(InputMap.has_action("job"), "principal K job action not installed")
     var job_key_mapped: bool = false
     for evt in InputMap.action_get_events("job"):
