@@ -77,6 +77,46 @@ func _run() -> void:
     _check(game.inventory == initial_inventory, "locale switch cannot consume items")
     village.set_dialogue_locale("en")
     ui._refresh_locale()
+    # V19: controller/keyboard can reach Cancel from any in-stock gift.
+    # Traversal must not silently grant affection or consume an item.
+    var nav_inventory: Dictionary = game.inventory.duplicate(true)
+    var nav_social: Dictionary = village.save_state()
+    ui.gift_buttons[0].grab_focus()
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.gift_buttons[1],
+            "D-pad Down moves from first available gift to second")
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.cancel_button,
+            "D-pad Down reaches Cancel after available gifts")
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.cancel_button,
+            "D-pad Down clamps at Cancel without wrapping into a gift")
+    ui._input(_pad(JOY_BUTTON_A))
+    _check(not ui.panel.visible and not paused,
+            "controller A on focused Cancel closes without gifting")
+    _check(game.inventory == nav_inventory and village.save_state() == nav_social,
+            "controller navigation and Cancel conserve inventory and relationships")
+    ui.open_gifts()
+    ui._input(_key(KEY_DOWN))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.gift_buttons[1],
+            "keyboard Down reaches second gift")
+    ui._input(_key(KEY_DOWN))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.cancel_button,
+            "keyboard Down reaches Cancel")
+    ui._input(_key(KEY_UP))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.gift_buttons[1],
+            "keyboard Up returns from Cancel to second gift")
+    ui._input(_key(KEY_UP))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.gift_buttons[0],
+            "keyboard Up reaches first gift")
+    ui._input(_key(KEY_DOWN))
+    ui._input(_key(KEY_DOWN))
+    ui._input(_key(KEY_ENTER))
+    _check(not ui.panel.visible and not paused,
+            "Enter activates focused Cancel rather than gifting")
+    _check(game.inventory == nav_inventory and village.save_state() == nav_social,
+            "keyboard navigation and Cancel conserve inventory and relationships")
+    ui.open_gifts()
     ui.gift_buttons[1].pressed.emit()
     _check(not ui.panel.visible and not paused, "favorite selection closes and unpauses")
     _check("treasured favorite" in ui.last_result.to_lower(), "favorite choice gets specific feedback")
@@ -177,12 +217,35 @@ func _run() -> void:
     _check(ui.panel.visible and ui.gift_buttons[0].disabled and ui.gift_buttons[1].disabled,
             "empty inventory visibly disables both choices")
     _check("no preferred gifts" in ui.last_result, "empty inventory gives readable feedback")
+    ui._input(_pad(JOY_BUTTON_DPAD_UP))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.cancel_button,
+            "all-out-of-stock D-pad Up retains reachable Cancel")
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.cancel_button,
+            "all-out-of-stock D-pad Down retains reachable Cancel")
     ui._input(_pad(JOY_BUTTON_A))
     _check(not ui.panel.visible, "controller confirm on focused cancel exits without gifting")
     _check(village.save_state() == before_empty_social,
             "empty-inventory cancel never creates relationship progress")
     game.inventory["wild_herb"] = 1
     _near(game)
+    ui.open_gifts()
+    _check(ui.gift_buttons[1].disabled and ui.get_viewport().gui_get_focus_owner() == ui.gift_buttons[0],
+            "single in-stock gift receives initial focus")
+    var partial_inventory: Dictionary = game.inventory.duplicate(true)
+    var partial_social: Dictionary = village.save_state()
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.cancel_button,
+            "D-pad skips disabled gift and reaches Cancel")
+    ui._input(_pad(JOY_BUTTON_DPAD_UP))
+    _check(ui.get_viewport().gui_get_focus_owner() == ui.gift_buttons[0],
+            "D-pad Up skips disabled gift and returns to available choice")
+    ui._input(_key(KEY_DOWN))
+    ui._input(_key(KEY_ENTER))
+    _check(not ui.panel.visible and not paused,
+            "keyboard Enter on Cancel closes single-stock modal")
+    _check(game.inventory == partial_inventory and village.save_state() == partial_social,
+            "disabled-skip and Cancel cannot mutate gift economy")
     ui.open_gifts()
     game.hero.global_position = Vector3(500, 1, 500)
     var before_away: Dictionary = village.save_state()
