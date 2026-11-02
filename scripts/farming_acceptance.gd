@@ -79,7 +79,8 @@ func _run() -> void:
     host.selected_seed = 0
     var third: Vector3 = farm.beds[2]["holder"].global_position
     farm.act("till", third)
-    _check("Planted" in farm.act("plant", third), "spring turnip planted")
+    var spring_sowing: String = farm.act("plant", third)
+    _check(str(farm.beds[2]["crop"]) == "turnip", "spring turnip planted: " + spring_sowing)
     host.advance_day()
     farm.next_day("Rain")
     _check(host.season() == "Summer", "season rollover")
