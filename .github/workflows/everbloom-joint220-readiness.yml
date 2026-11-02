@@ -1,0 +1,34 @@
+name: EVERBLOOM 220-concept design readiness audit (non-Codex)
+on:
+  push:
+    branches:
+      - game/everbloom-construction-220-readiness-20261102
+    paths:
+      - 'docs/innovation/construction/joint220/**'
+      - '.github/workflows/everbloom-joint220-readiness.yml'
+permissions:
+  contents: read
+jobs:
+  design-only-readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit 220 pinned design records and 11 adversarial mutations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 docs/innovation/construction/joint220/validate_readiness.py --self-test | tee joint220_audit.log
+          grep -q 'PASS: 220 design-only records' joint220_audit.log
+          grep -q 'PASS: 11 deliberately invalid ledgers rejected' joint220_audit.log
+      - name: Preserve audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-joint220-design-${{ github.sha }}
+          path: joint220_audit.log
+          if-no-files-found: ignore
+          retention-days: 14
