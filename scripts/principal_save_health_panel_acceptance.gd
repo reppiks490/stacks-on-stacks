@@ -51,6 +51,11 @@ func _run() -> void:
     var ui = game.save_health_panel
     _check(ui != null and ui.panel != null, "panel exists in assembled Game")
     _check(ui.layer > game.hud.layer, "modal above HUD")
+    _check(ui.title_label.text == "Valley Save Health", "English title visible")
+    _check(ui.report_scroll is ScrollContainer, "long report has scroll container")
+    _check(ui.report_scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_AUTO,
+           "touch and wheel can scroll report")
+    _check(ui.report_scroll.follow_focus, "focus navigation follows scroll")
     _check(ui.opener.custom_minimum_size.y >= 44.0, "touch opener 44px")
     _check(ui.refresh_button.custom_minimum_size.y >= 44.0, "touch refresh 44px")
     _check(ui.close_button.custom_minimum_size.y >= 44.0, "touch close 44px")
@@ -63,6 +68,8 @@ func _run() -> void:
     _check(ui.is_open and paused, "keyboard Y opens and pauses")
     _check(ui.last_report.get("selected_source") == "none", "empty save explicitly reported")
     _check("No valid save" in ui.report_label.text, "player sees missing-save warning")
+    _check("not present" in ui.report_label.text and "none" in ui.report_label.text,
+           "empty slots use readable labels")
     ui.refresh_button.pressed.emit()
     _check(ui.last_report.get("selected_source") == "none", "touch refresh read-only")
     ui._input(_joy(JOY_BUTTON_B))
@@ -77,6 +84,8 @@ func _run() -> void:
     ui.opener.pressed.emit()
     _check(ui.is_open and ui.last_report.get("selected_source") == "primary", "touch opens healthy report")
     _check("Primary is readable" in ui.report_label.text, "healthy status visible")
+    _check("Primary save: healthy" in ui.report_label.text,
+           "healthy primary is translated from diagnostic code")
     game._unhandled_input(_key(KEY_P))
     game.save_game(false)
     _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == primary_bytes and
@@ -93,6 +102,9 @@ func _run() -> void:
     game.load_game()
     _check(game.gold == before_blocked_load, "direct load blocked while inspecting")
     _check("older progress" in ui.report_label.text, "backup age uncertainty visible")
+    _check("damaged file" in ui.report_label.text and
+           "malformed_json" not in ui.report_label.text,
+           "corrupt primary shown as readable warning without machine token")
     _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == damaged_bytes and
            FileAccess.get_file_as_string(SaveService.BACKUP_PATH) == backup_bytes,
            "inspection never modifies forensic save bytes")
@@ -100,6 +112,7 @@ func _run() -> void:
     ui.refresh_button.pressed.emit()
     _check(bool(ui.last_report.get("writer_lock_present", false)), "writer lock displayed")
     _check("never delete a lock" in ui.report_label.text, "no unsafe auto-unlock advice")
+    _check("Writer lock: present" in ui.report_label.text, "lock status readable")
     _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == damaged_bytes and
            FileAccess.get_file_as_string(SaveService.BACKUP_PATH) == backup_bytes,
            "locked refresh preserves bytes")
@@ -109,8 +122,21 @@ func _run() -> void:
     game.village.set_dialogue_locale("es")
     ui._refresh_locale()
     _check("Estado" in ui.opener.text, "Spanish control text")
+    _check("Estado de guardado del valle" == ui.title_label.text,
+           "Spanish modal title")
+    _check(ui._human_status("invalid_payload") == "datos de guardado inválidos",
+           "invalid payload code translated")
+    _check(ui._human_status("unreadable") == "no se puede leer el archivo",
+           "unreadable status translated")
+    _check(ui._human_status("unrecognized_new_code") == "estado desconocido",
+           "unknown future code safely translated")
     ui.opener.pressed.emit()
     _check("progreso anterior" in ui.report_label.text, "Spanish recovery explanation")
+    _check("archivo dañado" in ui.report_label.text and
+           "malformed_json" not in ui.report_label.text,
+           "Spanish corruption warning has no raw code")
+    _check("Bloqueo de escritura: ausente" in ui.report_label.text,
+           "Spanish absent lock label")
     ui.close_button.pressed.emit()
     _check(game.gold == initial_gold + 7 and game.inventory == initial_items and
            game.day_epoch() == initial_epoch, "UI conserves economy, inventory and epoch")
