@@ -1,0 +1,2029 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "base_main": "60ddc826630dc7e7279b4f9d2cf7e7ca39a40eec",
+  "source": {
+    "branch": "game/everbloom-construction-phaseB-100-20261102",
+    "commit": "f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+    "path": "docs/innovation/construction/phaseB_100_concepts.json",
+    "blob_sha": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b"
+  },
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "migration_policy": "Optional construction namespace: absent legacy fields default to inactive state; reject malformed present nested state atomically, never drop unknown fields. Principal owns save schema/migrations.",
+  "state_contracts": [
+    {
+      "id": "EB-B-011",
+      "title": "Surveyor Ribbon Parcel Exchange",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "parcel_polygon",
+        "access_receipts",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_011",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "parcel_polygon": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "x_cm": {
+                "type": "integer",
+                "min": -200000,
+                "max": 200000,
+                "default": 0
+              },
+              "z_cm": {
+                "type": "integer",
+                "min": -200000,
+                "max": 200000,
+                "default": 0
+              }
+            },
+            "default": {
+              "x_cm": 0,
+              "z_cm": 0
+            }
+          },
+          "max_items": 32,
+          "default": []
+        },
+        "access_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "consent_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "corridor_width_cm": {
+                "type": "integer",
+                "min": 150,
+                "max": 500,
+                "default": 180
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            },
+            "default": {
+              "lot_id": "",
+              "consent_id": "",
+              "corridor_width_cm": 180,
+              "epoch": 1
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "lot_id"
+        }
+      },
+      "rules": [
+        "simple_polygon_area",
+        "polygon_access_consent",
+        "consent_epoch_bound"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "parcel_polygon": [
+          {
+            "x_cm": 0,
+            "z_cm": 0
+          },
+          {
+            "x_cm": 400,
+            "z_cm": 0
+          },
+          {
+            "x_cm": 400,
+            "z_cm": 400
+          },
+          {
+            "x_cm": 0,
+            "z_cm": 400
+          }
+        ],
+        "access_receipts": [
+          {
+            "lot_id": "lotA",
+            "consent_id": "signedA",
+            "corridor_width_cm": 180,
+            "epoch": 1
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "missing corridor consent",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "parcel_polygon": [
+              {
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 400
+              },
+              {
+                "x_cm": 0,
+                "z_cm": 400
+              }
+            ],
+            "access_receipts": []
+          }
+        },
+        {
+          "reason": "crossing polygon",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "parcel_polygon": [
+              {
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 400
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 0,
+                "z_cm": 400
+              }
+            ],
+            "access_receipts": [
+              {
+                "lot_id": "lotA",
+                "consent_id": "signedA",
+                "corridor_width_cm": 180,
+                "epoch": 1
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Village consent; Valley parcels",
+      "materials_unverified": [
+        "fiber"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-012",
+      "title": "Quakeproof Footprint Puzzle",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "soil_class",
+        "damper_graph",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_012",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "soil_class": {
+          "type": "enum",
+          "values": [
+            "unknown",
+            "loam",
+            "rock",
+            "clay",
+            "sand"
+          ],
+          "default": "unknown"
+        },
+        "damper_graph": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "anchor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "spacing_cm": {
+                "type": "integer",
+                "min": 30,
+                "max": 400,
+                "default": 120
+              },
+              "capacity_kg": {
+                "type": "integer",
+                "min": 1,
+                "max": 20000,
+                "default": 1000
+              },
+              "grounded": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "anchor_id": "",
+              "spacing_cm": 120,
+              "capacity_kg": 1000,
+              "grounded": false
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "anchor_id"
+        }
+      },
+      "rules": [
+        "soil_required_for_dampers",
+        "grounded_damper_required"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "soil_class": "rock",
+        "damper_graph": [
+          {
+            "anchor_id": "base1",
+            "spacing_cm": 120,
+            "capacity_kg": 1000,
+            "grounded": true
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "soil unspecified",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "soil_class": "unknown",
+            "damper_graph": [
+              {
+                "anchor_id": "base1",
+                "spacing_cm": 120,
+                "capacity_kg": 1000,
+                "grounded": true
+              }
+            ]
+          }
+        },
+        {
+          "reason": "ungrounded",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "soil_class": "rock",
+            "damper_graph": [
+              {
+                "anchor_id": "base1",
+                "spacing_cm": 120,
+                "capacity_kg": 1000,
+                "grounded": false
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Farming soil; Construction supports",
+      "materials_unverified": [
+        "clay"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-013",
+      "title": "Grainwise Joinery Bench",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "grain_angle",
+        "offcut_mass",
+        "receipts"
+      ],
+      "additions": [
+        "input_mass_g"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_013",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "grain_angle": {
+          "type": "integer",
+          "min": -180,
+          "max": 180,
+          "default": 0
+        },
+        "offcut_mass": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000,
+          "default": 0
+        },
+        "input_mass_g": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000,
+          "default": 0
+        }
+      },
+      "rules": [
+        "offcut_lte_input"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "grain_angle": 45,
+        "offcut_mass": 300,
+        "input_mass_g": 2000
+      },
+      "invalid_examples": [
+        {
+          "reason": "mass creation",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "grain_angle": 45,
+            "offcut_mass": 2001,
+            "input_mass_g": 2000
+          }
+        },
+        {
+          "reason": "out-of-range angle",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "grain_angle": 181,
+            "offcut_mass": 300,
+            "input_mass_g": 2000
+          }
+        }
+      ],
+      "authority": "Principal material debit; Construction joinery",
+      "materials_unverified": [
+        "iron",
+        "glass"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-014",
+      "title": "Curvecraft Wall Spline",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "control_points",
+        "panels",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_014",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "control_points": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "x_cm": {
+                "type": "integer",
+                "min": -200000,
+                "max": 200000,
+                "default": 0
+              },
+              "z_cm": {
+                "type": "integer",
+                "min": -200000,
+                "max": 200000,
+                "default": 0
+              }
+            },
+            "default": {
+              "x_cm": 0,
+              "z_cm": 0
+            }
+          },
+          "max_items": 24,
+          "default": []
+        },
+        "panels": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "segment_index": {
+                "type": "integer",
+                "min": 0,
+                "max": 22,
+                "default": 0
+              },
+              "width_cm": {
+                "type": "integer",
+                "min": 30,
+                "max": 400,
+                "default": 120
+              },
+              "opening_width_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 350,
+                "default": 0
+              }
+            },
+            "default": {
+              "segment_index": 0,
+              "width_cm": 120,
+              "opening_width_cm": 0
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "segment_index"
+        }
+      },
+      "rules": [
+        "spline_spacing",
+        "panel_segment_bound",
+        "jamb_width"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "control_points": [
+          {
+            "x_cm": 0,
+            "z_cm": 0
+          },
+          {
+            "x_cm": 400,
+            "z_cm": 0
+          },
+          {
+            "x_cm": 400,
+            "z_cm": 400
+          }
+        ],
+        "panels": [
+          {
+            "segment_index": 0,
+            "width_cm": 120,
+            "opening_width_cm": 60
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "nonexistent segment",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "control_points": [
+              {
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 400
+              }
+            ],
+            "panels": [
+              {
+                "segment_index": 2,
+                "width_cm": 120,
+                "opening_width_cm": 60
+              }
+            ]
+          }
+        },
+        {
+          "reason": "no jamb",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "control_points": [
+              {
+                "x_cm": 0,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 0
+              },
+              {
+                "x_cm": 400,
+                "z_cm": 400
+              }
+            ],
+            "panels": [
+              {
+                "segment_index": 0,
+                "width_cm": 120,
+                "opening_width_cm": 110
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Valley collision/nav; Construction walls",
+      "materials_unverified": [
+        "fiber",
+        "dye"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-015",
+      "title": "Mortar Clock Masonry",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "course_graph",
+        "cure_epoch",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_015",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "course_graph": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "course_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "laid_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "load_capacity_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 20000,
+                "default": 0
+              }
+            },
+            "default": {
+              "course_id": "",
+              "laid_epoch": 1,
+              "load_capacity_kg": 0
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "course_id"
+        },
+        "cure_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rules": [
+        "cure_after_laid",
+        "laid_not_future"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "course_graph": [
+          {
+            "course_id": "courseA",
+            "laid_epoch": 1,
+            "load_capacity_kg": 500
+          }
+        ],
+        "cure_epoch": 2
+      },
+      "invalid_examples": [
+        {
+          "reason": "cure too early",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "course_graph": [
+              {
+                "course_id": "courseA",
+                "laid_epoch": 1,
+                "load_capacity_kg": 500
+              }
+            ],
+            "cure_epoch": 1
+          }
+        },
+        {
+          "reason": "missing cure",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "course_graph": [
+              {
+                "course_id": "courseA",
+                "laid_epoch": 1,
+                "load_capacity_kg": 500
+              }
+            ],
+            "cure_epoch": -1
+          }
+        }
+      ],
+      "authority": "Principal clock/weather; Construction masonry",
+      "materials_unverified": [
+        "clay",
+        "seed"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-016",
+      "title": "Snowdrift Roof Sculptor",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "roof_faces",
+        "load_map",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_016",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "roof_faces": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "face_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "pitch_deg": {
+                "type": "integer",
+                "min": 5,
+                "max": 70,
+                "default": 35
+              },
+              "area_dm2": {
+                "type": "integer",
+                "min": 1,
+                "max": 100000,
+                "default": 1000
+              },
+              "support_rating_kg": {
+                "type": "integer",
+                "min": 1,
+                "max": 20000,
+                "default": 1000
+              }
+            },
+            "default": {
+              "face_id": "",
+              "pitch_deg": 35,
+              "area_dm2": 1000,
+              "support_rating_kg": 1000
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "face_id"
+        },
+        "load_map": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "face_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "snow_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 20000,
+                "default": 0
+              },
+              "wind_sector": {
+                "type": "enum",
+                "values": [
+                  "N",
+                  "NE",
+                  "E",
+                  "SE",
+                  "S",
+                  "SW",
+                  "W",
+                  "NW",
+                  "calm"
+                ],
+                "default": "N"
+              }
+            },
+            "default": {
+              "face_id": "",
+              "snow_kg": 0,
+              "wind_sector": "N"
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "face_id"
+        }
+      },
+      "rules": [
+        "roof_face_ref",
+        "snow_lte_rating"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "roof_faces": [
+          {
+            "face_id": "roof1",
+            "pitch_deg": 35,
+            "area_dm2": 1000,
+            "support_rating_kg": 1000
+          }
+        ],
+        "load_map": [
+          {
+            "face_id": "roof1",
+            "snow_kg": 400,
+            "wind_sector": "N"
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "orphan roof",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "roof_faces": [
+              {
+                "face_id": "roof1",
+                "pitch_deg": 35,
+                "area_dm2": 1000,
+                "support_rating_kg": 1000
+              }
+            ],
+            "load_map": [
+              {
+                "face_id": "ghost",
+                "snow_kg": 400,
+                "wind_sector": "N"
+              }
+            ]
+          }
+        },
+        {
+          "reason": "overload",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "roof_faces": [
+              {
+                "face_id": "roof1",
+                "pitch_deg": 35,
+                "area_dm2": 1000,
+                "support_rating_kg": 1000
+              }
+            ],
+            "load_map": [
+              {
+                "face_id": "roof1",
+                "snow_kg": 2000,
+                "wind_sector": "N"
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Principal weather; Construction roofs",
+      "materials_unverified": [
+        "glass"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-017",
+      "title": "Stairflow Route Designer",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "stair_runs",
+        "clearance",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_017",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "stair_runs": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "run_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "rise_cm": {
+                "type": "integer",
+                "min": 1,
+                "max": 400,
+                "default": 240
+              },
+              "tread_count": {
+                "type": "integer",
+                "min": 1,
+                "max": 40,
+                "default": 12
+              },
+              "tread_depth_cm": {
+                "type": "integer",
+                "min": 15,
+                "max": 60,
+                "default": 30
+              },
+              "headroom_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 400,
+                "default": 210
+              }
+            },
+            "default": {
+              "run_id": "",
+              "rise_cm": 240,
+              "tread_count": 12,
+              "tread_depth_cm": 30,
+              "headroom_cm": 210
+            }
+          },
+          "max_items": 24,
+          "default": [],
+          "unique_by": "run_id"
+        },
+        "clearance": {
+          "type": "integer",
+          "min": 0,
+          "max": 500,
+          "default": 0
+        }
+      },
+      "rules": [
+        "riser_max_22",
+        "headroom_min_190",
+        "clearance_min_90"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "stair_runs": [
+          {
+            "run_id": "stair1",
+            "rise_cm": 240,
+            "tread_count": 12,
+            "tread_depth_cm": 30,
+            "headroom_cm": 210
+          }
+        ],
+        "clearance": 100
+      },
+      "invalid_examples": [
+        {
+          "reason": "blocked access",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "stair_runs": [
+              {
+                "run_id": "stair1",
+                "rise_cm": 240,
+                "tread_count": 12,
+                "tread_depth_cm": 30,
+                "headroom_cm": 210
+              }
+            ],
+            "clearance": 50
+          }
+        },
+        {
+          "reason": "unsafe rise",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "stair_runs": [
+              {
+                "run_id": "stair1",
+                "rise_cm": 300,
+                "tread_count": 10,
+                "tread_depth_cm": 30,
+                "headroom_cm": 210
+              }
+            ],
+            "clearance": 100
+          }
+        }
+      ],
+      "authority": "Valley pathfinding; Construction stairs",
+      "materials_unverified": [
+        "dye"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-018",
+      "title": "Loftlift Hoist Assembly",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "lift_track",
+        "cargo_manifest",
+        "receipts"
+      ],
+      "additions": [
+        "rated_capacity_kg"
+      ],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_018",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "lift_track": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "floor_index": {
+                "type": "integer",
+                "min": 0,
+                "max": 8,
+                "default": 0
+              },
+              "elevation_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 5000,
+                "default": 0
+              },
+              "anchor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              }
+            },
+            "default": {
+              "floor_index": 0,
+              "elevation_cm": 0,
+              "anchor_id": ""
+            }
+          },
+          "max_items": 10,
+          "default": [],
+          "unique_by": "floor_index"
+        },
+        "cargo_manifest": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "item_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "quantity": {
+                "type": "integer",
+                "min": 1,
+                "max": 999,
+                "default": 1
+              },
+              "mass_kg": {
+                "type": "integer",
+                "min": 1,
+                "max": 2000,
+                "default": 1
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              }
+            },
+            "default": {
+              "item_id": "",
+              "quantity": 1,
+              "mass_kg": 1,
+              "receipt_id": ""
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "receipt_id"
+        },
+        "rated_capacity_kg": {
+          "type": "integer",
+          "min": 0,
+          "max": 2000,
+          "default": 0
+        }
+      },
+      "rules": [
+        "lift_track_ascending",
+        "cargo_two_floors",
+        "cargo_capacity"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "lift_track": [
+          {
+            "floor_index": 0,
+            "elevation_cm": 0,
+            "anchor_id": "a0"
+          },
+          {
+            "floor_index": 1,
+            "elevation_cm": 300,
+            "anchor_id": "a1"
+          }
+        ],
+        "cargo_manifest": [
+          {
+            "item_id": "wood",
+            "quantity": 2,
+            "mass_kg": 40,
+            "receipt_id": "cargoA"
+          }
+        ],
+        "rated_capacity_kg": 200
+      },
+      "invalid_examples": [
+        {
+          "reason": "overloaded lift",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "lift_track": [
+              {
+                "floor_index": 0,
+                "elevation_cm": 0,
+                "anchor_id": "a0"
+              },
+              {
+                "floor_index": 1,
+                "elevation_cm": 300,
+                "anchor_id": "a1"
+              }
+            ],
+            "cargo_manifest": [
+              {
+                "item_id": "wood",
+                "quantity": 2,
+                "mass_kg": 40,
+                "receipt_id": "cargoA"
+              }
+            ],
+            "rated_capacity_kg": 30
+          }
+        },
+        {
+          "reason": "descending lift",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "lift_track": [
+              {
+                "floor_index": 0,
+                "elevation_cm": 300,
+                "anchor_id": "a0"
+              },
+              {
+                "floor_index": 1,
+                "elevation_cm": 0,
+                "anchor_id": "a1"
+              }
+            ],
+            "cargo_manifest": [
+              {
+                "item_id": "wood",
+                "quantity": 2,
+                "mass_kg": 40,
+                "receipt_id": "cargoA"
+              }
+            ],
+            "rated_capacity_kg": 200
+          }
+        }
+      ],
+      "authority": "Principal cargo ledger; Construction lifts",
+      "materials_unverified": [
+        "seed",
+        "iron"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-019",
+      "title": "Heatmap Envelope Studio",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "thermal_edges",
+        "leak_map",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_019",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "thermal_edges": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "edge_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "insulation_r": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 100
+              },
+              "vent_open": {
+                "type": "boolean",
+                "default": false
+              },
+              "length_cm": {
+                "type": "integer",
+                "min": 20,
+                "max": 10000,
+                "default": 200
+              }
+            },
+            "default": {
+              "edge_id": "",
+              "insulation_r": 100,
+              "vent_open": false,
+              "length_cm": 200
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "edge_id"
+        },
+        "leak_map": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "edge_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "heat_loss_mw": {
+                "type": "integer",
+                "min": 0,
+                "max": 100000,
+                "default": 0
+              }
+            },
+            "default": {
+              "edge_id": "",
+              "heat_loss_mw": 0
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "edge_id"
+        }
+      },
+      "rules": [
+        "leak_edge_ref",
+        "vent_nonzero_leak"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "thermal_edges": [
+          {
+            "edge_id": "edgeA",
+            "insulation_r": 100,
+            "vent_open": true,
+            "length_cm": 200
+          }
+        ],
+        "leak_map": [
+          {
+            "edge_id": "edgeA",
+            "heat_loss_mw": 500
+          }
+        ]
+      },
+      "invalid_examples": [
+        {
+          "reason": "unknown edge",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "thermal_edges": [
+              {
+                "edge_id": "edgeA",
+                "insulation_r": 100,
+                "vent_open": true,
+                "length_cm": 200
+              }
+            ],
+            "leak_map": [
+              {
+                "edge_id": "ghost",
+                "heat_loss_mw": 500
+              }
+            ]
+          }
+        },
+        {
+          "reason": "vent zero loss",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "thermal_edges": [
+              {
+                "edge_id": "edgeA",
+                "insulation_r": 100,
+                "vent_open": true,
+                "length_cm": 200
+              }
+            ],
+            "leak_map": [
+              {
+                "edge_id": "edgeA",
+                "heat_loss_mw": 0
+              }
+            ]
+          }
+        }
+      ],
+      "authority": "Principal weather; Village comfort",
+      "materials_unverified": [
+        "fiber"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    },
+    {
+      "id": "EB-B-020",
+      "title": "Windlace Bracing Workshop",
+      "source_fields": [
+        "site_id",
+        "revision",
+        "day_epoch",
+        "brace_graph",
+        "wind_case",
+        "receipts"
+      ],
+      "additions": [],
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_020",
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "brace_graph": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "brace_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "from_anchor": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "to_anchor": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "grounded": {
+                "type": "boolean",
+                "default": false
+              },
+              "capacity_kg": {
+                "type": "integer",
+                "min": 1,
+                "max": 20000,
+                "default": 1000
+              }
+            },
+            "default": {
+              "brace_id": "",
+              "from_anchor": "",
+              "to_anchor": "",
+              "grounded": false,
+              "capacity_kg": 1000
+            }
+          },
+          "max_items": 128,
+          "default": [],
+          "unique_by": "brace_id"
+        },
+        "wind_case": {
+          "type": "object",
+          "fields": {
+            "sector": {
+              "type": "enum",
+              "values": [
+                "calm",
+                "N",
+                "NE",
+                "E",
+                "SE",
+                "S",
+                "SW",
+                "W",
+                "NW"
+              ],
+              "default": "calm"
+            },
+            "peak_kph": {
+              "type": "integer",
+              "min": 0,
+              "max": 200,
+              "default": 0
+            },
+            "expected_load_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 20000,
+              "default": 0
+            }
+          },
+          "default": {
+            "sector": "calm",
+            "peak_kph": 0,
+            "expected_load_kg": 0
+          }
+        }
+      },
+      "rules": [
+        "brace_distinct_endpoints",
+        "grounded_brace",
+        "wind_capacity"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 1,
+        "receipts": [
+          "cmdA"
+        ],
+        "brace_graph": [
+          {
+            "brace_id": "brace1",
+            "from_anchor": "ground",
+            "to_anchor": "roof",
+            "grounded": true,
+            "capacity_kg": 1000
+          }
+        ],
+        "wind_case": {
+          "sector": "N",
+          "peak_kph": 90,
+          "expected_load_kg": 500
+        }
+      },
+      "invalid_examples": [
+        {
+          "reason": "wind overload",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "brace_graph": [
+              {
+                "brace_id": "brace1",
+                "from_anchor": "ground",
+                "to_anchor": "roof",
+                "grounded": true,
+                "capacity_kg": 1000
+              }
+            ],
+            "wind_case": {
+              "sector": "N",
+              "peak_kph": 90,
+              "expected_load_kg": 1500
+            }
+          }
+        },
+        {
+          "reason": "brace self loop",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 1,
+            "receipts": [
+              "cmdA"
+            ],
+            "brace_graph": [
+              {
+                "brace_id": "brace1",
+                "from_anchor": "ground",
+                "to_anchor": "ground",
+                "grounded": true,
+                "capacity_kg": 1000
+              }
+            ],
+            "wind_case": {
+              "sector": "N",
+              "peak_kph": 90,
+              "expected_load_kg": 500
+            }
+          }
+        }
+      ],
+      "authority": "Principal weather; Construction load paths",
+      "materials_unverified": [
+        "clay"
+      ],
+      "receipt_contract": {
+        "command_id": "unique stable string 1..96; repeat idempotent",
+        "revision": "optimistic compare-and-swap",
+        "epoch": "Principal monotonic 56-day epoch",
+        "debit": "Principal owns inventory; preview no debit; undo only if dependency safe"
+      },
+      "input_contract": {
+        "keyboard_mouse": "Remappable preview/rotate/confirm/cancel",
+        "controller": "Stick/shoulder and confirm/cancel",
+        "touch": "Drag handles, precision steppers and large confirm/cancel"
+      },
+      "native_gate": "Not tested in native Godot. Require assembled-save, 112-day replay, hostile nested state rejection, input parity and device performance before Phase C."
+    }
+  ]
+}
