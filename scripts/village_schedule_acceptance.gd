@@ -55,9 +55,11 @@ func _run() -> void:
                 _check(resident["node"].position.distance_to(village._place_position(resident, place)) < 0.01,
                     "authored destination coordinate reached " + rid)
                 var profile: Dictionary = village._profile(rid)
-                if village._is_rest_day(profile) and minute >= 540 and minute < 960:
-                    _check(place != str(profile["workplace"]) or str(profile["workplace"]) == str(profile.get("leisure", "")),
-                        "rest-day schedule excludes ordinary shift " + rid)
+                if village._is_rest_day(profile) and minute >= 540 and minute < 1080 and village._active_festival().is_empty():
+                    # A rain shelter can be the same building as an employer.
+                    # Location alone does not imply that a rest-day shift exists.
+                    var expected_rest: String = str(profile["rain_shelter"]) if host.weather == "Rain" else str(profile["leisure"])
+                    _check(place == expected_rest, "rest-day leisure/shelter schedule " + rid)
 
     # Reproduce real defect: destination label flips before the actor arrives.
     host.year = 1
@@ -130,8 +132,13 @@ func _run() -> void:
     _check(host.gold == gold_before + 48, "two annual shifts total exactly 48 petals")
     _check(int(copy.last_job.get("mira", -1)) == 57, "work ledger records monotonic year-two epoch")
     var year_two_state: Variant = JSON.parse_string(JSON.stringify(copy.save_state()))
-    _check(year_two_state is Dictionary and year_two_state == copy.save_state(),
-        "year-two social JSON replay stable")
+    _check(year_two_state is Dictionary, "year-two JSON parse stable")
+    var replay = load("res://scripts/village.gd").new()
+    root.add_child(replay)
+    replay.setup(host)
+    if year_two_state is Dictionary:
+        replay.load_state(year_two_state)
+    _check(replay.save_state() == copy.save_state(), "year-two normalized social JSON replay stable")
 
     # Schedule gating still wins even if the worker has reached the lunch location.
     host.day = 2
