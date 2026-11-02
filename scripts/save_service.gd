@@ -9,6 +9,8 @@ extends RefCounted
 const SAVE_PATH: String = "user://everbloom_save_v1.json"
 const TEMP_PATH: String = "user://everbloom_save_v1.json.tmp"
 const BACKUP_PATH: String = "user://everbloom_save_v1.json.bak"
+# This is intentionally a lock directory rather than a shared .lock file:
+# its creation must be exclusive before any temp/backup rotation begins.
 # Atomic directory creation excludes simultaneous local save writers. A crash
 # may leave this directory behind; never auto-remove an unverified stale lock.
 const WRITE_LOCK_PATH: String = "user://everbloom_save_v1.json.writer.lock"
