@@ -6,6 +6,14 @@ var forage_locations: Array[Vector3] = []
 var forage_day: int = -1
 var fishing_day: int = -1
 var lake_center := Vector3(27.0, 0.0, -28.0)
+var ground_mesh: MeshInstance3D
+var lake_surface: MeshInstance3D
+var flower_instances: MultiMeshInstance3D
+var flower_variants: Array[int] = []
+var foliage_canopies: Array[MeshInstance3D] = []
+var foliage_variants: Array[int] = []
+var last_season: int = -1
+var last_weather: String = ""
 
 func setup(host) -> void:
     game = host
@@ -15,8 +23,11 @@ func setup(host) -> void:
     _town()
     _lake()
     _woods()
+    _wildflowers()
     _hills()
     _wayfinding()
+    _apply_season()
+    _apply_weather()
 
 func material(tint: Color) -> StandardMaterial3D:
     var key := tint.to_html()
@@ -52,7 +63,7 @@ func sphere(at: Vector3, radius: float, tint: Color, parent: Node3D = self) -> M
     return mesh_instance
 
 func _land() -> void:
-    box(Vector3(0, -0.5, 0), Vector3(145, 1, 145), Color("#a0bb82"))
+    ground_mesh = box(Vector3(0, -0.5, 0), Vector3(145, 1, 145), Color("#a0bb82"))
     var body := StaticBody3D.new()
     add_child(body)
     var collider := CollisionShape3D.new()
@@ -96,6 +107,13 @@ func _town() -> void:
     _house(Vector3(34,0,12), Color("#b9ceb1"), Color("#60989b"))
     _house(Vector3(44,0,5), Color("#e3d0a7"), Color("#a27660"))
     _house(Vector3(35,0,-7), Color("#b3aec9"), Color("#6c768c"))
+    # Two original timber market shelters frame the civic square.
+    for stall in [Vector3(48, 0, 15), Vector3(48, 0, -7)]:
+        box(stall + Vector3(0, 1.1, 0), Vector3(3.5, 0.22, 2.2), Color("#9a7557"))
+        for dx in [-1.4, 1.4]:
+            for dz in [-0.8, 0.8]:
+                box(stall + Vector3(dx, 1.1, dz), Vector3(0.18, 2.2, 0.18), Color("#76543c"))
+        box(stall + Vector3(0, 2.3, 0), Vector3(4.0, 0.25, 2.8), Color("#c87f73"))
     sphere(Vector3(30,2.3,0), 1.4, Color("#e9ce89"))
     box(Vector3(30,0.65,0),Vector3(0.9,1.3,0.9),Color("#a89575"))
     for i in range(10):
@@ -113,9 +131,18 @@ func _lake() -> void:
     lake.position = lake_center + Vector3(0, 0.075, 0)
     lake.material_override = material(Color("#68aac5"))
     add_child(lake)
+    lake_surface = lake
     for i in range(8):
         var a: float = float(i) * TAU / 8.0
         sphere(lake_center + Vector3(cos(a)*9.4,0.4,sin(a)*9.4),0.5,Color("#d6d8bd"))
+    # Reed silhouettes are authored from local primitives; no third-party textures.
+    for i in range(32):
+        var angle: float = float(i) * TAU / 32.0
+        var distance: float = 9.2 + float(i % 3) * 0.34
+        var base := lake_center + Vector3(cos(angle) * distance, 0.0, sin(angle) * distance)
+        var height: float = 0.7 + float(i % 4) * 0.13
+        box(base + Vector3(0, height * 0.5, 0), Vector3(0.07, height, 0.07), Color("#76916b"))
+        sphere(base + Vector3(0, height, 0), 0.12, Color("#bd9d6e"))
 
 func _woods() -> void:
     var rng := RandomNumberGenerator.new()
@@ -138,8 +165,102 @@ func _woods() -> void:
 func _tree(at: Vector3, scale: float, index: int) -> void:
     box(at+Vector3(0,1.2*scale,0),Vector3(0.55*scale,2.6*scale,0.55*scale),Color("#785e43"))
     var leaf := Color("#75a36e") if index%3 else Color("#98b87a")
-    sphere(at+Vector3(0,3.0*scale,0),1.55*scale,leaf)
-    sphere(at+Vector3(-0.8*scale,2.7*scale,0),1.1*scale,leaf.lightened(0.1))
+    var upper := sphere(at+Vector3(0,3.0*scale,0),1.55*scale,leaf)
+    var lower := sphere(at+Vector3(-0.8*scale,2.7*scale,0),1.1*scale,leaf.lightened(0.1))
+    foliage_canopies.append(upper)
+    foliage_variants.append(index % 3)
+    foliage_canopies.append(lower)
+    foliage_variants.append((index + 1) % 3)
+
+
+func _wildflowers() -> void:
+    # Batched, deterministic native Godot geometry: one draw source for meadow blossoms.
+    # Mobile is a conservative source-level fallback, not a measured device result.
+    var count: int = 180 if OS.has_feature("mobile") else 480
+    var blossom := SphereMesh.new()
+    blossom.radius = 0.16
+    blossom.height = 0.32
+    blossom.radial_segments = 6
+    blossom.rings = 4
+    var blossom_material := StandardMaterial3D.new()
+    blossom_material.vertex_color_use_as_albedo = true
+    blossom_material.roughness = 0.93
+    blossom.material = blossom_material
+    var batch := MultiMesh.new()
+    batch.transform_format = MultiMesh.TRANSFORM_3D
+    batch.use_colors = true
+    batch.mesh = blossom
+    batch.instance_count = count
+    var rng := RandomNumberGenerator.new()
+    rng.seed = 20261102
+    for i in range(count):
+        var x: float = 0.0
+        var z: float = 0.0
+        for attempt in range(48):
+            x = rng.randf_range(-58.0, 57.0)
+            z = rng.randf_range(-57.0, 57.0)
+            if Vector2(x + 15.0, z).length() > 22.0 and Vector2(x - 30.0, z).length() > 20.0 and Vector2(x - 27.0, z + 28.0).length() > 15.0:
+                break
+        var size: float = rng.randf_range(0.65, 1.5)
+        batch.set_instance_transform(i, Transform3D(Basis().scaled(Vector3(size, size, size)), Vector3(x, 0.16 * size, z)))
+        var variant: int = i % 3
+        flower_variants.append(variant)
+        batch.set_instance_color(i, _flower_color(0, variant))
+    flower_instances = MultiMeshInstance3D.new()
+    flower_instances.name = "OriginalBatchedWildflowers"
+    flower_instances.multimesh = batch
+    flower_instances.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+    add_child(flower_instances)
+
+func _flower_color(season: int, variant: int) -> Color:
+    var palettes := [
+        [Color("#f6c7d7"), Color("#f5e3a4"), Color("#d9c9f0")],
+        [Color("#f5e29b"), Color("#f8c2a4"), Color("#d5e7e2")],
+        [Color("#dca276"), Color("#f3d69c"), Color("#c6a6ba")],
+        [Color("#f1f1df"), Color("#d5e3f2"), Color("#d6d2e6")]
+    ]
+    return palettes[clampi(season, 0, 3)][clampi(variant, 0, 2)]
+
+func _apply_season() -> void:
+    if game == null:
+        return
+    var season: int = clampi(int(game.season_index), 0, 3)
+    if season == last_season:
+        return
+    last_season = season
+    var ground_colors := [Color("#a0bb82"), Color("#7fa46c"), Color("#c4a47c"), Color("#c9d6d9")]
+    var canopy_colors := [Color("#79ac78"), Color("#4e966d"), Color("#bb805b"), Color("#b9c7cc")]
+    if ground_mesh != null:
+        ground_mesh.material_override = material(ground_colors[season])
+    for i in range(foliage_canopies.size()):
+        var tint: Color = canopy_colors[season]
+        if foliage_variants[i] == 1:
+            tint = tint.lightened(0.14)
+        elif foliage_variants[i] == 2:
+            tint = tint.darkened(0.10)
+        foliage_canopies[i].material_override = material(tint)
+    if flower_instances != null:
+        for i in range(flower_variants.size()):
+            flower_instances.multimesh.set_instance_color(i, _flower_color(season, flower_variants[i]))
+
+func _apply_weather() -> void:
+    if game == null:
+        return
+    var current_weather: String = str(game.weather)
+    if current_weather == last_weather:
+        return
+    last_weather = current_weather
+    if lake_surface != null:
+        var tint := Color("#4f8296") if current_weather == "Rain" else (Color("#a0bbc0") if current_weather == "Mist" else Color("#68aac5"))
+        lake_surface.material_override = material(tint)
+
+func _process(_delta: float) -> void:
+    if game == null:
+        return
+    if last_season != int(game.season_index):
+        _apply_season()
+    if last_weather != str(game.weather):
+        _apply_weather()
 
 func _hills() -> void:
     for i in range(9):
@@ -167,19 +288,19 @@ func act(mode: String, position: Vector3) -> String:
     if mode == "fish":
         if position.distance_to(lake_center) > 12.0:
             return "Visit Glimmer Lake to fish."
-        if fishing_day == game.day:
+        if fishing_day == game.day_epoch():
             return "The fishing spot needs time to recover."
         if not game.spend_energy(8.0):
             return "You are too tired to cast the line."
-        fishing_day = game.day
+        fishing_day = game.day_epoch()
         game.grant_item("fish", 1)
         return "A silverfin fish tugs your line! +1 fish"
     for point in forage_locations:
-        if position.distance_to(point) < 3.5 and forage_day != game.day:
+        if position.distance_to(point) < 3.5 and forage_day != game.day_epoch():
             if not game.spend_energy(3.0):
                 return "You need rest before gathering more herbs."
             game.grant_item("wild_herb", 2)
-            forage_day = game.day
+            forage_day = game.day_epoch()
             game.add_restoration(1)
             return "You gathered two aromatic herbs from the forest."
     return "Explore the groves and search among the flowers."
