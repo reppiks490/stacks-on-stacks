@@ -67,6 +67,70 @@ func _run() -> void:
     _check("Mira" in ui.rendered_text and "bluebell" in ui.rendered_text, "visible recap includes actual person and gift")
     _check("Festival visits: 1" in ui.rendered_text, "visible festival recap")
     _check(ui.entries.get_child_count() == 6, "six scrollable recap sections")
+    # V19 readable-size controls are real focusable buttons; the tests use
+    # synthetic device events, not a claim of physical mobile/controller QA.
+    _check(ui.smaller_text_button.focus_mode == Control.FOCUS_ALL
+            and ui.larger_text_button.focus_mode == Control.FOCUS_ALL,
+            "text scaling buttons support keyboard, gamepad and touch focus")
+    _check(ui.smaller_text_button.custom_minimum_size.y >= 44.0
+            and ui.larger_text_button.custom_minimum_size.y >= 44.0
+            and ui.close_button.custom_minimum_size.y >= 44.0,
+            "journal control touch targets have a 44-pixel minimum height")
+    var base_card_font: int = ui.cards[0].get_theme_font_size("font_size")
+    var base_history_font: int = ui.history_text.get_theme_font_size("normal_font_size")
+    _check(ui.text_scale_index == 0 and ui.smaller_text_button.disabled
+            and not ui.larger_text_button.disabled, "initial readable-size boundary")
+    var initial_page: int = ui.history_page
+    ui.larger_text_button.pressed.emit()
+    _check(ui.text_scale_index == 1
+            and ui.cards[0].get_theme_font_size("font_size") > base_card_font
+            and ui.history_text.get_theme_font_size("normal_font_size") > base_history_font,
+            "touch/mouse A+ enlarges resident and authentic transcript text")
+    _check(ui.selected_index == 0 and ui.history_page == initial_page
+            and ui.entries.get_child_count() == 6, "text scale preserves selection, page and cards")
+    var grow_pad := InputEventJoypadButton.new()
+    grow_pad.pressed = true
+    grow_pad.button_index = JOY_BUTTON_Y
+    ui._input(grow_pad)
+    _check(ui.text_scale_index == 2 and ui.larger_text_button.disabled,
+            "controller Y reaches bounded largest readable size")
+    ui._input(grow_pad)
+    _check(ui.text_scale_index == 2, "controller cannot exceed text size cap")
+    var shrink_pad := InputEventJoypadButton.new()
+    shrink_pad.pressed = true
+    shrink_pad.button_index = JOY_BUTTON_X
+    ui._input(shrink_pad)
+    _check(ui.text_scale_index == 1, "controller X reduces text size")
+    var shrink_key := InputEventKey.new()
+    shrink_key.pressed = true
+    shrink_key.ctrl_pressed = true
+    shrink_key.physical_keycode = KEY_MINUS
+    ui._input(shrink_key)
+    _check(ui.text_scale_index == 0
+            and ui.cards[0].get_theme_font_size("font_size") == base_card_font,
+            "Ctrl+- restores original font size without mouse")
+    var grow_key := InputEventKey.new()
+    grow_key.pressed = true
+    grow_key.ctrl_pressed = true
+    grow_key.physical_keycode = KEY_EQUAL
+    ui._input(grow_key)
+    _check(ui.text_scale_index == 1, "Ctrl+= enlarges journal text")
+    ui.smaller_text_button.pressed.emit()
+    _check(ui.text_scale_index == 0 and ui.smaller_text_button.disabled,
+            "A− button returns to bounded minimum")
+    ui._layout_for_width(360.0)
+    _check(is_equal_approx(ui.panel.anchor_left, 0.02)
+            and is_equal_approx(ui.panel.anchor_right, 0.98)
+            and ui.history_text.custom_minimum_size.y == 95.0,
+            "simulated 360px viewport uses narrow-screen margins and compact history")
+    ui._layout_for_width(1280.0)
+    _check(is_equal_approx(ui.panel.anchor_left, 0.04)
+            and is_equal_approx(ui.panel.anchor_right, 0.96)
+            and ui.history_text.custom_minimum_size.y == 125.0,
+            "simulated desktop viewport restores normal margins and history")
+    _check(village.save_state() == saved_before and host.gold == gold_before
+            and host.inventory == inventory_before,
+            "accessibility and responsive layout never alter social or economic state")
 
     _check(ui.cards.size() == 6 and ui.cards[0].focus_mode == Control.FOCUS_ALL, "six focusable neighbor cards")
     _check(ui.selected_index == 0 and "Mira" in ui.selected_label.text, "first neighbor initially selected")
@@ -107,6 +171,9 @@ func _run() -> void:
     _check("Amistad:" in ui.rendered_text and "Visitas a festivales: 1" in ui.rendered_text, "Spanish recap translates earned state")
     _check("Soren" in ui.selected_label.text and ui.selected_index == 5, "language change preserves selection")
     _check(ui.language_button.text == "English" and ui.close_button.text == "Cerrar", "Spanish controls are visible")
+    _check("Ampliar texto" in ui.larger_text_button.tooltip_text
+            and "Reducir texto" in ui.smaller_text_button.tooltip_text,
+            "Spanish readable-size help remains localized")
     ui._select_neighbor(0)
     _check(ui.history_title.text == "Conversaciones recordadas" and "Día 1 [en]" in ui.history_text.text, "Spanish UI labels preserve historical language provenance")
     ui._select_neighbor(5)
@@ -188,6 +255,11 @@ func _run() -> void:
     _check(not paged.history_earlier_button.disabled and paged.history_later_button.disabled, "history page bounds update buttons")
     paged.history_earlier_button.pressed.emit()
     _check(paged.history_page_label.text == "Page 3 of 4", "touch/mouse earlier button pages history")
+    paged._change_text_scale(1)
+    _check(paged.history_page_label.text == "Page 3 of 4"
+            and paged.history_page == 2 and paged.selected_index == 0,
+            "readable-size change preserves earned-history page and resident")
+    paged._change_text_scale(-1)
     var history_left := InputEventKey.new()
     history_left.pressed = true
     history_left.physical_keycode = KEY_LEFT
