@@ -32,6 +32,7 @@ var animals
 var festivals
 var hero
 var hud
+var save_health_panel
 var game_rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
@@ -65,6 +66,11 @@ func _ready() -> void:
     hud.set_script(load("res://scripts/hud.gd"))
     add_child(hud)
     hud.setup(self)
+    save_health_panel = CanvasLayer.new()
+    save_health_panel.name = "SaveHealthUI"
+    save_health_panel.set_script(load("res://scripts/principal_save_health_panel.gd"))
+    add_child(save_health_panel)
+    save_health_panel.setup(self)
     _show("Welcome home. Tend your garden and befriend the valley.")
 
 func _component(script_path: String, component_name: String):
@@ -147,6 +153,8 @@ func _process(delta: float) -> void:
         camera.look_at(hero.global_position + Vector3(0, 1.0, 0), Vector3.UP)
 
 func _unhandled_input(event: InputEvent) -> void:
+    if save_health_panel != null and save_health_panel.is_open:
+        return
     if event.is_echo():
         return
     if event.is_action_pressed("interact"):

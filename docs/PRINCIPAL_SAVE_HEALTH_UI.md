@@ -1,0 +1,9 @@
+# Principal P05/P11 — player-visible save health (Godot baseline)
+
+The original `scripts/principal_save_health_panel.gd` is a read-only UI adapter to the existing `SaveService.inspect_save_health()`. Player verbs: inspect with keyboard Y, controller Start or >=44px touch button; refresh with touch/keyboard-focusable control; close with Escape/controller B/touch. Modal pause preserves previous simulation pause state. HUD indicates the Y shortcut.
+
+UI shows valid/missing/malformed/invalid/unreadable primary, backup and temporary slots; selected load source; writer-lock presence; corruption-quarantine occupancy. It warns that backups may be older, temporary files are not authoritative, and active locks must never be deleted. No save, recovery, unlock, currency, inventory, relationship or calendar mutation is performed by this adapter. Uses built-in Godot controls/colors, no external assets, and follows Village's English/Spanish UI locale.
+
+Native test `scripts/principal_save_health_panel_acceptance.gd` creates the assembled Game in an isolated empty XDG_DATA_HOME, exercises synthetic keyboard/controller/touch-button paths, checks pause restoration, corrupt primary/valid backup, writer lock, byte-for-byte nonmutation and economy/epoch conservation. CI pins official Godot 4.7.2 SHA-256, imports project and archives exact-HEAD native logs. Physical device playtesting is NOT established.
+
+Dependencies: Principal game/hud/save service; Village presentation locale only. Disk work is on-demand when opening/refreshing, not per-frame. Performance goal <2 ms on desktop for normal saves is **unmeasured**, mobile storage latency unmeasured. Future: Windows locks, power-loss durability, manual safe recovery UX, physical touch/controller tests and broader localization. Innovation Phase C remains closed.
