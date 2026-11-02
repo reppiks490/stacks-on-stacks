@@ -1,0 +1,51 @@
+name: Everbloom Emergence native two-year festival denial QA
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/native_festival_denial/**'
+      - '.github/workflows/everbloom-emergence-e18-festival-denial.yml'
+      - 'scripts/game.gd'
+      - 'scripts/festivals.gd'
+      - 'scripts/save_service.gd'
+      - 'data/festivals.json'
+permissions:
+  contents: read
+jobs:
+  emergence-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      XDG_DATA_HOME: /tmp/everbloom-emergence-festival-e18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and authenticate official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Import actual Godot project
+        run: |
+          set -euo pipefail
+          mkdir -p "$XDG_DATA_HOME"
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee emergence_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' emergence_import.log; then exit 1; fi
+      - name: Exercise 24 real event entitlements and all denial paths
+        run: |
+          set -euo pipefail
+          timeout 180s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://docs/innovation/emergence/native_festival_denial/native_acceptance.gd 2>&1 | tee emergence_festival.log
+          grep -q 'EVERBLOOM EMERGENCE FESTIVAL NATIVE:' emergence_festival.log
+          grep -q '0 failures; 24 awards' emergence_festival.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|EMERGENCE FESTIVAL QA FAILED:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' emergence_festival.log; then exit 1; fi
+      - name: Preserve exact-commit diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-emergence-festival-e18-${{ github.sha }}
+          path: |
+            emergence_import.log
+            emergence_festival.log
+          if-no-files-found: ignore
+          retention-days: 14
