@@ -4,6 +4,7 @@ const SEASONS := ["Spring", "Summer", "Autumn", "Winter"]
 var day: int = 1
 var year: int = 1
 var season_index: int = 0
+var weather: String = "Clear"
 var gold: int = 400
 var energy: float = 100.0
 var restoration: int = 0
