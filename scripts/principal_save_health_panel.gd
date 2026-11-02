@@ -9,6 +9,11 @@ var report_scroll: ScrollContainer
 var title_label: Label
 var refresh_button: Button
 var close_button: Button
+var decrease_text_button: Button
+var increase_text_button: Button
+## Presentation-only scale: never enters the authoritative gameplay save.
+const TEXT_SCALES := [0.85, 1.0, 1.2, 1.4, 1.6]
+var text_scale_index: int = 1
 var last_report: Dictionary = {}
 var is_open: bool = false
 var paused_before_open: bool = false
@@ -74,6 +79,23 @@ func setup(owner) -> void:
     report_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     report_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     report_scroll.add_child(report_label)
+    var size_row := HBoxContainer.new()
+    size_row.name = "TextSizeControls"
+    column.add_child(size_row)
+    decrease_text_button = Button.new()
+    decrease_text_button.name = "DecreaseTextSize"
+    decrease_text_button.custom_minimum_size.y = 44.0
+    decrease_text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    decrease_text_button.focus_mode = Control.FOCUS_ALL
+    decrease_text_button.pressed.connect(func(): change_text_scale(-1))
+    size_row.add_child(decrease_text_button)
+    increase_text_button = Button.new()
+    increase_text_button.name = "IncreaseTextSize"
+    increase_text_button.custom_minimum_size.y = 44.0
+    increase_text_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    increase_text_button.focus_mode = Control.FOCUS_ALL
+    increase_text_button.pressed.connect(func(): change_text_scale(1))
+    size_row.add_child(increase_text_button)
     var row := HBoxContainer.new()
     column.add_child(row)
     refresh_button = Button.new()
@@ -90,6 +112,23 @@ func setup(owner) -> void:
     row.add_child(close_button)
     panel.hide()
     _refresh_locale()
+    _apply_text_scale()
+
+## Bounded, non-persistent UI preference. No save/load, economy or clock access.
+func change_text_scale(direction: int) -> void:
+    if not is_open or direction == 0:
+        return
+    text_scale_index = clampi(text_scale_index + direction, 0, TEXT_SCALES.size() - 1)
+    _apply_text_scale()
+
+func _apply_text_scale() -> void:
+    var factor: float = float(TEXT_SCALES[text_scale_index])
+    title_label.add_theme_font_size_override("font_size", int(round(24.0 * factor)))
+    report_label.add_theme_font_size_override("font_size", int(round(16.0 * factor)))
+    for button: Button in [opener, refresh_button, close_button, decrease_text_button, increase_text_button]:
+        button.add_theme_font_size_override("font_size", int(round(14.0 * factor)))
+    decrease_text_button.disabled = text_scale_index == 0
+    increase_text_button.disabled = text_scale_index == TEXT_SCALES.size() - 1
 
 func _refresh_locale() -> void:
     locale = "es" if game != null and game.village != null and str(game.village.dialogue_locale) == "es" else "en"
@@ -97,6 +136,8 @@ func _refresh_locale() -> void:
     opener.text = _t("Save Health [Y]", "Estado de guardado [Y]")
     refresh_button.text = _t("Refresh inspection", "Actualizar inspección")
     close_button.text = _t("Return to valley", "Volver al valle")
+    decrease_text_button.text = _t("Smaller text [F9]", "Texto menor [F9]")
+    increase_text_button.text = _t("Larger text [F10]", "Texto mayor [F10]")
     if not last_report.is_empty():
         report_label.text = _format_report(last_report)
 
@@ -150,6 +191,8 @@ func _format_report(report: Dictionary) -> String:
                         "El archivo temporal NO es un guardado autorizado."))
     lines.append(_t("Scroll report: PageUp/PageDown, LB/RB, or touch drag.",
                     "Desplazar informe: RePág/AvPág, LB/RB o deslizar."))
+    lines.append(_t("Text size: F9/F10, D-pad Down/Up, or on-screen buttons.",
+                    "Tamaño de texto: F9/F10, cruceta abajo/arriba o botones."))
     return "\n".join(lines)
 
 func refresh_report() -> void:
@@ -180,7 +223,11 @@ func _blocked() -> bool:
     if journal != null and journal.panel != null and journal.panel.visible:
         return true
     var topics = game.village.topic_panel
-    return topics != null and topics.panel != null and topics.panel.visible
+    if topics != null and topics.panel != null and topics.panel.visible:
+        return true
+    # The Village gift chooser was added after the original modal exclusion.
+    var gifts = game.village.gift_panel
+    return gifts != null and gifts.panel != null and gifts.panel.visible
 
 func open_panel() -> void:
     if is_open or _blocked():
@@ -218,7 +265,13 @@ func _process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
     if event is InputEventKey and event.pressed and not event.is_echo():
-        if is_open and event.physical_keycode == KEY_PAGEDOWN:
+        if is_open and event.physical_keycode == KEY_F10:
+            change_text_scale(1)
+            get_viewport().set_input_as_handled()
+        elif is_open and event.physical_keycode == KEY_F9:
+            change_text_scale(-1)
+            get_viewport().set_input_as_handled()
+        elif is_open and event.physical_keycode == KEY_PAGEDOWN:
             _scroll_report(1)
             get_viewport().set_input_as_handled()
         elif is_open and event.physical_keycode == KEY_PAGEUP:
@@ -231,7 +284,13 @@ func _input(event: InputEvent) -> void:
             close_panel()
             get_viewport().set_input_as_handled()
     elif event is InputEventJoypadButton and event.pressed:
-        if is_open and event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+        if is_open and event.button_index == JOY_BUTTON_DPAD_UP:
+            change_text_scale(1)
+            get_viewport().set_input_as_handled()
+        elif is_open and event.button_index == JOY_BUTTON_DPAD_DOWN:
+            change_text_scale(-1)
+            get_viewport().set_input_as_handled()
+        elif is_open and event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
             _scroll_report(1)
             get_viewport().set_input_as_handled()
         elif is_open and event.button_index == JOY_BUTTON_LEFT_SHOULDER:
