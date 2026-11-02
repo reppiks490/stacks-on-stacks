@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'scripts/farm.gd'
+      - 'scripts/farm_hydrology.gd'
       - 'scripts/animals.gd'
       - 'scripts/farming_test_host.gd'
       - 'scripts/farming_acceptance.gd'
