@@ -28,6 +28,7 @@ var farm
 var valley
 var village
 var animals
+var festivals
 var hero
 var hud
 var game_rng := RandomNumberGenerator.new()
@@ -45,6 +46,8 @@ func _ready() -> void:
     village.setup(self)
     animals = _component("res://scripts/animals.gd", "HomesteadAnimals")
     animals.setup(self)
+    festivals = _component("res://scripts/festivals.gd", "LarkspurSeasonalFestival")
+    festivals.setup(self)
     hero = CharacterBody3D.new()
     hero.name = "Farmer"
     hero.set_script(load("res://scripts/farmer.gd"))
@@ -85,7 +88,7 @@ func _register_input() -> void:
         "move_up":[KEY_W, KEY_UP], "move_down":[KEY_S, KEY_DOWN],
         "interact":[KEY_E], "next_seed":[KEY_Q], "craft":[KEY_R],
         "sleep":[KEY_F], "save":[KEY_P], "load":[KEY_O],
-        "gift":[KEY_G], "ship":[KEY_H], "fish":[KEY_J]
+        "gift":[KEY_G], "ship":[KEY_H], "fish":[KEY_J], "festival":[KEY_T]
     }
     for action in bindings:
         if not InputMap.has_action(action):
@@ -154,6 +157,8 @@ func _unhandled_input(event: InputEvent) -> void:
         _ship()
     elif event.is_action_pressed("fish"):
         _show(valley.act("fish", hero.global_position))
+    elif event.is_action_pressed("festival"):
+        _show(festivals.act(hero.global_position))
     elif event.is_action_pressed("craft"):
         craft_first_available()
     elif event.is_action_pressed("sleep"):
@@ -218,6 +223,7 @@ func next_day() -> void:
     farm.next_day(weather)
     animals.next_day()
     village.next_day()
+    festivals.next_day()
     _show("%s, Day %d — %s. The valley awakens." % [SEASONS[season_index], day, weather])
     save_game(false)
 
@@ -270,6 +276,7 @@ func save_game(with_feedback: bool = true) -> void:
         "care_actions":care_actions,"inventory":inventory,
         "farm":farm.save_state(),"village":village.save_state(),
         "animals":animals.save_state(),
+        "festivals":festivals.save_state(),
         "hero_position":[hero.global_position.x,hero.global_position.y,hero.global_position.z]
     }
     if not SaveService.write_payload(payload):
@@ -298,6 +305,7 @@ func load_game() -> void:
     farm.load_state(content.get("farm", []))
     village.load_state(content.get("village", {}))
     animals.load_state(content.get("animals", {}))
+    festivals.load_state(content.get("festivals", {}))
     var pos: Array = content.get("hero_position", [])
     if pos.size() == 3:
         hero.global_position = Vector3(float(pos[0]), maxf(1.0, float(pos[1])), float(pos[2]))

@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "world": "Larkspur Valley",
+  "venue": {
+    "region_id": "larkspur_village",
+    "square": [
+      30,
+      0,
+      0
+    ],
+    "radius": 8,
+    "open_hour": 8,
+    "close_hour": 20
+  },
+  "festivals": [
+    {
+      "id": "spring_seed_exchange",
+      "season": "Spring",
+      "day": 3,
+      "title": "Dewwake Seed Exchange",
+      "description": "Share the first seeds of the year.",
+      "activity": "seedling",
+      "donation": {
+        "item": "turnip_seed",
+        "quantity": 2
+      },
+      "reward": {
+        "petals": 26,
+        "restoration": 3,
+        "ribbons": 1
+      },
+      "color": "#cfba89",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "spring_garden_table",
+      "season": "Spring",
+      "day": 8,
+      "title": "First Bloom Table",
+      "description": "Share fresh harvest with neighbors.",
+      "activity": "gathering",
+      "donation": {
+        "item": "turnip",
+        "quantity": 2
+      },
+      "reward": {
+        "petals": 50,
+        "restoration": 4,
+        "ribbons": 1
+      },
+      "color": "#f5c6b0",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "spring_bluebell_evening",
+      "season": "Spring",
+      "day": 13,
+      "title": "Bluebell Evening",
+      "description": "Light the lantern path with blue blossoms.",
+      "activity": "lanterns",
+      "donation": {
+        "item": "bluebell",
+        "quantity": 2
+      },
+      "reward": {
+        "petals": 65,
+        "restoration": 4,
+        "ribbons": 1
+      },
+      "color": "#b6a8e6",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "summer_lake_promenade",
+      "season": "Summer",
+      "day": 3,
+      "title": "Glimmer Lake Promenade",
+      "description": "A celebration of patience and clear water.",
+      "activity": "water",
+      "donation": {
+        "item": "fish",
+        "quantity": 1
+      },
+      "reward": {
+        "petals": 45,
+        "restoration": 3,
+        "ribbons": 1
+      },
+      "color": "#78c4d6",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "summer_berry_picnic",
+      "season": "Summer",
+      "day": 8,
+      "title": "Sunberry Picnic",
+      "description": "Everyone brings fruit to the meadow.",
+      "activity": "gathering",
+      "donation": {
+        "item": "strawberry",
+        "quantity": 2
+      },
+      "reward": {
+        "petals": 72,
+        "restoration": 5,
+        "ribbons": 1
+      },
+      "color": "#ef8594",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "summer_lantern_making",
+      "season": "Summer",
+      "day": 13,
+      "title": "Solstice Lantern Workshop",
+      "description": "Handmade lights welcome a warm night.",
+      "activity": "lanterns",
+      "donation": {
+        "item": "wild_herb",
+        "quantity": 2
+      },
+      "reward": {
+        "petals": 40,
+        "restoration": 3,
+        "ribbons": 1
+      },
+      "color": "#f6d388",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "autumn_carrot_fair",
+      "season": "Autumn",
+      "day": 3,
+      "title": "Amberroot Fair",
+      "description": "Celebrate the valley's dependable harvest.",
+      "activity": "gathering",
+      "donation": {
+        "item": "carrot",
+        "quantity": 2
+      },
+      "reward": {
+        "petals": 52,
+        "restoration": 3,
+        "ribbons": 1
+      },
+      "color": "#da9c62",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "autumn_pumpkin_story",
+      "season": "Autumn",
+      "day": 8,
+      "title": "Ember Orchard Stories",
+      "description": "Stories return as the orchard turns copper.",
+      "activity": "lanterns",
+      "donation": {
+        "item": "pumpkin",
+        "quantity": 1
+      },
+      "reward": {
+        "petals": 80,
+        "restoration": 5,
+        "ribbons": 1
+      },
+      "color": "#db8a57",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "autumn_wool_market",
+      "season": "Autumn",
+      "day": 13,
+      "title": "Cloudthread Weaving Day",
+      "description": "Weave blankets for the coming cold.",
+      "activity": "seedling",
+      "donation": {
+        "item": "wool",
+        "quantity": 1
+      },
+      "reward": {
+        "petals": 70,
+        "restoration": 4,
+        "ribbons": 1
+      },
+      "color": "#ded4c9",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "winter_hearth_market",
+      "season": "Winter",
+      "day": 3,
+      "title": "Hearthglass Market",
+      "description": "Share warm cups as snow settles.",
+      "activity": "gathering",
+      "donation": {
+        "item": "milk",
+        "quantity": 1
+      },
+      "reward": {
+        "petals": 50,
+        "restoration": 3,
+        "ribbons": 1
+      },
+      "color": "#c9dfed",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "winter_woodwork_day",
+      "season": "Winter",
+      "day": 8,
+      "title": "Evergreen Craft Fair",
+      "description": "Handcrafted gifts brighten short afternoons.",
+      "activity": "seedling",
+      "donation": {
+        "item": "wood",
+        "quantity": 2
+      },
+      "reward": {
+        "petals": 45,
+        "restoration": 3,
+        "ribbons": 1
+      },
+      "color": "#9fbea8",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    },
+    {
+      "id": "winter_starlight_feast",
+      "season": "Winter",
+      "day": 13,
+      "title": "Nightglow Promise",
+      "description": "Lanterns shimmer as the village welcomes another year.",
+      "activity": "lanterns",
+      "donation": {
+        "item": "egg",
+        "quantity": 1
+      },
+      "reward": {
+        "petals": 84,
+        "restoration": 6,
+        "ribbons": 1
+      },
+      "color": "#aab9e9",
+      "weather_fallback": "Covered lantern market and village hall shelter"
+    }
+  ]
+}

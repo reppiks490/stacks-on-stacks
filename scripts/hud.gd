@@ -5,18 +5,20 @@ var header: Label
 var controls: Label
 var status: Label
 var inventory: Label
+var festival_line: Label
 
 func setup(host) -> void:
     game = host
     var wash := ColorRect.new()
     wash.color = Color(0.08,0.16,0.16,0.77)
     wash.position = Vector2(12,12)
-    wash.size = Vector2(690,155)
+    wash.size = Vector2(900,185)
     add_child(wash)
     header = _label(Vector2(24,18),18)
     controls = _label(Vector2(24,48),14)
     status = _label(Vector2(24,95),16)
     inventory = _label(Vector2(24,126),14)
+    festival_line = _label(Vector2(24,153),13)
 
 func _label(at: Vector2, size: int) -> Label:
     var label := Label.new()
@@ -36,10 +38,12 @@ func _process(_delta: float) -> void:
     var minutes := int(game.minute_of_day) % 60
     header.text = "🌿 EVERBLOOM   %s %d   %02d:%02d   %s   Petals %d   Energy %d   Valley %d%%" % [
         game.season(),game.day,hours,minutes,game.weather,game.gold,int(game.energy),game.restoration]
-    controls.text = "WASD Move | E Action | 1-7 Tools | Q Seeds | G Gift | H Ship | J Fish | R Craft | F Sleep | P/O Save/Load"
+    controls.text = "WASD Move | E Action | 1-7 Tools | Q Seeds | G Gift | H Ship | J Fish | T Festival | R Craft | F Sleep | P/O Save/Load"
     status.text = "%s  •  Seed: %s  •  %s" % [game.TOOLS[game.selected_tool],game.current_seed(),game.latest_message]
     var items: Array[String] = []
     for key in game.inventory:
         if int(game.inventory[key]) > 0:
             items.append("%s:%d" % [str(key),int(game.inventory[key])])
     inventory.text = "Satchel: " + ", ".join(items.slice(0,10))
+    if game.festivals != null:
+        festival_line.text = game.festivals.status_line()

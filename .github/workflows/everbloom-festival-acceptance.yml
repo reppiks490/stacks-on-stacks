@@ -1,0 +1,55 @@
+name: Everbloom original festival native acceptance
+on:
+  push:
+    paths:
+      - 'scripts/festivals.gd'
+      - 'scripts/game.gd'
+      - 'scripts/hud.gd'
+      - 'data/festivals.json'
+      - 'tests/native_festival_acceptance.gd'
+      - 'tests/test_festival_catalog.py'
+      - '.github/workflows/everbloom-festival-acceptance.yml'
+permissions:
+  contents: read
+jobs:
+  festival-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate full twelve-event original festival data
+        run: |
+          python -m unittest discover -s tests -p 'test_festival_catalog.py' -v
+      - name: Download and authenticate official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Native import and GDScript parse
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee festival_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' festival_import.log; then exit 1; fi
+      - name: Actual main-scene 12-event / 2-year festival acceptance
+        run: |
+          set -euo pipefail
+          timeout 60s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://tests/native_festival_acceptance.gd 2>&1 | tee festival_native.log
+          grep -q 'EVERBLOOM FESTIVAL NATIVE ACCEPTANCE:' festival_native.log
+          grep -q '0 failures' festival_native.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open|FESTIVAL ACCEPTANCE FAILED:' festival_native.log; then exit 1; fi
+      - name: Preserve native festival diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-festival-native-${{ github.sha }}
+          path: |
+            festival_import.log
+            festival_native.log
+          if-no-files-found: ignore
+          retention-days: 14
