@@ -132,9 +132,24 @@ func load_state(saved: Variant) -> bool:
             return false
         if not _valid_animal(id, records[id], epoch):
             return false
-    # Commit only after validating the entire nested snapshot.
+    # Godot JSON decodes integral numbers as floats. Normalize every nested
+    # integer after validation so save/load is semantically and structurally exact.
+    var normalized: Dictionary = {}
+    for id in IDS:
+        var raw: Dictionary = records[id]
+        var a: Dictionary = {}
+        for metric in METRICS:
+            a[metric] = int(raw[metric])
+        a["temperament"] = int(raw["temperament"])
+        a["treatment_days"] = int(raw["treatment_days"])
+        var actions: Dictionary = {}
+        for verb in COSTS:
+            actions[verb] = int(raw["last_actions"][verb])
+        a["last_actions"] = actions
+        normalized[id] = a
+    # Commit only after validating and normalizing the entire nested snapshot.
     day_epoch = epoch
-    animals = records.duplicate(true)
+    animals = normalized
     return true
 
 func _valid_animal(id: String, a: Dictionary, epoch: int) -> bool:
