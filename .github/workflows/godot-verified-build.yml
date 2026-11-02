@@ -1,0 +1,70 @@
+name: SABLESTAR source and native Godot smoke
+on:
+  push:
+    paths:
+      - 'project.godot'
+      - 'scenes/**'
+      - 'scripts/**'
+      - 'assets/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'data/**'
+      - '.github/workflows/godot-verified-build.yml'
+  pull_request:
+    paths:
+      - 'project.godot'
+      - 'scenes/**'
+      - 'scripts/**'
+      - 'assets/**'
+      - 'tests/**'
+      - 'tools/**'
+      - 'data/**'
+      - '.github/workflows/godot-verified-build.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline source and data validation
+        run: |
+          python tools/validate_project.py
+          python -m unittest discover -s tests -v
+      - name: Download and authenticate official Godot 4.7.2 binary
+        run: |
+          set -euo pipefail
+          url="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$url"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Native Godot project import and GDScript parse
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee godot_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' godot_import.log; then
+            echo 'Native import reported a script/resource error'; exit 1
+          fi
+      - name: Native game scene smoke
+        run: |
+          set -euo pipefail
+          timeout 35s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --quit-after 120 2>&1 | tee godot_smoke.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' godot_smoke.log; then
+            echo 'Native smoke reported a script/resource error'; exit 1
+          fi
+      - name: Preserve exact-run diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sablestar-native-godot-${{ github.sha }}
+          path: |
+            godot_import.log
+            godot_smoke.log
+          if-no-files-found: ignore
+          retention-days: 14

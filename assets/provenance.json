@@ -1,0 +1,60 @@
+{
+  "asset_entries": [
+    {
+      "bytes": 30912,
+      "path": "assets/audio/covenant_seal.wav",
+      "sha256": "3fa2ab623a1e8b4a962c968ce8ca29fbd115639fd420fe05e110587ef2a9d22f"
+    },
+    {
+      "bytes": 23858,
+      "path": "assets/audio/resonance_pulse.wav",
+      "sha256": "8211fad7e7a0fc1a77bf1e74adfb624e6ee1d47cf94d9cfd40386f7627c3bc7c"
+    },
+    {
+      "bytes": 474,
+      "path": "assets/models/sableblade.mtl",
+      "sha256": "bfc1412107c5cd3db47060411d1c77e49c445c5df599f49f70451e67a27ab9f3"
+    },
+    {
+      "bytes": 2845,
+      "path": "assets/models/sableblade.obj",
+      "sha256": "1c567ee28605cec2d5ce07fdf1a9ab515e7cb8f4fa465da36ebcfcab4a27f930"
+    },
+    {
+      "bytes": 509,
+      "path": "assets/vector/boss_veilwarden.svg",
+      "sha256": "155c2a16c07b5282b329fe78c8dea59fae6cda3f417c8f3272f033c63b38ae27"
+    },
+    {
+      "bytes": 679,
+      "path": "assets/vector/ember_cartographers.svg",
+      "sha256": "811e324eebd539c6d3d494ea858d0209328bd4686a58c07a4e0f358ab7c793fd"
+    },
+    {
+      "bytes": 512,
+      "path": "assets/vector/hollow_accord.svg",
+      "sha256": "0cf6dc160bf06d84694a8dcbc7466dcbbd95140b61f24cc57718f9c7016be3e4"
+    },
+    {
+      "bytes": 550,
+      "path": "assets/vector/resonance_fragment.svg",
+      "sha256": "5642907b6e70f8ac9cd248f2ad798a3f9a59bf62caa7ad80f16aca6f384cd698"
+    },
+    {
+      "bytes": 798,
+      "path": "assets/vector/sablestar_sigillum.svg",
+      "sha256": "bf68fe120d7087b30dfa9770907309af8315579810c33896095b6f9cc43fd30b"
+    },
+    {
+      "bytes": 572,
+      "path": "assets/vector/weapon_sableblade.svg",
+      "sha256": "d205a8b7601383eb44462ff08a491a75f069c89951a8b5d6587457bfa2937ac1"
+    }
+  ],
+  "external_proprietary_assets": 0,
+  "game": "SABLESTAR",
+  "native_engine_import": "not_run",
+  "origin": "original_work",
+  "renderer": "Godot 4.x",
+  "schema_version": 1
+}

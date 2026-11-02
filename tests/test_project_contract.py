@@ -35,8 +35,15 @@ class GameProjectContract(unittest.TestCase):
         self.assertEqual(self.data['evidence']['godot_engine_run'],'not_run')
         self.assertFalse(self.data['evidence']['third_party_assets_copied'])
     def test_no_automatic_codex_workflows(self):
+        import re
         workflows=ROOT/'.github/workflows'
-        self.assertFalse(workflows.exists(), 'A workflow was introduced without explicit security audit')
+        for workflow in workflows.glob('*.yml'):
+            source=workflow.read_text(encoding='utf-8')
+            # Do not permit Codex actions, agent invocations, PR review bots,
+            # or automatically triggered comment/review workflows.
+            self.assertFalse(re.search(r'(?im)^\s*(?:-\s*)?(?:uses|run):[^\n]*(?:codex|chatgpt-codex|openai/codex)',source),workflow)
+            self.assertFalse(re.search(r'(?im)^\s*(?:pull_request_review|issue_comment|workflow_run):',source),workflow)
+            self.assertFalse(re.search(r'(?i)@codex|chatgpt-codex-connector',source),workflow)
     def test_save_uses_allowlisted_local_state(self):
         session=(ROOT/'scripts/session_state.gd').read_text(encoding='utf-8')
         self.assertIn('chosen_faction',session)

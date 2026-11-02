@@ -39,3 +39,28 @@ Scene syntax and Python design contracts can be checked without Godot, but **nat
 ## Do not conflate source inspiration and extraction
 
 Public games are references for design research. Use REA only on software you are entitled to examine and within applicable rules. The repository contains independently authored implementations, not source/assets from third-party games. See `research/ANALYSIS_PROTOCOL.md`.
+
+## Original art and audio assets
+
+The source tree now includes six independent vector illustrations, one faceted
+low-poly Sableblade mesh with source materials, and two synthesized WAV cues.
+`assets/provenance.json` records a SHA-256 for every asset. Run
+`python tools/generate_original_assets.py --verify` to check the shipped bytes.
+These are authored SABLESTAR assets, not extracted third-party game files.
+
+## Install Godot for Windows (no administrator required)
+
+Open PowerShell in the repository folder and run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\install_godot_windows.ps1 -Launch
+```
+
+This script downloads the official Godot 4.7.2 Windows editor, verifies its
+fixed SHA-256 and extracts it under your own LocalAppData folder. It makes no
+system PATH changes. The project then opens from `project.godot`.
+
+The GitHub Actions workflow runs ordinary Python source tests, downloads the
+verified official Godot Linux binary (SHA-256 pinned), parses/imports the
+project and performs a headless runtime smoke. Do not interpret static tests
+as proof of a playable game; check exact-head Actions results first.

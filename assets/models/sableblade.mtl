@@ -1,0 +1,31 @@
+# Original source materials for the Sableblade
+newmtl violet_steel
+Kd 0.4400 0.3400 0.6400
+Ka 0.08 0.08 0.08
+Ks 0.3 0.3 0.3
+Ns 100.0
+
+newmtl ember_edge
+Kd 0.8600 0.2400 0.4100
+Ka 0.08 0.08 0.08
+Ks 0.3 0.3 0.3
+Ns 100.0
+
+newmtl dark_iron
+Kd 0.1800 0.1700 0.2600
+Ka 0.08 0.08 0.08
+Ks 0.3 0.3 0.3
+Ns 100.0
+
+newmtl obsidian
+Kd 0.1000 0.1300 0.2000
+Ka 0.08 0.08 0.08
+Ks 0.3 0.3 0.3
+Ns 100.0
+
+newmtl heart_crystal
+Kd 0.8700 0.6500 0.9100
+Ka 0.08 0.08 0.08
+Ks 0.3 0.3 0.3
+Ns 100.0
+
