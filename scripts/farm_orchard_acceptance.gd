@@ -175,5 +175,25 @@ func _run() -> void:
     _check(recovered.save_state() == pristine, "invalid JSON atomic")
     _check(not recovered.advance_day(224, 18, 6)["ok"], "restored duplicate epoch rejected")
     _check(recovered.advance_day(225, 18, 6)["ok"], "restored year-five transition")
+    ## Independent stewardship fixture: fruit left unharvested must spoil in winter,
+    ## not silently duplicate or survive into the following year.
+    var neglected = _model()
+    var fruit_at_autumn: int = 0
+    var spoiled_in_winter: int = 0
+    for epoch in range(1, 113):
+        var step: Dictionary = neglected.advance_day(epoch, 18, 6)
+        _check(step["ok"], "neglected orchard advances %d" % epoch)
+        if epoch == 1:
+            _check(neglected.plant(0, "plum", "standard", epoch)["ok"], "neglected sapling planted")
+        if epoch == 85:
+            fruit_at_autumn = int(neglected.status(0)["fruit_units"])
+            _check(fruit_at_autumn > 0, "mature tree produces autumn fruit")
+        if epoch == 99:
+            spoiled_in_winter = int(step["fruit_spoiled"])
+            _check(spoiled_in_winter == fruit_at_autumn, "unharvested fruit spoils on winter day one")
+            _check(neglected.status(0)["fruit_units"] == 0, "spoiled fruit cannot be harvested")
+        _check(_ledger_ok(neglected.save_state()), "neglected fruit conservation %d" % epoch)
+    _check(int(neglected.save_state()["ledger"]["harvested"]) == 0, "no fabricated neglected harvest")
+    _check(int(neglected.save_state()["ledger"]["spoiled"]) == spoiled_in_winter, "spoilage ledger exact")
     print("EVERBLOOM F07 ORCHARD NATIVE: %d assertions, %d failures" % [assertions, failures])
     quit(1 if failures > 0 else 0)
