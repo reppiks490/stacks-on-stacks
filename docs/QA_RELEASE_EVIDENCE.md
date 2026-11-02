@@ -26,15 +26,16 @@ or tested mobile performance. Do not use proprietary Harvest Moon assets.
   The `XDG_DATA_HOME` directory is job-local; the harness refuses to erase
   a pre-existing save. The CI runner is Linux, not Windows/mobile hardware.
 
-**Evidence status:** Exact-head GitHub Actions result must be checked for
-the candidate SHA before integration. Earlier QA trial
-[41402276932](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41402276932)
-executed 927 native assertions with one failing *whole-array pasture comparison*.
-The QA test was revised to compare per-paddock numeric forage and emit both
-values if mismatch persists; that trial is **not** a pass. General native
-import/smoke/save at precursor `d2f740df` passed
-[41402276863](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41402276863).
-Do not extrapolate precursor results to a later commit.
+**Evidence status:** Native QA at source commit `a37b6dd13d39d25707bb870e743b16aa0ac8781b`
+passed **927 assertions, zero failures**, plus 13 Python QA tests:
+[dedicated native run 41402341282](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41402341282).
+General Python/native import/120-frame smoke/save also passed at that exact
+source SHA: [run 41402341374](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41402341374).
+Earlier QA trial [41402276932](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41402276932)
+failed one whole-array pasture comparison; the fixed test compares numeric forage
+per paddock. The deliberately corrupted JSON triggers expected Godot parse-error
+diagnostics during fallback, while the assertions verify valid backup recovery.
+**Any later branch tip still requires its own exact-head CI confirmation.**
 
 ## Release blockers and integration handoffs
 
