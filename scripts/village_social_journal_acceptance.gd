@@ -1,5 +1,6 @@
 extends SceneTree
 ## V19 native Godot UI + authoritative social-state acceptance.
+const SaveService = preload("res://scripts/save_service.gd")
 var assertions: int = 0
 var failures: int = 0
 
@@ -175,6 +176,14 @@ func _run() -> void:
     _check(final_log.size() == 12 and int(final_log[0]["epoch"]) > 7, "oldest entries evicted after cap, latest retained")
     _check(int(final_log[-1]["epoch"]) == host.day_epoch(), "newest transcript matches monotonic calendar")
     var retained_state: Dictionary = restored.save_state()
+    var valid_envelope: Dictionary = {
+        "schema":1, "year":host.year, "season":host.season_index, "day":host.day,
+        "minute":host.minute_of_day, "gold":host.gold, "energy":host.energy,
+        "inventory":host.inventory.duplicate(true), "farm":[],
+        "village":retained_state.duplicate(true), "animals":{},
+        "hero_position":[0.0, 0.0, 0.0]
+    }
+    _check(SaveService.validate_payload(valid_envelope), "central schema-1 boundary admits authentic bounded transcript")
     var legacy_state: Dictionary = retained_state.duplicate(true)
     for rid in legacy_state["memories"]:
         legacy_state["memories"][rid].erase("dialogue_log")
