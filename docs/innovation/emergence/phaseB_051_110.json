@@ -19,7 +19,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: A route solution requires triangulation from distinct markers; audio-free compass cues work. Source recheck required before integration.",
-      "player_scenario": "Navigate thick valley fog using three audible and visible landmark signals",
+      "player_scenario": "Navigate thick valley fog using three audible and visible landmark signals; plot independent bearings on a map to find the correct safe route",
       "player_verbs": [
         "navigate_fogbell_landmark_bearings",
         "preview_fogbell_landmark_bearings",
@@ -81,7 +81,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Navigate thick valley fog using three audible and visible landmark signals; verify rule: A route solution requires triangulation from distinct markers; audio-free compass cues work.",
+        "positive": "In real Godot scene, Navigate thick valley fog using three audible and visible landmark signals; verify rule: A route solution requires triangulation from distinct markers; audio-free compass cues work.; plot independent bearings on a map to find the correct safe route",
         "adversarial": "Repeated signal from one bell cannot count as three bearings",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -109,7 +109,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed exploration_navigation mechanic decisions and journal; Valley/Principal own navigation, water/terrain; Emergence owns discovery state. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Navigate thick valley fog using three audible and visible landmark signals; verify rule: A route solution requires triangulation from distinct markers; audio-free compass cues work.",
+        "In real Godot scene, Navigate thick valley fog using three audible and visible landmark signals; verify rule: A route solution requires triangulation from distinct markers; audio-free compass cues work.; plot independent bearings on a map to find the correct safe route",
         "Repeated signal from one bell cannot count as three bearings",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -132,7 +132,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Route access follows world clock and safe exit buffer; no trapped-player state. Source recheck required before integration.",
-      "player_scenario": "Chart a fictional cave that opens only during bounded low-water windows",
+      "player_scenario": "Chart a fictional cave that opens only during bounded low-water windows; reserve a return path before entering so the cave never traps a visitor",
       "player_verbs": [
         "chart_tidal_cave_memory",
         "preview_tidal_cave_memory",
@@ -194,7 +194,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Chart a fictional cave that opens only during bounded low-water windows; verify rule: Route access follows world clock and safe exit buffer; no trapped-player state.",
+        "positive": "In real Godot scene, Chart a fictional cave that opens only during bounded low-water windows; verify rule: Route access follows world clock and safe exit buffer; no trapped-player state.; reserve a return path before entering so the cave never traps a visitor",
         "adversarial": "Loading inside a closed cave must provide safe return",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -222,7 +222,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed exploration_navigation mechanic decisions and journal; Valley/Principal own navigation, water/terrain; Emergence owns discovery state. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Chart a fictional cave that opens only during bounded low-water windows; verify rule: Route access follows world clock and safe exit buffer; no trapped-player state.",
+        "In real Godot scene, Chart a fictional cave that opens only during bounded low-water windows; verify rule: Route access follows world clock and safe exit buffer; no trapped-player state.; reserve a return path before entering so the cave never traps a visitor",
         "Loading inside a closed cave must provide safe return",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -421,7 +421,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Follow birds' directional calls to locate an elevated natural overlook without constructing platforms; verify rule: Distinct calls and visible route nodes form a solvable graph with non-audio clues.",
-        "adversarial": "Muted audio cannot softlock the route",
+        "adversarial": "Muted audio cannot softlock the route; inaccessible bird calls must have a complete visual alternative",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -449,11 +449,11 @@
       "cross_loop_boundary": "Emergence owns proposed exploration_navigation mechanic decisions and journal; Valley/Principal own navigation, water/terrain; Emergence owns discovery state. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Follow birds' directional calls to locate an elevated natural overlook without constructing platforms; verify rule: Distinct calls and visible route nodes form a solvable graph with non-audio clues.",
-        "Muted audio cannot softlock the route",
+        "Muted audio cannot softlock the route; inaccessible bird calls must have a complete visual alternative",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "Muted audio cannot softlock the route",
+        "Muted audio cannot softlock the route; inaccessible bird calls must have a complete visual alternative",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -584,7 +584,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Wind vectors are deterministic for the day; alternate nonvisual clue remains available. Source recheck required before integration.",
-      "player_scenario": "Use wind and leaf movement to find a hidden meadow entrance in autumn",
+      "player_scenario": "Use wind and leaf movement to find a hidden meadow entrance in autumn; compare the deterministic daily wind clues with an accessible map hint",
       "player_verbs": [
         "use_fallen_leaf_drift_navigation",
         "preview_fallen_leaf_drift_navigation",
@@ -646,7 +646,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Use wind and leaf movement to find a hidden meadow entrance in autumn; verify rule: Wind vectors are deterministic for the day; alternate nonvisual clue remains available.",
+        "positive": "In real Godot scene, Use wind and leaf movement to find a hidden meadow entrance in autumn; verify rule: Wind vectors are deterministic for the day; alternate nonvisual clue remains available.; compare the deterministic daily wind clues with an accessible map hint",
         "adversarial": "Reload cannot reroll a clue to farm rewards",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -674,7 +674,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed exploration_navigation mechanic decisions and journal; Valley/Principal own navigation, water/terrain; Emergence owns discovery state. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Use wind and leaf movement to find a hidden meadow entrance in autumn; verify rule: Wind vectors are deterministic for the day; alternate nonvisual clue remains available.",
+        "In real Godot scene, Use wind and leaf movement to find a hidden meadow entrance in autumn; verify rule: Wind vectors are deterministic for the day; alternate nonvisual clue remains available.; compare the deterministic daily wind clues with an accessible map hint",
         "Reload cannot reroll a clue to farm rewards",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -1325,7 +1325,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Follow a companion's alerts to locate a stranded noncombat animal with safe alternate clues; verify rule: Rescue requires reachable location and stamina; companion cannot teleport target.",
-        "adversarial": "Reload cannot rescue same target twice",
+        "adversarial": "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -1353,11 +1353,11 @@
       "cross_loop_boundary": "Emergence owns proposed companion_intelligence mechanic decisions and journal; Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Follow a companion's alerts to locate a stranded noncombat animal with safe alternate clues; verify rule: Rescue requires reachable location and stamina; companion cannot teleport target.",
-        "Reload cannot rescue same target twice",
+        "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "Reload cannot rescue same target twice",
+        "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -1488,7 +1488,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Animal welfare and consent gate optional tasks; ignoring training has no permanent penalty. Source recheck required before integration.",
-      "player_scenario": "Recognize companion stress and offer quiet care instead of forced training",
+      "player_scenario": "Recognize companion stress and offer quiet care instead of forced training; the animal may decline training and recover through humane rest",
       "player_verbs": [
         "recognize_comfort_companion_signals",
         "preview_comfort_companion_signals",
@@ -1550,7 +1550,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Recognize companion stress and offer quiet care instead of forced training; verify rule: Animal welfare and consent gate optional tasks; ignoring training has no permanent penalty.",
+        "positive": "In real Godot scene, Recognize companion stress and offer quiet care instead of forced training; verify rule: Animal welfare and consent gate optional tasks; ignoring training has no permanent penalty.; the animal may decline training and recover through humane rest",
         "adversarial": "Repeated petting cannot instantly erase severe stress",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -1578,7 +1578,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed companion_intelligence mechanic decisions and journal; Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Recognize companion stress and offer quiet care instead of forced training; verify rule: Animal welfare and consent gate optional tasks; ignoring training has no permanent penalty.",
+        "In real Godot scene, Recognize companion stress and offer quiet care instead of forced training; verify rule: Animal welfare and consent gate optional tasks; ignoring training has no permanent penalty.; the animal may decline training and recover through humane rest",
         "Repeated petting cannot instantly erase severe stress",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -1940,7 +1940,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Commands require learned cues; voice or audio is never mandatory. Source recheck required before integration.",
-      "player_scenario": "Create an accessible gesture-and-icon vocabulary for companion requests",
+      "player_scenario": "Create an accessible gesture-and-icon vocabulary for companion requests; test each cue through visual icons without requiring voice input",
       "player_verbs": [
         "create_companion_gesture_lexicon",
         "preview_companion_gesture_lexicon",
@@ -2002,7 +2002,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Create an accessible gesture-and-icon vocabulary for companion requests; verify rule: Commands require learned cues; voice or audio is never mandatory.",
+        "positive": "In real Godot scene, Create an accessible gesture-and-icon vocabulary for companion requests; verify rule: Commands require learned cues; voice or audio is never mandatory.; test each cue through visual icons without requiring voice input",
         "adversarial": "Unlearned gesture cannot bypass skill prerequisite",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -2030,7 +2030,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed companion_intelligence mechanic decisions and journal; Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Create an accessible gesture-and-icon vocabulary for companion requests; verify rule: Commands require learned cues; voice or audio is never mandatory.",
+        "In real Godot scene, Create an accessible gesture-and-icon vocabulary for companion requests; verify rule: Commands require learned cues; voice or audio is never mandatory.; test each cue through visual icons without requiring voice input",
         "Unlearned gesture cannot bypass skill prerequisite",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -2053,7 +2053,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Habitat safety radius blocks chasing; observations award knowledge only. Source recheck required before integration.",
-      "player_scenario": "Teach companions to observe nesting wildlife from safe distances",
+      "player_scenario": "Teach companions to observe nesting wildlife from safe distances; verify the animal stays outside the protected nest perimeter",
       "player_verbs": [
         "teach_wildlife_distance_etiquette",
         "preview_wildlife_distance_etiquette",
@@ -2115,7 +2115,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Teach companions to observe nesting wildlife from safe distances; verify rule: Habitat safety radius blocks chasing; observations award knowledge only.",
+        "positive": "In real Godot scene, Teach companions to observe nesting wildlife from safe distances; verify rule: Habitat safety radius blocks chasing; observations award knowledge only.; verify the animal stays outside the protected nest perimeter",
         "adversarial": "Repeated approach cannot override protected nesting boundary",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -2143,7 +2143,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed companion_intelligence mechanic decisions and journal; Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Teach companions to observe nesting wildlife from safe distances; verify rule: Habitat safety radius blocks chasing; observations award knowledge only.",
+        "In real Godot scene, Teach companions to observe nesting wildlife from safe distances; verify rule: Habitat safety radius blocks chasing; observations award knowledge only.; verify the animal stays outside the protected nest perimeter",
         "Repeated approach cannot override protected nesting boundary",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -2342,7 +2342,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Invite residents to share seasonal food and choose fair portions with dietary preferences; verify rule: Each served portion consumes real food and respects invitations.",
-        "adversarial": "One crop cannot serve two residents",
+        "adversarial": "One crop cannot serve two residents; each meal serving must debit a unique finite food portion",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -2370,11 +2370,11 @@
       "cross_loop_boundary": "Emergence owns proposed ritual_culture mechanic decisions and journal; Village owns annual festival calendar and NPC consent; Emergence owns optional rituals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Invite residents to share seasonal food and choose fair portions with dietary preferences; verify rule: Each served portion consumes real food and respects invitations.",
-        "One crop cannot serve two residents",
+        "One crop cannot serve two residents; each meal serving must debit a unique finite food portion",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "One crop cannot serve two residents",
+        "One crop cannot serve two residents; each meal serving must debit a unique finite food portion",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -3133,7 +3133,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Let neighbors vote for one seasonal community meal while considering ingredient supply; verify rule: One ballot per eligible NPC; recipe requires real stock before serving.",
-        "adversarial": "Duplicate ballots cannot alter result",
+        "adversarial": "Duplicate ballots cannot alter result; ballot receipts must be unique to eligible participating NPCs",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -3161,11 +3161,11 @@
       "cross_loop_boundary": "Emergence owns proposed ritual_culture mechanic decisions and journal; Village owns annual festival calendar and NPC consent; Emergence owns optional rituals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Let neighbors vote for one seasonal community meal while considering ingredient supply; verify rule: One ballot per eligible NPC; recipe requires real stock before serving.",
-        "Duplicate ballots cannot alter result",
+        "Duplicate ballots cannot alter result; ballot receipts must be unique to eligible participating NPCs",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "Duplicate ballots cannot alter result",
+        "Duplicate ballots cannot alter result; ballot receipts must be unique to eligible participating NPCs",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -3296,7 +3296,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Theme bonuses are bounded and cannot override resident autonomy or fixed festivals. Source recheck required before integration.",
-      "player_scenario": "Propose a community theme and collect voluntary projects across the year",
+      "player_scenario": "Propose a community theme and collect voluntary projects across the year; track how voluntary projects contribute to the theme over the year",
       "player_verbs": [
         "propose_annual_theme_stewardship",
         "preview_annual_theme_stewardship",
@@ -3358,7 +3358,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Propose a community theme and collect voluntary projects across the year; verify rule: Theme bonuses are bounded and cannot override resident autonomy or fixed festivals.",
+        "positive": "In real Godot scene, Propose a community theme and collect voluntary projects across the year; verify rule: Theme bonuses are bounded and cannot override resident autonomy or fixed festivals.; track how voluntary projects contribute to the theme over the year",
         "adversarial": "Repeated yearly close cannot grant rewards twice",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -3386,7 +3386,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed ritual_culture mechanic decisions and journal; Village owns annual festival calendar and NPC consent; Emergence owns optional rituals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Propose a community theme and collect voluntary projects across the year; verify rule: Theme bonuses are bounded and cannot override resident autonomy or fixed festivals.",
+        "In real Godot scene, Propose a community theme and collect voluntary projects across the year; verify rule: Theme bonuses are bounded and cannot override resident autonomy or fixed festivals.; track how voluntary projects contribute to the theme over the year",
         "Repeated yearly close cannot grant rewards twice",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -3635,7 +3635,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Glaze outcome depends on chosen recipe and kiln session owned by Builder crafting. Source recheck required before integration.",
-      "player_scenario": "Experiment with nonhazardous fictional color glazes on artisan vessels",
+      "player_scenario": "Experiment with nonhazardous fictional color glazes on artisan vessels; compare two reproducible color outcomes and their ingredient costs",
       "player_verbs": [
         "experiment_ceramic_glaze_alchemy",
         "preview_ceramic_glaze_alchemy",
@@ -3697,7 +3697,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Experiment with nonhazardous fictional color glazes on artisan vessels; verify rule: Glaze outcome depends on chosen recipe and kiln session owned by Builder crafting.",
+        "positive": "In real Godot scene, Experiment with nonhazardous fictional color glazes on artisan vessels; verify rule: Glaze outcome depends on chosen recipe and kiln session owned by Builder crafting.; compare two reproducible color outcomes and their ingredient costs",
         "adversarial": "One vessel cannot be glazed and sold twice",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -3725,7 +3725,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed creative_experiments mechanic decisions and journal; Principal owns inventory and crafting receipts; Builder owns physical workshops; Emergence owns nonstructural creative output. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Experiment with nonhazardous fictional color glazes on artisan vessels; verify rule: Glaze outcome depends on chosen recipe and kiln session owned by Builder crafting.",
+        "In real Godot scene, Experiment with nonhazardous fictional color glazes on artisan vessels; verify rule: Glaze outcome depends on chosen recipe and kiln session owned by Builder crafting.; compare two reproducible color outcomes and their ingredient costs",
         "One vessel cannot be glazed and sold twice",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -4941,7 +4941,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Compare nocturnal animal behavior across lunar phases without disturbing habitats; verify rule: Observation knowledge accumulates only for distinct phases and locations.",
-        "adversarial": "One night cannot count as four phases",
+        "adversarial": "One night cannot count as four phases; journal observations must not depend on the player's display color mode",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -4969,11 +4969,11 @@
       "cross_loop_boundary": "Emergence owns proposed sky_mystery mechanic decisions and journal; Principal owns calendar/weather; Village owns NPC availability; Emergence owns fictional sky puzzles. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Compare nocturnal animal behavior across lunar phases without disturbing habitats; verify rule: Observation knowledge accumulates only for distinct phases and locations.",
-        "One night cannot count as four phases",
+        "One night cannot count as four phases; journal observations must not depend on the player's display color mode",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "One night cannot count as four phases",
+        "One night cannot count as four phases; journal observations must not depend on the player's display color mode",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -5104,7 +5104,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Reflection puzzle has text/map alternative and does not alter water physics. Source recheck required before integration.",
-      "player_scenario": "Align natural pool reflections with landmarks to find a hidden inscription",
+      "player_scenario": "Align natural pool reflections with landmarks to find a hidden inscription; provide a low-graphics diagram alternative to physical reflections",
       "player_verbs": [
         "align_sky_reflection_survey",
         "preview_sky_reflection_survey",
@@ -5166,7 +5166,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Align natural pool reflections with landmarks to find a hidden inscription; verify rule: Reflection puzzle has text/map alternative and does not alter water physics.",
+        "positive": "In real Godot scene, Align natural pool reflections with landmarks to find a hidden inscription; verify rule: Reflection puzzle has text/map alternative and does not alter water physics.; provide a low-graphics diagram alternative to physical reflections",
         "adversarial": "Missing high-end reflections cannot make puzzle impossible",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -5194,7 +5194,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed sky_mystery mechanic decisions and journal; Principal owns calendar/weather; Village owns NPC availability; Emergence owns fictional sky puzzles. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Align natural pool reflections with landmarks to find a hidden inscription; verify rule: Reflection puzzle has text/map alternative and does not alter water physics.",
+        "In real Godot scene, Align natural pool reflections with landmarks to find a hidden inscription; verify rule: Reflection puzzle has text/map alternative and does not alter water physics.; provide a low-graphics diagram alternative to physical reflections",
         "Missing high-end reflections cannot make puzzle impossible",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -5845,7 +5845,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Organize volunteers to search for a missing keepsake without teleporting NPCs; verify rule: Distinct search cells assigned once; NPC schedule and consent remain authoritative.",
-        "adversarial": "One find cannot be claimed by two teams",
+        "adversarial": "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -5873,11 +5873,11 @@
       "cross_loop_boundary": "Emergence owns proposed cooperative_agency mechanic decisions and journal; Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Organize volunteers to search for a missing keepsake without teleporting NPCs; verify rule: Distinct search cells assigned once; NPC schedule and consent remain authoritative.",
-        "One find cannot be claimed by two teams",
+        "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "One find cannot be claimed by two teams",
+        "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -6234,7 +6234,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Each volunteer works at most one conflicting slot; missed shifts reschedule safely. Source recheck required before integration.",
-      "player_scenario": "Plan recurring community stewardship shifts with opt-in substitutions",
+      "player_scenario": "Plan recurring community stewardship shifts with opt-in substitutions; confirm a replacement volunteer without overlapping work assignments",
       "player_verbs": [
         "plan_seasonal_volunteer_rota",
         "preview_seasonal_volunteer_rota",
@@ -6296,7 +6296,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Plan recurring community stewardship shifts with opt-in substitutions; verify rule: Each volunteer works at most one conflicting slot; missed shifts reschedule safely.",
+        "positive": "In real Godot scene, Plan recurring community stewardship shifts with opt-in substitutions; verify rule: Each volunteer works at most one conflicting slot; missed shifts reschedule safely.; confirm a replacement volunteer without overlapping work assignments",
         "adversarial": "Year rollover cannot duplicate weekly rewards",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -6324,7 +6324,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed cooperative_agency mechanic decisions and journal; Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Plan recurring community stewardship shifts with opt-in substitutions; verify rule: Each volunteer works at most one conflicting slot; missed shifts reschedule safely.",
+        "In real Godot scene, Plan recurring community stewardship shifts with opt-in substitutions; verify rule: Each volunteer works at most one conflicting slot; missed shifts reschedule safely.; confirm a replacement volunteer without overlapping work assignments",
         "Year rollover cannot duplicate weekly rewards",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -6347,7 +6347,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Each notification propagates once; recipients may acknowledge or opt out. Source recheck required before integration.",
-      "player_scenario": "Create a village-wide noncombat warning relay for a sudden weather event",
+      "player_scenario": "Create a village-wide noncombat warning relay for a sudden weather event; check each recipient acknowledges no more than one copy of the alert",
       "player_verbs": [
         "create_emergency_signal_chain",
         "preview_emergency_signal_chain",
@@ -6409,7 +6409,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Create a village-wide noncombat warning relay for a sudden weather event; verify rule: Each notification propagates once; recipients may acknowledge or opt out.",
+        "positive": "In real Godot scene, Create a village-wide noncombat warning relay for a sudden weather event; verify rule: Each notification propagates once; recipients may acknowledge or opt out.; check each recipient acknowledges no more than one copy of the alert",
         "adversarial": "Cycle in relay graph cannot cause infinite event storm",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -6437,7 +6437,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed cooperative_agency mechanic decisions and journal; Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Create a village-wide noncombat warning relay for a sudden weather event; verify rule: Each notification propagates once; recipients may acknowledge or opt out.",
+        "In real Godot scene, Create a village-wide noncombat warning relay for a sudden weather event; verify rule: Each notification propagates once; recipients may acknowledge or opt out.; check each recipient acknowledges no more than one copy of the alert",
         "Cycle in relay graph cannot cause infinite event storm",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -6749,7 +6749,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Post proposals, receive reasoned feedback and decide whether to revise or withdraw; verify rule: Only authorized votes count once; dissent remains visible and outcomes noncoercive.",
-        "adversarial": "One NPC cannot cast duplicate ballots",
+        "adversarial": "One NPC cannot cast duplicate ballots; voter identity and proposal revision must prevent replayed ballots",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -6777,11 +6777,11 @@
       "cross_loop_boundary": "Emergence owns proposed cooperative_agency mechanic decisions and journal; Village owns consent, jobs and schedules; Principal owns resource receipts; Emergence owns collaboration proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Post proposals, receive reasoned feedback and decide whether to revise or withdraw; verify rule: Only authorized votes count once; dissent remains visible and outcomes noncoercive.",
-        "One NPC cannot cast duplicate ballots",
+        "One NPC cannot cast duplicate ballots; voter identity and proposal revision must prevent replayed ballots",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "One NPC cannot cast duplicate ballots",
+        "One NPC cannot cast duplicate ballots; voter identity and proposal revision must prevent replayed ballots",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
