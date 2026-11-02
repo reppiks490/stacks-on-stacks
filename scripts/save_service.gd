@@ -194,6 +194,35 @@ static func validate_payload(payload: Dictionary) -> bool:
             var recall_epoch: float = float(memory.get("recalled_gift_epoch", -1))
             if recall_epoch >= 0.0 and (gift_epoch < 0.0 or recall_epoch < gift_epoch):
                 return false
+            # Village V19: earned dialogue is a bounded, chronological record.
+            # Accept absent logs from legacy schema-1 saves, but reject any
+            # present malformed history before Village.load_state() can filter it.
+            if memory.has("dialogue_log"):
+                if typeof(memory["dialogue_log"]) != TYPE_ARRAY:
+                    return false
+                var history: Array = memory["dialogue_log"]
+                if history.size() > 12:
+                    return false
+                var previous_epoch: float = 0.0
+                for entry in history:
+                    if typeof(entry) != TYPE_DICTIONARY:
+                        return false
+                    var line: Dictionary = entry
+                    if line.size() != 3 or not line.has("epoch") or not line.has("locale") or not line.has("text"):
+                        return false
+                    if not _whole_in_range(line["epoch"], 1.0, saved_epoch):
+                        return false
+                    var line_epoch: float = float(line["epoch"])
+                    if line_epoch <= previous_epoch:
+                        return false
+                    if typeof(line["locale"]) != TYPE_STRING or not line["locale"] in ["en", "es"]:
+                        return false
+                    if typeof(line["text"]) != TYPE_STRING:
+                        return false
+                    var spoken: String = line["text"]
+                    if spoken.is_empty() or spoken.length() > 256:
+                        return false
+                    previous_epoch = line_epoch
 
     # Festival rewards are once-per-event-per-year. Reject malformed award
     # ledgers before Game.load_game() can silently drop or normalize entries.
