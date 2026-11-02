@@ -318,6 +318,7 @@ func _job(resident: Dictionary, rid: String, epoch: int) -> String:
         return "Find %s at their workplace to lend a hand." % resident["name"]
     # V02/V07: the schedule label is the *destination*, not proof of arrival.
     # Never pay a shift while the resident is still walking from home or lunch.
+    # This admission guard does not replace pathfinding or movement ownership.
     # Compare in world space so translated Village scene roots remain correct.
     var worksite: Vector3 = to_global(_place_position(resident, str(profile.get("workplace", "home"))))
     var worker: Node3D = resident["node"]
