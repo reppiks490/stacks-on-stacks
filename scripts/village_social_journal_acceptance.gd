@@ -56,10 +56,58 @@ func _run() -> void:
     _check("Mira" in ui.rendered_text and "bluebell" in ui.rendered_text, "visible recap includes actual person and gift")
     _check("Festival visits: 1" in ui.rendered_text, "visible festival recap")
     _check(ui.entries.get_child_count() == 6, "six scrollable recap sections")
+
+    _check(ui.cards.size() == 6 and ui.cards[0].focus_mode == Control.FOCUS_ALL, "six focusable neighbor cards")
+    _check(ui.selected_index == 0 and "Mira" in ui.selected_label.text, "first neighbor initially selected")
+    var down := InputEventKey.new()
+    down.pressed = true
+    down.physical_keycode = KEY_DOWN
+    ui._input(down)
+    _check(ui.selected_index == 1 and "Rowan" in ui.selected_label.text, "keyboard Down selects next neighbor")
+    var up := InputEventKey.new()
+    up.pressed = true
+    up.physical_keycode = KEY_UP
+    ui._input(up)
+    _check(ui.selected_index == 0, "keyboard Up selects previous neighbor")
+    var dpad_down := InputEventJoypadButton.new()
+    dpad_down.pressed = true
+    dpad_down.button_index = JOY_BUTTON_DPAD_DOWN
+    ui._input(dpad_down)
+    _check(ui.selected_index == 1, "controller D-pad Down selects neighbor")
+    var dpad_up := InputEventJoypadButton.new()
+    dpad_up.pressed = true
+    dpad_up.button_index = JOY_BUTTON_DPAD_UP
+    ui._input(dpad_up)
+    _check(ui.selected_index == 0, "controller D-pad Up selects neighbor")
+    var end_key := InputEventKey.new()
+    end_key.pressed = true
+    end_key.physical_keycode = KEY_END
+    ui._input(end_key)
+    _check(ui.selected_index == 5 and "Soren" in ui.selected_label.text, "keyboard End reaches final neighbor")
+    ui._input(down)
+    _check(ui.selected_index == 5, "navigation clamps without wrapping")
+    ui._toggle_locale()
+    _check(village.dialogue_locale == "es", "journal exposes existing Spanish dialogue presentation API")
+    _check("Amistad:" in ui.rendered_text and "Visitas a festivales: 1" in ui.rendered_text, "Spanish recap translates earned state")
+    _check("Soren" in ui.selected_label.text and ui.selected_index == 5, "language change preserves selection")
+    _check(ui.language_button.text == "English" and ui.close_button.text == "Cerrar", "Spanish controls are visible")
+    ui._toggle_locale()
+    _check(village.dialogue_locale == "en" and "Festival visits: 1" in ui.rendered_text, "English can be restored without reload")
+    _check(ui.entries.get_child_count() == 6, "repeated locale refresh does not accumulate stale cards")
+    _check(village.save_state() == saved_before, "navigation and language changes leave social save state untouched")
+
     _check(village.save_state() == saved_before, "opening UI never changes saved social state")
     _check(host.gold == gold_before and host.inventory == inventory_before, "opening UI cannot mint or spend goods")
     ui.close_journal()
     _check(not paused and not ui.panel.visible and ui.opener.visible, "closing resumes game")
+
+    paused = true
+    ui.open_journal()
+    _check(paused and ui.panel.visible, "journal opens while an external system has already paused")
+    ui.close_journal()
+    _check(paused, "closing restores prior paused state rather than always unpausing")
+    paused = false
+
 
     var keyboard := InputEventKey.new()
     keyboard.pressed = true
