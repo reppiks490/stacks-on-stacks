@@ -231,6 +231,57 @@ func _run() -> void:
     _check("Desplazar informe" in ui.report_label.text, "Spanish controller/keyboard scroll guidance")
     _check("Tamaño de texto" in ui.report_label.text and "Texto mayor" in ui.increase_text_button.text,
            "Spanish text scaling instructions and controls")
+    # Resize the real assembled viewport while the report is open. This is
+    # native layout evidence, not a claim about physical mobile hardware.
+    var original_window_size: Vector2i = root.size
+    root.size = Vector2i(320, 568)
+    ui._update_responsive_layout()
+    await process_frame
+    await process_frame
+    _check(ui.size_row.columns == 1 and ui.action_row.columns == 1,
+           "320px portrait stacks both touch-control rows")
+    _check(ui.panel.anchor_left == 0.0 and ui.panel.anchor_right == 1.0,
+           "portrait modal uses full-width safe margins")
+    _check(ui.panel.size.x <= 320.0 and ui.panel.size.x >= 280.0,
+           "portrait modal stays within the narrow viewport")
+    _check(ui.report_scroll.size.y >= 72.0,
+           "portrait modal retains a nonzero scrollable report")
+    ui.text_scale_index = 4
+    ui._apply_text_scale()
+    await process_frame
+    await process_frame
+    var portrait_bounds: Rect2 = ui.panel.get_global_rect()
+    _check(portrait_bounds.encloses(ui.refresh_button.get_global_rect()),
+           "Spanish 160-percent portrait refresh remains inside modal")
+    _check(portrait_bounds.encloses(ui.close_button.get_global_rect()),
+           "Spanish 160-percent portrait return remains inside modal")
+    _check(portrait_bounds.encloses(ui.increase_text_button.get_global_rect()),
+           "Spanish 160-percent portrait text control remains inside modal")
+    root.size = Vector2i(640, 360)
+    ui._update_responsive_layout()
+    await process_frame
+    await process_frame
+    _check(ui.size_row.columns == 2 and ui.action_row.columns == 2,
+           "short landscape retains two columns to conserve report height")
+    _check(ui.report_scroll.size.y >= 72.0,
+           "short landscape retains usable report area")
+    _check(ui.panel.get_global_rect().encloses(ui.close_button.get_global_rect()),
+           "short landscape return button remains visible")
+    root.size = Vector2i(1280, 720)
+    ui._update_responsive_layout()
+    await process_frame
+    await process_frame
+    _check(ui.panel.anchor_left == 0.10 and ui.panel.anchor_right == 0.90,
+           "desktop restores centered modal geometry")
+    _check(ui.size_row.columns == 2 and ui.action_row.columns == 2,
+           "desktop retains side-by-side controls")
+    ui.text_scale_index = 1
+    ui._apply_text_scale()
+    root.size = original_window_size
+    ui._update_responsive_layout()
+    await process_frame
+    _check(ui.last_report.get("selected_source") == "backup",
+           "viewport reflow and text scaling preserve diagnostic authority")
     ui.close_button.pressed.emit()
     _check(game.gold == initial_gold + 7 and game.inventory == initial_items and
            game.day_epoch() == initial_epoch, "UI conserves economy, inventory and epoch")
