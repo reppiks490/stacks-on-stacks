@@ -16,6 +16,8 @@
 
 Native contract runner: `scripts/world_art_acceptance.gd`. Workflow: `.github/workflows/everbloom-world-art-acceptance.yml`, using checksum-verified official Godot 4.7.2, editor import, source parse and engine-run assertions. The existing general project validation also runs on pushes. Require passing **exact final SHA** for both, and principal/QA review of the runtime and code. Do not merge on the basis of a green source-only check.
 
+**Headless color-readback limitation:** The official Godot 4.7.2 headless renderer returned black for `MultiMesh.get_instance_color(0)` despite explicit per-instance color assignment. The native contract therefore validates seasonal palette source/mapping, not GPU color output. Actual flower color rendering must be visually inspected on a graphics-enabled device before release.
+
 **Known limitations:** World remains an original procedural graybox; market roofs, reeds and foliage are static. No authored terrain heightmap, dynamic shadows budget, wind animation, proper shoreline collisions, atmospheric audio, 3D character animation, photomode, or real mobile-device profiling yet. The fish/forage last-used epoch is not serialized by `game.gd`'s save schema; reloading a save can reset it. This must be solved jointly with Principal before claiming robust anti-duplication. The grassland uses a single shared flower mesh, not production-quality vegetation. Mobile fallback counts are unbenchmarked; GPU overdraw and draw calls require actual device instrumentation.
 
 ## Next art slices (not implemented)
