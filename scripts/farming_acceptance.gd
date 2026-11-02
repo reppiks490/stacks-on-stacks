@@ -138,5 +138,101 @@ func _run() -> void:
         _check(int(host.inventory[item]) >= 0, "inventory nonnegative")
     _check(host.gold >= 0, "gold nonnegative")
     _check(host.energy >= 0.0, "energy nonnegative")
+    # A limited paddock conserves bought feed, then regrows on the following day.
+    host.weather = "Clear"
+    var pasture: Dictionary = animals.paddocks[animals._active_paddock_index()]
+    pasture["forage"] = 1
+    var cow_position: Vector3 = animals.creatures[1]["node"].global_position
+    var pasture_gold: int = host.gold
+    var pasture_fodder: int = int(host.inventory.get("fodder", 0))
+    _check("fresh pasture grass" in animals.act(cow_position), "spring grazing consumes pasture")
+    _check(int(pasture["forage"]) == 0, "grazing consumes finite pasture")
+    _check(host.gold == pasture_gold and int(host.inventory["fodder"]) == pasture_fodder,
+        "pasture grazing does not consume money or fodder")
+    host.advance_day()
+    animals.next_day()
+    _check(int(pasture["forage"]) == 1, "active pasture recovers one forage per day")
+    var sheep_position: Vector3 = animals.creatures[2]["node"].global_position
+    _check("fresh pasture grass" in animals.act(sheep_position), "second grazing on regenerated land")
+    _check(int(pasture["forage"]) == 0, "recovered forage not duplicated")
+    var paddock_snapshot: Dictionary = animals.save_state()
+    _check(paddock_snapshot.has("__paddocks__"), "paddock ecology is persisted")
+    paddock_snapshot["__paddocks__"][0]["forage"] = -300
+    paddock_snapshot["__paddocks__"][1]["forage"] = 900
+    animals.load_state(paddock_snapshot)
+    _check(int(animals.paddocks[0]["forage"]) == 0, "negative saved pasture clamped")
+    _check(int(animals.paddocks[1]["forage"]) == animals.PADDOCK_CAPACITY,
+        "oversized saved pasture clamped")
+
+    # In winter or rain no free grazing is available; failed care must be atomic.
+    host.season_index = 3
+    host.day = 5
+    host.weather = "Rain"
+    host.inventory["fodder"] = 0
+    host.inventory["wild_herb"] = 0
+    host.gold = 0
+    var denied_care_count: int = host.care_actions
+    var denied_bond: int = int(animals.creatures[1]["bond"])
+    var denied_product: int = int(host.inventory.get("milk", 0))
+    _check("need fodder" in animals.act(cow_position), "zero feed and budget denies care")
+    _check(host.care_actions == denied_care_count and host.gold == 0,
+        "failed care cannot credit actions or spend negative currency")
+    _check(int(animals.creatures[1]["bond"]) == denied_bond and
+        int(host.inventory.get("milk", 0)) == denied_product,
+        "failed care cannot increase bond or mint products")
+
+    # Three separate, paid rainy-day care actions produce one compost, not infinite fertilizer.
+    host.year = 5
+    host.season_index = 0
+    host.day = 1
+    host.weather = "Rain"
+    host.inventory["fodder"] = 3
+    var hen_position: Vector3 = animals.creatures[0]["node"].global_position
+    animals.creatures[0]["compost_counter"] = 0
+    var compost_before: int = int(host.inventory.get("compost", 0))
+    for i in range(3):
+        _check("Hazel Hen" in animals.act(hen_position), "barn care advances compost ledger")
+        _check(not ("Hazel Hen" in animals.act(hen_position) and
+            not ("already been cared" in animals.act(hen_position))),
+            "compost interactions remain day-gated")
+        host.advance_day()
+        animals.next_day()
+    _check(int(host.inventory.get("compost", 0)) == compost_before + 1,
+        "three care days yield exactly one compost")
+    _check(int(host.inventory.get("fodder", 0)) == 0,
+        "rainy day feed conservation")
+    var compost_snapshot: Dictionary = animals.save_state()
+    compost_snapshot["hen"]["compost_counter"] = 999
+    animals.load_state(compost_snapshot)
+    _check(int(animals.creatures[0]["compost_counter"]) == 2, "compost ledger clamped")
+
+    # Compost is a real soil input through the already-owned till tool.
+    first_bed["tilled"] = true
+    first_bed["weeds"] = 0
+    first_bed["fertility"] = 20
+    host.energy = 50.0
+    var soil_energy: float = host.energy
+    _check("animal compost" in farm.act("till", first), "animal compost fertilizes the farm")
+    _check(int(first_bed["fertility"]) == 52, "compost restores exactly 32 fertility")
+    _check(int(host.inventory.get("compost", 0)) == compost_before,
+        "compost consumed exactly once")
+    _check(is_equal_approx(host.energy, soil_energy - 2.0), "mulching costs stamina")
+    var soil_fertility_after: int = int(first_bed["fertility"])
+    _check(not ("Enriched" in farm.act("till", first)), "cannot mulch without inputs")
+    _check(int(first_bed["fertility"]) == soil_fertility_after,
+        "failed fertilization cannot mint fertility")
+
+    # Severe weed competition blocks growth until physically cleared.
+    first_bed["crop"] = "turnip"
+    first_bed["age"] = 0
+    first_bed["watered_days"] = 0
+    first_bed["weeds"] = 4
+    first_bed["watered"] = true
+    host.advance_day()
+    farm.next_day("Rain")
+    _check(int(first_bed["age"]) == 0, "heavy weeds block crop growth even after rain")
+    _check("cleared the weeds" in farm.act("till", first), "existing tool clears weed pressure")
+    _check(int(first_bed["weeds"]) == 0, "clearing weeds fixes crop competition")
+
     print("EVERBLOOM FARM NATIVE ACCEPTANCE: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
