@@ -25,3 +25,5 @@ jobs:
         run: |
           python -m py_compile docs/innovation/emergence/joint220_audit/validate_joint220.py
           python docs/innovation/emergence/joint220_audit/validate_joint220.py --self-test
+          python -m py_compile docs/innovation/emergence/joint220_audit/validate_pair_triage.py
+          python docs/innovation/emergence/joint220_audit/validate_pair_triage.py
