@@ -1,0 +1,23 @@
+name: EVERBLOOM Construction B19 logistics-state offline contract QA
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/typed_state/logistics_061_070.json'
+      - 'docs/innovation/construction/typed_state/validate_logistics_061_070.py'
+      - 'docs/innovation/construction/typed_state/LOGISTICS_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-construction-b19-logistics-types.yml'
+permissions:
+  contents: read
+jobs:
+  logistics-state-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile logistics validator
+        run: python -m py_compile docs/innovation/construction/typed_state/validate_logistics_061_070.py
+      - name: Validate B061-B070 typed state and hostile fixtures
+        run: python docs/innovation/construction/typed_state/validate_logistics_061_070.py
