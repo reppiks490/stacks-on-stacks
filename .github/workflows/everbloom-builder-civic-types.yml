@@ -1,0 +1,20 @@
+name: Everbloom B031-B040 civic construction contract validation
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/typed_state/civic_031_040.json'
+      - 'docs/innovation/construction/typed_state/validate_civic_031_040.py'
+      - 'docs/innovation/construction/typed_state/CIVIC_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-builder-civic-types.yml'
+permissions:
+  contents: read
+jobs:
+  civic-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Strict B031-B040 state fixtures and negative cases
+        run: python3 docs/innovation/construction/typed_state/validate_civic_031_040.py
+      - name: Syntax check
+        run: python3 -m py_compile docs/innovation/construction/typed_state/validate_civic_031_040.py
