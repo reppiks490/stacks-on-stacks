@@ -157,8 +157,16 @@ func refresh_report() -> void:
 func _blocked() -> bool:
     if game == null or game.village == null:
         return true
+    # A paused session may belong to another modal or a system pause.
+    # Never stack a second modal that could steal focus or restore the
+    # wrong pause state when it closes.
+    if get_tree() != null and get_tree().paused:
+        return true
     var journal = game.village.social_journal
-    return journal != null and journal.panel != null and journal.panel.visible
+    if journal != null and journal.panel != null and journal.panel.visible:
+        return true
+    var topics = game.village.topic_panel
+    return topics != null and topics.panel != null and topics.panel.visible
 
 func open_panel() -> void:
     if is_open or _blocked():
