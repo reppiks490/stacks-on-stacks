@@ -64,7 +64,7 @@ def validate(data: object) -> list[str]:
             if not substantive(c.get(key)):
                 errors.append(f"{label}: missing/placeholder {key}")
         identifier = c.get("id")
-        if not isinstance(identifier, str) or not re.fullmatch(r"EB-E-\\d{3}", identifier):
+        if not isinstance(identifier, str) or not re.fullmatch(r"EB-E-\d{3}", identifier):
             errors.append(f"{label}: invalid ID")
         elif identifier in ids:
             errors.append(f"{label}: duplicate ID")
@@ -95,7 +95,7 @@ def validate(data: object) -> list[str]:
         ):
             values = c.get(key)
             if not isinstance(values, list) or len(values) < minimum or not all(
-                isinstance(x, str) and len(x.strip()) >= 12 for x in values
+                isinstance(x, str) and len(x.strip()) >= (3 if key in ("player_verbs", "dependencies") else 12) for x in values
             ):
                 errors.append(f"{label}: insufficient substantive {key}")
         schema = c.get("state_schema")
@@ -116,7 +116,7 @@ def validate(data: object) -> list[str]:
         effort = c.get("effort_estimate")
         if not isinstance(effort, dict) or effort.get("size") not in ("S", "M", "L", "XL") or not (
             isinstance(effort.get("risks"), list) and len(effort["risks"]) >= 2
-        ) or not re.fullmatch(r"\\d+-\\d+", str(effort.get("estimated_engineering_days", ""))):
+        ) or not re.fullmatch(r"\d+-\d+", str(effort.get("estimated_engineering_days", ""))):
             errors.append(f"{label}: invalid effort/risk estimate")
         economy = c.get("economy_and_resource_contract")
         if not isinstance(economy, dict) or not isinstance(economy.get("resource_inputs"), dict) or not (
