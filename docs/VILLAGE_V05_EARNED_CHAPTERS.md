@@ -1,0 +1,29 @@
+# EVERBLOOM V05/V14/V19 — Earned neighbor conversation chapters
+
+**Status:** implementation candidate, pending exact-HEAD native CI and integration. This document describes implemented source and required proof; it does not assert native success until receipts are recorded in issue #2. Godot 4.x only; no engine port. These are original baseline Village narrative interactions, not the Construction/Emergence 220-concept innovation backlog.
+
+## Player experience and original writing
+
+Each of six original residents retains two freely selectable introductory topics. Helping that resident with one legitimate paid village shift unlocks an additional **Shift Reflection** question. Earning at least **80 friendship** unlocks an additional **Trusted Memory** question. The twelve new topics (six work, six trust) contain original English and Spanish labels and replies. They expand the existing two-choice dialogue into two, three or four available questions, with no locked spoiler text shown in the menu. The player approaches a resident within 4.2 world units, opens **Ask a neighbor [U]**, and selects the desired subject. The authored answer appears in the existing HUD and the first spoken line of that day is preserved in the **Neighbors & Memories** journal.
+
+The shift chapters respond to a real interaction with the herbal garden, carpentry yard, bakery, lake, barn and archive. Trusted memories reveal six distinct ambitions, values or vulnerabilities; these are personal disclosures, not marriage eligibility or implied consent. No new external art, voice, music, character likenesses, maps or proprietary assets are used. Future portrait gestures, small memory illustrations and accessible audio captions require original authoring and provenance receipts.
+
+## Domain authority, save and deterministic replay
+
+`Village.available_topics(rid)` reads authoritative `memories[rid].jobs` and `affection[rid]`; its output is deterministic, with base topics first and earned chapters second. `Village._dialogue` **rechecks** prerequisites before resolving a supplied topic ID, so a direct `act("talk", position, "trusted_memory")` cannot bypass the trust threshold. Festival, rainy weather and pending gift recollection continue to take precedence. A locked or invalid ID falls back to ordinary contextual dialogue without exposing the private text.
+
+There are **no new save fields**: existing schema-1 social memory counters and friendship points already roundtrip through Principal's strict save service. The existing monotonic `day_epoch = (year-1)*56 + season_index*14 + day` controls one talk reward per resident per day and one paid shift per resident per day. Selecting additional topics does not mint wages, items, energy, restoration or repeated friendship. Only the first genuine spoken line per resident per day enters the capped 12-entry dialogue log. The presentation adapter does not settle resources; Village owns shift and social authority, Principal owns game clock, HUD, input and save admission.
+
+## Controls and layout
+
+The original overlay has four reusable focusable buttons and hides unearned choices. Keyboard **U** opens/closes; **1–4** select the corresponding visible topic, **Up/Down + Enter** navigate/confirm, **Escape** cancels. Controller **right-stick click** opens, **D-pad Up/Down + A** selects, **B** cancels. Mouse/touch may activate the opener and any visible choice. The modal pauses the game and restores the previous pause state; the social journal cannot overlap. The panel uses a larger central viewport region for up to four 56-pixel-high buttons, but physical small-screen clipping and touch ergonomics are not yet measured. A bounded 6-NPC nearest check, a four-topic filter, and four UI controls require constant work per player interaction; **no measured device frame time, memory or battery claim** is made. The current per-frame locale check remains constant-time.
+
+## Acceptance, dependencies and limitations
+
+The existing dedicated push-only, non-Codex `everbloom-v05-topics.yml` imports the actual Godot project and runs the assembled-game native topic acceptance. The expanded test checks initial locked topics, direct-ID bypass rejection, a real paid shift and conserved wages/energy, the third/fourth keyboard choices, all 12 bilingual chapter replies, 56-day calendar rollover, exactly-once talk and work, full-game save/reload and pause/modal state. General native/Python and the other Village suites must remain green on the **exact final SHA** before integration. Any CI receipt must be inspected and reported honestly.
+
+Principal owns `scripts/game.gd`, `scripts/save_service.gd`, HUD and global inputs; this increment edits none of those. Farming owns crops/animals, Builder owns construction and original meshes, Emergence owns dynamic-event contracts and innovation-ledger QA. No marriage, household, interregional travel, actual voice acting, hardware input certification or measured mobile performance is claimed. V05, V14 and V19 remain **partially implemented**, not mission-complete. Future narrative consequences must use versioned, strictly validated nested state agreed with Principal before adding fields; transcript text is not a durable semantic quest ledger.
+
+## Reconciliation receipt
+
+This candidate is reconciled onto canonical `main@11d5e599ae01ed1b4e982f1e84b9be5d571ff4db` rather than merging the diverged source branch. The V02 physically-arrived-at-work wage gate from main is preserved byte-for-byte; no Principal or innovation files are touched. Native acceptance and exact-SHA CI must be inspected before integration. Original source branch remains intact.

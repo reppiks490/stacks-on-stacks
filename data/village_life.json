@@ -420,6 +420,32 @@
           "en": "The clinic needs patience more than rare remedies. I keep simple herbs labeled for anyone who asks.",
           "es": "La clínica necesita paciencia más que remedios raros. Etiqueto hierbas sencillas para quien las necesite."
         }
+      },
+      "shift_reflection": {
+        "label": {
+          "en": "Ask about the seedlings we tended",
+          "es": "Preguntar por las plántulas que cuidamos"
+        },
+        "reply": {
+          "en": "The seedlings we sorted together have taken root. I kept the strongest near the clinic door so visitors can watch them grow.",
+          "es": "Las plántulas que ordenamos juntos han echado raíces. Dejé las más fuertes junto a la clínica para que todos las vean crecer."
+        },
+        "requires": {
+          "min_jobs": 1
+        }
+      },
+      "trusted_memory": {
+        "label": {
+          "en": "Ask about Mira's quiet ambition",
+          "es": "Preguntar por el sueño de Mira"
+        },
+        "reply": {
+          "en": "I hope the clinic becomes a place where no neighbor is embarrassed to ask for help. I rarely tell anyone that dream.",
+          "es": "Sueño con una clínica donde nadie sienta vergüenza al pedir ayuda. Casi nunca comparto ese deseo."
+        },
+        "requires": {
+          "min_affection": 80
+        }
       }
     },
     "rowan": {
@@ -441,6 +467,32 @@
         "reply": {
           "en": "A crooked board can become a fine bench when you follow its grain instead of fighting it.",
           "es": "Una tabla torcida puede ser un buen banco si sigues la veta en vez de luchar contra ella."
+        }
+      },
+      "shift_reflection": {
+        "label": {
+          "en": "Ask about the repaired market bench",
+          "es": "Preguntar por el banco reparado"
+        },
+        "reply": {
+          "en": "The bench we repaired now holds the morning market crowd. I left one uneven knot visible; it reminds me that useful things need not be perfect.",
+          "es": "El banco que reparamos ya recibe a la gente del mercado. Dejé un nudo a la vista: lo útil no necesita ser perfecto."
+        },
+        "requires": {
+          "min_jobs": 1
+        }
+      },
+      "trusted_memory": {
+        "label": {
+          "en": "Ask what Rowan hopes to rebuild",
+          "es": "Preguntar qué desea reconstruir Rowan"
+        },
+        "reply": {
+          "en": "One day I want to rebuild the footpath to the orchard, but only after the people who use it help choose its route.",
+          "es": "Algún día quiero restaurar el sendero al huerto, pero primero quiero que quienes lo usan decidan su recorrido."
+        },
+        "requires": {
+          "min_affection": 80
         }
       }
     },
@@ -464,6 +516,32 @@
           "en": "There is always room for another chair. No one has to bring a meal to deserve a welcome.",
           "es": "Siempre cabe otra silla. Nadie tiene que traer comida para merecer una bienvenida."
         }
+      },
+      "shift_reflection": {
+        "label": {
+          "en": "Ask about the shared oven shift",
+          "es": "Preguntar por el turno del horno"
+        },
+        "reply": {
+          "en": "Since you helped with the early dough, I have enough time to teach the apprentices how to bake without wasting flour.",
+          "es": "Desde que ayudaste con la masa temprana, tengo tiempo para enseñar a los aprendices a hornear sin desperdiciar harina."
+        },
+        "requires": {
+          "min_jobs": 1
+        }
+      },
+      "trusted_memory": {
+        "label": {
+          "en": "Ask about Celia's first feast",
+          "es": "Preguntar por la primera fiesta de Celia"
+        },
+        "reply": {
+          "en": "At my first village supper I burned the bread. Everyone stayed to share soup anyway. That kindness is why I keep the table open.",
+          "es": "En mi primera cena del pueblo quemé el pan. Todos se quedaron a compartir sopa. Por eso siempre dejo la mesa abierta."
+        },
+        "requires": {
+          "min_affection": 80
+        }
       }
     },
     "orion": {
@@ -485,6 +563,32 @@
         "reply": {
           "en": "I watch the far shore before I watch the clouds. The water notices a storm first.",
           "es": "Miro la orilla lejana antes que las nubes. El agua nota primero la tormenta."
+        }
+      },
+      "shift_reflection": {
+        "label": {
+          "en": "Ask about the nets we mended",
+          "es": "Preguntar por las redes que reparamos"
+        },
+        "reply": {
+          "en": "The nets we mended have smaller gaps, so the young fish can slip away. Good work means knowing what to leave in the lake.",
+          "es": "Las redes que reparamos tienen huecos más pequeños para dejar escapar a los peces jóvenes. Trabajar bien es saber qué dejar en el lago."
+        },
+        "requires": {
+          "min_jobs": 1
+        }
+      },
+      "trusted_memory": {
+        "label": {
+          "en": "Ask about Orion's far shore",
+          "es": "Preguntar por la otra orilla de Orion"
+        },
+        "reply": {
+          "en": "I used to think the far shore was where my life would begin. Now I think home is the place where I choose to care for the water.",
+          "es": "Antes creía que mi vida empezaría en la otra orilla. Ahora sé que mi hogar está donde elijo cuidar el agua."
+        },
+        "requires": {
+          "min_affection": 80
         }
       }
     },
@@ -508,6 +612,32 @@
           "en": "Dry bedding and fresh water matter more than fancy fences when the frost arrives.",
           "es": "La cama seca y el agua fresca importan más que las cercas elegantes cuando llega la helada."
         }
+      },
+      "shift_reflection": {
+        "label": {
+          "en": "Ask about the calmer barn",
+          "es": "Preguntar por el establo tranquilo"
+        },
+        "reply": {
+          "en": "After our shift the shy calf finally ate beside the others. We made space for her to decide when she was ready.",
+          "es": "Después de nuestro turno, la ternera tímida comió junto a los demás. Le dimos espacio para decidir cuándo estaba lista."
+        },
+        "requires": {
+          "min_jobs": 1
+        }
+      },
+      "trusted_memory": {
+        "label": {
+          "en": "Ask why Alba keeps a spare blanket",
+          "es": "Preguntar por la manta de repuesto de Alba"
+        },
+        "reply": {
+          "en": "I keep an extra blanket for any frightened newcomer, animal or person. Being welcomed should never depend on being brave.",
+          "es": "Guardo una manta extra para quien llegue con miedo, sea animal o persona. Nadie debería necesitar valentía para ser bienvenido."
+        },
+        "requires": {
+          "min_affection": 80
+        }
       }
     },
     "soren": {
@@ -529,6 +659,32 @@
         "reply": {
           "en": "The oldest map has blank paths. Perhaps the people who walked them preferred discovery to certainty.",
           "es": "El mapa más antiguo tiene senderos en blanco. Quizá quienes los recorrieron preferían descubrir antes que saber."
+        }
+      },
+      "shift_reflection": {
+        "label": {
+          "en": "Ask about the pages we restored",
+          "es": "Preguntar por las páginas restauradas"
+        },
+        "reply": {
+          "en": "The pages we repaired are back on the public shelf. I added a note naming every volunteer, because preservation is shared work.",
+          "es": "Las páginas que reparamos vuelven a estar en la estantería pública. Anoté a cada voluntario porque conservar es tarea de todos."
+        },
+        "requires": {
+          "min_jobs": 1
+        }
+      },
+      "trusted_memory": {
+        "label": {
+          "en": "Ask about Soren's unwritten chapter",
+          "es": "Preguntar por el capítulo sin escribir de Soren"
+        },
+        "reply": {
+          "en": "I want the archive to record ordinary days, not only disasters and celebrations. Those quiet hours tell us who we chose to become.",
+          "es": "Quiero que el archivo recuerde los días comunes, no solo las desgracias y las fiestas. Esas horas cuentan quiénes decidimos ser."
+        },
+        "requires": {
+          "min_affection": 80
         }
       }
     }
