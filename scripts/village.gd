@@ -205,16 +205,21 @@ func _dialogue(resident: Dictionary, rid: String, epoch: int, topic: String = ""
     if not recollection.is_empty():
         return recollection
     # Player-selected topics follow festival, rain and outstanding gift memories.
-    # Invalid topic IDs fall through to the existing authored conversation.
+    # Locked or invalid topic IDs fall through without revealing private chapters.
     if not topic.is_empty():
         var topic_catalog: Dictionary = life_data.get("conversation_topics", {})
         var options: Dictionary = topic_catalog.get(rid, {})
         if options.has(topic):
             var topic_data: Dictionary = options[topic]
+            if not _topic_unlocked(rid, topic_data):
+                return _dialogue_fallback(resident, rid, profile, epoch)
             var replies: Dictionary = topic_data.get("reply", {})
             var chosen: String = str(replies.get(dialogue_locale, replies.get("en", "")))
             if not chosen.is_empty():
                 return chosen
+    return _dialogue_fallback(resident, rid, profile, epoch)
+
+func _dialogue_fallback(resident: Dictionary, rid: String, profile: Dictionary, epoch: int) -> String:
     var contextual: String = _conditional_dialogue(resident, profile, rid)
     if not contextual.is_empty():
         return contextual
@@ -327,19 +332,33 @@ func _job(resident: Dictionary, rid: String, epoch: int) -> String:
     return "Helped %s with %s. Earned %d petals." % [
         resident["name"], str(profile.get("job_task", "community repairs")), pay]
 
-## Read-only, deterministic topic menu. No new save keys or side effects.
+## Read-only predicate: the actual job count and earned affection survive saves.
+## Never grant or disclose a locked chapter through a direct act(topic) call.
+func _topic_unlocked(rid: String, entry: Dictionary) -> bool:
+    var requirements: Dictionary = entry.get("requires", {})
+    if int(memories.get(rid, _fresh_memory()).get("jobs", 0)) < int(requirements.get("min_jobs", 0)):
+        return false
+    if int(affection.get(rid, 0)) < int(requirements.get("min_affection", 0)):
+        return false
+    return true
+
+## Stable base topics first, earned chapters second. No new save fields.
 func available_topics(rid: String) -> Array:
     var catalog: Dictionary = life_data.get("conversation_topics", {})
     var options: Dictionary = catalog.get(rid, {})
     var keys: Array = options.keys()
     keys.sort()
     var result: Array = []
-    for key in keys:
-        var entry: Dictionary = options[key]
-        var labels: Dictionary = entry.get("label", {})
-        var label: String = str(labels.get(dialogue_locale, labels.get("en", "")))
-        if not label.is_empty():
-            result.append({"id":str(key), "label":label})
+    for phase in range(2):
+        for key in keys:
+            var entry: Dictionary = options[key]
+            var gated: bool = entry.has("requires")
+            if gated != (phase == 1) or not _topic_unlocked(rid, entry):
+                continue
+            var labels: Dictionary = entry.get("label", {})
+            var label: String = str(labels.get(dialogue_locale, labels.get("en", "")))
+            if not label.is_empty():
+                result.append({"id":str(key), "label":label})
     return result
 
 func act(action: String, position: Vector3, topic: String = "") -> String:
