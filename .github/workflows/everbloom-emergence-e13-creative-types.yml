@@ -1,0 +1,30 @@
+name: Everbloom E081-E090 creative design-state validation
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed_state/creative_081_090.json'
+      - 'docs/innovation/emergence/typed_state/validate_creative_081_090.py'
+      - 'docs/innovation/emergence/typed_state/CREATIVE_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-e13-creative-types.yml'
+permissions:
+  contents: read
+jobs:
+  creative-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact HEAD and source checks
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          echo "CREATIVE_CONTRACT_HEAD=$GITHUB_SHA"
+      - name: Validate original creative typed states and hostile mutations
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/innovation/emergence/typed_state/validate_creative_081_090.py
+          python docs/innovation/emergence/typed_state/validate_creative_081_090.py --self-test
