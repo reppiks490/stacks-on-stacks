@@ -78,15 +78,19 @@ func _replay(check_all: bool) -> String:
         if epoch == 86:
             _check(not herd.request_breeding("hen-001", "hen-002", epoch, healthy)["ok"],
                 "species housing capacity prevents conception")
+        if epoch == 99:
+            var sibling_attempt: Dictionary = herd.request_breeding("hen-011", "hen-010", epoch, healthy)
+            _check(not sibling_attempt["ok"] and "shared ancestry" in sibling_attempt["message"],
+                "mature siblings explicitly denied by ancestry gate")
         var hen_count: int = 0
         for animal in herd.state["animals"]:
             _check(animal["age_days"] == epoch - animal["birth_epoch"],
                 "derived age consistent %s day %d" % [animal["id"], epoch])
             _check(animal["generation"] >= 0 and animal["generation"] <= 4,
                 "generation finite")
-            for trait in ["vigor", "temperament", "productivity"]:
-                _check(animal["traits"][trait] >= 0 and animal["traits"][trait] <= 100,
-                    "heritable trait bounded")
+            for trait_name in ["vigor", "temperament", "productivity"]:
+                _check(animal["traits"][trait_name] >= 0 and animal["traits"][trait_name] <= 100,
+                    "heritable trait_name bounded")
             if animal["species"] == "hen":
                 hen_count += 1
         _check(hen_count <= 6 and herd.state["animals"].size() <= 18,
