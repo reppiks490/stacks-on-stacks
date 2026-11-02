@@ -1,0 +1,33 @@
+name: EVERBLOOM Emergence phase-A catalog acceptance
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/**'
+      - '.github/workflows/everbloom-emergence-catalog.yml'
+permissions:
+  contents: read
+jobs:
+  emergence-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ten distinct original Emergence mechanics and twelve negative mutations
+        run: |
+          set -euo pipefail
+          python3 docs/innovation/emergence/validate_catalog.py --self-test
+      - name: Verify phase sequencing and Godot-only development
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("docs/innovation/emergence/phase1_ten_concepts.json").read_text(encoding="utf-8"))
+          assert d["phase"]=="A_20_ideas"
+          assert d["target_engine"]=="Godot 4.x"
+          assert "220" in d["gate"]
+          assert len(d["concepts"])==10
+          assert all(c["status"]=="specified_pending_review" for c in d["concepts"])
+          assert all(c["implementation_phases"][0].startswith("Pure deterministic") for c in d["concepts"])
+          print("PHASE A: 10 Emergence specifications validated; 220 gate still closed; no gameplay implementation claimed.")
+          PY
