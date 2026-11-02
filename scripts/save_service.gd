@@ -9,6 +9,9 @@ extends RefCounted
 const SAVE_PATH: String = "user://everbloom_save_v1.json"
 const TEMP_PATH: String = "user://everbloom_save_v1.json.tmp"
 const BACKUP_PATH: String = "user://everbloom_save_v1.json.bak"
+# Atomic directory creation excludes simultaneous local save writers. A crash
+# may leave this directory behind; never auto-remove an unverified stale lock.
+const WRITE_LOCK_PATH: String = "user://everbloom_save_v1.json.writer.lock"
 # Damaged primary bytes are retained separately; never overwrite an earlier quarantine.
 const QUARANTINE_PREFIX: String = "user://everbloom_save_v1.json.corrupt."
 const MAX_QUARANTINE_SLOTS: int = 8
@@ -395,7 +398,21 @@ static func write_payload(payload: Dictionary) -> bool:
     if not validate_payload(payload):
         push_error("EVERBLOOM: refused to write invalid schema-1 save")
         return false
+    # A single writer must own the full temp -> backup -> primary sequence.
+    # Directory creation is an atomic filesystem exclusion primitive. Never
+    # guess that an existing lock is stale: a second process may be saving.
+    var lock_path: String = ProjectSettings.globalize_path(WRITE_LOCK_PATH)
+    if DirAccess.make_dir_absolute(lock_path) != OK:
+        push_error("EVERBLOOM: save writer lock held or unavailable; no files changed")
+        return false
+    var succeeded: bool = _write_payload_under_lock(payload)
+    if DirAccess.remove_absolute(lock_path) != OK:
+        push_error("EVERBLOOM: writer lock cleanup failed; verify save and close other instances")
+        return false
+    return succeeded
 
+static func _write_payload_under_lock(payload: Dictionary) -> bool:
+    # Called only after successful exclusive directory acquisition.
     # A recovered player must be able to save again. Preserve the corrupt
     # primary byte-for-byte in a free quarantine slot, and keep the last valid
     # backup intact. Without a valid backup, fail closed instead of inventing
