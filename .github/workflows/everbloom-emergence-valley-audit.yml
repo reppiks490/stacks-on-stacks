@@ -1,0 +1,52 @@
+name: EVERBLOOM Emergence E18 native Valley cooldown diagnostic
+on:
+  push:
+    paths:
+      - 'tests/native_emergence_valley_audit.gd'
+      - 'docs/innovation/emergence/VALLEY_COOLDOWN_AUDIT.md'
+      - 'scripts/valley.gd'
+      - 'scripts/game.gd'
+      - 'scripts/save_service.gd'
+      - '.github/workflows/everbloom-emergence-valley-audit.yml'
+permissions:
+  contents: read
+jobs:
+  valley-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      XDG_DATA_HOME: /tmp/everbloom-emergence-valley-diagnostic
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Import actual project and parse all scripts
+        run: |
+          set -euo pipefail
+          mkdir -p "$XDG_DATA_HOME"
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee emergence_valley_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' emergence_valley_import.log; then exit 1; fi
+      - name: Reproduce real-game fishing and foraging cooldown behavior
+        run: |
+          set -euo pipefail
+          echo "Exact source commit: $GITHUB_SHA"
+          timeout 90s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://tests/native_emergence_valley_audit.gd 2>&1 | tee emergence_valley_audit.log
+          grep -q 'EVERBLOOM EMERGENCE VALLEY AUDIT:' emergence_valley_audit.log
+          grep -q '0 harness failures' emergence_valley_audit.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|EMERGENCE VALLEY HARNESS FAILED:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' emergence_valley_audit.log; then exit 1; fi
+      - name: Preserve exact-head diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-emergence-valley-diagnostic
+          path: |
+            emergence_valley_import.log
+            emergence_valley_audit.log
+          if-no-files-found: ignore
+          retention-days: 14
