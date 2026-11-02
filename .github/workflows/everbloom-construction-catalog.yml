@@ -1,0 +1,33 @@
+name: EVERBLOOM construction catalog phase-A acceptance
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/**'
+      - '.github/workflows/everbloom-construction-catalog.yml'
+permissions:
+  contents: read
+jobs:
+  catalog-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ten fully specified construction ideas and negative mutations
+        run: |
+          set -euo pipefail
+          python3 docs/innovation/construction/validate_catalog.py --self-test
+      - name: Assert innovation phase gate and Godot-first policy
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("docs/innovation/construction/phase1_ten_concepts.json")
+          data=json.loads(p.read_text(encoding="utf-8"))
+          assert data["phase"]=="A_20_ideas"
+          assert data["target_engine"]=="Godot 4.x"
+          assert "220" in data["gate"]
+          assert len(data["concepts"])==10
+          assert all(x["status"]=="specified_pending_review" for x in data["concepts"])
+          print("PHASE GATE: 10 construction concepts only; no Godot gameplay implementation claimed.")
+          PY
