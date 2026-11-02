@@ -4,6 +4,7 @@ on:
     paths:
       - 'scripts/principal_multiprocess_probe.gd'
       - '.github/workflows/everbloom-principal-multiprocess-lock.yml'
+      - 'docs/PRINCIPAL_MULTIPROCESS_LOCK_QA.md'
 permissions:
   contents: read
 jobs:
