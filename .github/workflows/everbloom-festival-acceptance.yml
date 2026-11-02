@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'scripts/festivals.gd'
+      - 'scripts/save_service.gd'
+      - 'scripts/animals.gd'
       - 'scripts/game.gd'
       - 'scripts/hud.gd'
       - 'data/festivals.json'

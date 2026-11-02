@@ -4,6 +4,7 @@ extends SceneTree
 var assertions: int = 0
 var failures: int = 0
 const SEASONS := ["Spring", "Summer", "Autumn", "Winter"]
+const SaveService = preload("res://scripts/save_service.gd")
 
 func _initialize() -> void:
     call_deferred("_run")
@@ -140,6 +141,36 @@ func _run() -> void:
     _check(int(records.get("schema", 0)) == 1, "festival save format preserved")
     _check(records.get("awarded", []).size() == 13, "all earned awards serialized")
     game.save_game(false)
+    # Actual farming code writes three reserved pasture records. Validate that
+    # principal schema-1 persistence accepts them but rejects corrupt records.
+    var persisted: Dictionary = SaveService.read_payload()
+    _check(not persisted.is_empty(), "real full-game save roundtrip succeeds")
+    var livestock_payload: Dictionary = persisted.get("animals", {})
+    _check(livestock_payload.has("__paddocks__"),
+           "three real paddock snapshots persisted")
+    var pens: Variant = livestock_payload.get("__paddocks__", [])
+    _check(pens is Array and pens.size() == 3,
+           "paddock snapshot shape is canonical")
+    var oversized: Dictionary = persisted.duplicate(true)
+    oversized["animals"]["__paddocks__"][0]["forage"] = 999
+    _check(not SaveService.validate_payload(oversized),
+           "out-of-range pasture forage rejected")
+    var wrong_type: Dictionary = persisted.duplicate(true)
+    wrong_type["animals"]["__paddocks__"] = {"forage":7}
+    _check(not SaveService.validate_payload(wrong_type),
+           "paddock dictionary spoof rejected")
+    var extra_field: Dictionary = persisted.duplicate(true)
+    extra_field["animals"]["__paddocks__"][0]["bonus_currency"] = 500
+    _check(not SaveService.validate_payload(extra_field),
+           "paddock unexpected reward key rejected")
+    var short_herd: Dictionary = persisted.duplicate(true)
+    short_herd["animals"]["__paddocks__"].pop_back()
+    _check(not SaveService.validate_payload(short_herd),
+           "paddock count truncation rejected")
+    var legacy: Dictionary = persisted.duplicate(true)
+    legacy["animals"].erase("__paddocks__")
+    _check(SaveService.validate_payload(legacy),
+           "legacy schema-1 saves without paddocks remain accepted")
     game.festivals.awarded.clear()
     _check(game.festivals.awarded.is_empty(), "test mutated the live award cache")
     game.load_game()

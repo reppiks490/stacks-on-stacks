@@ -137,7 +137,28 @@ static func validate_payload(payload: Dictionary) -> bool:
     var livestock: Variant = payload.get("animals", null)
     if typeof(livestock) != TYPE_DICTIONARY:
         return false
+    # Farming's schema-1 livestock now persists exactly three physical paddocks.
+    # This is a reserved typed array, NOT a normal animal record. Validate its
+    # contents rather than letting the animal-dictionary guard reject all saves.
+    # Legacy saves without a paddock snapshot remain compatible.
+    if livestock.has("__paddocks__"):
+        var pens: Variant = livestock["__paddocks__"]
+        if typeof(pens) != TYPE_ARRAY:
+            return false
+        var paddock_records: Array = pens
+        if paddock_records.size() != 3:
+            return false
+        for pen in paddock_records:
+            if typeof(pen) != TYPE_DICTIONARY:
+                return false
+            var record: Dictionary = pen
+            if record.size() != 1 or not record.has("forage"):
+                return false
+            if not _whole_in_range(record["forage"], 0.0, 7.0):
+                return false
     for id in livestock:
+        if id == "__paddocks__":
+            continue
         if typeof(livestock[id]) != TYPE_DICTIONARY:
             return false
         var animal: Dictionary = livestock[id]

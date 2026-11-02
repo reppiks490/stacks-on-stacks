@@ -37,3 +37,28 @@ godot --headless --path . --script res://tests/native_festival_acceptance.gd
 The non-Codex GitHub workflow `.github/workflows/everbloom-festival-acceptance.yml` pins official Godot 4.7.2 with its SHA-256. Its engine test directly loads the **actual main scene**, checks time/location/item gates, all 12 events, one-year duplicate resistance, second-year reset, JSON save roundtrip through the existing save service, invalid future/unknown awards, and verifies no resource duplication.
 
 **Limits:** Festival participation is one offering interaction plus visual lantern stage, not yet a full social gathering, party NPC animations, minigames, bespoke musical score, family participation, authored cutscenes or a polished retail-quality experience. Source/native headless checks do not prove actual player input ergonomics, device FPS or visual excellence. No imported proprietary Harvest Moon resources, no licensed-offline asset claims, no paid features, no Codex.
+
+
+## Integrated native save-compatibility repair
+
+Independent festival testing against the concurrent farming/village update exposed a
+**real full-game save failure**: Farming now writes `animals["__paddocks__"]`
+as a three-element array of `{"forage": int}` records, while the Principal
+schema-1 validator previously assumed every livestock record is a dictionary.
+As a result, daily autosaves and manual saves could fail despite passing the
+separate synthetic save test and 120-frame scene smoke.
+
+The source guard now specifically accepts this known reserved paddock array
+and requires **exactly three records, each with only integer forage 0..7**.
+It retains the original strict per-animal validation for all other entries,
+rejects malformed, out-of-range, extended and truncated paddock claims, and
+continues accepting older schema-1 saves without the optional paddock data.
+
+The real main-scene festival native test also verifies serialized paddock
+compatibility, valid full-game save/load and duplicate-reward denial after
+reload. The dedicated workflow is triggered by changes to `animals.gd` or
+`save_service.gd` as an independent cross-lane integration regression.
+
+This addresses one concrete source/runtime incompatibility. It does not
+claim tested desktop power-loss atomicity, mobile storage permissions,
+long-horizon save migrations, or complete multigenerational persistence.
