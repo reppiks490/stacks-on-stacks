@@ -1,6 +1,6 @@
 # EVERBLOOM V05/V19 — Earned NPC chapter progress (bounded increment)
 
-Status: **implementing; native acceptance pending**. This is original Godot 4.x game code, not a proposal or a Construction/Emergence innovation-ledger implementation.
+Status: **native-tested candidate; canonical integration and final exact-HEAD verification tracked in issue #2**. This is original Godot 4.x game code, not a proposal or a Construction/Emergence innovation-ledger implementation.
 
 ## Player interaction and feedback
 
@@ -18,6 +18,6 @@ All visual components are first-party authored labels and built-in Godot control
 
 ## Regression acceptance
 
-`scripts/village_topic_panel_acceptance.gd` must execute with native Godot 4.x against the exact candidate SHA. It checks six resident topic contracts, initial locked deficits, English/Spanish tracker parity, conservation during menu operations, real paid-shift unlock, 80-point trust unlock, existing choice routing, locked-topic rejection, multiyear replay, assembled save/reload and reconstruction of progress from persisted fields. Also require general import/parse, 120-frame smoke, native save recovery and existing Village suites before integration. Any failure is a blocker, not a reason to claim completion.
+`scripts/village_topic_panel_acceptance.gd` must execute with native Godot 4.x against the exact candidate SHA. It checks six resident topic contracts, initial locked deficits, English/Spanish tracker parity, conservation during menu operations, real paid-shift unlock, 80-point trust unlock, existing choice routing, locked-topic rejection, multiyear replay, assembled save/reload and reconstruction of progress from persisted fields. Also require general import/parse, 120-frame smoke, native save recovery and existing Village suites before integration. Pre-integration candidate `6e3e07804467a34ef852f4ec06e4c1cf0dc216ab` passed [V05 native run 41536938049](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41536938049) with **150 assertions / 0 failures** and [general native/Python run 41536938094](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41536938094) with successful Godot import, smoke, save recovery and Python validation. The final integration commit must independently pass exact-HEAD gates; these candidate receipts do not prove hardware usability. Any failure is a blocker, not a reason to claim completion.
 
 **Known gaps:** no persistent player-authored dialogue decisions or deep NPC agency, no physical input/device measurements, no production assets or comprehensive accessibility audit. V05/V19/V20 remain partially complete.
