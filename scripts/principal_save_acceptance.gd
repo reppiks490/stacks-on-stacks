@@ -76,6 +76,21 @@ func _run() -> void:
     bad = base.duplicate(true)
     bad["inventory"]["turnip"] = 9007199254740992.0
     _check(not SaveService.validate_payload(bad), "integer precision overflow accepted")
+    bad = base.duplicate(true)
+    bad["village"]["talked"] = "tampered social state"
+    _check(not SaveService.validate_payload(bad), "malformed daily social map accepted")
+    bad = base.duplicate(true)
+    bad["farm"] = [{"age": 1.5}]
+    _check(not SaveService.validate_payload(bad), "fractional soil age accepted")
+    bad = base.duplicate(true)
+    bad["animals"]["hen"]["health"] = "impossible health"
+    _check(not SaveService.validate_payload(bad), "invalid animal health accepted")
+    bad = base.duplicate(true)
+    bad["animals"]["hen"]["last_care"] = -5
+    _check(not SaveService.validate_payload(bad), "impossible animal epoch accepted")
+    bad = base.duplicate(true)
+    bad["social_contacts"] = {"mira": "not a boolean"}
+    _check(not SaveService.validate_payload(bad), "invalid social contact flag accepted")
     _check(SaveService.validate_payload(base), "mutating deep duplicates corrupted valid fixture")
     print("PRINCIPAL SAVE VALIDATION: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
