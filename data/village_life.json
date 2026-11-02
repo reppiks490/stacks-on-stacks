@@ -346,32 +346,6 @@
         }
       }
     ],
-    "nella": [
-      {
-        "id": "nella_trusted_colleague",
-        "when": {
-          "min_jobs": 1,
-          "min_affection": 80,
-          "at_work": true
-        },
-        "text": {
-          "en": "You know each animal's pace now. The timid ones come closer when you arrive.",
-          "es": "Ya conoces el ritmo de cada animal. Los tímidos se acercan cuando llegas."
-        }
-      },
-      {
-        "id": "nella_first_shift",
-        "when": {
-          "min_jobs": 1,
-          "min_affection": 0,
-          "at_work": true
-        },
-        "text": {
-          "en": "Your help made the barn calmer today. Even the smallest chick settled down.",
-          "es": "Tu ayuda tranquilizó el establo hoy. Hasta el pollito más pequeño se serenó."
-        }
-      }
-    ],
     "soren": [
       {
         "id": "soren_trusted_colleague",
@@ -395,6 +369,32 @@
         "text": {
           "en": "Those pages you mended will outlast this winter. Thank you for working so gently.",
           "es": "Las páginas que reparaste resistirán este invierno. Gracias por trabajar con tanto cuidado."
+        }
+      }
+    ],
+    "alba": [
+      {
+        "id": "alba_trusted_colleague",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 80,
+          "at_work": true
+        },
+        "text": {
+          "en": "You know each animal's pace now. The timid ones come closer when you arrive.",
+          "es": "Ya conoces el ritmo de cada animal. Los tímidos se acercan cuando llegas."
+        }
+      },
+      {
+        "id": "alba_first_shift",
+        "when": {
+          "min_jobs": 1,
+          "min_affection": 0,
+          "at_work": true
+        },
+        "text": {
+          "en": "Your help made the barn calmer today. Even the smallest chick settled down.",
+          "es": "Tu ayuda tranquilizó el establo hoy. Hasta el pollito más pequeño se serenó."
         }
       }
     ]
