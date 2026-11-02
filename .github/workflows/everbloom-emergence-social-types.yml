@@ -1,0 +1,24 @@
+name: Everbloom E031-E040 social state design audit
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed_state/social_031_040.json'
+      - 'docs/innovation/emergence/typed_state/validate_social_031_040.py'
+      - 'docs/innovation/emergence/typed_state/SOCIAL_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-social-types.yml'
+permissions:
+  contents: read
+jobs:
+  social-design-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify bounded social design schemas and adversarial fixtures
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/innovation/emergence/typed_state/validate_social_031_040.py
+          python docs/innovation/emergence/typed_state/validate_social_031_040.py --self-test
