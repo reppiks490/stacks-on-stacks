@@ -1,0 +1,99 @@
+{
+  "project_id": "SABLESTAR-ORIGINAL-001",
+  "schema_version": 1,
+  "design": {
+    "working_title": "SABLESTAR: The Sundered Expanse",
+    "classification": "original graybox action RPG",
+    "source_only_not_native_verified": true,
+    "enabled_multiplayer": false,
+    "native_mobile_tested": false
+  },
+  "factions": [
+    {
+      "id": "FAC-01",
+      "name": "The Ember Cartographers",
+      "purpose": "Heal collapsed pathways through accountable stewardship"
+    },
+    {
+      "id": "FAC-02",
+      "name": "The Hollow Accord",
+      "purpose": "Exploit controlled fractures for navigation and power"
+    }
+  ],
+  "enemy_archetypes": [
+    {
+      "id": "ENM-01",
+      "name": "Glassbound Scavenger",
+      "hp": 55,
+      "attack_damage": 12,
+      "detection_radius": 17
+    },
+    {
+      "id": "ENM-02",
+      "name": "Rift Sentinel",
+      "hp": 90,
+      "attack_damage": 18,
+      "detection_radius": 22
+    }
+  ],
+  "combat": {
+    "health_max": 120,
+    "stamina_max": 100,
+    "strike_damage": 24,
+    "strike_cost": 18,
+    "strike_cooldown_seconds": 0.48,
+    "pulse_damage": 32,
+    "pulse_cost": 40,
+    "pulse_cooldown_seconds": 4.0,
+    "dodge_cost": 27,
+    "dodge_duration_seconds": 0.22,
+    "strike_range_meters": 3.0,
+    "pulse_radius_meters": 5.5
+  },
+  "world": {
+    "seed": 271828,
+    "starting_region": "REG-S1",
+    "region_definitions": [
+      {
+        "id": "REG-S1",
+        "name": "The Broken Meridian",
+        "type": "playable graybox arena"
+      },
+      {
+        "id": "REG-S2",
+        "name": "Weeping Vaults",
+        "type": "design backlog"
+      },
+      {
+        "id": "REG-S3",
+        "name": "Stormglass Reach",
+        "type": "design backlog"
+      },
+      {
+        "id": "REG-S4",
+        "name": "The Silent Furnace",
+        "type": "design backlog"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "id": "OBJ-001",
+      "text": "Recover 4 resonance fragments"
+    },
+    {
+      "id": "OBJ-002",
+      "text": "Defeat 3 glassbound scavengers"
+    },
+    {
+      "id": "OBJ-003",
+      "text": "Choose a faction at a beacon"
+    }
+  ],
+  "evidence": {
+    "godot_engine_run": "not_run",
+    "native_mobile": "not_run",
+    "shipping_build": "not_run",
+    "third_party_assets_copied": false
+  }
+}
