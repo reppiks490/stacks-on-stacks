@@ -1,0 +1,23 @@
+name: Everbloom Emergence E051-E060 exploration contract audit
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed_state/navigation_051_060.json'
+      - 'docs/innovation/emergence/typed_state/validate_navigation_051_060.py'
+      - 'docs/innovation/emergence/typed_state/NAVIGATION_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-navigation-types.yml'
+permissions:
+  contents: read
+jobs:
+  exploration-design-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile standalone validator
+        run: python -m py_compile docs/innovation/emergence/typed_state/validate_navigation_051_060.py
+      - name: Reject hostile exploration states and verify fixture roundtrips
+        run: python docs/innovation/emergence/typed_state/validate_navigation_051_060.py --self-test
