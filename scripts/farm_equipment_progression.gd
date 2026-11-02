@@ -110,7 +110,10 @@ func _json_integer(value: Variant) -> Variant:
     return value
 
 func load_json(raw: String) -> bool:
-    var parsed: Variant = JSON.parse_string(raw)
+    var parser := JSON.new()
+    if parser.parse(raw) != OK:
+        return false
+    var parsed: Variant = parser.data
     if typeof(parsed) != TYPE_DICTIONARY:
         return false
     var next: Dictionary = (parsed as Dictionary).duplicate(true)
