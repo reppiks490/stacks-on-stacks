@@ -1,0 +1,2114 @@
+{
+  "schema_version": 1,
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "source": {
+    "branch": "game/everbloom-emergence-phaseB-100-20261102",
+    "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+    "path": "docs/innovation/emergence/phaseB_011_050.json",
+    "blob_sha": "a5def76918e77e0ded7e3e8085444698b4e0b549"
+  },
+  "base_main": "1e456d5e31963575a81dda39d4a20058d98c86ce",
+  "owner": "Emergence",
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "state_contracts": [
+    {
+      "id": "EB-E-041",
+      "title": "Barter Fairness Lens",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "offer_id",
+        "item_quotes",
+        "valuation_epoch",
+        "trade_receipt"
+      ],
+      "additions": [
+        "settlement_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_41",
+      "fields": {
+        "offer_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "item_quotes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "item_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": "unknown"
+              },
+              "offered_units": {
+                "type": "integer",
+                "min": 1,
+                "max": 100,
+                "default": 1
+              },
+              "requested_units": {
+                "type": "integer",
+                "min": 1,
+                "max": 100,
+                "default": 1
+              },
+              "source_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "unit_price": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": 0
+              }
+            },
+            "default": {
+              "item_id": "unknown",
+              "offered_units": 1,
+              "requested_units": 1,
+              "source_epoch": 1,
+              "unit_price": 0
+            }
+          },
+          "max_items": 2,
+          "default": [],
+          "unique_by": "item_id"
+        },
+        "valuation_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "trade_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "settlement_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "inactive_quote_cleared",
+        "exact_two_distinct_items",
+        "quote_sources_not_future",
+        "settlement_receipt_epoch_pair"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "offer_id": "",
+            "item_quotes": [],
+            "valuation_epoch": -1,
+            "trade_receipt": null,
+            "settlement_epoch": -1
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "offer_id": "offer1",
+            "item_quotes": [
+              {
+                "item_id": "berries",
+                "offered_units": 3,
+                "requested_units": 2,
+                "source_epoch": 57,
+                "unit_price": 12
+              },
+              {
+                "item_id": "herbs",
+                "offered_units": 2,
+                "requested_units": 3,
+                "source_epoch": 58,
+                "unit_price": 9
+              }
+            ],
+            "valuation_epoch": 58,
+            "trade_receipt": "trade1",
+            "settlement_epoch": 58
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "one_sided_barter",
+          "patch": {
+            "item_quotes": [
+              {
+                "item_id": "berries",
+                "offered_units": 3,
+                "requested_units": 2,
+                "source_epoch": 57,
+                "unit_price": 12
+              }
+            ]
+          }
+        },
+        {
+          "name": "future_quote",
+          "patch": {
+            "valuation_epoch": 57
+          }
+        },
+        {
+          "name": "receipt_epoch_mismatch",
+          "patch": {
+            "settlement_epoch": -1
+          }
+        },
+        {
+          "name": "duplicate_item_quote",
+          "patch": {
+            "item_quotes": [
+              {
+                "item_id": "berries",
+                "offered_units": 3,
+                "requested_units": 2,
+                "source_epoch": 57,
+                "unit_price": 12
+              },
+              {
+                "item_id": "berries",
+                "offered_units": 2,
+                "requested_units": 3,
+                "source_epoch": 58,
+                "unit_price": 9
+              }
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Compare a two-item barter with transparent local price history before committing",
+      "player_verbs": [
+        "compare_barter_fairness_lens",
+        "preview_barter_fairness_lens",
+        "confirm_barter_fairness_lens",
+        "review_barter_fairness_lens",
+        "cancel_barter_fairness_lens"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Barter Fairness Lens; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "Double confirmation cannot duplicate goods",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-042",
+      "title": "Community Loan Library",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "tool_id",
+        "borrower_id",
+        "due_epoch",
+        "deposit_receipt"
+      ],
+      "additions": [
+        "checkout_epoch",
+        "return_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_42",
+      "fields": {
+        "tool_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "borrower_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "due_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "deposit_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "checkout_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "return_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_loan_cleared",
+        "borrower_and_deposit_required",
+        "due_after_checkout",
+        "return_requires_checkout"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "tool_id": "",
+            "borrower_id": "",
+            "due_epoch": -1,
+            "deposit_receipt": null,
+            "checkout_epoch": -1,
+            "return_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "tool_id": "tool1",
+            "borrower_id": "resident1",
+            "due_epoch": 61,
+            "deposit_receipt": "deposit1",
+            "checkout_epoch": 57,
+            "return_receipt": null
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "deadline_before_checkout",
+          "patch": {
+            "due_epoch": 56
+          }
+        },
+        {
+          "name": "unsecured_loan",
+          "patch": {
+            "deposit_receipt": null
+          }
+        },
+        {
+          "name": "anonymous_borrower",
+          "patch": {
+            "borrower_id": ""
+          }
+        },
+        {
+          "name": "return_without_deposit",
+          "patch": {
+            "return_receipt": "return1",
+            "deposit_receipt": null
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Borrow reusable tools from a shared library with return deadlines and deposits",
+      "player_verbs": [
+        "borrow_community_loan_library",
+        "preview_community_loan_library",
+        "confirm_community_loan_library",
+        "review_community_loan_library",
+        "cancel_community_loan_library"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Community Loan Library; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "Reload cannot return tool or deposit twice",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-043",
+      "title": "Perishable Delivery Routes",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "delivery_id",
+        "route_stops",
+        "quality_clock",
+        "settlement"
+      ],
+      "additions": [
+        "reserved_units",
+        "delivered_units",
+        "initial_quality",
+        "current_quality"
+      ],
+      "save_namespace": "emergence.eb_e_43",
+      "fields": {
+        "delivery_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "route_stops": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "stop_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": "stop"
+              },
+              "arrival_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "quantity": {
+                "type": "integer",
+                "min": 1,
+                "max": 100,
+                "default": 1
+              },
+              "delivered": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "stop_id": "stop",
+              "arrival_epoch": 1,
+              "quantity": 1,
+              "delivered": false
+            }
+          },
+          "max_items": 12,
+          "default": [],
+          "unique_by": "stop_id"
+        },
+        "quality_clock": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "settlement": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "reserved_units": {
+          "type": "integer",
+          "min": 0,
+          "max": 1200,
+          "default": 0
+        },
+        "delivered_units": {
+          "type": "integer",
+          "min": 0,
+          "max": 1200,
+          "default": 0
+        },
+        "initial_quality": {
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 100
+        },
+        "current_quality": {
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 100
+        }
+      },
+      "rule_codes": [
+        "inactive_delivery_cleared",
+        "delivered_units_match_stops",
+        "stock_and_quality_conservation",
+        "settlement_requires_complete_route"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "delivery_id": "",
+            "route_stops": [],
+            "quality_clock": -1,
+            "settlement": null,
+            "reserved_units": 0,
+            "delivered_units": 0,
+            "initial_quality": 100,
+            "current_quality": 100
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "delivery_id": "delivery1",
+            "route_stops": [
+              {
+                "stop_id": "north",
+                "arrival_epoch": 57,
+                "quantity": 3,
+                "delivered": true
+              },
+              {
+                "stop_id": "south",
+                "arrival_epoch": 58,
+                "quantity": 2,
+                "delivered": false
+              }
+            ],
+            "quality_clock": 58,
+            "settlement": null,
+            "reserved_units": 5,
+            "delivered_units": 3,
+            "initial_quality": 100,
+            "current_quality": 90
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "invented_delivery_units",
+          "patch": {
+            "delivered_units": 6
+          }
+        },
+        {
+          "name": "settle_undelivered",
+          "patch": {
+            "settlement": "paid1"
+          }
+        },
+        {
+          "name": "quality_increase_without_source",
+          "patch": {
+            "current_quality": 101
+          }
+        },
+        {
+          "name": "duplicate_stop",
+          "patch": {
+            "route_stops": [
+              {
+                "stop_id": "north",
+                "arrival_epoch": 57,
+                "quantity": 3,
+                "delivered": true
+              },
+              {
+                "stop_id": "north",
+                "arrival_epoch": 58,
+                "quantity": 2,
+                "delivered": false
+              }
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Plan produce delivery stops before spoilage and receive quality-adjusted settlement",
+      "player_verbs": [
+        "plan_perishable_delivery_routes",
+        "preview_perishable_delivery_routes",
+        "confirm_perishable_delivery_routes",
+        "review_perishable_delivery_routes",
+        "cancel_perishable_delivery_routes"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Perishable Delivery Routes; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "Changing route after delivery cannot restore stock",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-044",
+      "title": "Seed Commons Exchange",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "seed_lot_id",
+        "donor",
+        "recipient",
+        "exchange_receipt"
+      ],
+      "additions": [
+        "transferred_units",
+        "debit_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_44",
+      "fields": {
+        "seed_lot_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "donor": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "recipient": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "exchange_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "transferred_units": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000,
+          "default": 0
+        },
+        "debit_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_lot_cleared",
+        "donor_recipient_distinct",
+        "receipt_pairs_atomic",
+        "positive_transferred_quantity"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "seed_lot_id": "",
+            "donor": "",
+            "recipient": "",
+            "exchange_receipt": null,
+            "transferred_units": 0,
+            "debit_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "seed_lot_id": "lot1",
+            "donor": "resident1",
+            "recipient": "resident2",
+            "exchange_receipt": "exchange1",
+            "transferred_units": 4,
+            "debit_receipt": "debit1"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "self_transfer",
+          "patch": {
+            "recipient": "resident1"
+          }
+        },
+        {
+          "name": "unmatched_debit",
+          "patch": {
+            "debit_receipt": null
+          }
+        },
+        {
+          "name": "free_seed_mint",
+          "patch": {
+            "transferred_units": 0
+          }
+        },
+        {
+          "name": "orphan_debit",
+          "patch": {
+            "exchange_receipt": null
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Trade native seeds with neighbors under a biodiversity-sharing agreement; record exactly which seed lot leaves and enters each participant's stock",
+      "player_verbs": [
+        "trade_seed_commons_exchange",
+        "preview_seed_commons_exchange",
+        "confirm_seed_commons_exchange",
+        "review_seed_commons_exchange",
+        "cancel_seed_commons_exchange"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Seed Commons Exchange; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "One seed lot cannot be redeemed twice; every redeemed lot must have one immutable settlement receipt",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-045",
+      "title": "Craft Commission Escrow",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "commission_id",
+        "escrow",
+        "quality_gate",
+        "stage_receipts"
+      ],
+      "additions": [
+        "cancellation_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_45",
+      "fields": {
+        "commission_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "escrow": {
+          "type": "object",
+          "fields": {
+            "deposited": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "released": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "refunded": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            },
+            "reserved": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000000,
+              "default": 0
+            }
+          },
+          "default": {
+            "deposited": 0,
+            "released": 0,
+            "refunded": 0,
+            "reserved": 0
+          }
+        },
+        "quality_gate": {
+          "type": "enum",
+          "values": [
+            "pending",
+            "pass",
+            "fail"
+          ],
+          "default": "pending"
+        },
+        "stage_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "stage_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": "stage"
+              },
+              "amount": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000000,
+                "default": 1
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": "receipt"
+              }
+            },
+            "default": {
+              "stage_id": "stage",
+              "amount": 1,
+              "receipt_id": "receipt"
+            }
+          },
+          "max_items": 12,
+          "default": [],
+          "unique_by": "stage_id"
+        },
+        "cancellation_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "escrow_conservation",
+        "release_matches_stage_receipts",
+        "release_requires_quality_pass",
+        "cancel_only_unspent_escrow"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "commission_id": "",
+            "escrow": {
+              "deposited": 0,
+              "released": 0,
+              "refunded": 0,
+              "reserved": 0
+            },
+            "quality_gate": "pending",
+            "stage_receipts": [],
+            "cancellation_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "commission_id": "commission1",
+            "escrow": {
+              "deposited": 100,
+              "released": 40,
+              "refunded": 0,
+              "reserved": 60
+            },
+            "quality_gate": "pass",
+            "stage_receipts": [
+              {
+                "stage_id": "stage1",
+                "amount": 40,
+                "receipt_id": "stageReceipt1"
+              }
+            ],
+            "cancellation_receipt": null
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "escrow_mismatch",
+          "patch": {
+            "escrow": {
+              "deposited": 99,
+              "released": 40,
+              "refunded": 0,
+              "reserved": 60
+            }
+          }
+        },
+        {
+          "name": "unapproved_stage",
+          "patch": {
+            "quality_gate": "fail"
+          }
+        },
+        {
+          "name": "duplicate_stage",
+          "patch": {
+            "stage_receipts": [
+              {
+                "stage_id": "stage1",
+                "amount": 40,
+                "receipt_id": "stageReceipt1"
+              },
+              {
+                "stage_id": "stage1",
+                "amount": 40,
+                "receipt_id": "stageReceipt2"
+              }
+            ]
+          }
+        },
+        {
+          "name": "cancel_unspent_escrow",
+          "patch": {
+            "cancellation_receipt": "cancel1"
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Accept a nonconstruction craft order with staged deposits and quality review",
+      "player_verbs": [
+        "accept_craft_commission_escrow",
+        "preview_craft_commission_escrow",
+        "confirm_craft_commission_escrow",
+        "review_craft_commission_escrow",
+        "cancel_craft_commission_escrow"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Craft Commission Escrow; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "Cancellation after delivery cannot refund all escrow",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-046",
+      "title": "Weather Risk Pool",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "pool_id",
+        "contributions",
+        "loss_receipts",
+        "payouts"
+      ],
+      "additions": [
+        "opening_balance",
+        "closing_balance"
+      ],
+      "save_namespace": "emergence.eb_e_46",
+      "fields": {
+        "pool_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "contributions": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "contribution_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": "contribution"
+              },
+              "units": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000000,
+                "default": 1
+              }
+            },
+            "default": {
+              "contribution_id": "contribution",
+              "units": 1
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "contribution_id"
+        },
+        "loss_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "loss_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": "loss"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "approved": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "loss_id": "loss",
+              "epoch": 1,
+              "approved": false
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "loss_id"
+        },
+        "payouts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "loss_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": "loss"
+              },
+              "amount": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000000,
+                "default": 1
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": "receipt"
+              }
+            },
+            "default": {
+              "loss_id": "loss",
+              "amount": 1,
+              "receipt_id": "receipt"
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "loss_id"
+        },
+        "opening_balance": {
+          "type": "integer",
+          "min": 0,
+          "max": 10000000,
+          "default": 0
+        },
+        "closing_balance": {
+          "type": "integer",
+          "min": 0,
+          "max": 10000000,
+          "default": 0
+        }
+      },
+      "rule_codes": [
+        "fund_balance_conservation",
+        "payout_requires_approved_loss",
+        "unique_loss_settlement",
+        "payout_capped_by_fund"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "pool_id": "",
+            "contributions": [],
+            "loss_receipts": [],
+            "payouts": [],
+            "opening_balance": 0,
+            "closing_balance": 0
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "pool_id": "pool1",
+            "contributions": [
+              {
+                "contribution_id": "c1",
+                "units": 10
+              }
+            ],
+            "loss_receipts": [
+              {
+                "loss_id": "storm1",
+                "epoch": 57,
+                "approved": true
+              }
+            ],
+            "payouts": [
+              {
+                "loss_id": "storm1",
+                "amount": 15,
+                "receipt_id": "payout1"
+              }
+            ],
+            "opening_balance": 20,
+            "closing_balance": 15
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "invented_balance",
+          "patch": {
+            "closing_balance": 16
+          }
+        },
+        {
+          "name": "unknown_storm_loss",
+          "patch": {
+            "payouts": [
+              {
+                "loss_id": "other",
+                "amount": 15,
+                "receipt_id": "payout1"
+              }
+            ]
+          }
+        },
+        {
+          "name": "duplicate_loss_claim",
+          "patch": {
+            "loss_receipts": [
+              {
+                "loss_id": "storm1",
+                "epoch": 57,
+                "approved": true
+              },
+              {
+                "loss_id": "storm1",
+                "epoch": 58,
+                "approved": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "overdraw_fund",
+          "patch": {
+            "payouts": [
+              {
+                "loss_id": "storm1",
+                "amount": 31,
+                "receipt_id": "payout1"
+              }
+            ]
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Join a voluntary mutual aid fund paying verified weather-related losses; inspect the finite fund before any claim is approved or paid",
+      "player_verbs": [
+        "join_weather_risk_pool",
+        "preview_weather_risk_pool",
+        "confirm_weather_risk_pool",
+        "review_weather_risk_pool",
+        "cancel_weather_risk_pool"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Weather Risk Pool; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "One storm loss cannot be claimed repeatedly",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-047",
+      "title": "Traveling Skills Exchange",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "lesson_id",
+        "teacher",
+        "student",
+        "slot",
+        "skill_receipt"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_47",
+      "fields": {
+        "lesson_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "teacher": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "student": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "slot": {
+          "type": "object",
+          "fields": {
+            "epoch": {
+              "type": "integer",
+              "min": 1,
+              "max": 9007199254740991,
+              "default": 1
+            },
+            "start_minute": {
+              "type": "integer",
+              "min": 0,
+              "max": 1439,
+              "default": 0
+            },
+            "duration": {
+              "type": "integer",
+              "min": 1,
+              "max": 240,
+              "default": 1
+            },
+            "teacher_reserved": {
+              "type": "boolean",
+              "default": false
+            },
+            "student_reserved": {
+              "type": "boolean",
+              "default": false
+            },
+            "completed": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "default": null,
+          "nullable": true
+        },
+        "skill_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_lesson_cleared",
+        "teacher_student_distinct",
+        "bounded_reserved_slot",
+        "skill_requires_completed_dual_reservation"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "lesson_id": "",
+            "teacher": "",
+            "student": "",
+            "slot": null,
+            "skill_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "lesson_id": "lesson1",
+            "teacher": "mentor1",
+            "student": "learner1",
+            "slot": {
+              "epoch": 57,
+              "start_minute": 600,
+              "duration": 60,
+              "teacher_reserved": true,
+              "student_reserved": true,
+              "completed": true
+            },
+            "skill_receipt": "skill1"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "self_teaching",
+          "patch": {
+            "student": "mentor1"
+          }
+        },
+        {
+          "name": "unreserved_student",
+          "patch": {
+            "slot": {
+              "epoch": 57,
+              "start_minute": 600,
+              "duration": 60,
+              "teacher_reserved": true,
+              "student_reserved": false,
+              "completed": true
+            }
+          }
+        },
+        {
+          "name": "skill_before_completion",
+          "patch": {
+            "slot": {
+              "epoch": 57,
+              "start_minute": 600,
+              "duration": 60,
+              "teacher_reserved": true,
+              "student_reserved": true,
+              "completed": false
+            }
+          }
+        },
+        {
+          "name": "lesson_spans_midnight",
+          "patch": {
+            "slot": {
+              "epoch": 57,
+              "start_minute": 1400,
+              "duration": 60,
+              "teacher_reserved": true,
+              "student_reserved": true,
+              "completed": true
+            }
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Trade a completed lesson with a visiting specialist instead of paying currency",
+      "player_verbs": [
+        "trade_traveling_skills_exchange",
+        "preview_traveling_skills_exchange",
+        "confirm_traveling_skills_exchange",
+        "review_traveling_skills_exchange",
+        "cancel_traveling_skills_exchange"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Traveling Skills Exchange; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "Canceled lesson cannot grant skill; canceled lesson cannot retain an unearned skill increase",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-048",
+      "title": "Harvest Futures Board",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "contract_id",
+        "due_epoch",
+        "quantity",
+        "escrow",
+        "settlement"
+      ],
+      "additions": [
+        "reserved_units",
+        "delivered_units",
+        "settlement_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_48",
+      "fields": {
+        "contract_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "due_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "quantity": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000,
+          "default": 0
+        },
+        "escrow": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000000,
+          "default": 0
+        },
+        "settlement": {
+          "type": "enum",
+          "values": [
+            "pending",
+            "fulfilled",
+            "deferred",
+            "cancelled"
+          ],
+          "default": "pending"
+        },
+        "reserved_units": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000,
+          "default": 0
+        },
+        "delivered_units": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000,
+          "default": 0
+        },
+        "settlement_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "inactive_contract_cleared",
+        "reservation_capped_by_quantity",
+        "delivery_capped_by_reservation",
+        "fulfilled_requires_actual_delivery"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "contract_id": "",
+            "due_epoch": -1,
+            "quantity": 0,
+            "escrow": 0,
+            "settlement": "pending",
+            "reserved_units": 0,
+            "delivered_units": 0,
+            "settlement_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "contract_id": "contract1",
+            "due_epoch": 60,
+            "quantity": 10,
+            "escrow": 50,
+            "settlement": "pending",
+            "reserved_units": 8,
+            "delivered_units": 0,
+            "settlement_receipt": null
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "sell_unharvested",
+          "patch": {
+            "delivered_units": 9
+          }
+        },
+        {
+          "name": "unreceipted_fulfillment",
+          "patch": {
+            "settlement": "fulfilled",
+            "reserved_units": 10,
+            "delivered_units": 10
+          }
+        },
+        {
+          "name": "missing_due_epoch",
+          "patch": {
+            "due_epoch": -1
+          }
+        },
+        {
+          "name": "overreserve",
+          "patch": {
+            "reserved_units": 11
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Promise a capped future crop delivery with fair fallback for poor harvest; track actual produce reservation and settle or defer at the due date",
+      "player_verbs": [
+        "promise_harvest_futures_board",
+        "preview_harvest_futures_board",
+        "confirm_harvest_futures_board",
+        "review_harvest_futures_board",
+        "cancel_harvest_futures_board"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Harvest Futures Board; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "Unharvested crops cannot be sold twice; contract settlement must debit actual harvested inventory",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-049",
+      "title": "Repair Cafe Circularity",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "item_instance",
+        "condition",
+        "repair_receipt",
+        "salvage_choice"
+      ],
+      "additions": [
+        "salvage_receipt",
+        "disposed"
+      ],
+      "save_namespace": "emergence.eb_e_49",
+      "fields": {
+        "item_instance": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96,
+          "default": ""
+        },
+        "condition": {
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 0
+        },
+        "repair_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "salvage_choice": {
+          "type": "enum",
+          "values": [
+            "undecided",
+            "repair",
+            "salvage"
+          ],
+          "default": "undecided"
+        },
+        "salvage_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "disposed": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "rule_codes": [
+        "inactive_item_cleared",
+        "repair_requires_active_item",
+        "salvage_requires_disposal",
+        "mutually_exclusive_outcomes"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "item_instance": "",
+            "condition": 0,
+            "repair_receipt": null,
+            "salvage_choice": "undecided",
+            "salvage_receipt": null,
+            "disposed": false
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "item_instance": "tool1",
+            "condition": 80,
+            "repair_receipt": "repair1",
+            "salvage_choice": "repair",
+            "salvage_receipt": null,
+            "disposed": false
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "double_outcome",
+          "patch": {
+            "salvage_receipt": "salvage1"
+          }
+        },
+        {
+          "name": "repaired_disposed",
+          "patch": {
+            "disposed": true
+          }
+        },
+        {
+          "name": "wrong_choice",
+          "patch": {
+            "salvage_choice": "salvage"
+          }
+        },
+        {
+          "name": "zero_condition_repair",
+          "patch": {
+            "condition": 0
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Repair a damaged nonstructural tool or salvage it, but not both; view the mutually exclusive repair and salvage outcomes before committing",
+      "player_verbs": [
+        "repair_repair_cafe_circularity",
+        "preview_repair_cafe_circularity",
+        "confirm_repair_cafe_circularity",
+        "review_repair_cafe_circularity",
+        "cancel_repair_cafe_circularity"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Repair Cafe Circularity; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "One item cannot become repaired and salvaged simultaneously",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    },
+    {
+      "id": "EB-E-050",
+      "title": "Village Price Memory",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "price_series",
+        "market_epoch",
+        "read_cursor",
+        "confidence"
+      ],
+      "additions": [
+        "series_revision"
+      ],
+      "save_namespace": "emergence.eb_e_50",
+      "fields": {
+        "price_series": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "item_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "default": "item"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "observed": {
+                "type": "boolean",
+                "default": false
+              },
+              "price": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000000,
+                "default": null,
+                "nullable": true
+              },
+              "source_receipt": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": null,
+                "nullable": true
+              }
+            },
+            "default": {
+              "item_id": "item",
+              "epoch": 1,
+              "observed": false,
+              "price": null,
+              "source_receipt": null
+            }
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "market_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "read_cursor": {
+          "type": "integer",
+          "min": 0,
+          "max": 128,
+          "default": 0
+        },
+        "confidence": {
+          "type": "enum",
+          "values": [
+            "unknown",
+            "partial",
+            "observed"
+          ],
+          "default": "unknown"
+        },
+        "series_revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000000,
+          "default": 0
+        }
+      },
+      "rule_codes": [
+        "observed_prices_require_provenance",
+        "unknown_prices_never_fabricated",
+        "cursor_and_epoch_bounded",
+        "confidence_matches_observations"
+      ],
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "price_series": [],
+            "market_epoch": -1,
+            "read_cursor": 0,
+            "confidence": "unknown",
+            "series_revision": 0
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "price_series": [
+              {
+                "item_id": "wheat",
+                "epoch": 57,
+                "observed": true,
+                "price": 10,
+                "source_receipt": "market1"
+              },
+              {
+                "item_id": "wheat",
+                "epoch": 58,
+                "observed": false,
+                "price": null,
+                "source_receipt": null
+              }
+            ],
+            "market_epoch": 58,
+            "read_cursor": 2,
+            "confidence": "partial",
+            "series_revision": 1
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "fabricated_missing_price",
+          "patch": {
+            "price_series": [
+              {
+                "item_id": "wheat",
+                "epoch": 57,
+                "observed": true,
+                "price": 10,
+                "source_receipt": "market1"
+              },
+              {
+                "item_id": "wheat",
+                "epoch": 58,
+                "observed": false,
+                "price": 12,
+                "source_receipt": null
+              }
+            ]
+          }
+        },
+        {
+          "name": "false_certainty",
+          "patch": {
+            "confidence": "observed"
+          }
+        },
+        {
+          "name": "duplicate_observation",
+          "patch": {
+            "price_series": [
+              {
+                "item_id": "wheat",
+                "epoch": 57,
+                "observed": true,
+                "price": 10,
+                "source_receipt": "market1"
+              },
+              {
+                "item_id": "wheat",
+                "epoch": 57,
+                "observed": true,
+                "price": 10,
+                "source_receipt": "market2"
+              }
+            ]
+          }
+        },
+        {
+          "name": "cursor_out_of_range",
+          "patch": {
+            "read_cursor": 3
+          }
+        },
+        {
+          "name": "future_market_entry",
+          "patch": {
+            "market_epoch": 57
+          }
+        }
+      ],
+      "migration": "Absent optional namespace defaults to inactive state; present malformed or unrecognized fields reject atomically. No automatic migration or runtime save integration authorized.",
+      "authority": "Emergence owns proposed event/contract projection only. Principal owns currency, inventory, command receipts, day_epoch, save admission; Village owns market/NPC schedules; Farming owns seeds, crops and harvest lots. No direct inventory mint or shadow ownership.",
+      "receipt_contract": {
+        "command_id": "globally unique immutable id; Principal deduplicates across restarts",
+        "expected_revision": "stale revisions reject without mutation",
+        "day_epoch": "monotonic (year-1)*56+season_index*14+day",
+        "effect_digest": "owner-issued immutable settlement receipt, never generated by preview"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "player_scenario": "Read historical seasonal prices with uncertainty markings before trading; mark unavailable data as unknown rather than fabricating historical values",
+      "player_verbs": [
+        "read_village_price_memory",
+        "preview_village_price_memory",
+        "confirm_village_price_memory",
+        "review_village_price_memory",
+        "cancel_village_price_memory"
+      ],
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "original_asset_plan": [
+        "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Village Price Memory; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_records_cap": 128,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "visual_fallback": "text-only readable ledger; no proprietary assets"
+      },
+      "negative": "Opening price diary cannot change market prices",
+      "native_gate": "NOT NATIVE TESTED: requires Principal/Village/Farming approvals, assembled Godot save/replay and economy conservation, original art, keyboard/controller/touch parity and actual mobile profiling."
+    }
+  ]
+}
