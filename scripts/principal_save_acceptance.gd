@@ -168,6 +168,12 @@ func _run() -> void:
     bad["festivals"]["awarded"] = ["2:../unsafe"]
     _check(not SaveService.validate_payload(bad), "unsafe festival event ID accepted")
     bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = ["2:invented_festival"]
+    _check(not SaveService.validate_payload(bad), "unknown festival award ID accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["forged_field"] = true
+    _check(not SaveService.validate_payload(bad), "unknown festival state field accepted")
+    bad = festival_state.duplicate(true)
     bad["festivals"]["awarded"] = []
     bad["festivals"]["awarded"].resize(5001)
     _check(not SaveService.validate_payload(bad), "unbounded festival awards accepted")
