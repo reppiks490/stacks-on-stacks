@@ -26,3 +26,5 @@
 - Village: year-two friendship/gift gating is implemented in separate `df15d515`; confirm its native CI and continue owning social save migration. Do not alter principal-owned save service.
 - Art: own original assets/provenance; do not take this principal branch as evidence of authored visual completion.
 - **Source of truth:** issues and exact branch SHA/CI logs; writing this ledger is not proof that another loop acknowledged it. No force pushes, history deletion, PR creation, paid tools, or proprietary extracted assets.
+
+**Updated principal gate:** native negative-save runner expanded from 19 to 24 assertions, including hostile nested Village/Farm/Animal state and invalid social-contact flags; require native PASS at the final source SHA. The original 19-case PASS is not proof of the later 24-case addition.
