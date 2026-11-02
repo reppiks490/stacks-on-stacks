@@ -36,7 +36,7 @@ func _process(_delta: float) -> void:
     var minutes := int(game.minute_of_day) % 60
     header.text = "🌿 EVERBLOOM   %s %d   %02d:%02d   %s   Petals %d   Energy %d   Valley %d%%" % [
         game.season(),game.day,hours,minutes,game.weather,game.gold,int(game.energy),game.restoration]
-    controls.text = "WASD Move | E Action | 1-7 Tools | Q Seeds | G Gift | H Ship | J Fish | R Craft | F Sleep | P/O Save/Load"
+    controls.text = "WASD Move | E Action | 1-7 Tools | Q Seeds | G Gift | K Job | H Ship | J Fish\\nR Craft | F Sleep | P/O Save/Load"
     status.text = "%s  •  Seed: %s  •  %s" % [game.TOOLS[game.selected_tool],game.current_seed(),game.latest_message]
     var items: Array[String] = []
     for key in game.inventory:
