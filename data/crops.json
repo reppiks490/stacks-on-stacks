@@ -3,6 +3,7 @@
   "crops": [
     {
       "id": "turnip",
+      "family": "brassica",
       "seasons": [
         "Spring",
         "Autumn"
@@ -12,10 +13,14 @@
       "seed_price": 12,
       "sell_price": 33,
       "yield": 2,
-      "color": "#f1ebcb"
+      "color": "#f1ebcb",
+      "nutrient_draw": 6,
+      "drought_tolerance": 1,
+      "regrow_days": 0
     },
     {
       "id": "carrot",
+      "family": "root",
       "seasons": [
         "Spring",
         "Autumn"
@@ -25,10 +30,14 @@
       "seed_price": 17,
       "sell_price": 44,
       "yield": 2,
-      "color": "#e58c4d"
+      "color": "#e58c4d",
+      "nutrient_draw": 5,
+      "drought_tolerance": 2,
+      "regrow_days": 0
     },
     {
       "id": "strawberry",
+      "family": "berry",
       "seasons": [
         "Spring",
         "Summer"
@@ -38,10 +47,14 @@
       "seed_price": 30,
       "sell_price": 70,
       "yield": 3,
-      "color": "#ce516c"
+      "color": "#ce516c",
+      "nutrient_draw": 7,
+      "drought_tolerance": 1,
+      "regrow_days": 3
     },
     {
       "id": "tomato",
+      "family": "nightshade",
       "seasons": [
         "Summer",
         "Autumn"
@@ -51,10 +64,14 @@
       "seed_price": 24,
       "sell_price": 60,
       "yield": 3,
-      "color": "#d7564a"
+      "color": "#d7564a",
+      "nutrient_draw": 8,
+      "drought_tolerance": 2,
+      "regrow_days": 3
     },
     {
       "id": "melon",
+      "family": "gourd",
       "seasons": [
         "Summer"
       ],
@@ -63,10 +80,14 @@
       "seed_price": 45,
       "sell_price": 115,
       "yield": 2,
-      "color": "#9ed58b"
+      "color": "#9ed58b",
+      "nutrient_draw": 10,
+      "drought_tolerance": 1,
+      "regrow_days": 0
     },
     {
       "id": "pumpkin",
+      "family": "gourd",
       "seasons": [
         "Autumn"
       ],
@@ -75,10 +96,14 @@
       "seed_price": 48,
       "sell_price": 127,
       "yield": 2,
-      "color": "#e69b4a"
+      "color": "#e69b4a",
+      "nutrient_draw": 9,
+      "drought_tolerance": 2,
+      "regrow_days": 0
     },
     {
       "id": "winterroot",
+      "family": "root",
       "seasons": [
         "Winter"
       ],
@@ -87,10 +112,14 @@
       "seed_price": 27,
       "sell_price": 85,
       "yield": 2,
-      "color": "#add8e9"
+      "color": "#add8e9",
+      "nutrient_draw": 5,
+      "drought_tolerance": 3,
+      "regrow_days": 0
     },
     {
       "id": "bluebell",
+      "family": "flower",
       "seasons": [
         "Spring",
         "Summer"
@@ -100,7 +129,10 @@
       "seed_price": 19,
       "sell_price": 52,
       "yield": 2,
-      "color": "#9c9de0"
+      "color": "#9c9de0",
+      "nutrient_draw": 4,
+      "drought_tolerance": 1,
+      "regrow_days": 0
     }
   ]
 }
