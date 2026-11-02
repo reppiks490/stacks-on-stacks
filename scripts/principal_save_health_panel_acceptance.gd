@@ -271,7 +271,8 @@ func _run() -> void:
     ui._update_responsive_layout()
     await process_frame
     await process_frame
-    _check(ui.panel.anchor_left == 0.10 and ui.panel.anchor_right == 0.90,
+    _check(is_equal_approx(ui.panel.anchor_left, 0.10) and
+           is_equal_approx(ui.panel.anchor_right, 0.90),
            "desktop restores centered modal geometry")
     _check(ui.size_row.columns == 2 and ui.action_row.columns == 2,
            "desktop retains side-by-side controls")
