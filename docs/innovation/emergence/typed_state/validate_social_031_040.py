@@ -93,9 +93,9 @@ def invariants(rid, s):
         if not s["npc_id"]:
             return not receipts and not s["preferred_gestures"] and s["last_contact_epoch"] == -1
         epochs = [x["epoch"] for x in receipts]
-        return (not receipts or (s["consent"] and s["last_contact_epoch"] >= max(epochs)))
-            and len(epochs) == len(set(epochs))
-            and all(x["gesture"] in s["preferred_gestures"] for x in receipts)
+        return ((not receipts or (s["consent"] and s["last_contact_epoch"] >= max(epochs)))
+                and len(epochs) == len(set(epochs))
+                and all(x["gesture"] in s["preferred_gestures"] for x in receipts))
     if rid == "EB-E-036":
         pin = s["map_pin"]
         return ((pin is None or bool(s["favor_id"]))
