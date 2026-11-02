@@ -69,6 +69,18 @@ func _run() -> void:
     ui.opener.pressed.emit()
     _check(ui.panel.visible and paused, "mouse/touch opener pauses the world")
     _check(ui.active_resident_id == "mira", "nearby NPC is selected by actual world distance")
+    _check(ui.panel.get_node("ConversationScroll") is ScrollContainer,
+            "scrollable topic menu preserves focus access on short screens")
+    var initial_chapters: Array = village.chapter_progress("mira")
+    _check(initial_chapters.size() == 2 and not bool(initial_chapters[0]["unlocked"])
+            and not bool(initial_chapters[1]["unlocked"]),
+            "both earned chapters initially locked without revealing their replies")
+    _check(int(initial_chapters[0]["jobs_remaining"]) == 1
+            and int(initial_chapters[1]["friendship_remaining"]) == 80,
+            "tracker reports actual paid-shift and friendship deficits")
+    _check("1 shift(s)" in ui.progress_label.text
+            and "80 friendship points" in ui.progress_label.text,
+            "English player-visible tracker explains both unlock requirements")
     _check(ui.topic_ids.size() == 2 and "Mira" in ui.title_label.text, "visible NPC-specific choice text")
     _check(ui.language_button.custom_minimum_size.y >= 44.0
             and ui.language_button.focus_mode == Control.FOCUS_ALL,
@@ -82,6 +94,9 @@ func _run() -> void:
     _check(ui.topic_ids == stable_topic_ids and ui.topic_buttons[0].text != english_choice
             and "Preguntar" in ui.topic_buttons[0].text,
             "Spanish choices translate without reordering stable topic IDs")
+    _check("turno(s)" in ui.progress_label.text
+            and "puntos de amistad" in ui.progress_label.text,
+            "chapter tracker translates into Spanish without changing progress")
     _check(ui.panel.visible and paused and village.save_state() == initial
             and game.gold == gold_before and game.inventory == inventory_before,
             "language switch conserves paused game and all authoritative social/economic state")
@@ -256,10 +271,17 @@ func _run() -> void:
             and is_equal_approx(game.energy, before_shift_energy - 12.0),
             "real paid work unlocks the shift chapter through authoritative settlement")
     _check(village.available_topics("mira").size() == 3, "one earned work chapter unlocked, trust remains gated")
+    var after_work: Array = village.chapter_progress("mira")
+    _check(bool(after_work[0]["unlocked"]) and int(after_work[0]["jobs_remaining"]) == 0
+            and not bool(after_work[1]["unlocked"]),
+            "legitimate paid shift immediately satisfies only the work chapter")
     ui.open_topics()
     _check(ui.panel.visible and ui.topic_ids.size() == 3
             and ui.topic_buttons[2].visible and not ui.topic_buttons[3].visible,
             "third visible choice appears only when actually earned")
+    _check("Work memory: Ready to discuss" in ui.progress_label.text
+            and "Trust memory:" in ui.progress_label.text,
+            "live chapter tracker shows earned work while preserving locked trust")
     var earned_topic_ids: Array[String] = ui.topic_ids.duplicate()
     ui._input(_pad(JOY_BUTTON_X))
     _check(village.dialogue_locale == "es" and "plántulas" in ui.topic_buttons[2].text
@@ -278,9 +300,13 @@ func _run() -> void:
     village.affection["mira"] = 80
     var authored_trust: String = str(village.life_data["conversation_topics"]["mira"]["trusted_memory"]["reply"]["en"])
     _check(village.available_topics("mira").size() == 4, "earned trust unlocks fourth original topic")
+    _check(village.chapter_progress("mira").all(func(chapter): return bool(chapter["unlocked"])),
+            "both earned chapter prerequisites are satisfied at 80 friendship")
     ui.open_topics()
     _check(ui.topic_ids.size() == 4 and ui.topic_buttons[3].visible,
             "fourth choice visible and focusable after friendship threshold")
+    _check("Trust memory: Ready to discuss" in ui.progress_label.text,
+            "player receives clear confirmation of trust chapter unlock")
     ui._input(_key(KEY_4))
     _check(authored_trust in ui.last_result and not ui.panel.visible,
             "keyboard 4 plays earned trust story")
@@ -321,6 +347,8 @@ func _run() -> void:
             "all earned chapters restore from real assembled Game save without new save fields")
     _check(game.gold == gold_at_save and village.available_topics("mira").size() == 4,
             "save/load conserves money and restored chapter availability")
+    _check(village.chapter_progress("mira").all(func(chapter): return bool(chapter["unlocked"])),
+            "chapter tracker reconstructs both unlocks from actual reloaded memory")
 
     game.year = 5
     game.season_index = 0
