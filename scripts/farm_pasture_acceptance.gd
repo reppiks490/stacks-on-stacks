@@ -65,7 +65,7 @@ func _replay(adversarial: bool) -> String:
         _check(not pasture.advance_day(epoch, weather, season)["ok"],
             "duplicate day %d rejected" % epoch)
         if epoch % 7 == 1:
-            var target: int = int(epoch / 7) % 3
+            var target: int = (int(pasture.state["active"]) + 1) % 3
             _check(pasture.move_to(target, epoch)["ok"], "weekly rotational move %d" % epoch)
             _check(not pasture.move_to(target, epoch)["ok"], "duplicate weekly move denied")
         if season == "Winter" or weather == "Storm":
