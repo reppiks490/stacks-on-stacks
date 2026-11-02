@@ -170,7 +170,7 @@ func refresh() -> void:
         var card := Button.new()
         card.name = "Neighbor_%s" % str(record["id"])
         card.text = line
-        card.text_alignment = HORIZONTAL_ALIGNMENT_LEFT
+        card.alignment = HORIZONTAL_ALIGNMENT_LEFT
         card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         card.custom_minimum_size.y = 160.0
         card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
