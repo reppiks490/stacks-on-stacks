@@ -13,7 +13,7 @@
   "phaseC": "closed_pending_Principal_joint_220_approval",
   "state_contracts": [
     {
-      "id": "EB-E-61",
+      "id": "EB-E-061",
       "title": "Scent Mosaic Tracker",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -206,7 +206,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-62",
+      "id": "EB-E-062",
       "title": "Rescue Bark Triangulation",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -365,7 +365,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-63",
+      "id": "EB-E-063",
       "title": "Herd Whisper Formation",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -554,7 +554,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-64",
+      "id": "EB-E-064",
       "title": "Comfort Companion Signals",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -726,7 +726,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-65",
+      "id": "EB-E-065",
       "title": "Burrow-Safe Treasure Sniff",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -932,7 +932,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-66",
+      "id": "EB-E-066",
       "title": "Weather-Savvy Companion Shelter",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -1082,7 +1082,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-67",
+      "id": "EB-E-067",
       "title": "Trail Partnership Rotation",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -1287,7 +1287,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-68",
+      "id": "EB-E-068",
       "title": "Companion Gesture Lexicon",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -1481,7 +1481,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-69",
+      "id": "EB-E-069",
       "title": "Wildlife Distance Etiquette",
       "domain": "companion_intelligence",
       "mission_ids": [
@@ -1656,7 +1656,7 @@
       "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
     },
     {
-      "id": "EB-E-70",
+      "id": "EB-E-070",
       "title": "Senior Companion Mentorship",
       "domain": "companion_intelligence",
       "mission_ids": [
