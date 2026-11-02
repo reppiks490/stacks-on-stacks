@@ -336,14 +336,14 @@ def domain_mutations(number, s):
                 c(("compensation", 0, "paid"), False),
                 c(("assignments", 0, "end_epoch"), 56)]
     if number == 106:
-        return [c(("slots", 1, "npc_id"), "npc-a"),
+        return [c(("slots", 1), {**s["slots"][1], "npc_id": "npc-a", "epoch": 57}),
                 c(("slots", 1, "slot_id"), "slot-a"),
                 c(("completion", 0, "slot_id"), "slot-b"),
                 c(("volunteer_consents", 0, "consent"), False),
                 c(("completion", 0, "day_epoch"), 56)]
     if number == 107:
         return [c(("relay_graph", 0, "target_id"), "tower"),
-                c(("relay_graph", 1, "source_id"), "tower"),
+                c(("relay_graph", 1, "source_id"), "npc-b"),
                 c(("acknowledgments", 0, "npc_id"), "stranger"),
                 c(("expiry", "expires_epoch"), 56),
                 c(("expiry", "delivered_ids"), ["npc-a", "npc-a"])]
