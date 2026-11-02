@@ -57,7 +57,7 @@
         "trellis_nodes": "trellis_nodes",
         "vine_age": "vine_age"
       },
-      "source_invariant": "Unique window anchors, positive sunlight, deterministic vine growth stage and no future pruning.",
+      "source_invariant": "Growth stage depends on vine age and minimum sunlight, reduced for pruning within 3 days; prune epoch must be after planting and no later than current day.",
       "authority": {
         "principal": "Economy, save, replay and 56-day epoch",
         "construction": "Local preview and original art",
@@ -189,7 +189,7 @@
           "vine_age": {
             "days": 14,
             "stage": 2,
-            "last_pruned_epoch": 40
+            "last_pruned_epoch": 48
           }
         },
         {
@@ -210,7 +210,7 @@
           "vine_age": {
             "days": 14,
             "stage": 2,
-            "last_pruned_epoch": 40
+            "last_pruned_epoch": 104
           }
         }
       ],
