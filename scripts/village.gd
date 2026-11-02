@@ -316,6 +316,13 @@ func _job(resident: Dictionary, rid: String, epoch: int) -> String:
         return "%s has no work shift available right now." % resident["name"]
     if str(resident.get("place", "")) != str(profile.get("workplace", "")):
         return "Find %s at their workplace to lend a hand." % resident["name"]
+    # V02/V07: the schedule label is the *destination*, not proof of arrival.
+    # Never pay a shift while the resident is still walking from home or lunch.
+    # Compare in world space so translated Village scene roots remain correct.
+    var worksite: Vector3 = to_global(_place_position(resident, str(profile.get("workplace", "home"))))
+    var worker: Node3D = resident["node"]
+    if worker.global_position.distance_to(worksite) > 1.0:
+        return "%s is still on their way to work. Meet them at the workplace." % resident["name"]
     var cost: float = float(rules.get("energy_cost", 12))
     if not game.has_method("spend_energy") or not game.spend_energy(cost):
         return "You need more energy before taking on village work."

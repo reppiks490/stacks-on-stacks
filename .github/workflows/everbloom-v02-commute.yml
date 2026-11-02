@@ -1,0 +1,46 @@
+name: Everbloom V02 commute native acceptance
+on:
+  push:
+    paths:
+      - 'scripts/village.gd'
+      - 'scripts/village_schedule_acceptance.gd'
+      - 'docs/VILLAGE_V02_COMMUTE_GATE.md'
+      - '.github/workflows/everbloom-v02-commute.yml'
+permissions:
+  contents: read
+jobs:
+  commute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Import and parse actual Godot project
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee v02_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' v02_import.log; then exit 1; fi
+      - name: Run native two-year schedule and commute admission
+        run: |
+          set -euo pipefail
+          timeout 90s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://scripts/village_schedule_acceptance.gd 2>&1 | tee v02_acceptance.log
+          grep -q 'EVERBLOOM V02 COMMUTE NATIVE ACCEPTANCE:' v02_acceptance.log
+          grep -q '0 failures' v02_acceptance.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open|V02 COMMUTE ACCEPTANCE FAILED:' v02_acceptance.log; then exit 1; fi
+      - name: Archive exact-commit native logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-v02-commute-${{ github.sha }}
+          path: |
+            v02_import.log
+            v02_acceptance.log
+          if-no-files-found: ignore
+          retention-days: 14
