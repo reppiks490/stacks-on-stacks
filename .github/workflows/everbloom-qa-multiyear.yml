@@ -1,0 +1,65 @@
+name: Everbloom QA assembled-game multi-year and recovery
+on:
+  push:
+    paths:
+      - 'tests/native_qa_multiyear.gd'
+      - 'tests/test_qa_calendar_contract.py'
+      - 'tools/qa_calendar_contract.py'
+      - 'scripts/game.gd'
+      - 'scripts/save_service.gd'
+      - 'scripts/farm.gd'
+      - 'scripts/animals.gd'
+      - 'scripts/village.gd'
+      - 'scripts/festivals.gd'
+      - 'data/festivals.json'
+      - 'data/village_life.json'
+      - '.github/workflows/everbloom-qa-multiyear.yml'
+permissions:
+  contents: read
+jobs:
+  qa-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      XDG_DATA_HOME: /tmp/everbloom-qa-multiyear
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify cross-domain annual calendar and adversarial mutations
+        run: |
+          set -euo pipefail
+          python tools/qa_calendar_contract.py
+          python -m unittest discover -s tests -p 'test_qa_calendar_contract.py' -v
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Import actual project and parse all scripts
+        run: |
+          set -euo pipefail
+          mkdir -p "$XDG_DATA_HOME"
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee qa_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' qa_import.log; then exit 1; fi
+      - name: Real assembled-game 112-day save and corruption-recovery acceptance
+        run: |
+          set -euo pipefail
+          timeout 90s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://tests/native_qa_multiyear.gd 2>&1 | tee qa_multiyear.log
+          grep -q 'EVERBLOOM QA MULTIYEAR NATIVE:' qa_multiyear.log
+          grep -q '0 failures' qa_multiyear.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|QA MULTIYEAR FAILED:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' qa_multiyear.log; then exit 1; fi
+      - name: Preserve exact-commit QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-qa-multiyear
+          path: |
+            qa_import.log
+            qa_multiyear.log
+          if-no-files-found: ignore
+          retention-days: 14
