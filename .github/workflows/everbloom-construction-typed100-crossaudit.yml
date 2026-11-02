@@ -1,0 +1,21 @@
+name: EVERBLOOM Construction typed100 cross-tranche evidence audit
+on:
+  push:
+    branches:
+      - 'game/everbloom-construction-b19-typed100-crossaudit-20261102'
+    paths:
+      - 'docs/innovation/construction/typed100_crossaudit/**'
+      - '.github/workflows/everbloom-construction-typed100-crossaudit.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate pinned evidence and reject adversarial mutations
+        run: python3 docs/innovation/construction/typed100_crossaudit/validate_typed100.py --self-test
