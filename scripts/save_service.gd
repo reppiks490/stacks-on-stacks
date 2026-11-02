@@ -183,6 +183,42 @@ static func validate_payload(payload: Dictionary) -> bool:
             if recall_epoch >= 0.0 and (gift_epoch < 0.0 or recall_epoch < gift_epoch):
                 return false
 
+    # Festival rewards are once-per-event-per-year. Reject malformed award
+    # ledgers before Game.load_game() can silently drop or normalize entries.
+    # This optional schema-1 domain remains absent in historical saves.
+    if payload.has("festivals"):
+        if typeof(payload["festivals"]) != TYPE_DICTIONARY:
+            return false
+        var festival_state: Dictionary = payload["festivals"]
+        if not _whole_in_range(festival_state.get("schema", null), 1.0, 1.0):
+            return false
+        if typeof(festival_state.get("awarded", null)) != TYPE_ARRAY:
+            return false
+        var awarded: Array = festival_state["awarded"]
+        if awarded.size() > 5000:
+            return false
+        var award_keys: Dictionary = {}
+        var saved_year: int = int(payload.get("year", 1))
+        for raw in awarded:
+            if typeof(raw) != TYPE_STRING:
+                return false
+            var key: String = raw
+            var parts: PackedStringArray = key.split(":")
+            if parts.size() != 2 or not parts[0].is_valid_int():
+                return false
+            var award_year: int = int(parts[0])
+            if award_year < 1 or award_year > saved_year or str(award_year) != parts[0]:
+                return false
+            var event_id: String = parts[1]
+            if event_id.is_empty() or event_id.length() > 64:
+                return false
+            for i in range(event_id.length()):
+                if not "abcdefghijklmnopqrstuvwxyz0123456789_".contains(event_id.substr(i, 1)):
+                    return false
+            if award_keys.has(key):
+                return false
+            award_keys[key] = true
+
     var livestock: Variant = payload.get("animals", null)
     if typeof(livestock) != TYPE_DICTIONARY:
         return false
