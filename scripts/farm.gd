@@ -2,6 +2,7 @@ extends Node3D
 ## EVERBLOOM's original, deterministic soil/season farming system.
 ## Public contract: setup(game), act(tool, position), next_day(weather),
 ## save_state(), load_state(records). No shared game.gd modifications required.
+const HYDROLOGY = preload("res://scripts/farm_hydrology.gd")
 const BED_COUNT := 30
 const STATE_KEYS := ["tilled","crop","age","watered","watered_days","moisture",
     "fertility","weeds","stress","last_family","rotation_bonus",
@@ -204,10 +205,10 @@ func next_day(new_weather: String) -> void:
     var summer: bool = game.season() == "Summer"
     for i in range(beds.size()):
         var plot: Dictionary = beds[i]
-        var moisture: int = int(plot["moisture"])
-        if rainy:
-            moisture = mini(100, moisture + 68)
-        var can_grow: bool = (bool(plot["watered"]) or rainy or moisture >= 45) and int(plot["weeds"]) < 4
+        var water: Dictionary = HYDROLOGY.advance_day(
+            int(plot["moisture"]), 68 if rainy else 0, summer, int(plot["weeds"]))
+        var can_grow: bool = (bool(plot["watered"]) or rainy or
+            int(water["available_for_growth"]) >= 45) and int(plot["weeds"]) < 4
         var crop_id: String = str(plot["crop"])
         if crop_id != "":
             var crop_data: Dictionary = game.crop_definitions.get(crop_id, {})
@@ -228,8 +229,7 @@ func next_day(new_weather: String) -> void:
             plot["fertility"] = mini(100, int(plot["fertility"]) + 2)
         if bool(plot["tilled"]) and (game.day_epoch() + i * 7) % 9 == 0:
             plot["weeds"] = mini(5, int(plot["weeds"]) + 1)
-        moisture -= (22 if rainy else (35 if summer else 29)) + int(plot["weeds"]) * 2
-        plot["moisture"] = clampi(moisture, 0, 100)
+        plot["moisture"] = int(water["moisture"])
         plot["watered"] = false
         _paint(plot)
 
