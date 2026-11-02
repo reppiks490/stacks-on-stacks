@@ -213,5 +213,64 @@ func _run() -> void:
     _check("archive shelves" in fourth.act("talk", fourth.residents[5]["node"].global_position), "distinct preferred-gift memory voiced")
     _check(int(fourth.memories["soren"]["gift_recollections"]) == 1, "preferred gift recollection once")
 
+    # V05: player-earned shifts unlock deterministic authored dialogue branches.
+    # Separate fixture preserves existing festival, gift and multiyear assertions.
+    var dialogue_host = load("res://scripts/village_life_test_host.gd").new()
+    root.add_child(dialogue_host)
+    dialogue_host.minute_of_day = 600.0
+    var dialogue_village = load("res://scripts/village.gd").new()
+    root.add_child(dialogue_village)
+    dialogue_village.setup(dialogue_host)
+    var dialogue_spot: Vector3 = dialogue_village.residents[0]["node"].global_position
+    _check("Sorting seedlings" in dialogue_village.act("talk", dialogue_spot), "no shift keeps legacy work dialogue")
+    _check("Earned 24 petals" in dialogue_village.act("job", dialogue_spot), "V05 prerequisite earned by real job verb")
+    _check("young mint" in dialogue_village.act("talk", dialogue_spot), "first-shift branch reachable via existing talk")
+    var dialogue_affection: int = int(dialogue_village.affection["mira"])
+    var dialogue_gold: int = dialogue_host.gold
+    dialogue_village.set_dialogue_locale("es")
+    _check("menta joven" in dialogue_village.act("talk", dialogue_spot), "first-shift Spanish localized text")
+    _check(int(dialogue_village.affection["mira"]) == dialogue_affection and dialogue_host.gold == dialogue_gold, "locale replay cannot award social or currency")
+    dialogue_village.set_dialogue_locale("fr")
+    _check("young mint" in dialogue_village.act("talk", dialogue_spot), "unsupported locale falls back to English")
+    for next_day_number in range(2, 6):
+        dialogue_host.day = next_day_number
+        dialogue_village.sync_schedule(true)
+        dialogue_spot = dialogue_village.residents[0]["node"].global_position
+        _check("treasured favorite" in dialogue_village.act("gift", dialogue_spot).to_lower(), "earned friendship by actual gift verb")
+        dialogue_village.act("talk", dialogue_spot)
+    _check(int(dialogue_village.affection["mira"]) >= 80, "trusted dialogue threshold earned through play")
+    _check("quiet place" in dialogue_village.act("talk", dialogue_spot), "trusted colleague branch outranks first-shift")
+    dialogue_village.set_dialogue_locale("es")
+    _check("rincón tranquilo" in dialogue_village.act("talk", dialogue_spot), "trusted branch has Spanish translation")
+    var dialogue_saved: Variant = JSON.parse_string(JSON.stringify(dialogue_village.save_state()))
+    var dialogue_reload = load("res://scripts/village.gd").new()
+    root.add_child(dialogue_reload)
+    dialogue_reload.setup(dialogue_host)
+    if dialogue_saved is Dictionary:
+        dialogue_reload.load_state(dialogue_saved)
+    dialogue_reload.set_dialogue_locale("es")
+    _check("rincón tranquilo" in dialogue_reload.act("talk", dialogue_reload.residents[0]["node"].global_position), "earned branch survives save/load")
+    _check(dialogue_reload.save_state() == dialogue_village.save_state(), "localized branch has no extra persisted side effects")
+    _check(dialogue_host.gold == dialogue_gold, "dialogue branching cannot mint currency")
+    for dialogue_resident in dialogue_reload.residents:
+        var dialogue_id: String = str(dialogue_resident["id"])
+        var rows: Array = dialogue_reload.life_data["dialogue_branches"].get(dialogue_id, [])
+        _check(rows.size() == 2, "two authored branches per resident")
+        for row in rows:
+            _check(not str(row["text"]["en"]).is_empty() and not str(row["text"]["es"]).is_empty(), "both languages authored for each branch")
+        dialogue_reload.memories[dialogue_id]["jobs"] = 1
+        dialogue_reload.affection[dialogue_id] = 80
+        dialogue_host.minute_of_day = 600.0
+        dialogue_reload.sync_schedule(true)
+        var dialogue_line: String = dialogue_reload._conditional_dialogue(dialogue_resident, dialogue_reload._profile(dialogue_id), dialogue_id)
+        _check(dialogue_line == str(rows[0]["text"]["es"]), "high branch reachable for every resident")
+        dialogue_reload.affection[dialogue_id] = 0
+        _check(dialogue_reload._conditional_dialogue(dialogue_resident, dialogue_reload._profile(dialogue_id), dialogue_id) == str(rows[1]["text"]["es"]), "low branch reachable for every resident")
+        dialogue_reload.memories[dialogue_id]["jobs"] = 0
+        _check(dialogue_reload._conditional_dialogue(dialogue_resident, dialogue_reload._profile(dialogue_id), dialogue_id).is_empty(), "unearned branch never leaks")
+    dialogue_reload.queue_free()
+    dialogue_village.queue_free()
+    dialogue_host.queue_free()
+
     print("EVERBLOOM VILLAGE LIFE NATIVE ACCEPTANCE: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
