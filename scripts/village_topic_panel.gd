@@ -6,11 +6,13 @@ const LABELS := {
     "en":{"open":"Ask a neighbor [U]","title":"Choose a conversation","cancel":"Not now",
         "missing":"Walk near a neighbor before asking a question.",
         "changed":"The neighbor is no longer close enough to talk.",
-        "hint":"Choose a topic • 1–4 or D-pad + A • Esc/B to leave"},
+        "hint":"Choose a topic • 1–4 or D-pad + A • C/X: language • Esc/B to leave",
+        "language":"Español","language_tip":"Switch conversation language (C or controller X)"},
     "es":{"open":"Preguntar [U]","title":"Elige una conversación","cancel":"Ahora no",
         "missing":"Acércate a un vecino antes de hacer una pregunta.",
         "changed":"El vecino ya no está lo bastante cerca para hablar.",
-        "hint":"Elige tema • 1–4 o mando + A • Esc/B para salir"}
+        "hint":"Elige tema • 1–4 o mando + A • C/X: idioma • Esc/B para salir",
+        "language":"English","language_tip":"Cambiar idioma de conversación (C o botón X)"}
 }
 var village
 var opener: Button
@@ -18,6 +20,7 @@ var panel: PanelContainer
 var title_label: Label
 var hint_label: Label
 var cancel_button: Button
+var language_button: Button
 var feedback_label: Label
 var topic_buttons: Array[Button] = []
 var topic_ids: Array[String] = []
@@ -98,6 +101,12 @@ func setup(owner) -> void:
         button.pressed.connect(_choose_index.bind(index))
         layout.add_child(button)
         topic_buttons.append(button)
+    language_button = Button.new()
+    language_button.name = "ConversationLanguage"
+    language_button.custom_minimum_size.y = MIN_TOUCH_TARGET
+    language_button.focus_mode = Control.FOCUS_ALL
+    language_button.pressed.connect(_toggle_locale)
+    layout.add_child(language_button)
     cancel_button = Button.new()
     cancel_button.name = "CancelConversation"
     cancel_button.custom_minimum_size.y = MIN_TOUCH_TARGET
@@ -107,13 +116,36 @@ func setup(owner) -> void:
     panel.visible = false
     _refresh_locale()
 
+## Rebuild labels by stable topic IDs, never by translated sort order.
+## This is presentation-only: no extra talk, rewards or save writes.
 func _refresh_locale() -> void:
     last_locale = _locale()
     opener.text = _t("open")
-    title_label.text = _t("title")
     hint_label.text = _t("hint")
     cancel_button.text = _t("cancel")
+    language_button.text = _t("language")
+    language_button.tooltip_text = _t("language_tip")
     opener.tooltip_text = _t("hint")
+    title_label.text = _t("title")
+    if panel == null or not panel.visible or active_resident_id.is_empty():
+        return
+    for resident in village.residents:
+        if str(resident["id"]) == active_resident_id:
+            title_label.text = "%s: %s" % [_t("title"), str(resident["name"])]
+            break
+    var labels_by_id: Dictionary = {}
+    for option in village.available_topics(active_resident_id):
+        labels_by_id[str(option["id"])] = str(option["label"])
+    for index in range(topic_ids.size()):
+        if index < topic_buttons.size():
+            topic_buttons[index].text = "%d. %s" % [
+                index + 1, str(labels_by_id.get(topic_ids[index], topic_ids[index]))]
+
+func _toggle_locale() -> void:
+    if village == null or panel == null or not panel.visible:
+        return
+    village.set_dialogue_locale("es" if _locale() == "en" else "en")
+    _refresh_locale()
 
 func _process(_delta: float) -> void:
     if opener == null:
@@ -167,19 +199,17 @@ func open_topics() -> void:
         _show_result(_t("missing"))
         return
     topic_ids.clear()
-    _refresh_locale()
-    title_label.text = "%s: %s" % [_t("title"), str(selected["name"])]
     for index in range(topic_buttons.size()):
         var available: bool = index < options.size()
         topic_buttons[index].visible = available
         if available:
             topic_ids.append(str(options[index]["id"]))
-            topic_buttons[index].text = "%d. %s" % [index + 1, str(options[index]["label"])]
     selected_index = 0
     paused_before_open = get_tree().paused
     get_tree().paused = true
     panel.visible = true
     opener.visible = false
+    _refresh_locale()
     topic_buttons[0].grab_focus()
 
 func close_topics() -> void:
@@ -226,6 +256,8 @@ func _input(event: InputEvent) -> void:
         elif panel != null and panel.visible:
             if key == KEY_ESCAPE:
                 close_topics()
+            elif key == KEY_C:
+                _toggle_locale()
             elif key >= KEY_1 and key <= KEY_4:
                 _choose_index(key - KEY_1)
             elif key == KEY_UP:
@@ -247,6 +279,8 @@ func _input(event: InputEvent) -> void:
         elif panel != null and panel.visible:
             if event.button_index == JOY_BUTTON_B:
                 close_topics()
+            elif event.button_index == JOY_BUTTON_X:
+                _toggle_locale()
             elif event.button_index == JOY_BUTTON_DPAD_UP:
                 _navigate(-1)
             elif event.button_index == JOY_BUTTON_DPAD_DOWN:
