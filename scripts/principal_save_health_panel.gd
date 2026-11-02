@@ -96,7 +96,7 @@ func _format_report(report: Dictionary) -> String:
     lines.append(_t("Load source: ", "Fuente de carga: ") + str(report.get("selected_source", "none")))
     lines.append(_t("Writer lock: ", "Bloqueo de escritura: ") + str(report.get("writer_lock_present", false)))
     lines.append(_t("Preserved corrupt files: ", "Archivos dañados conservados: ") + "%d / %d" % [
-        int(report.get("quarantine_occupied", 0)), int(report.get("quarantine_capacity", 0))]
+        int(report.get("quarantine_occupied", 0)), int(report.get("quarantine_capacity", 0))])
     if bool(report.get("writer_lock_present", false)):
         lines.append(_t("Saving blocked. Close other instances; never delete a lock while a writer may be active.",
                         "Guardado bloqueado. Cierra otras instancias; nunca borres un bloqueo activo."))
