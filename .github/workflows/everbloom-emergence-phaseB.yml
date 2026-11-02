@@ -1,0 +1,27 @@
+name: EVERBLOOM Emergence Phase-B 100 concept integrity (design only)
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/phaseB_011_050.json'
+      - 'docs/innovation/emergence/phaseB_051_110.json'
+      - 'docs/innovation/emergence/validate_phaseB_100.py'
+      - 'docs/innovation/emergence/PHASEB_100_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-phaseB.yml'
+permissions:
+  contents: read
+jobs:
+  validate-emergence-phase-b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate 100 original specifications and reject 20 adversarial mutations
+        run: |
+          set -euo pipefail
+          python3 docs/innovation/emergence/validate_phaseB_100.py --self-test
+      - name: Explicit design-only gate
+        run: |
+          echo "PHASE C CLOSED. No newly proposed gameplay implementation or native performance proof."
