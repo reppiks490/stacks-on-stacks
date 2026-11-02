@@ -59,6 +59,9 @@ func _run() -> void:
     _check(actual.size() == 12 and int(actual[0]["epoch"]) == 1
             and int(actual[-1]["epoch"]) == 62,
             "twelve genuine bounded transcripts span year rollover")
+    # The last authentic talk was in Spanish; select English UI independently
+    # before asserting English presentation labels. Do not rewrite transcripts.
+    village.set_dialogue_locale("en")
     var before_save: Dictionary = village.save_state()
     game.save_game(false)
     village.memories["mira"]["dialogue_log"].clear()
@@ -74,7 +77,6 @@ func _run() -> void:
     var inventory: Dictionary = game.inventory.duplicate(true)
 
     ui.open_journal()
-    print("V19 DIAG OPEN: visible=", ui.panel.visible, " filter=", ui.history_filter_index, " label=", ui.history_filter_button.text, " page=", ui.history_page_label.text, " selected=", ui.selected_index, " count=", village.social_recap()[0]["dialogue_log"].size(), " text=", ui.history_text.text)
     _check(ui.panel.visible and paused, "journal pauses game before filtering")
     _check(ui.history_filter_button.text == "All (12)"
             and ui.history_page_label.text == "Page 4 of 4",
@@ -83,7 +85,6 @@ func _run() -> void:
             "latest genuine conversation appears without filtering")
 
     ui.history_filter_button.pressed.emit()
-    print("V19 DIAG EN: filter=", ui.history_filter_index, " label=", ui.history_filter_button.text, " page=", ui.history_page_label.text, " text=", ui.history_text.text)
     _check(ui.history_filter_index == 1
             and ui.history_filter_button.text == "English (6)",
             "mouse/touch filter selects only English records")
