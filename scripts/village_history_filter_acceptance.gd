@@ -74,6 +74,7 @@ func _run() -> void:
     var inventory: Dictionary = game.inventory.duplicate(true)
 
     ui.open_journal()
+    print("V19 DIAG OPEN: visible=", ui.panel.visible, " filter=", ui.history_filter_index, " label=", ui.history_filter_button.text, " page=", ui.history_page_label.text, " selected=", ui.selected_index, " count=", village.social_recap()[0]["dialogue_log"].size(), " text=", ui.history_text.text)
     _check(ui.panel.visible and paused, "journal pauses game before filtering")
     _check(ui.history_filter_button.text == "All (12)"
             and ui.history_page_label.text == "Page 4 of 4",
@@ -82,6 +83,7 @@ func _run() -> void:
             "latest genuine conversation appears without filtering")
 
     ui.history_filter_button.pressed.emit()
+    print("V19 DIAG EN: filter=", ui.history_filter_index, " label=", ui.history_filter_button.text, " page=", ui.history_page_label.text, " text=", ui.history_text.text)
     _check(ui.history_filter_index == 1
             and ui.history_filter_button.text == "English (6)",
             "mouse/touch filter selects only English records")
@@ -120,7 +122,7 @@ func _run() -> void:
     _check(ui.history_page_label.text == "Página 2 de 2",
             "returning to resident selects latest matching history")
     ui._layout_for_width(360.0)
-    _check(ui.panel.anchor_left == 0.02 and ui.history_filter_button.custom_minimum_size.y >= 44.0,
+    _check(is_equal_approx(ui.panel.anchor_left, 0.02) and ui.history_filter_button.custom_minimum_size.y >= 44.0,
             "narrow simulated viewport retains filter control")
     ui._change_text_scale(1)
     _check(ui.text_scale_index == 1 and ui.history_filter_index == 1,
