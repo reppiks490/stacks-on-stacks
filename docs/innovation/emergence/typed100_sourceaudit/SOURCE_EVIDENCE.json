@@ -1,0 +1,3600 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Emergence E03/E18",
+  "phase_c": "CLOSED",
+  "status": "SOURCE_DERIVED_DESIGN_AUDIT_NOT_GAMEPLAY_PROOF",
+  "canonical_main_at_claim": "e90fe68d070fdc141129ebbe1da6bbcd72cd2bc8",
+  "source_files": [
+    {
+      "path": "docs/innovation/emergence/typed_state/causal_011_020.json",
+      "commit": "7ef7647b60cf9c264285a43f229b195163d8ccbf",
+      "blob_sha": "15551c9b3c77908fae4913152ccf69faa8278dbf"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/biome_021_030.json",
+      "commit": "05a5b246737a2ff218d8db68037d6d404075b893",
+      "blob_sha": "8915044854ab883b7d3707a452fee0d4a2dea68d"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/social_031_040.json",
+      "commit": "bebc3c277d6785f3591ed11614b06fd9661f592f",
+      "blob_sha": "9f3c0c42d822abcae78b7352136e99d8fd93aace"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/exchange_041_050.json",
+      "commit": "bcd8c7125b970e28896e74bf41163e3597f96930",
+      "blob_sha": "a90cbb314ab05ca1e73557ca520da1906fb27ef7"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/navigation_051_060.json",
+      "commit": "442415bef69799810e6d897ed035abfed73adae8",
+      "blob_sha": "c41f2573fb45b184ca18ee07579ca818476b070a"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/companion_061_070.json",
+      "commit": "b8e909f873545025e1f915d22680d69f44fac1b7",
+      "blob_sha": "4533e827721e07af292451a4e23b64cb51728ffb"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/ritual_071_080.json",
+      "commit": "a96fe9d4a6946448e8c6e3f3053f7edb8086a023",
+      "blob_sha": "08915f5fe7f13068cfb2067aee9e8a7d50bd2577"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/creative_081_090.json",
+      "commit": "534d8c9e2ab21c20eec65e250c767bcf3832c41d",
+      "blob_sha": "bb30e8f705a1e43d652eb003c35265006dbdd316"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/sky_091_100.json",
+      "commit": "babf6ad96eca680db9edd2d61ff7c4686783c7e8",
+      "blob_sha": "714d63bb6d0bafb96cd32cfcaac8212e04249aa2"
+    },
+    {
+      "path": "docs/innovation/emergence/typed_state/cooperation_101_110.json",
+      "commit": "215dfe72ca96380b54f8724ceb743dcdb1dc2eb3",
+      "blob_sha": "ca52226d63bf1b20dbb7893dac671edaaa6bfafd"
+    },
+    {
+      "path": "docs/innovation/emergence/phaseB_011_050.json",
+      "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+      "blob_sha": "a5def76918e77e0ded7e3e8085444698b4e0b549"
+    },
+    {
+      "path": "docs/innovation/emergence/phaseB_051_110.json",
+      "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+      "blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac"
+    }
+  ],
+  "record_count": 100,
+  "flag_counts": {
+    "missing_assets": 30,
+    "missing_budget": 20,
+    "missing_dependencies": 20,
+    "missing_embedded_fixtures": 30,
+    "missing_verbs": 20,
+    "unpadded_legacy_namespace": 40,
+    "missing_explicit_receipt_contract": 40,
+    "source_contamination": 1
+  },
+  "records": [
+    {
+      "id": "EB-E-011",
+      "title": "Tideglass Forecast Bargain",
+      "source_fields": [
+        "forecast_id",
+        "slot_epoch",
+        "reservation_id",
+        "shift_count"
+      ],
+      "source_field_mapping": {
+        "forecast_id": "forecast_id",
+        "slot_epoch": "slot_epoch",
+        "reservation_id": "reservation_id",
+        "shift_count": "shift_count"
+      },
+      "field_keys": [
+        "forecast_id",
+        "reservation_id",
+        "shift_count",
+        "slot_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_011",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "slot_epoch"
+      ],
+      "source_negative_acceptance": "Reload during forecast change cannot award original and replacement slots",
+      "typed_negative_acceptance": "Duplicate forecast reschedule cannot produce two reward receipts."
+    },
+    {
+      "id": "EB-E-012",
+      "title": "Echo Debt of the Valley",
+      "source_fields": [
+        "region_id",
+        "extraction_receipts",
+        "ecology_debt",
+        "repair_receipts"
+      ],
+      "source_field_mapping": {
+        "region_id": "region_id",
+        "extraction_receipts": "extraction_receipts",
+        "ecology_debt": "ecology_debt",
+        "repair_receipts": "repair_receipts"
+      },
+      "field_keys": [
+        "ecology_debt",
+        "extraction_receipts",
+        "region_id",
+        "repair_receipts"
+      ],
+      "save_namespace": "emergence.eb_e_012",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One repair receipt cannot erase several independent extraction events",
+      "typed_negative_acceptance": "Duplicate repair receipt or repairs exceeding verified extraction are rejected."
+    },
+    {
+      "id": "EB-E-013",
+      "title": "Windborne Message Relay",
+      "source_fields": [
+        "message_id",
+        "relay_hops",
+        "weather_epoch",
+        "delivery_state"
+      ],
+      "source_field_mapping": {
+        "message_id": "message_id",
+        "relay_hops": "relay_hops",
+        "weather_epoch": "weather_epoch",
+        "delivery_state": "delivery_state"
+      },
+      "field_keys": [
+        "delivery_state",
+        "message_id",
+        "relay_hops",
+        "weather_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_013",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "weather_epoch"
+      ],
+      "source_negative_acceptance": "Interrupted relay cannot both deliver and refund a parcel",
+      "typed_negative_acceptance": "A failed relay cannot simultaneously deliver and refund a parcel."
+    },
+    {
+      "id": "EB-E-014",
+      "title": "Borrowed Dawn Exchange",
+      "source_fields": [
+        "event_epoch",
+        "early_start",
+        "fatigue_debt",
+        "reward_receipt"
+      ],
+      "source_field_mapping": {
+        "event_epoch": "event_epoch",
+        "early_start": "early_start",
+        "fatigue_debt": "fatigue_debt",
+        "reward_receipt": "reward_receipt"
+      },
+      "field_keys": [
+        "early_start",
+        "event_epoch",
+        "fatigue_debt",
+        "reward_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_014",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "event_epoch"
+      ],
+      "source_negative_acceptance": "Reload cannot clear fatigue while retaining early access rewards",
+      "typed_negative_acceptance": "Save/load cannot retain reward while clearing early-start fatigue."
+    },
+    {
+      "id": "EB-E-015",
+      "title": "Frostline Witness Trail",
+      "source_fields": [
+        "clue_ids",
+        "observation_epoch",
+        "thaw_epoch",
+        "verdict"
+      ],
+      "source_field_mapping": {
+        "clue_ids": "clue_ids",
+        "observation_epoch": "observation_epoch",
+        "thaw_epoch": "thaw_epoch",
+        "verdict": "verdict"
+      },
+      "field_keys": [
+        "clue_ids",
+        "observation_epoch",
+        "thaw_epoch",
+        "verdict"
+      ],
+      "save_namespace": "emergence.eb_e_015",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "observation_epoch",
+        "thaw_epoch"
+      ],
+      "source_negative_acceptance": "Late clue cannot change an already settled crop outcome",
+      "typed_negative_acceptance": "Post-thaw clue cannot reverse an already settled frost loss."
+    },
+    {
+      "id": "EB-E-016",
+      "title": "Moonlit Firefly Census",
+      "source_fields": [
+        "habitat_ids",
+        "survey_epoch",
+        "confidence",
+        "report_id"
+      ],
+      "source_field_mapping": {
+        "habitat_ids": "habitat_ids",
+        "survey_epoch": "survey_epoch",
+        "confidence": "confidence",
+        "report_id": "report_id"
+      },
+      "field_keys": [
+        "confidence",
+        "habitat_ids",
+        "report_id",
+        "survey_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_016",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "survey_epoch"
+      ],
+      "source_negative_acceptance": "One swarm repeatedly counted cannot inflate biodiversity",
+      "typed_negative_acceptance": "Repeated habitat ID cannot inflate confidence or publish a false report."
+    },
+    {
+      "id": "EB-E-017",
+      "title": "Forked Trail Consequence Board",
+      "source_fields": [
+        "project_id",
+        "world_revision",
+        "choice_receipt",
+        "effect_receipts"
+      ],
+      "source_field_mapping": {
+        "project_id": "project_id",
+        "world_revision": "world_revision",
+        "choice_receipt": "choice_receipt",
+        "effect_receipts": "effect_receipts"
+      },
+      "field_keys": [
+        "choice_receipt",
+        "effect_receipts",
+        "project_id",
+        "world_revision"
+      ],
+      "save_namespace": "emergence.eb_e_017",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "effect_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Concurrent incompatible choices cannot both apply",
+      "typed_negative_acceptance": "Two incompatible choices on the same revision cannot both settle."
+    },
+    {
+      "id": "EB-E-018",
+      "title": "Harvest Echo Exchange",
+      "source_fields": [
+        "season_log",
+        "read_cursor",
+        "causal_links",
+        "snapshot_revision",
+        "playback_mode"
+      ],
+      "source_field_mapping": {
+        "season_log": "season_log",
+        "read_cursor": "read_cursor",
+        "causal_links": "causal_links",
+        "snapshot_revision": "snapshot_revision",
+        "playback_mode": "playback_mode"
+      },
+      "field_keys": [
+        "causal_links",
+        "playback_mode",
+        "read_cursor",
+        "season_log",
+        "snapshot_revision"
+      ],
+      "save_namespace": "emergence.eb_e_018",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Scrubbing history cannot change inventory or scheduler",
+      "typed_negative_acceptance": "Scrubbing must never grant crop inventory or reset any daily cooldown."
+    },
+    {
+      "id": "EB-E-019",
+      "title": "Storm Refuge Queue",
+      "source_fields": [
+        "shelter_id",
+        "capacity",
+        "assignments",
+        "alternatives"
+      ],
+      "source_field_mapping": {
+        "shelter_id": "shelter_id",
+        "capacity": "capacity",
+        "assignments": "assignments",
+        "alternatives": "alternatives"
+      },
+      "field_keys": [
+        "alternatives",
+        "assignments",
+        "capacity",
+        "shelter_id"
+      ],
+      "save_namespace": "emergence.eb_e_019",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Reload cannot double-book a bed or strand an NPC",
+      "typed_negative_acceptance": "No bed may be double-booked or NPC simultaneously assigned and routed elsewhere."
+    },
+    {
+      "id": "EB-E-020",
+      "title": "Sunset Decision Window",
+      "source_fields": [
+        "event_id",
+        "deadline_minute",
+        "choice",
+        "expired_fallback"
+      ],
+      "source_field_mapping": {
+        "event_id": "event_id",
+        "deadline_minute": "deadline_minute",
+        "choice": "choice",
+        "expired_fallback": "expired_fallback"
+      },
+      "field_keys": [
+        "choice",
+        "deadline_epoch",
+        "deadline_minute",
+        "event_id",
+        "expired_fallback",
+        "settlement_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_020",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "deadline_epoch"
+      ],
+      "source_negative_acceptance": "Save/reload at deadline cannot reopen expired rewards",
+      "typed_negative_acceptance": "Save/reload on another day at same minute must not reopen an expired reward."
+    },
+    {
+      "id": "EB-E-021",
+      "title": "Mycelium Neighbor Network",
+      "source_fields": [
+        "network_nodes",
+        "log_receipts",
+        "connectivity",
+        "regrowth_epoch"
+      ],
+      "source_field_mapping": {
+        "network_nodes": "network_nodes",
+        "log_receipts": "log_receipts",
+        "connectivity": "connectivity",
+        "regrowth_epoch": "regrowth_epoch"
+      },
+      "field_keys": [
+        "connectivity",
+        "log_receipts",
+        "network_nodes",
+        "regrowth_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_021",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "regrowth_epoch"
+      ],
+      "source_negative_acceptance": "Duplicating a log receipt cannot regenerate two links",
+      "typed_negative_acceptance": "Duplicated log receipts, missing endpoints or forged connectivity cannot create extra links."
+    },
+    {
+      "id": "EB-E-022",
+      "title": "Migratory Seed Hitchhikers",
+      "source_fields": [
+        "tagged_seeds",
+        "carrier_routes",
+        "dispersal_epoch",
+        "germinations"
+      ],
+      "source_field_mapping": {
+        "tagged_seeds": "tagged_seeds",
+        "carrier_routes": "carrier_routes",
+        "dispersal_epoch": "dispersal_epoch",
+        "germinations": "germinations"
+      },
+      "field_keys": [
+        "carrier_routes",
+        "dispersal_epoch",
+        "germinations",
+        "tagged_seeds"
+      ],
+      "save_namespace": "emergence.eb_e_022",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "dispersal_epoch"
+      ],
+      "source_negative_acceptance": "One seed cannot germinate in two cells; repeated tag replay must not create a second seed entity",
+      "typed_negative_acceptance": "A seed cannot germinate in two cells or before its verified carrier route."
+    },
+    {
+      "id": "EB-E-023",
+      "title": "Mosslight Microhabitats",
+      "source_fields": [
+        "plot_ids",
+        "shade_state",
+        "moisture_observations",
+        "score"
+      ],
+      "source_field_mapping": {
+        "plot_ids": "plot_ids",
+        "shade_state": "shade_state",
+        "moisture_observations": "moisture_observations",
+        "score": "score"
+      },
+      "field_keys": [
+        "moisture_observations",
+        "plot_ids",
+        "score",
+        "shade_state"
+      ],
+      "save_namespace": "emergence.eb_e_023",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Removing shade cannot leave an invisible permanent moisture buff",
+      "typed_negative_acceptance": "A single shaded plot or repeated observations of one plot cannot produce a controlled comparison score."
+    },
+    {
+      "id": "EB-E-024",
+      "title": "Beetle Bark Rescue",
+      "source_fields": [
+        "tree_id",
+        "beetle_mix",
+        "intervention_receipts",
+        "season_epoch"
+      ],
+      "source_field_mapping": {
+        "tree_id": "tree_id",
+        "beetle_mix": "beetle_mix",
+        "intervention_receipts": "intervention_receipts",
+        "season_epoch": "season_epoch"
+      },
+      "field_keys": [
+        "beetle_mix",
+        "intervention_receipts",
+        "season_epoch",
+        "tree_id"
+      ],
+      "save_namespace": "emergence.eb_e_024",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "season_epoch"
+      ],
+      "source_negative_acceptance": "Repeat intervention cannot create negative populations",
+      "typed_negative_acceptance": "Malformed population, duplicate receipt or intervention on an unknown species must fail; historical delta conservation cannot be certified from source-only fields."
+    },
+    {
+      "id": "EB-E-025",
+      "title": "Meadow Song Diversity",
+      "source_fields": [
+        "species_signals",
+        "heard_cells",
+        "diversity_index",
+        "signal_provenance",
+        "accessibility_mode"
+      ],
+      "source_field_mapping": {
+        "species_signals": "species_signals",
+        "heard_cells": "heard_cells",
+        "diversity_index": "diversity_index",
+        "signal_provenance": "signal_provenance",
+        "accessibility_mode": "accessibility_mode"
+      },
+      "field_keys": [
+        "accessibility_mode",
+        "diversity_index",
+        "heard_cells",
+        "signal_provenance",
+        "species_signals"
+      ],
+      "save_namespace": "emergence.eb_e_025",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Muted audio cannot prevent full survey completion",
+      "typed_negative_acceptance": "Repeating one species or disabling audio cannot inflate or block the diversity index."
+    },
+    {
+      "id": "EB-E-026",
+      "title": "Turtle Crossing Steward",
+      "source_fields": [
+        "crossing_id",
+        "window_epoch",
+        "escort_state",
+        "detour"
+      ],
+      "source_field_mapping": {
+        "crossing_id": "crossing_id",
+        "window_epoch": "window_epoch",
+        "escort_state": "escort_state",
+        "detour": "detour"
+      },
+      "field_keys": [
+        "crossing_id",
+        "detour",
+        "escort_state",
+        "window_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_026",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "window_epoch"
+      ],
+      "source_negative_acceptance": "Closed paths cannot trap residents or duplicate creatures",
+      "typed_negative_acceptance": "An active crossing with no verified reachable detour must fail closed."
+    },
+    {
+      "id": "EB-E-027",
+      "title": "Wildflower Succession Diary",
+      "source_fields": [
+        "patch_id",
+        "succession_stage",
+        "last_epoch",
+        "observations"
+      ],
+      "source_field_mapping": {
+        "patch_id": "patch_id",
+        "succession_stage": "succession_stage",
+        "last_epoch": "last_epoch",
+        "observations": "observations"
+      },
+      "field_keys": [
+        "last_epoch",
+        "observations",
+        "patch_id",
+        "succession_stage"
+      ],
+      "save_namespace": "emergence.eb_e_027",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "last_epoch"
+      ],
+      "source_negative_acceptance": "Reload cannot skip ecological succession stages",
+      "typed_negative_acceptance": "Out-of-order stages, two advances on one day, or skipped stages after reload are rejected."
+    },
+    {
+      "id": "EB-E-028",
+      "title": "Nocturnal Pollination Pact",
+      "source_fields": [
+        "garden_id",
+        "dark_hours",
+        "moth_visits",
+        "credits"
+      ],
+      "source_field_mapping": {
+        "garden_id": "garden_id",
+        "dark_hours": "dark_hours",
+        "moth_visits": "moth_visits",
+        "credits": "credits"
+      },
+      "field_keys": [
+        "credits",
+        "dark_hours",
+        "garden_id",
+        "moth_visits"
+      ],
+      "save_namespace": "emergence.eb_e_028",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One moth visit cannot grant multiple harvest bonuses",
+      "typed_negative_acceptance": "One moth visit cannot issue two credits; no credit when valid dark-hours window is absent."
+    },
+    {
+      "id": "EB-E-029",
+      "title": "River Pebble Sorting Study",
+      "source_fields": [
+        "sample_sites",
+        "substrate_class",
+        "confidence",
+        "advice"
+      ],
+      "source_field_mapping": {
+        "sample_sites": "sample_sites",
+        "substrate_class": "substrate_class",
+        "confidence": "confidence",
+        "advice": "advice"
+      },
+      "field_keys": [
+        "advice",
+        "confidence",
+        "sample_sites",
+        "substrate_class"
+      ],
+      "save_namespace": "emergence.eb_e_029",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Wrong prediction cannot rewrite fish population",
+      "typed_negative_acceptance": "An incorrect prediction cannot write fish stocks or create unsupported confidence."
+    },
+    {
+      "id": "EB-E-030",
+      "title": "Winter Dormancy Sanctuaries",
+      "source_fields": [
+        "refuge_ids",
+        "occupants",
+        "season_lock",
+        "detour_path"
+      ],
+      "source_field_mapping": {
+        "refuge_ids": "refuge_ids",
+        "occupants": "occupants",
+        "season_lock": "season_lock",
+        "detour_path": "detour_path"
+      },
+      "field_keys": [
+        "detour_path",
+        "lock_end_epoch",
+        "lock_start_epoch",
+        "occupants",
+        "refuge_ids",
+        "season_lock"
+      ],
+      "save_namespace": "emergence.eb_e_030",
+      "flags": [
+        "missing_assets",
+        "missing_budget",
+        "missing_dependencies",
+        "missing_embedded_fixtures",
+        "missing_verbs"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "lock_end_epoch",
+        "lock_start_epoch"
+      ],
+      "source_negative_acceptance": "Winter rollover cannot strand player or reopen refuge early",
+      "typed_negative_acceptance": "Winter rollover cannot reopen a refuge early or strand the player; a missing verified detour is rejected."
+    },
+    {
+      "id": "EB-E-031",
+      "title": "Unsent Apology Workshop",
+      "source_fields": [
+        "draft_id",
+        "recipient_consent",
+        "revision",
+        "delivery_receipt"
+      ],
+      "source_field_mapping": {
+        "draft_id": "draft_id",
+        "recipient_consent": "recipient_consent",
+        "revision": "revision",
+        "delivery_receipt": "delivery_receipt"
+      },
+      "field_keys": [
+        "delivery_epoch",
+        "delivery_receipt",
+        "draft_id",
+        "recipient_consent",
+        "revision"
+      ],
+      "save_namespace": "emergence.eb_e_31",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "delivery_epoch"
+      ],
+      "source_negative_acceptance": "Repeated delivery cannot multiply friendship gains",
+      "typed_negative_acceptance": "A denied recipient or empty draft must not receive an apology, and replay must not award trust."
+    },
+    {
+      "id": "EB-E-032",
+      "title": "Market Gossip Provenance",
+      "source_fields": [
+        "claim_id",
+        "witness_links",
+        "confidence",
+        "privacy_flags"
+      ],
+      "source_field_mapping": {
+        "claim_id": "claim_id",
+        "witness_links": "witness_links",
+        "confidence": "confidence",
+        "privacy_flags": "privacy_flags"
+      },
+      "field_keys": [
+        "claim_id",
+        "confidence",
+        "privacy_flags",
+        "witness_links"
+      ],
+      "save_namespace": "emergence.eb_e_32",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Fabricated witness cannot become verified after reload",
+      "typed_negative_acceptance": "Forged, hearsay or nonconsenting witnesses cannot raise confidence or become authoritative NPC facts."
+    },
+    {
+      "id": "EB-E-033",
+      "title": "Festival Heirloom Stewardship",
+      "source_fields": [
+        "heirloom_id",
+        "owner_id",
+        "consent",
+        "display_receipt"
+      ],
+      "source_field_mapping": {
+        "heirloom_id": "heirloom_id",
+        "owner_id": "owner_id",
+        "consent": "consent",
+        "display_receipt": "display_receipt"
+      },
+      "field_keys": [
+        "consent",
+        "display_epoch",
+        "display_receipt",
+        "heirloom_id",
+        "owner_id"
+      ],
+      "save_namespace": "emergence.eb_e_33",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "display_epoch"
+      ],
+      "source_negative_acceptance": "Withdrawing consent removes display without cloning item",
+      "typed_negative_acceptance": "Withdrawing consent must remove public display without copying or refunding the original item."
+    },
+    {
+      "id": "EB-E-034",
+      "title": "Shared Recipe Reconciliation",
+      "source_fields": [
+        "recipe_id",
+        "contributors",
+        "consents",
+        "recipe_revision"
+      ],
+      "source_field_mapping": {
+        "recipe_id": "recipe_id",
+        "contributors": "contributors",
+        "consents": "consents",
+        "recipe_revision": "recipe_revision"
+      },
+      "field_keys": [
+        "consents",
+        "contributors",
+        "publication_receipt",
+        "recipe_id",
+        "recipe_revision"
+      ],
+      "save_namespace": "emergence.eb_e_34",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Vetoed recipe cannot appear in shop inventory",
+      "typed_negative_acceptance": "A single approval or approval for an earlier revision cannot publish or mint a recipe."
+    },
+    {
+      "id": "EB-E-035",
+      "title": "Quiet Neighbor Signal",
+      "source_fields": [
+        "npc_id",
+        "preferred_gestures",
+        "last_contact_epoch",
+        "consent"
+      ],
+      "source_field_mapping": {
+        "npc_id": "npc_id",
+        "preferred_gestures": "preferred_gestures",
+        "last_contact_epoch": "last_contact_epoch",
+        "consent": "consent"
+      },
+      "field_keys": [
+        "consent",
+        "contact_receipts",
+        "last_contact_epoch",
+        "npc_id",
+        "preferred_gestures"
+      ],
+      "save_namespace": "emergence.eb_e_35",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "last_contact_epoch"
+      ],
+      "source_negative_acceptance": "Gesture spam cannot bypass daily relationship caps",
+      "typed_negative_acceptance": "Gesture spam or a declined gesture cannot bypass daily relationship caps."
+    },
+    {
+      "id": "EB-E-036",
+      "title": "Memory Map of Kindness",
+      "source_fields": [
+        "favor_id",
+        "visibility_consent",
+        "map_pin",
+        "reciprocity_receipt"
+      ],
+      "source_field_mapping": {
+        "favor_id": "favor_id",
+        "visibility_consent": "visibility_consent",
+        "map_pin": "map_pin",
+        "reciprocity_receipt": "reciprocity_receipt"
+      },
+      "field_keys": [
+        "favor_id",
+        "map_pin",
+        "reciprocity_receipt",
+        "source_receipt",
+        "visibility_consent"
+      ],
+      "save_namespace": "emergence.eb_e_36",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Duplicate favor cannot create unlimited rewards",
+      "typed_negative_acceptance": "Private favor pins must not leak and replaying reciprocity must not duplicate rewards."
+    },
+    {
+      "id": "EB-E-037",
+      "title": "Seasonal Reunion Planner",
+      "source_fields": [
+        "reunion_id",
+        "invitees",
+        "slot_reservations",
+        "travel_eta"
+      ],
+      "source_field_mapping": {
+        "reunion_id": "reunion_id",
+        "invitees": "invitees",
+        "slot_reservations": "slot_reservations",
+        "travel_eta": "travel_eta"
+      },
+      "field_keys": [
+        "invitees",
+        "reunion_id",
+        "slot_reservations",
+        "travel_eta"
+      ],
+      "save_namespace": "emergence.eb_e_37",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Overlapping bookings cannot teleport an NPC",
+      "typed_negative_acceptance": "Overlapping or unconsented reservations must not teleport NPCs or steal Village schedule slots."
+    },
+    {
+      "id": "EB-E-038",
+      "title": "Civic Mediation Table",
+      "source_fields": [
+        "dispute_id",
+        "statements",
+        "proposal",
+        "party_consents"
+      ],
+      "source_field_mapping": {
+        "dispute_id": "dispute_id",
+        "statements": "statements",
+        "proposal": "proposal",
+        "party_consents": "party_consents"
+      },
+      "field_keys": [
+        "dispute_id",
+        "party_consents",
+        "proposal",
+        "settlement_receipt",
+        "statements"
+      ],
+      "save_namespace": "emergence.eb_e_38",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One-sided consent cannot settle a joint dispute",
+      "typed_negative_acceptance": "One-sided consent must never force reconciliation or change Village relationships."
+    },
+    {
+      "id": "EB-E-039",
+      "title": "Lost Craft Mentor Chain",
+      "source_fields": [
+        "mentor_id",
+        "learner_id",
+        "lesson_steps",
+        "skill_receipts"
+      ],
+      "source_field_mapping": {
+        "mentor_id": "mentor_id",
+        "learner_id": "learner_id",
+        "lesson_steps": "lesson_steps",
+        "skill_receipts": "skill_receipts"
+      },
+      "field_keys": [
+        "learner_id",
+        "lesson_steps",
+        "mentor_id",
+        "skill_receipts"
+      ],
+      "save_namespace": "emergence.eb_e_39",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Reload mid-lesson cannot award completion twice",
+      "typed_negative_acceptance": "Reloading a partially completed lesson must not grant skill twice or skip prerequisites."
+    },
+    {
+      "id": "EB-E-040",
+      "title": "Neighborhood Story Circle",
+      "source_fields": [
+        "circle_id",
+        "participants",
+        "story_versions",
+        "visibility"
+      ],
+      "source_field_mapping": {
+        "circle_id": "circle_id",
+        "participants": "participants",
+        "story_versions": "story_versions",
+        "visibility": "visibility"
+      },
+      "field_keys": [
+        "circle_id",
+        "participants",
+        "published_story_ids",
+        "story_versions",
+        "visibility"
+      ],
+      "save_namespace": "emergence.eb_e_40",
+      "flags": [
+        "missing_embedded_fixtures",
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Retracted story cannot remain publicly visible after load",
+      "typed_negative_acceptance": "Retracted stories must never reappear publicly after reload or translation."
+    },
+    {
+      "id": "EB-E-041",
+      "title": "Barter Fairness Lens",
+      "source_fields": [
+        "offer_id",
+        "item_quotes",
+        "valuation_epoch",
+        "trade_receipt"
+      ],
+      "source_field_mapping": {
+        "offer_id": "offer_id",
+        "item_quotes": "item_quotes",
+        "valuation_epoch": "valuation_epoch",
+        "trade_receipt": "trade_receipt"
+      },
+      "field_keys": [
+        "item_quotes",
+        "offer_id",
+        "settlement_epoch",
+        "trade_receipt",
+        "valuation_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_41",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "settlement_epoch",
+        "valuation_epoch"
+      ],
+      "source_negative_acceptance": "Double confirmation cannot duplicate goods",
+      "typed_negative_acceptance": "Double confirmation cannot duplicate goods"
+    },
+    {
+      "id": "EB-E-042",
+      "title": "Community Loan Library",
+      "source_fields": [
+        "tool_id",
+        "borrower_id",
+        "due_epoch",
+        "deposit_receipt"
+      ],
+      "source_field_mapping": {
+        "tool_id": "tool_id",
+        "borrower_id": "borrower_id",
+        "due_epoch": "due_epoch",
+        "deposit_receipt": "deposit_receipt"
+      },
+      "field_keys": [
+        "borrower_id",
+        "checkout_epoch",
+        "deposit_receipt",
+        "due_epoch",
+        "return_receipt",
+        "tool_id"
+      ],
+      "save_namespace": "emergence.eb_e_42",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "checkout_epoch",
+        "due_epoch"
+      ],
+      "source_negative_acceptance": "Reload cannot return tool or deposit twice",
+      "typed_negative_acceptance": "Reload cannot return tool or deposit twice"
+    },
+    {
+      "id": "EB-E-043",
+      "title": "Perishable Delivery Routes",
+      "source_fields": [
+        "delivery_id",
+        "route_stops",
+        "quality_clock",
+        "settlement"
+      ],
+      "source_field_mapping": {
+        "delivery_id": "delivery_id",
+        "route_stops": "route_stops",
+        "quality_clock": "quality_clock",
+        "settlement": "settlement"
+      },
+      "field_keys": [
+        "current_quality",
+        "delivered_units",
+        "delivery_id",
+        "initial_quality",
+        "quality_clock",
+        "reserved_units",
+        "route_stops",
+        "settlement"
+      ],
+      "save_namespace": "emergence.eb_e_43",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "quality_clock"
+      ],
+      "source_negative_acceptance": "Changing route after delivery cannot restore stock",
+      "typed_negative_acceptance": "Changing route after delivery cannot restore stock"
+    },
+    {
+      "id": "EB-E-044",
+      "title": "Seed Commons Exchange",
+      "source_fields": [
+        "seed_lot_id",
+        "donor",
+        "recipient",
+        "exchange_receipt"
+      ],
+      "source_field_mapping": {
+        "seed_lot_id": "seed_lot_id",
+        "donor": "donor",
+        "recipient": "recipient",
+        "exchange_receipt": "exchange_receipt"
+      },
+      "field_keys": [
+        "debit_receipt",
+        "donor",
+        "exchange_receipt",
+        "recipient",
+        "seed_lot_id",
+        "transferred_units"
+      ],
+      "save_namespace": "emergence.eb_e_44",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One seed lot cannot be redeemed twice; every redeemed lot must have one immutable settlement receipt",
+      "typed_negative_acceptance": "One seed lot cannot be redeemed twice; every redeemed lot must have one immutable settlement receipt"
+    },
+    {
+      "id": "EB-E-045",
+      "title": "Craft Commission Escrow",
+      "source_fields": [
+        "commission_id",
+        "escrow",
+        "quality_gate",
+        "stage_receipts"
+      ],
+      "source_field_mapping": {
+        "commission_id": "commission_id",
+        "escrow": "escrow",
+        "quality_gate": "quality_gate",
+        "stage_receipts": "stage_receipts"
+      },
+      "field_keys": [
+        "cancellation_receipt",
+        "commission_id",
+        "escrow",
+        "quality_gate",
+        "stage_receipts"
+      ],
+      "save_namespace": "emergence.eb_e_45",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Cancellation after delivery cannot refund all escrow",
+      "typed_negative_acceptance": "Cancellation after delivery cannot refund all escrow"
+    },
+    {
+      "id": "EB-E-046",
+      "title": "Weather Risk Pool",
+      "source_fields": [
+        "pool_id",
+        "contributions",
+        "loss_receipts",
+        "payouts"
+      ],
+      "source_field_mapping": {
+        "pool_id": "pool_id",
+        "contributions": "contributions",
+        "loss_receipts": "loss_receipts",
+        "payouts": "payouts"
+      },
+      "field_keys": [
+        "closing_balance",
+        "contributions",
+        "loss_receipts",
+        "opening_balance",
+        "payouts",
+        "pool_id"
+      ],
+      "save_namespace": "emergence.eb_e_46",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One storm loss cannot be claimed repeatedly",
+      "typed_negative_acceptance": "One storm loss cannot be claimed repeatedly"
+    },
+    {
+      "id": "EB-E-047",
+      "title": "Traveling Skills Exchange",
+      "source_fields": [
+        "lesson_id",
+        "teacher",
+        "student",
+        "slot",
+        "skill_receipt"
+      ],
+      "source_field_mapping": {
+        "lesson_id": "lesson_id",
+        "teacher": "teacher",
+        "student": "student",
+        "slot": "slot",
+        "skill_receipt": "skill_receipt"
+      },
+      "field_keys": [
+        "lesson_id",
+        "skill_receipt",
+        "slot",
+        "student",
+        "teacher"
+      ],
+      "save_namespace": "emergence.eb_e_47",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Canceled lesson cannot grant skill; canceled lesson cannot retain an unearned skill increase",
+      "typed_negative_acceptance": "Canceled lesson cannot grant skill; canceled lesson cannot retain an unearned skill increase"
+    },
+    {
+      "id": "EB-E-048",
+      "title": "Harvest Futures Board",
+      "source_fields": [
+        "contract_id",
+        "due_epoch",
+        "quantity",
+        "escrow",
+        "settlement"
+      ],
+      "source_field_mapping": {
+        "contract_id": "contract_id",
+        "due_epoch": "due_epoch",
+        "quantity": "quantity",
+        "escrow": "escrow",
+        "settlement": "settlement"
+      },
+      "field_keys": [
+        "contract_id",
+        "delivered_units",
+        "due_epoch",
+        "escrow",
+        "quantity",
+        "reserved_units",
+        "settlement",
+        "settlement_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_48",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "due_epoch"
+      ],
+      "source_negative_acceptance": "Unharvested crops cannot be sold twice; contract settlement must debit actual harvested inventory",
+      "typed_negative_acceptance": "Unharvested crops cannot be sold twice; contract settlement must debit actual harvested inventory"
+    },
+    {
+      "id": "EB-E-049",
+      "title": "Repair Cafe Circularity",
+      "source_fields": [
+        "item_instance",
+        "condition",
+        "repair_receipt",
+        "salvage_choice"
+      ],
+      "source_field_mapping": {
+        "item_instance": "item_instance",
+        "condition": "condition",
+        "repair_receipt": "repair_receipt",
+        "salvage_choice": "salvage_choice"
+      },
+      "field_keys": [
+        "condition",
+        "disposed",
+        "item_instance",
+        "repair_receipt",
+        "salvage_choice",
+        "salvage_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_49",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One item cannot become repaired and salvaged simultaneously",
+      "typed_negative_acceptance": "One item cannot become repaired and salvaged simultaneously"
+    },
+    {
+      "id": "EB-E-050",
+      "title": "Village Price Memory",
+      "source_fields": [
+        "price_series",
+        "market_epoch",
+        "read_cursor",
+        "confidence"
+      ],
+      "source_field_mapping": {
+        "price_series": "price_series",
+        "market_epoch": "market_epoch",
+        "read_cursor": "read_cursor",
+        "confidence": "confidence"
+      },
+      "field_keys": [
+        "confidence",
+        "market_epoch",
+        "price_series",
+        "read_cursor",
+        "series_revision"
+      ],
+      "save_namespace": "emergence.eb_e_50",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "market_epoch"
+      ],
+      "source_negative_acceptance": "Opening price diary cannot change market prices",
+      "typed_negative_acceptance": "Opening price diary cannot change market prices"
+    },
+    {
+      "id": "EB-E-051",
+      "title": "Fogbell Landmark Bearings",
+      "source_fields": [
+        "marker_ids",
+        "bearings",
+        "visibility_epoch",
+        "route_receipt"
+      ],
+      "source_field_mapping": {
+        "marker_ids": "marker_ids",
+        "bearings": "bearings",
+        "visibility_epoch": "visibility_epoch",
+        "route_receipt": "route_receipt"
+      },
+      "field_keys": [
+        "bearings",
+        "marker_ids",
+        "route_epoch",
+        "route_receipt",
+        "visibility_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_51",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "route_epoch",
+        "visibility_epoch"
+      ],
+      "source_negative_acceptance": "Repeated signal from one bell cannot count as three bearings",
+      "typed_negative_acceptance": "Repeated signal from one bell cannot count as three bearings"
+    },
+    {
+      "id": "EB-E-052",
+      "title": "Tidal Cave Memory",
+      "source_fields": [
+        "cave_id",
+        "opening_window",
+        "charted_rooms",
+        "exit_reservation"
+      ],
+      "source_field_mapping": {
+        "cave_id": "cave_id",
+        "opening_window": "opening_window",
+        "charted_rooms": "charted_rooms",
+        "exit_reservation": "exit_reservation"
+      },
+      "field_keys": [
+        "cave_id",
+        "charted_rooms",
+        "exit_reservation",
+        "opening_window",
+        "player_inside",
+        "return_epoch",
+        "safe_exit_anchor"
+      ],
+      "save_namespace": "emergence.eb_e_52",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "return_epoch"
+      ],
+      "source_negative_acceptance": "Loading inside a closed cave must provide safe return",
+      "typed_negative_acceptance": "Loading inside a closed cave must provide safe return"
+    },
+    {
+      "id": "EB-E-053",
+      "title": "Snowtrack Weight Shift",
+      "source_fields": [
+        "snow_cells",
+        "footwear_id",
+        "route_steps",
+        "habitat_alerts"
+      ],
+      "source_field_mapping": {
+        "snow_cells": "snow_cells",
+        "footwear_id": "footwear_id",
+        "route_steps": "route_steps",
+        "habitat_alerts": "habitat_alerts"
+      },
+      "field_keys": [
+        "footwear_id",
+        "habitat_alerts",
+        "route_steps",
+        "snow_cells",
+        "stamina_spent"
+      ],
+      "save_namespace": "emergence.eb_e_53",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Repeated stepping cannot ignore stamina or clip through barriers",
+      "typed_negative_acceptance": "Repeated stepping cannot ignore stamina or clip through barriers"
+    },
+    {
+      "id": "EB-E-054",
+      "title": "Canopy Echo Route",
+      "source_fields": [
+        "call_ids",
+        "route_nodes",
+        "visited_edges",
+        "overlook_flag"
+      ],
+      "source_field_mapping": {
+        "call_ids": "call_ids",
+        "route_nodes": "route_nodes",
+        "visited_edges": "visited_edges",
+        "overlook_flag": "overlook_flag"
+      },
+      "field_keys": [
+        "call_ids",
+        "discovery_receipt",
+        "overlook_flag",
+        "route_nodes",
+        "visited_edges",
+        "visual_fallback"
+      ],
+      "save_namespace": "emergence.eb_e_54",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Muted audio cannot softlock the route; inaccessible bird calls must have a complete visual alternative",
+      "typed_negative_acceptance": "Muted audio cannot softlock the route; inaccessible bird calls must have a complete visual alternative"
+    },
+    {
+      "id": "EB-E-055",
+      "title": "Stone Layer Fieldbook",
+      "source_fields": [
+        "outcrop_ids",
+        "strata_notes",
+        "confidence",
+        "path_hint"
+      ],
+      "source_field_mapping": {
+        "outcrop_ids": "outcrop_ids",
+        "strata_notes": "strata_notes",
+        "confidence": "confidence",
+        "path_hint": "path_hint"
+      },
+      "field_keys": [
+        "confidence",
+        "hint_region",
+        "outcrop_ids",
+        "path_hint",
+        "strata_notes",
+        "unlock_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_55",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One photographed outcrop cannot unlock unrelated regions",
+      "typed_negative_acceptance": "One photographed outcrop cannot unlock unrelated regions"
+    },
+    {
+      "id": "EB-E-056",
+      "title": "Fallen Leaf Drift Navigation",
+      "source_fields": [
+        "wind_epoch",
+        "leaf_vectors",
+        "clue_cells",
+        "discovery"
+      ],
+      "source_field_mapping": {
+        "wind_epoch": "wind_epoch",
+        "leaf_vectors": "leaf_vectors",
+        "clue_cells": "clue_cells",
+        "discovery": "discovery"
+      },
+      "field_keys": [
+        "clue_cells",
+        "discovery",
+        "discovery_receipt",
+        "leaf_vectors",
+        "seed",
+        "wind_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_56",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "wind_epoch"
+      ],
+      "source_negative_acceptance": "Reload cannot reroll a clue to farm rewards",
+      "typed_negative_acceptance": "Reload cannot reroll a clue to farm rewards"
+    },
+    {
+      "id": "EB-E-057",
+      "title": "Echo Pool Depth Walk",
+      "source_fields": [
+        "pool_id",
+        "depth_samples",
+        "route_points",
+        "shore_anchor"
+      ],
+      "source_field_mapping": {
+        "pool_id": "pool_id",
+        "depth_samples": "depth_samples",
+        "route_points": "route_points",
+        "shore_anchor": "shore_anchor"
+      },
+      "field_keys": [
+        "depth_samples",
+        "pool_id",
+        "route_points",
+        "safe_return",
+        "shore_anchor",
+        "survey_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_57",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "survey_epoch"
+      ],
+      "source_negative_acceptance": "Depth change cannot strand player on invalid waypoint",
+      "typed_negative_acceptance": "Depth change cannot strand player on invalid waypoint"
+    },
+    {
+      "id": "EB-E-058",
+      "title": "Glowspore Twilight Trail",
+      "source_fields": [
+        "spore_nodes",
+        "glow_window",
+        "trail_progress",
+        "grove_found"
+      ],
+      "source_field_mapping": {
+        "spore_nodes": "spore_nodes",
+        "glow_window": "glow_window",
+        "trail_progress": "trail_progress",
+        "grove_found": "grove_found"
+      },
+      "field_keys": [
+        "discovery_epoch",
+        "glow_window",
+        "grove_found",
+        "reward_receipt",
+        "spore_nodes",
+        "trail_progress"
+      ],
+      "save_namespace": "emergence.eb_e_58",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "discovery_epoch"
+      ],
+      "source_negative_acceptance": "Repeated trail resets cannot mint gathering rewards",
+      "typed_negative_acceptance": "Repeated trail resets cannot mint gathering rewards"
+    },
+    {
+      "id": "EB-E-059",
+      "title": "Windward Kite Survey",
+      "source_fields": [
+        "anchor_id",
+        "tether_length",
+        "wind_epoch",
+        "sketch_cells"
+      ],
+      "source_field_mapping": {
+        "anchor_id": "anchor_id",
+        "tether_length": "tether_length",
+        "wind_epoch": "wind_epoch",
+        "sketch_cells": "sketch_cells"
+      },
+      "field_keys": [
+        "anchor_id",
+        "camera_region",
+        "launch_receipt",
+        "sketch_cells",
+        "tether_length",
+        "wind_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_59",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "wind_epoch"
+      ],
+      "source_negative_acceptance": "A gust cannot move the camera through private NPC interiors",
+      "typed_negative_acceptance": "A gust cannot move the camera through private NPC interiors"
+    },
+    {
+      "id": "EB-E-060",
+      "title": "Lost Footpath Reconciliation",
+      "source_fields": [
+        "historic_map",
+        "route_nodes",
+        "consent_ids",
+        "opening_receipt"
+      ],
+      "source_field_mapping": {
+        "historic_map": "historic_map",
+        "route_nodes": "route_nodes",
+        "consent_ids": "consent_ids",
+        "opening_receipt": "opening_receipt"
+      },
+      "field_keys": [
+        "approval_epoch",
+        "consent_ids",
+        "historic_map",
+        "opening_receipt",
+        "path_open",
+        "required_consent_ids",
+        "route_nodes"
+      ],
+      "save_namespace": "emergence.eb_e_60",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "approval_epoch"
+      ],
+      "source_negative_acceptance": "One missing consent cannot silently enable blocked path",
+      "typed_negative_acceptance": "One missing consent cannot silently enable blocked path"
+    },
+    {
+      "id": "EB-E-061",
+      "title": "Scent Mosaic Tracker",
+      "source_fields": [
+        "companion_id",
+        "scent_samples",
+        "confidence",
+        "rest_epoch"
+      ],
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "scent_samples": "scent_samples",
+        "confidence": "confidence",
+        "rest_epoch": "rest_epoch"
+      },
+      "field_keys": [
+        "companion_id",
+        "confidence",
+        "rest_epoch",
+        "scent_samples",
+        "training_receipts"
+      ],
+      "save_namespace": "emergence.eb_e_61",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "rest_epoch"
+      ],
+      "source_negative_acceptance": "One sample cannot be replayed to max skill",
+      "typed_negative_acceptance": "One sample cannot be replayed to max skill"
+    },
+    {
+      "id": "EB-E-062",
+      "title": "Rescue Bark Triangulation",
+      "source_fields": [
+        "alert_ids",
+        "search_area",
+        "rescue_target",
+        "completion"
+      ],
+      "source_field_mapping": {
+        "alert_ids": "alert_ids",
+        "search_area": "search_area",
+        "rescue_target": "rescue_target",
+        "completion": "completion"
+      },
+      "field_keys": [
+        "alert_ids",
+        "completion",
+        "reachable",
+        "rescue_target",
+        "safe_clue_mode",
+        "search_area",
+        "stamina_cost",
+        "target_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_62",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "target_epoch"
+      ],
+      "source_negative_acceptance": "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt",
+      "typed_negative_acceptance": "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt"
+    },
+    {
+      "id": "EB-E-063",
+      "title": "Herd Whisper Formation",
+      "source_fields": [
+        "companion_id",
+        "waypoints",
+        "herd_consent",
+        "route_receipt"
+      ],
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "waypoints": "waypoints",
+        "herd_consent": "herd_consent",
+        "route_receipt": "route_receipt"
+      },
+      "field_keys": [
+        "assigned_elsewhere",
+        "companion_id",
+        "day_epoch",
+        "herd_consent",
+        "route_receipt",
+        "waypoints"
+      ],
+      "save_namespace": "emergence.eb_e_63",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "One dog cannot move animals already assigned elsewhere",
+      "typed_negative_acceptance": "One dog cannot move animals already assigned elsewhere"
+    },
+    {
+      "id": "EB-E-064",
+      "title": "Comfort Companion Signals",
+      "source_fields": [
+        "companion_id",
+        "stress_level",
+        "care_receipts",
+        "training_pause"
+      ],
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "stress_level": "stress_level",
+        "care_receipts": "care_receipts",
+        "training_pause": "training_pause"
+      },
+      "field_keys": [
+        "care_receipts",
+        "companion_id",
+        "rest_epoch",
+        "stress_before_care",
+        "stress_level",
+        "training_pause"
+      ],
+      "save_namespace": "emergence.eb_e_64",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "rest_epoch"
+      ],
+      "source_negative_acceptance": "Repeated petting cannot instantly erase severe stress",
+      "typed_negative_acceptance": "Repeated petting cannot instantly erase severe stress"
+    },
+    {
+      "id": "EB-E-065",
+      "title": "Burrow-Safe Treasure Sniff",
+      "source_fields": [
+        "search_cells",
+        "protected_dens",
+        "find_receipts",
+        "companion_fatigue"
+      ],
+      "source_field_mapping": {
+        "search_cells": "search_cells",
+        "protected_dens": "protected_dens",
+        "find_receipts": "find_receipts",
+        "companion_fatigue": "companion_fatigue"
+      },
+      "field_keys": [
+        "companion_fatigue",
+        "companion_id",
+        "day_epoch",
+        "find_receipts",
+        "protected_dens",
+        "search_cells"
+      ],
+      "save_namespace": "emergence.eb_e_65",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "Search spam cannot create duplicate keepsakes",
+      "typed_negative_acceptance": "Search spam cannot create duplicate keepsakes"
+    },
+    {
+      "id": "EB-E-066",
+      "title": "Weather-Savvy Companion Shelter",
+      "source_fields": [
+        "companion_id",
+        "forecast_epoch",
+        "shelter_choice",
+        "care_status"
+      ],
+      "source_field_mapping": {
+        "companion_id": "companion_id",
+        "forecast_epoch": "forecast_epoch",
+        "shelter_choice": "shelter_choice",
+        "care_status": "care_status"
+      },
+      "field_keys": [
+        "care_status",
+        "companion_id",
+        "day_epoch",
+        "forecast_epoch",
+        "shelter_available",
+        "shelter_choice",
+        "warning_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_66",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "forecast_epoch"
+      ],
+      "source_negative_acceptance": "Companion cannot be permanently lost because player missed warning",
+      "typed_negative_acceptance": "Companion cannot be permanently lost because player missed warning"
+    },
+    {
+      "id": "EB-E-067",
+      "title": "Trail Partnership Rotation",
+      "source_fields": [
+        "active_id",
+        "rotation_epoch",
+        "energy_ledger",
+        "trail_segments"
+      ],
+      "source_field_mapping": {
+        "active_id": "active_id",
+        "rotation_epoch": "rotation_epoch",
+        "energy_ledger": "energy_ledger",
+        "trail_segments": "trail_segments"
+      },
+      "field_keys": [
+        "active_id",
+        "energy_ledger",
+        "pending_action",
+        "rotation_epoch",
+        "standby_id",
+        "swap_receipt",
+        "trail_segments"
+      ],
+      "save_namespace": "emergence.eb_e_67",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "rotation_epoch"
+      ],
+      "source_negative_acceptance": "Swap during action cannot duplicate both companions' reward",
+      "typed_negative_acceptance": "Swap during action cannot duplicate both companions' reward"
+    },
+    {
+      "id": "EB-E-068",
+      "title": "Companion Gesture Lexicon",
+      "source_fields": [
+        "gesture_map",
+        "learned_cues",
+        "request_history",
+        "consent"
+      ],
+      "source_field_mapping": {
+        "gesture_map": "gesture_map",
+        "learned_cues": "learned_cues",
+        "request_history": "request_history",
+        "consent": "consent"
+      },
+      "field_keys": [
+        "companion_id",
+        "consent",
+        "gesture_map",
+        "learned_cues",
+        "request_history",
+        "visual_fallback"
+      ],
+      "save_namespace": "emergence.eb_e_68",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Unlearned gesture cannot bypass skill prerequisite",
+      "typed_negative_acceptance": "Unlearned gesture cannot bypass skill prerequisite"
+    },
+    {
+      "id": "EB-E-069",
+      "title": "Wildlife Distance Etiquette",
+      "source_fields": [
+        "species_id",
+        "safety_radius",
+        "companion_position",
+        "observations"
+      ],
+      "source_field_mapping": {
+        "species_id": "species_id",
+        "safety_radius": "safety_radius_cm",
+        "companion_position": "companion_distance_cm",
+        "observations": "observations"
+      },
+      "field_keys": [
+        "companion_distance_cm",
+        "companion_id",
+        "day_epoch",
+        "observations",
+        "protected_nest",
+        "reward_kind",
+        "safety_radius_cm",
+        "species_id"
+      ],
+      "save_namespace": "emergence.eb_e_69",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "Repeated approach cannot override protected nesting boundary",
+      "typed_negative_acceptance": "Repeated approach cannot override protected nesting boundary"
+    },
+    {
+      "id": "EB-E-070",
+      "title": "Senior Companion Mentorship",
+      "source_fields": [
+        "mentor_id",
+        "learner_id",
+        "session_receipts",
+        "skill_progress"
+      ],
+      "source_field_mapping": {
+        "mentor_id": "mentor_id",
+        "learner_id": "learner_id",
+        "session_receipts": "session_receipts",
+        "skill_progress": "skill_progress"
+      },
+      "field_keys": [
+        "canceled",
+        "day_epoch",
+        "learner_id",
+        "mentor_id",
+        "session_receipts",
+        "skill_progress",
+        "welfare_ok"
+      ],
+      "save_namespace": "emergence.eb_e_70",
+      "flags": [
+        "unpadded_legacy_namespace"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "A canceled mentorship cannot award a completed skill",
+      "typed_negative_acceptance": "A canceled mentorship cannot award a completed skill"
+    },
+    {
+      "id": "EB-E-071",
+      "title": "First Harvest Sharing Table",
+      "source_fields": [
+        "event_id",
+        "invitees",
+        "portion_ledger",
+        "meal_memories"
+      ],
+      "source_field_mapping": {
+        "event_id": "event_id",
+        "invitees": "invitees",
+        "portion_ledger": "portion_ledger",
+        "meal_memories": "meal_memories"
+      },
+      "field_keys": [
+        "day_epoch",
+        "event_id",
+        "invitees",
+        "meal_memories",
+        "portion_ledger"
+      ],
+      "save_namespace": "emergence.eb_e_071",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "One crop cannot serve two residents; each meal serving must debit a unique finite food portion",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-072",
+      "title": "Rain Gratitude Listening Walk",
+      "source_fields": [
+        "storm_epoch",
+        "participants",
+        "stories",
+        "visibility"
+      ],
+      "source_field_mapping": {
+        "storm_epoch": "storm_epoch",
+        "participants": "participants",
+        "stories": "stories",
+        "visibility": "visibility"
+      },
+      "field_keys": [
+        "day_epoch",
+        "participants",
+        "reward_receipt",
+        "stories",
+        "storm_epoch",
+        "visibility",
+        "weather_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_072",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "storm_epoch"
+      ],
+      "source_negative_acceptance": "A fabricated storm cannot trigger celebration rewards",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-073",
+      "title": "Village Folk Melody Exchange",
+      "source_fields": [
+        "melody_id",
+        "contributors",
+        "consent",
+        "performance_receipt"
+      ],
+      "source_field_mapping": {
+        "melody_id": "melody_id",
+        "contributors": "contributors",
+        "consent": "contributors",
+        "performance_receipt": "performance_receipt"
+      },
+      "field_keys": [
+        "contributors",
+        "melody_id",
+        "notes",
+        "performance_receipt",
+        "playback_epoch",
+        "visibility",
+        "visual_fallback"
+      ],
+      "save_namespace": "emergence.eb_e_073",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "playback_epoch"
+      ],
+      "source_negative_acceptance": "Revoked consent prevents public playback",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-074",
+      "title": "Lantern River Farewell",
+      "source_fields": [
+        "ceremony_id",
+        "light_instances",
+        "return_receipts",
+        "water_state"
+      ],
+      "source_field_mapping": {
+        "ceremony_id": "ceremony_id",
+        "light_instances": "light_instances",
+        "return_receipts": "return_receipts",
+        "water_state": "water_state"
+      },
+      "field_keys": [
+        "ceremony_id",
+        "day_epoch",
+        "escrow_receipts",
+        "light_instances",
+        "return_receipts",
+        "water_state"
+      ],
+      "save_namespace": "emergence.eb_e_074",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "Reload cannot leave duplicated lanterns in river and bag",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-075",
+      "title": "Community Welcome Circle",
+      "source_fields": [
+        "resident_id",
+        "arrival_epoch",
+        "consent",
+        "ritual_receipt"
+      ],
+      "source_field_mapping": {
+        "resident_id": "resident_id",
+        "arrival_epoch": "arrival_epoch",
+        "consent": "consent",
+        "ritual_receipt": "ritual_receipt"
+      },
+      "field_keys": [
+        "arrival_epoch",
+        "consent",
+        "day_epoch",
+        "invitation_count",
+        "resident_id",
+        "reward_receipt",
+        "ritual_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_075",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "arrival_epoch",
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "Same resident cannot receive arrival reward twice",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-076",
+      "title": "Quiet Solstice Observatory",
+      "source_fields": [
+        "year",
+        "attendees",
+        "mode",
+        "attendance_receipts"
+      ],
+      "source_field_mapping": {
+        "year": "year",
+        "attendees": "attendees",
+        "mode": "mode",
+        "attendance_receipts": "attendance_receipts"
+      },
+      "field_keys": [
+        "attendance_receipts",
+        "attendees",
+        "day_epoch",
+        "event_receipt",
+        "festival_clearance_receipt",
+        "mode",
+        "year"
+      ],
+      "save_namespace": "emergence.eb_e_076",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "Event cannot override fixed festival NPC bookings",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-077",
+      "title": "Memory Ribbon Archive",
+      "source_fields": [
+        "milestone_id",
+        "owner",
+        "visibility",
+        "archive_revision"
+      ],
+      "source_field_mapping": {
+        "milestone_id": "milestone_id",
+        "owner": "owner_id",
+        "visibility": "visibility",
+        "archive_revision": "archive_revision"
+      },
+      "field_keys": [
+        "archive_revision",
+        "content_digest",
+        "milestone_id",
+        "owner_consent",
+        "owner_id",
+        "public_projection_receipt",
+        "retraction_receipt",
+        "visibility"
+      ],
+      "save_namespace": "emergence.eb_e_077",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Retracted milestone cannot remain in public display",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-078",
+      "title": "Culinary Heritage Vote",
+      "source_fields": [
+        "season_epoch",
+        "ballots",
+        "chosen_recipe",
+        "stock_receipts"
+      ],
+      "source_field_mapping": {
+        "season_epoch": "season_epoch",
+        "ballots": "ballots",
+        "chosen_recipe": "chosen_recipe",
+        "stock_receipts": "stock_receipts"
+      },
+      "field_keys": [
+        "ballots",
+        "chosen_recipe",
+        "close_receipt",
+        "day_epoch",
+        "season_epoch",
+        "stock_receipts"
+      ],
+      "save_namespace": "emergence.eb_e_078",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "season_epoch"
+      ],
+      "source_negative_acceptance": "Duplicate ballots cannot alter result; ballot receipts must be unique to eligible participating NPCs",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-079",
+      "title": "Night Market Story Tokens",
+      "source_fields": [
+        "event_id",
+        "prompt_tokens",
+        "consent",
+        "story_receipts"
+      ],
+      "source_field_mapping": {
+        "event_id": "event_id",
+        "prompt_tokens": "prompt_tokens",
+        "consent": "consent",
+        "story_receipts": "story_receipts"
+      },
+      "field_keys": [
+        "consent",
+        "currency_delta",
+        "day_epoch",
+        "event_id",
+        "prompt_tokens",
+        "story_receipts"
+      ],
+      "save_namespace": "emergence.eb_e_079",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "One prompt cannot grant unlimited relationship points",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-080",
+      "title": "Annual Theme Stewardship",
+      "source_fields": [
+        "year",
+        "theme_vote",
+        "projects",
+        "closing_receipt"
+      ],
+      "source_field_mapping": {
+        "year": "year",
+        "theme_vote": "theme_vote",
+        "projects": "projects",
+        "closing_receipt": "closing_receipt"
+      },
+      "field_keys": [
+        "bonus_points",
+        "closing_receipt",
+        "day_epoch",
+        "event_booking_clearance",
+        "projects",
+        "theme_vote",
+        "year"
+      ],
+      "save_namespace": "emergence.eb_e_080",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch"
+      ],
+      "source_negative_acceptance": "Repeated yearly close cannot grant rewards twice",
+      "typed_negative_acceptance": ""
+    },
+    {
+      "id": "EB-E-081",
+      "title": "Botanical Ink Chronicle",
+      "source_fields": [
+        "ink_batch",
+        "ingredient_receipts",
+        "journal_pages",
+        "authorship"
+      ],
+      "source_field_mapping": {
+        "ink_batch": "ink_batch",
+        "ingredient_receipts": "ingredient_receipts",
+        "journal_pages": "journal_pages",
+        "authorship": "authorship"
+      },
+      "field_keys": [
+        "authorship",
+        "command_receipts",
+        "day_epoch",
+        "ingredient_receipts",
+        "ink_batch",
+        "journal_pages",
+        "revision"
+      ],
+      "save_namespace": "emergence.creative.081",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts",
+        "ingredient_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "revision"
+      ],
+      "source_negative_acceptance": "One batch cannot write unlimited saleable ink items",
+      "typed_negative_acceptance": "One batch cannot write unlimited saleable ink items"
+    },
+    {
+      "id": "EB-E-082",
+      "title": "Paper Marbling Current",
+      "source_fields": [
+        "pattern_seed",
+        "gesture_path",
+        "pigment_units",
+        "edition_id"
+      ],
+      "source_field_mapping": {
+        "pattern_seed": "pattern_seed",
+        "gesture_path": "gesture_path",
+        "pigment_units": "pigment_units",
+        "edition_id": "edition_id"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "edition_id",
+        "gesture_path",
+        "pattern_seed",
+        "pigment_units",
+        "revision"
+      ],
+      "save_namespace": "emergence.creative.082",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "pattern_seed",
+        "revision"
+      ],
+      "source_negative_acceptance": "Cancel cannot keep paper and refund pigments",
+      "typed_negative_acceptance": "Cancel cannot keep paper and refund pigments"
+    },
+    {
+      "id": "EB-E-083",
+      "title": "Ceramic Glaze Alchemy",
+      "source_fields": [
+        "vessel_id",
+        "glaze_recipe",
+        "firing_receipt",
+        "color_result"
+      ],
+      "source_field_mapping": {
+        "vessel_id": "vessel_id",
+        "glaze_recipe": "glaze_recipe",
+        "firing_receipt": "firing_receipt",
+        "color_result": "color_result"
+      },
+      "field_keys": [
+        "color_result",
+        "command_receipts",
+        "day_epoch",
+        "firing_receipt",
+        "glaze_recipe",
+        "revision",
+        "vessel_id"
+      ],
+      "save_namespace": "emergence.creative.083",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "revision"
+      ],
+      "source_negative_acceptance": "One vessel cannot be glazed and sold twice",
+      "typed_negative_acceptance": "One vessel cannot be glazed and sold twice"
+    },
+    {
+      "id": "EB-E-084",
+      "title": "Windchime Tone Composer",
+      "source_fields": [
+        "chime_id",
+        "note_sequence",
+        "tempo",
+        "share_consent"
+      ],
+      "source_field_mapping": {
+        "chime_id": "chime_id",
+        "note_sequence": "note_sequence",
+        "tempo": "tempo",
+        "share_consent": "share_consent"
+      },
+      "field_keys": [
+        "chime_id",
+        "command_receipts",
+        "day_epoch",
+        "note_sequence",
+        "revision",
+        "share_consent",
+        "tempo"
+      ],
+      "save_namespace": "emergence.creative.084",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "revision",
+        "tempo"
+      ],
+      "source_negative_acceptance": "Muted mode must permit equivalent composition",
+      "typed_negative_acceptance": "Muted mode must permit equivalent composition"
+    },
+    {
+      "id": "EB-E-085",
+      "title": "Pressed Flower Memory Book",
+      "source_fields": [
+        "specimen_id",
+        "collection_epoch",
+        "book_page",
+        "habitat_rule"
+      ],
+      "source_field_mapping": {
+        "specimen_id": "specimen_id",
+        "collection_epoch": "collection_epoch",
+        "book_page": "book_page",
+        "habitat_rule": "habitat_rule"
+      },
+      "field_keys": [
+        "book_page",
+        "collection_epoch",
+        "command_receipts",
+        "day_epoch",
+        "habitat_rule",
+        "revision",
+        "specimen_id"
+      ],
+      "save_namespace": "emergence.creative.085",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "collection_epoch",
+        "day_epoch",
+        "revision"
+      ],
+      "source_negative_acceptance": "Duplicate specimen cannot fill multiple paid pages",
+      "typed_negative_acceptance": "Duplicate specimen cannot fill multiple paid pages"
+    },
+    {
+      "id": "EB-E-086",
+      "title": "Herbal Scent Studio",
+      "source_fields": [
+        "blend_id",
+        "ingredient_units",
+        "formula",
+        "consent"
+      ],
+      "source_field_mapping": {
+        "blend_id": "blend_id",
+        "ingredient_units": "ingredient_units",
+        "formula": "formula",
+        "consent": "consent"
+      },
+      "field_keys": [
+        "blend_id",
+        "command_receipts",
+        "consent",
+        "day_epoch",
+        "formula",
+        "ingredient_units",
+        "revision"
+      ],
+      "save_namespace": "emergence.creative.086",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "revision"
+      ],
+      "source_negative_acceptance": "One ingredient cannot fund two fragrance bottles",
+      "typed_negative_acceptance": "One ingredient cannot fund two fragrance bottles"
+    },
+    {
+      "id": "EB-E-087",
+      "title": "Shadow Puppet Theater",
+      "source_fields": [
+        "puppet_ids",
+        "keyframes",
+        "stage_slot",
+        "performance_receipt"
+      ],
+      "source_field_mapping": {
+        "puppet_ids": "puppet_ids",
+        "keyframes": "keyframes",
+        "stage_slot": "stage_slot",
+        "performance_receipt": "performance_receipt"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "keyframes",
+        "performance_receipt",
+        "puppet_ids",
+        "revision",
+        "stage_slot"
+      ],
+      "save_namespace": "emergence.creative.087",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "revision"
+      ],
+      "source_negative_acceptance": "Canceling a show cannot charge viewers or award performance",
+      "typed_negative_acceptance": "Canceling a show cannot charge viewers or award performance"
+    },
+    {
+      "id": "EB-E-088",
+      "title": "Edible Art Plating",
+      "source_fields": [
+        "dish_id",
+        "ingredient_receipts",
+        "layout",
+        "judging_score"
+      ],
+      "source_field_mapping": {
+        "dish_id": "dish_id",
+        "ingredient_receipts": "ingredient_receipts",
+        "layout": "layout",
+        "judging_score": "judging_score"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "dish_id",
+        "ingredient_receipts",
+        "judging_score",
+        "layout",
+        "revision"
+      ],
+      "save_namespace": "emergence.creative.088",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts",
+        "ingredient_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "judging_score",
+        "revision"
+      ],
+      "source_negative_acceptance": "One dish cannot be served and exhibited as inventory twice",
+      "typed_negative_acceptance": "One dish cannot be served and exhibited as inventory twice"
+    },
+    {
+      "id": "EB-E-089",
+      "title": "Miniature Biome Diorama",
+      "source_fields": [
+        "diorama_id",
+        "material_receipts",
+        "biome_notes",
+        "layout"
+      ],
+      "source_field_mapping": {
+        "diorama_id": "diorama_id",
+        "material_receipts": "material_receipts",
+        "biome_notes": "biome_notes",
+        "layout": "layout"
+      },
+      "field_keys": [
+        "biome_notes",
+        "command_receipts",
+        "day_epoch",
+        "diorama_id",
+        "layout",
+        "material_receipts",
+        "revision"
+      ],
+      "save_namespace": "emergence.creative.089",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts",
+        "material_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "revision"
+      ],
+      "source_negative_acceptance": "Diorama cannot alter authoritative habitat score",
+      "typed_negative_acceptance": "Diorama cannot alter authoritative habitat score"
+    },
+    {
+      "id": "EB-E-090",
+      "title": "Folk Instrument Repair Jam",
+      "source_fields": [
+        "instrument_id",
+        "durability",
+        "repair_receipt",
+        "session_id"
+      ],
+      "source_field_mapping": {
+        "instrument_id": "instrument_id",
+        "durability": "durability",
+        "repair_receipt": "repair_receipt",
+        "session_id": "session_id"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "durability",
+        "instrument_id",
+        "repair_receipt",
+        "revision",
+        "session_id"
+      ],
+      "save_namespace": "emergence.creative.090",
+      "flags": [
+        "missing_assets",
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "day_epoch",
+        "durability",
+        "revision"
+      ],
+      "source_negative_acceptance": "Repairing one instrument cannot duplicate its value",
+      "typed_negative_acceptance": "Repairing one instrument cannot duplicate its value"
+    },
+    {
+      "id": "EB-E-091",
+      "title": "Meteor Trail Triangulator",
+      "source_fields": [
+        "meteor_id",
+        "viewpoints",
+        "epoch",
+        "search_region"
+      ],
+      "source_field_mapping": {
+        "meteor_id": "meteor_id",
+        "viewpoints": "viewpoints",
+        "epoch": "epoch",
+        "search_region": "search_region"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "epoch",
+        "meteor_id",
+        "revision",
+        "search_region",
+        "viewpoints"
+      ],
+      "save_namespace": "emergence.sky.091",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "epoch"
+      ],
+      "source_negative_acceptance": "Repeating one viewpoint cannot triangulate a reward",
+      "typed_negative_acceptance": "Repeating one viewpoint cannot triangulate a reward"
+    },
+    {
+      "id": "EB-E-092",
+      "title": "Eclipse Shadow Cipher",
+      "source_fields": [
+        "eclipse_epoch",
+        "shadow_angles",
+        "clue_steps",
+        "solved"
+      ],
+      "source_field_mapping": {
+        "eclipse_epoch": "eclipse_epoch",
+        "shadow_angles": "shadow_angles",
+        "clue_steps": "clue_steps",
+        "solved": "solved"
+      },
+      "field_keys": [
+        "clue_steps",
+        "command_receipts",
+        "day_epoch",
+        "eclipse_epoch",
+        "revision",
+        "shadow_angles",
+        "solved"
+      ],
+      "save_namespace": "emergence.sky.092",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "eclipse_epoch"
+      ],
+      "source_negative_acceptance": "Event expiry cannot permanently lock the mystery",
+      "typed_negative_acceptance": "Event expiry cannot permanently lock the mystery"
+    },
+    {
+      "id": "EB-E-093",
+      "title": "Aurora Color Chronicle",
+      "source_fields": [
+        "aurora_seed",
+        "pattern_ids",
+        "observation_epoch",
+        "journal"
+      ],
+      "source_field_mapping": {
+        "aurora_seed": "aurora_seed",
+        "pattern_ids": "pattern_ids",
+        "observation_epoch": "observation_epoch",
+        "journal": "journal"
+      },
+      "field_keys": [
+        "aurora_seed",
+        "command_receipts",
+        "day_epoch",
+        "journal",
+        "observation_epoch",
+        "pattern_ids",
+        "revision"
+      ],
+      "save_namespace": "emergence.sky.093",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "observation_epoch"
+      ],
+      "source_negative_acceptance": "Changing color settings cannot change reward",
+      "typed_negative_acceptance": "Changing color settings cannot change reward"
+    },
+    {
+      "id": "EB-E-094",
+      "title": "Moonphase Wildlife Watch",
+      "source_fields": [
+        "lunar_phase",
+        "species_id",
+        "habitat_id",
+        "observations"
+      ],
+      "source_field_mapping": {
+        "lunar_phase": "lunar_phase",
+        "species_id": "species_id",
+        "habitat_id": "habitat_id",
+        "observations": "observations"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "habitat_id",
+        "lunar_phase",
+        "observations",
+        "revision",
+        "species_id"
+      ],
+      "save_namespace": "emergence.sky.094",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One night cannot count as four phases; journal observations must not depend on the player's display color mode",
+      "typed_negative_acceptance": "One night cannot count as four phases; journal observations must not depend on the player's display color mode"
+    },
+    {
+      "id": "EB-E-095",
+      "title": "Cloud Atlas Riddles",
+      "source_fields": [
+        "cloud_id",
+        "weather_epoch",
+        "clue_choice",
+        "event_hint"
+      ],
+      "source_field_mapping": {
+        "cloud_id": "cloud_id",
+        "weather_epoch": "weather_epoch",
+        "clue_choice": "clue_choice",
+        "event_hint": "event_hint"
+      },
+      "field_keys": [
+        "cloud_id",
+        "clue_choice",
+        "command_receipts",
+        "day_epoch",
+        "event_hint",
+        "revision",
+        "weather_epoch"
+      ],
+      "save_namespace": "emergence.sky.095",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "weather_epoch"
+      ],
+      "source_negative_acceptance": "Reload cannot reroll weather until favorable answer",
+      "typed_negative_acceptance": "Reload cannot reroll weather until favorable answer"
+    },
+    {
+      "id": "EB-E-096",
+      "title": "Sky Reflection Survey",
+      "source_fields": [
+        "pool_id",
+        "landmark_ids",
+        "alignment",
+        "inscription"
+      ],
+      "source_field_mapping": {
+        "pool_id": "pool_id",
+        "landmark_ids": "landmark_ids",
+        "alignment": "alignment",
+        "inscription": "inscription"
+      },
+      "field_keys": [
+        "alignment",
+        "command_receipts",
+        "day_epoch",
+        "inscription",
+        "landmark_ids",
+        "pool_id",
+        "revision"
+      ],
+      "save_namespace": "emergence.sky.096",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Missing high-end reflections cannot make puzzle impossible",
+      "typed_negative_acceptance": "Missing high-end reflections cannot make puzzle impossible"
+    },
+    {
+      "id": "EB-E-097",
+      "title": "Constellation Oral History",
+      "source_fields": [
+        "star_id",
+        "narrators",
+        "story_versions",
+        "consents"
+      ],
+      "source_field_mapping": {
+        "star_id": "star_id",
+        "narrators": "narrators",
+        "story_versions": "story_versions",
+        "consents": "consents"
+      },
+      "field_keys": [
+        "command_receipts",
+        "consents",
+        "day_epoch",
+        "narrators",
+        "revision",
+        "star_id",
+        "story_versions"
+      ],
+      "save_namespace": "emergence.sky.097",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One NPC cannot impersonate another's history",
+      "typed_negative_acceptance": "One NPC cannot impersonate another's history"
+    },
+    {
+      "id": "EB-E-098",
+      "title": "Seasonal Sky Clock",
+      "source_fields": [
+        "clock_id",
+        "sky_window",
+        "npc_slot",
+        "appointment"
+      ],
+      "source_field_mapping": {
+        "clock_id": "clock_id",
+        "sky_window": "sky_window",
+        "npc_slot": "npc_slot",
+        "appointment": "appointment"
+      },
+      "field_keys": [
+        "appointment",
+        "clock_id",
+        "command_receipts",
+        "day_epoch",
+        "npc_slot",
+        "revision",
+        "sky_window"
+      ],
+      "save_namespace": "emergence.sky.098",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Wrong time cannot teleport NPC or duplicate reward",
+      "typed_negative_acceptance": "Wrong time cannot teleport NPC or duplicate reward"
+    },
+    {
+      "id": "EB-E-099",
+      "title": "Falling Star Provenance",
+      "source_fields": [
+        "fragment_id",
+        "find_receipt",
+        "owner",
+        "donation_receipt"
+      ],
+      "source_field_mapping": {
+        "fragment_id": "fragment_id",
+        "find_receipt": "find_receipt",
+        "owner": "owner",
+        "donation_receipt": "donation_receipt"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "donation_receipt",
+        "find_receipt",
+        "fragment_id",
+        "owner",
+        "revision"
+      ],
+      "save_namespace": "emergence.sky.099",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Donation and personal sale cannot both succeed",
+      "typed_negative_acceptance": "Donation and personal sale cannot both succeed"
+    },
+    {
+      "id": "EB-E-100",
+      "title": "Horizon Weather Lanterns",
+      "source_fields": [
+        "peak_ids",
+        "signal_epoch",
+        "route_choice",
+        "arrival_receipt"
+      ],
+      "source_field_mapping": {
+        "peak_ids": "peak_ids",
+        "signal_epoch": "signal_epoch",
+        "route_choice": "route_choice",
+        "arrival_receipt": "arrival_receipt"
+      },
+      "field_keys": [
+        "arrival_receipt",
+        "command_receipts",
+        "day_epoch",
+        "peak_ids",
+        "revision",
+        "route_choice",
+        "signal_epoch"
+      ],
+      "save_namespace": "emergence.sky.100",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "signal_epoch"
+      ],
+      "source_negative_acceptance": "Wrong signal cannot trap player permanently",
+      "typed_negative_acceptance": "Wrong signal cannot trap player permanently"
+    },
+    {
+      "id": "EB-E-101",
+      "title": "Shared Tool Queue",
+      "source_fields": [
+        "tool_id",
+        "queue",
+        "slot_epoch",
+        "release_receipts"
+      ],
+      "source_field_mapping": {
+        "tool_id": "tool_id",
+        "queue": "queue",
+        "slot_epoch": "slot_epoch",
+        "release_receipts": "release_receipts"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "queue",
+        "release_receipts",
+        "revision",
+        "slot_epoch",
+        "tool_id"
+      ],
+      "save_namespace": "emergence.cooperation.101",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts",
+        "release_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [
+        "slot_epoch"
+      ],
+      "source_negative_acceptance": "Double booking cannot award two simultaneous users",
+      "typed_negative_acceptance": "Double booking cannot award two simultaneous users"
+    },
+    {
+      "id": "EB-E-102",
+      "title": "Community Search Grid",
+      "source_fields": [
+        "search_id",
+        "volunteers",
+        "cells",
+        "find_receipt"
+      ],
+      "source_field_mapping": {
+        "search_id": "search_id",
+        "volunteers": "volunteers",
+        "cells": "cells",
+        "find_receipt": "find_receipt"
+      },
+      "field_keys": [
+        "cells",
+        "command_receipts",
+        "day_epoch",
+        "find_receipt",
+        "revision",
+        "search_id",
+        "volunteers"
+      ],
+      "save_namespace": "emergence.cooperation.102",
+      "flags": [
+        "missing_explicit_receipt_contract",
+        "source_contamination"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route",
+      "typed_negative_acceptance": "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route"
+    },
+    {
+      "id": "EB-E-103",
+      "title": "Care Network Check-in",
+      "source_fields": [
+        "resident_id",
+        "requests",
+        "volunteer_slots",
+        "care_receipts"
+      ],
+      "source_field_mapping": {
+        "resident_id": "resident_id",
+        "requests": "requests",
+        "volunteer_slots": "volunteer_slots",
+        "care_receipts": "care_receipts"
+      },
+      "field_keys": [
+        "care_receipts",
+        "command_receipts",
+        "day_epoch",
+        "requests",
+        "resident_id",
+        "revision",
+        "volunteer_slots"
+      ],
+      "save_namespace": "emergence.cooperation.103",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "care_receipts",
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Spam check-ins cannot farm friendship indefinitely",
+      "typed_negative_acceptance": "Spam check-ins cannot farm friendship indefinitely"
+    },
+    {
+      "id": "EB-E-104",
+      "title": "Accessible Puzzle Partner",
+      "source_fields": [
+        "puzzle_id",
+        "partner_id",
+        "hint_level",
+        "completion"
+      ],
+      "source_field_mapping": {
+        "puzzle_id": "puzzle_id",
+        "partner_id": "partner_id",
+        "hint_level": "hint_level",
+        "completion": "completion"
+      },
+      "field_keys": [
+        "command_receipts",
+        "completion",
+        "day_epoch",
+        "hint_level",
+        "partner_id",
+        "puzzle_id",
+        "revision"
+      ],
+      "save_namespace": "emergence.cooperation.104",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Repeated hint cannot award repeated completion",
+      "typed_negative_acceptance": "Repeated hint cannot award repeated completion"
+    },
+    {
+      "id": "EB-E-105",
+      "title": "Chore Preference Auction",
+      "source_fields": [
+        "job_id",
+        "bids",
+        "assignments",
+        "compensation"
+      ],
+      "source_field_mapping": {
+        "job_id": "job_id",
+        "bids": "bids",
+        "assignments": "assignments",
+        "compensation": "compensation"
+      },
+      "field_keys": [
+        "assignments",
+        "bids",
+        "command_receipts",
+        "compensation",
+        "day_epoch",
+        "job_id",
+        "revision"
+      ],
+      "save_namespace": "emergence.cooperation.105",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Same NPC cannot accept conflicting chores",
+      "typed_negative_acceptance": "Same NPC cannot accept conflicting chores"
+    },
+    {
+      "id": "EB-E-106",
+      "title": "Seasonal Volunteer Rota",
+      "source_fields": [
+        "rota_id",
+        "slots",
+        "volunteer_consents",
+        "completion"
+      ],
+      "source_field_mapping": {
+        "rota_id": "rota_id",
+        "slots": "slots",
+        "volunteer_consents": "volunteer_consents",
+        "completion": "completion"
+      },
+      "field_keys": [
+        "command_receipts",
+        "completion",
+        "day_epoch",
+        "revision",
+        "rota_id",
+        "slots",
+        "volunteer_consents"
+      ],
+      "save_namespace": "emergence.cooperation.106",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Year rollover cannot duplicate weekly rewards",
+      "typed_negative_acceptance": "Year rollover cannot duplicate weekly rewards"
+    },
+    {
+      "id": "EB-E-107",
+      "title": "Emergency Signal Chain",
+      "source_fields": [
+        "alert_id",
+        "relay_graph",
+        "acknowledgments",
+        "expiry"
+      ],
+      "source_field_mapping": {
+        "alert_id": "alert_id",
+        "relay_graph": "relay_graph",
+        "acknowledgments": "acknowledgments",
+        "expiry": "expiry"
+      },
+      "field_keys": [
+        "acknowledgments",
+        "alert_id",
+        "command_receipts",
+        "day_epoch",
+        "expiry",
+        "relay_graph",
+        "revision"
+      ],
+      "save_namespace": "emergence.cooperation.107",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Cycle in relay graph cannot cause infinite event storm",
+      "typed_negative_acceptance": "Cycle in relay graph cannot cause infinite event storm"
+    },
+    {
+      "id": "EB-E-108",
+      "title": "Shared Discovery Field Trip",
+      "source_fields": [
+        "trip_id",
+        "participants",
+        "waypoints",
+        "rest_ledger"
+      ],
+      "source_field_mapping": {
+        "trip_id": "trip_id",
+        "participants": "participants",
+        "waypoints": "waypoints",
+        "rest_ledger": "rest_ledger"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "participants",
+        "rest_ledger",
+        "revision",
+        "trip_id",
+        "waypoints"
+      ],
+      "save_namespace": "emergence.cooperation.108",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts",
+        "rest_ledger"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Reload cannot teleport group or erase fatigue",
+      "typed_negative_acceptance": "Reload cannot teleport group or erase fatigue"
+    },
+    {
+      "id": "EB-E-109",
+      "title": "Neighborhood Exchange Mentor",
+      "source_fields": [
+        "mentor_pair",
+        "lesson_plan",
+        "consent",
+        "progress"
+      ],
+      "source_field_mapping": {
+        "mentor_pair": "mentor_pair",
+        "lesson_plan": "lesson_plan",
+        "consent": "consent",
+        "progress": "progress"
+      },
+      "field_keys": [
+        "command_receipts",
+        "consent",
+        "day_epoch",
+        "lesson_plan",
+        "mentor_pair",
+        "progress",
+        "revision"
+      ],
+      "save_namespace": "emergence.cooperation.109",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "Reciprocal teaching loop cannot grant infinite mastery",
+      "typed_negative_acceptance": "Reciprocal teaching loop cannot grant infinite mastery"
+    },
+    {
+      "id": "EB-E-110",
+      "title": "Village Consensus Noticeboard",
+      "source_fields": [
+        "proposal_id",
+        "revision",
+        "votes",
+        "decision_receipt"
+      ],
+      "source_field_mapping": {
+        "proposal_id": "proposal_id",
+        "revision": "revision",
+        "votes": "votes",
+        "decision_receipt": "decision_receipt"
+      },
+      "field_keys": [
+        "command_receipts",
+        "day_epoch",
+        "decision_receipt",
+        "proposal_id",
+        "revision",
+        "votes"
+      ],
+      "save_namespace": "emergence.cooperation.110",
+      "flags": [
+        "missing_explicit_receipt_contract"
+      ],
+      "receipt_arrays_without_declarative_unique_by": [
+        "command_receipts"
+      ],
+      "top_level_negative_epoch_sentinels": [],
+      "source_negative_acceptance": "One NPC cannot cast duplicate ballots; voter identity and proposal revision must prevent replayed ballots",
+      "typed_negative_acceptance": "One NPC cannot cast duplicate ballots; voter identity and proposal revision must prevent replayed ballots"
+    }
+  ]
+}
