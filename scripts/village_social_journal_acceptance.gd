@@ -71,6 +71,8 @@ func _run() -> void:
     _check(ui.cards.size() == 6 and ui.cards[0].focus_mode == Control.FOCUS_ALL, "six focusable neighbor cards")
     _check(ui.selected_index == 0 and "Mira" in ui.selected_label.text, "first neighbor initially selected")
     _check(ui.history_text.focus_mode == Control.FOCUS_ALL and ui.history_text.scroll_active, "history is focusable and scrollable")
+    _check(ui.history_earlier_button.focus_mode == Control.FOCUS_ALL and ui.history_later_button.focus_mode == Control.FOCUS_ALL, "history pagination is keyboard and controller focusable")
+    _check(ui.history_page_label.text == "Page 1 of 1" and ui.history_earlier_button.disabled and ui.history_later_button.disabled, "two earned lines fit one bounded page")
     _check("Day 1 [en]" in ui.history_text.text and "Day 7 [en]" in ui.history_text.text, "actual two-day Mira dialogue is visible")
     var down := InputEventKey.new()
     down.pressed = true
@@ -175,6 +177,49 @@ func _run() -> void:
     var final_log: Array = restored.social_recap()[0]["dialogue_log"]
     _check(final_log.size() == 12 and int(final_log[0]["epoch"]) > 7, "oldest entries evicted after cap, latest retained")
     _check(int(final_log[-1]["epoch"]) == host.day_epoch(), "newest transcript matches monotonic calendar")
+    # V19 earned-history pagination: twelve genuine records become four pages,
+    # defaulting to the newest three. Every route is presentation-only.
+    var paged = restored.social_journal
+    var state_before_paging: Dictionary = restored.save_state()
+    paged.open_journal()
+    _check(paged.history_page_label.text == "Page 4 of 4", "journal opens on most recent of four history pages")
+    _check("Day %d [en]" % int(final_log[-1]["epoch"]) in paged.history_text.text, "latest earned conversation visible")
+    _check("Day %d [en]" % int(final_log[0]["epoch"]) not in paged.history_text.text, "oldest retained line not duplicated on latest page")
+    _check(not paged.history_earlier_button.disabled and paged.history_later_button.disabled, "history page bounds update buttons")
+    paged.history_earlier_button.pressed.emit()
+    _check(paged.history_page_label.text == "Page 3 of 4", "touch/mouse earlier button pages history")
+    var history_left := InputEventKey.new()
+    history_left.pressed = true
+    history_left.physical_keycode = KEY_LEFT
+    paged._input(history_left)
+    _check(paged.history_page_label.text == "Page 2 of 4", "keyboard Left pages older dialogue")
+    var shoulder_left := InputEventJoypadButton.new()
+    shoulder_left.pressed = true
+    shoulder_left.button_index = JOY_BUTTON_LEFT_SHOULDER
+    paged._input(shoulder_left)
+    _check(paged.history_page_label.text == "Page 1 of 4" and paged.history_earlier_button.disabled, "controller left shoulder clamps at oldest page")
+    paged._input(shoulder_left)
+    _check(paged.history_page_label.text == "Page 1 of 4", "history cannot page before first record")
+    var history_right := InputEventKey.new()
+    history_right.pressed = true
+    history_right.physical_keycode = KEY_RIGHT
+    paged._input(history_right)
+    _check(paged.history_page_label.text == "Page 2 of 4", "keyboard Right pages newer dialogue")
+    var shoulder_right := InputEventJoypadButton.new()
+    shoulder_right.pressed = true
+    shoulder_right.button_index = JOY_BUTTON_RIGHT_SHOULDER
+    paged._input(shoulder_right)
+    _check(paged.history_page_label.text == "Page 3 of 4", "controller right shoulder pages newer dialogue")
+    paged._toggle_locale()
+    _check(paged.history_page_label.text == "Página 3 de 4" and paged.history_earlier_button.text == "Anteriores", "Spanish labels preserve history page")
+    paged._select_neighbor(1)
+    _check(paged.history_page_label.text == "Página 0 de 0" and paged.history_earlier_button.disabled and paged.history_later_button.disabled, "empty resident has no fabricated pages")
+    paged._select_neighbor(0)
+    _check(paged.history_page_label.text == "Página 4 de 4", "returning to neighbor defaults to newest history")
+    paged._toggle_locale()
+    paged.close_journal()
+    _check(restored.save_state() == state_before_paging, "history paging and locale never change social state")
+    _check(host.gold == gold_before and host.inventory == inventory_before, "history pagination never changes economy")
     var retained_state: Dictionary = restored.save_state()
     var valid_envelope: Dictionary = {
         "schema":1, "year":host.year, "season":host.season_index, "day":host.day,
