@@ -197,6 +197,7 @@ static func validate_payload(payload: Dictionary) -> bool:
             # Village V19: earned dialogue is a bounded, chronological record.
             # Accept absent logs from legacy schema-1 saves, but reject any
             # present malformed history before Village.load_state() can filter it.
+            # The 12-entry / 256-character limits mirror Village's authoring caps.
             if memory.has("dialogue_log"):
                 if typeof(memory["dialogue_log"]) != TYPE_ARRAY:
                     return false
