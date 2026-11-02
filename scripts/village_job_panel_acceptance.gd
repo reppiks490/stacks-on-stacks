@@ -137,6 +137,17 @@ func _run() -> void:
     ui._refresh_locale()
     _check("Ayudar" in ui.work_button.text, "work button follows journal locale selection")
     _check("mando" in ui.work_button.tooltip_text, "controller help localized in Spanish")
-    _check(game.inventory == before_inventory, "all three input routes preserve inventory")
+    # JSON recovery may change integer Variant representation; compare the
+    # authoritative quantities and reject newly minted positive item keys.
+    var inventory_conserved: bool = true
+    for item in before_inventory:
+        if int(game.inventory.get(item, -1)) != int(before_inventory[item]):
+            inventory_conserved = false
+    for item in game.inventory:
+        if not before_inventory.has(item) and int(game.inventory[item]) != 0:
+            inventory_conserved = false
+    if not inventory_conserved:
+        print("V07 inventory mismatch before=", before_inventory, " after=", game.inventory)
+    _check(inventory_conserved, "all three input routes preserve item quantities")
     print("EVERBLOOM V07 WORK UI NATIVE: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
