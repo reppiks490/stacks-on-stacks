@@ -245,7 +245,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Finite hops and weather delays; failed delivery returns undelivered parcel state. Source recheck required before integration.",
-      "player_scenario": "Send a message across weather-limited lookout relays when roads close",
+      "player_scenario": "Send a message across weather-limited lookout relays when roads close; inspect each relay's failed or successful delivery receipt at the destination",
       "player_verbs": [
         "send_windborne_message_relay",
         "preview_windborne_message_relay",
@@ -307,7 +307,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Send a message across weather-limited lookout relays when roads close; verify rule: Finite hops and weather delays; failed delivery returns undelivered parcel state.",
+        "positive": "In real Godot scene, Send a message across weather-limited lookout relays when roads close; verify rule: Finite hops and weather delays; failed delivery returns undelivered parcel state.; inspect each relay's failed or successful delivery receipt at the destination",
         "adversarial": "Interrupted relay cannot both deliver and refund a parcel",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -335,7 +335,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed causal_world mechanic decisions and journal; Principal weather/epoch; Emergence causal director; each domain owns effects. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Send a message across weather-limited lookout relays when roads close; verify rule: Finite hops and weather delays; failed delivery returns undelivered parcel state.",
+        "In real Godot scene, Send a message across weather-limited lookout relays when roads close; verify rule: Finite hops and weather delays; failed delivery returns undelivered parcel state.; inspect each relay's failed or successful delivery receipt at the destination",
         "Interrupted relay cannot both deliver and refund a parcel",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -1148,7 +1148,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Removing a log reduces connectivity; restoring a unique log may repair one link. Source recheck required before integration.",
-      "player_scenario": "Observe fungal links between trees and decide which fallen logs to retain",
+      "player_scenario": "Observe fungal links between trees and decide which fallen logs to retain; compare connectivity before and after protecting one specific log",
       "player_verbs": [
         "observe_mycelium_neighbor_network",
         "preview_mycelium_neighbor_network",
@@ -1210,7 +1210,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Observe fungal links between trees and decide which fallen logs to retain; verify rule: Removing a log reduces connectivity; restoring a unique log may repair one link.",
+        "positive": "In real Godot scene, Observe fungal links between trees and decide which fallen logs to retain; verify rule: Removing a log reduces connectivity; restoring a unique log may repair one link.; compare connectivity before and after protecting one specific log",
         "adversarial": "Duplicating a log receipt cannot regenerate two links",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -1238,7 +1238,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed biome_stewardship mechanic decisions and journal; Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Observe fungal links between trees and decide which fallen logs to retain; verify rule: Removing a log reduces connectivity; restoring a unique log may repair one link.",
+        "In real Godot scene, Observe fungal links between trees and decide which fallen logs to retain; verify rule: Removing a log reduces connectivity; restoring a unique log may repair one link.; compare connectivity before and after protecting one specific log",
         "Duplicating a log receipt cannot regenerate two links",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -1324,7 +1324,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Tag native seeds carried by wildlife and establish corridors to damaged habitats; verify rule: Seed dispersal follows observed carriers and bounded seasonal movement.",
-        "adversarial": "One seed cannot germinate in two cells",
+        "adversarial": "One seed cannot germinate in two cells; repeated tag replay must not create a second seed entity",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -1352,11 +1352,11 @@
       "cross_loop_boundary": "Emergence owns proposed biome_stewardship mechanic decisions and journal; Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Tag native seeds carried by wildlife and establish corridors to damaged habitats; verify rule: Seed dispersal follows observed carriers and bounded seasonal movement.",
-        "One seed cannot germinate in two cells",
+        "One seed cannot germinate in two cells; repeated tag replay must not create a second seed entity",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "One seed cannot germinate in two cells",
+        "One seed cannot germinate in two cells; repeated tag replay must not create a second seed entity",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -1374,7 +1374,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Habitat observations never mint authoritative Farming water units. Source recheck required before integration.",
-      "player_scenario": "Compare shaded moss plots with sunlit controls to learn moisture retention",
+      "player_scenario": "Compare shaded moss plots with sunlit controls to learn moisture retention; record both plots over consecutive days and compare actual measurements",
       "player_verbs": [
         "compare_mosslight_microhabitats",
         "preview_mosslight_microhabitats",
@@ -1436,7 +1436,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Compare shaded moss plots with sunlit controls to learn moisture retention; verify rule: Habitat observations never mint authoritative Farming water units.",
+        "positive": "In real Godot scene, Compare shaded moss plots with sunlit controls to learn moisture retention; verify rule: Habitat observations never mint authoritative Farming water units.; record both plots over consecutive days and compare actual measurements",
         "adversarial": "Removing shade cannot leave an invisible permanent moisture buff",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -1464,7 +1464,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed biome_stewardship mechanic decisions and journal; Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Compare shaded moss plots with sunlit controls to learn moisture retention; verify rule: Habitat observations never mint authoritative Farming water units.",
+        "In real Godot scene, Compare shaded moss plots with sunlit controls to learn moisture retention; verify rule: Habitat observations never mint authoritative Farming water units.; record both plots over consecutive days and compare actual measurements",
         "Removing shade cannot leave an invisible permanent moisture buff",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -1712,7 +1712,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Crossing windows finite; Valley navigation remains authoritative. Source recheck required before integration.",
-      "player_scenario": "Coordinate safe wetland wildlife crossings with seasonal path detours",
+      "player_scenario": "Coordinate safe wetland wildlife crossings with seasonal path detours; confirm the detour stays reachable for residents and wildlife",
       "player_verbs": [
         "coordinate_turtle_crossing_steward",
         "preview_turtle_crossing_steward",
@@ -1774,7 +1774,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Coordinate safe wetland wildlife crossings with seasonal path detours; verify rule: Crossing windows finite; Valley navigation remains authoritative.",
+        "positive": "In real Godot scene, Coordinate safe wetland wildlife crossings with seasonal path detours; verify rule: Crossing windows finite; Valley navigation remains authoritative.; confirm the detour stays reachable for residents and wildlife",
         "adversarial": "Closed paths cannot trap residents or duplicate creatures",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -1802,7 +1802,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed biome_stewardship mechanic decisions and journal; Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Coordinate safe wetland wildlife crossings with seasonal path detours; verify rule: Crossing windows finite; Valley navigation remains authoritative.",
+        "In real Godot scene, Coordinate safe wetland wildlife crossings with seasonal path detours; verify rule: Crossing windows finite; Valley navigation remains authoritative.; confirm the detour stays reachable for residents and wildlife",
         "Closed paths cannot trap residents or duplicate creatures",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -1938,7 +1938,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Only valid dark habitat windows yield bounded pollination credit. Source recheck required before integration.",
-      "player_scenario": "Arrange dark garden hours for moths while balancing village lighting needs",
+      "player_scenario": "Arrange dark garden hours for moths while balancing village lighting needs; observe the resulting nocturnal pollination without altering village schedules",
       "player_verbs": [
         "arrange_nocturnal_pollination_pact",
         "preview_nocturnal_pollination_pact",
@@ -2000,7 +2000,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Arrange dark garden hours for moths while balancing village lighting needs; verify rule: Only valid dark habitat windows yield bounded pollination credit.",
+        "positive": "In real Godot scene, Arrange dark garden hours for moths while balancing village lighting needs; verify rule: Only valid dark habitat windows yield bounded pollination credit.; observe the resulting nocturnal pollination without altering village schedules",
         "adversarial": "One moth visit cannot grant multiple harvest bonuses",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -2028,7 +2028,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed biome_stewardship mechanic decisions and journal; Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Arrange dark garden hours for moths while balancing village lighting needs; verify rule: Only valid dark habitat windows yield bounded pollination credit.",
+        "In real Godot scene, Arrange dark garden hours for moths while balancing village lighting needs; verify rule: Only valid dark habitat windows yield bounded pollination credit.; observe the resulting nocturnal pollination without altering village schedules",
         "One moth visit cannot grant multiple harvest bonuses",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -2164,7 +2164,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Seasonal access restrictions use monotonic epoch; alternate routes remain viable. Source recheck required before integration.",
-      "player_scenario": "Protect hibernating animals and choose navigable winter detours",
+      "player_scenario": "Protect hibernating animals and choose navigable winter detours; check whether the alternate footpath remains traversable after snow",
       "player_verbs": [
         "protect_winter_dormancy_sanctuaries",
         "preview_winter_dormancy_sanctuaries",
@@ -2226,7 +2226,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Protect hibernating animals and choose navigable winter detours; verify rule: Seasonal access restrictions use monotonic epoch; alternate routes remain viable.",
+        "positive": "In real Godot scene, Protect hibernating animals and choose navigable winter detours; verify rule: Seasonal access restrictions use monotonic epoch; alternate routes remain viable.; check whether the alternate footpath remains traversable after snow",
         "adversarial": "Winter rollover cannot strand player or reopen refuge early",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -2254,7 +2254,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed biome_stewardship mechanic decisions and journal; Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Protect hibernating animals and choose navigable winter detours; verify rule: Seasonal access restrictions use monotonic epoch; alternate routes remain viable.",
+        "In real Godot scene, Protect hibernating animals and choose navigable winter detours; verify rule: Seasonal access restrictions use monotonic epoch; alternate routes remain viable.; check whether the alternate footpath remains traversable after snow",
         "Winter rollover cannot strand player or reopen refuge early",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -2277,7 +2277,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Rejection is respected and no delivery without recipient consent. Source recheck required before integration.",
-      "player_scenario": "Draft, revise or archive an apology; seek consent before delivery",
+      "player_scenario": "Draft, revise or archive an apology; seek consent before delivery; choose to withhold delivery if the recipient declines the message",
       "player_verbs": [
         "draft_unsent_apology_workshop",
         "preview_unsent_apology_workshop",
@@ -2339,7 +2339,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Draft, revise or archive an apology; seek consent before delivery; verify rule: Rejection is respected and no delivery without recipient consent.",
+        "positive": "In real Godot scene, Draft, revise or archive an apology; seek consent before delivery; verify rule: Rejection is respected and no delivery without recipient consent.; choose to withhold delivery if the recipient declines the message",
         "adversarial": "Repeated delivery cannot multiply friendship gains",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -2367,7 +2367,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed social_agency mechanic decisions and journal; Village NPC schedules/consent/relationships; Emergence opt-in narrative. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Draft, revise or archive an apology; seek consent before delivery; verify rule: Rejection is respected and no delivery without recipient consent.",
+        "In real Godot scene, Draft, revise or archive an apology; seek consent before delivery; verify rule: Rejection is respected and no delivery without recipient consent.; choose to withhold delivery if the recipient declines the message",
         "Repeated delivery cannot multiply friendship gains",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -2616,7 +2616,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Both contributors must approve a versioned public recipe. Source recheck required before integration.",
-      "player_scenario": "Mediate two residents combining family recipes while retaining attribution",
+      "player_scenario": "Mediate two residents combining family recipes while retaining attribution; both cooks must consent before the joint recipe enters the town archive",
       "player_verbs": [
         "mediate_shared_recipe_reconciliation",
         "preview_shared_recipe_reconciliation",
@@ -2678,7 +2678,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Mediate two residents combining family recipes while retaining attribution; verify rule: Both contributors must approve a versioned public recipe.",
+        "positive": "In real Godot scene, Mediate two residents combining family recipes while retaining attribution; verify rule: Both contributors must approve a versioned public recipe.; both cooks must consent before the joint recipe enters the town archive",
         "adversarial": "Vetoed recipe cannot appear in shop inventory",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -2706,7 +2706,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed social_agency mechanic decisions and journal; Village NPC schedules/consent/relationships; Emergence opt-in narrative. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Mediate two residents combining family recipes while retaining attribution; verify rule: Both contributors must approve a versioned public recipe.",
+        "In real Godot scene, Mediate two residents combining family recipes while retaining attribution; verify rule: Both contributors must approve a versioned public recipe.; both cooks must consent before the joint recipe enters the town archive",
         "Vetoed recipe cannot appear in shop inventory",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -3068,7 +3068,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Joint outcome requires both parties' agreement; no forced reconciliation. Source recheck required before integration.",
-      "player_scenario": "Hear both sides of a dispute and offer transparent compromise or abstain",
+      "player_scenario": "Hear both sides of a dispute and offer transparent compromise or abstain; verify that each participant can decline without forced reconciliation",
       "player_verbs": [
         "hear_civic_mediation_table",
         "preview_civic_mediation_table",
@@ -3130,7 +3130,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Hear both sides of a dispute and offer transparent compromise or abstain; verify rule: Joint outcome requires both parties' agreement; no forced reconciliation.",
+        "positive": "In real Godot scene, Hear both sides of a dispute and offer transparent compromise or abstain; verify rule: Joint outcome requires both parties' agreement; no forced reconciliation.; verify that each participant can decline without forced reconciliation",
         "adversarial": "One-sided consent cannot settle a joint dispute",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -3158,7 +3158,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed social_agency mechanic decisions and journal; Village NPC schedules/consent/relationships; Emergence opt-in narrative. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Hear both sides of a dispute and offer transparent compromise or abstain; verify rule: Joint outcome requires both parties' agreement; no forced reconciliation.",
+        "In real Godot scene, Hear both sides of a dispute and offer transparent compromise or abstain; verify rule: Joint outcome requires both parties' agreement; no forced reconciliation.; verify that each participant can decline without forced reconciliation",
         "One-sided consent cannot settle a joint dispute",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -3746,7 +3746,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Donated seed lots are debited once; claims have unique ownership receipts. Source recheck required before integration.",
-      "player_scenario": "Trade native seeds with neighbors under a biodiversity-sharing agreement",
+      "player_scenario": "Trade native seeds with neighbors under a biodiversity-sharing agreement; record exactly which seed lot leaves and enters each participant's stock",
       "player_verbs": [
         "trade_seed_commons_exchange",
         "preview_seed_commons_exchange",
@@ -3808,8 +3808,8 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Trade native seeds with neighbors under a biodiversity-sharing agreement; verify rule: Donated seed lots are debited once; claims have unique ownership receipts.",
-        "adversarial": "One seed lot cannot be redeemed twice",
+        "positive": "In real Godot scene, Trade native seeds with neighbors under a biodiversity-sharing agreement; verify rule: Donated seed lots are debited once; claims have unique ownership receipts.; record exactly which seed lot leaves and enters each participant's stock",
+        "adversarial": "One seed lot cannot be redeemed twice; every redeemed lot must have one immutable settlement receipt",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -3836,12 +3836,12 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed regional_exchange mechanic decisions and journal; Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Trade native seeds with neighbors under a biodiversity-sharing agreement; verify rule: Donated seed lots are debited once; claims have unique ownership receipts.",
-        "One seed lot cannot be redeemed twice",
+        "In real Godot scene, Trade native seeds with neighbors under a biodiversity-sharing agreement; verify rule: Donated seed lots are debited once; claims have unique ownership receipts.; record exactly which seed lot leaves and enters each participant's stock",
+        "One seed lot cannot be redeemed twice; every redeemed lot must have one immutable settlement receipt",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "One seed lot cannot be redeemed twice",
+        "One seed lot cannot be redeemed twice; every redeemed lot must have one immutable settlement receipt",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -3972,7 +3972,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Claims require unique loss receipts and are capped by available fund. Source recheck required before integration.",
-      "player_scenario": "Join a voluntary mutual aid fund paying verified weather-related losses",
+      "player_scenario": "Join a voluntary mutual aid fund paying verified weather-related losses; inspect the finite fund before any claim is approved or paid",
       "player_verbs": [
         "join_weather_risk_pool",
         "preview_weather_risk_pool",
@@ -4034,7 +4034,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Join a voluntary mutual aid fund paying verified weather-related losses; verify rule: Claims require unique loss receipts and are capped by available fund.",
+        "positive": "In real Godot scene, Join a voluntary mutual aid fund paying verified weather-related losses; verify rule: Claims require unique loss receipts and are capped by available fund.; inspect the finite fund before any claim is approved or paid",
         "adversarial": "One storm loss cannot be claimed repeatedly",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -4062,7 +4062,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed regional_exchange mechanic decisions and journal; Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Join a voluntary mutual aid fund paying verified weather-related losses; verify rule: Claims require unique loss receipts and are capped by available fund.",
+        "In real Godot scene, Join a voluntary mutual aid fund paying verified weather-related losses; verify rule: Claims require unique loss receipts and are capped by available fund.; inspect the finite fund before any claim is approved or paid",
         "One storm loss cannot be claimed repeatedly",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -4149,7 +4149,7 @@
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
         "positive": "In real Godot scene, Trade a completed lesson with a visiting specialist instead of paying currency; verify rule: Both participants reserve one real time slot; reward after completion only.",
-        "adversarial": "Canceled lesson cannot grant skill",
+        "adversarial": "Canceled lesson cannot grant skill; canceled lesson cannot retain an unearned skill increase",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -4177,11 +4177,11 @@
       "cross_loop_boundary": "Emergence owns proposed regional_exchange mechanic decisions and journal; Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
         "In real Godot scene, Trade a completed lesson with a visiting specialist instead of paying currency; verify rule: Both participants reserve one real time slot; reward after completion only.",
-        "Canceled lesson cannot grant skill",
+        "Canceled lesson cannot grant skill; canceled lesson cannot retain an unearned skill increase",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "Canceled lesson cannot grant skill",
+        "Canceled lesson cannot grant skill; canceled lesson cannot retain an unearned skill increase",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -4199,7 +4199,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Settlement consumes actual produce; obligations cannot mint goods. Source recheck required before integration.",
-      "player_scenario": "Promise a capped future crop delivery with fair fallback for poor harvest",
+      "player_scenario": "Promise a capped future crop delivery with fair fallback for poor harvest; track actual produce reservation and settle or defer at the due date",
       "player_verbs": [
         "promise_harvest_futures_board",
         "preview_harvest_futures_board",
@@ -4262,8 +4262,8 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Promise a capped future crop delivery with fair fallback for poor harvest; verify rule: Settlement consumes actual produce; obligations cannot mint goods.",
-        "adversarial": "Unharvested crops cannot be sold twice",
+        "positive": "In real Godot scene, Promise a capped future crop delivery with fair fallback for poor harvest; verify rule: Settlement consumes actual produce; obligations cannot mint goods.; track actual produce reservation and settle or defer at the due date",
+        "adversarial": "Unharvested crops cannot be sold twice; contract settlement must debit actual harvested inventory",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
       "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
@@ -4290,12 +4290,12 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed regional_exchange mechanic decisions and journal; Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Promise a capped future crop delivery with fair fallback for poor harvest; verify rule: Settlement consumes actual produce; obligations cannot mint goods.",
-        "Unharvested crops cannot be sold twice",
+        "In real Godot scene, Promise a capped future crop delivery with fair fallback for poor harvest; verify rule: Settlement consumes actual produce; obligations cannot mint goods.; track actual produce reservation and settle or defer at the due date",
+        "Unharvested crops cannot be sold twice; contract settlement must debit actual harvested inventory",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
       "adversarial_tests": [
-        "Unharvested crops cannot be sold twice",
+        "Unharvested crops cannot be sold twice; contract settlement must debit actual harvested inventory",
         "Duplicate command ID and stale world revision reject without double debit or effects; malformed nested save cannot replace a valid session."
       ],
       "original_asset_plan": [
@@ -4313,7 +4313,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: One durability ledger and mutually exclusive repair/salvage receipts. Source recheck required before integration.",
-      "player_scenario": "Repair a damaged nonstructural tool or salvage it, but not both",
+      "player_scenario": "Repair a damaged nonstructural tool or salvage it, but not both; view the mutually exclusive repair and salvage outcomes before committing",
       "player_verbs": [
         "repair_repair_cafe_circularity",
         "preview_repair_cafe_circularity",
@@ -4375,7 +4375,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Repair a damaged nonstructural tool or salvage it, but not both; verify rule: One durability ledger and mutually exclusive repair/salvage receipts.",
+        "positive": "In real Godot scene, Repair a damaged nonstructural tool or salvage it, but not both; verify rule: One durability ledger and mutually exclusive repair/salvage receipts.; view the mutually exclusive repair and salvage outcomes before committing",
         "adversarial": "One item cannot become repaired and salvaged simultaneously",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -4403,7 +4403,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed regional_exchange mechanic decisions and journal; Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Repair a damaged nonstructural tool or salvage it, but not both; verify rule: One durability ledger and mutually exclusive repair/salvage receipts.",
+        "In real Godot scene, Repair a damaged nonstructural tool or salvage it, but not both; verify rule: One durability ledger and mutually exclusive repair/salvage receipts.; view the mutually exclusive repair and salvage outcomes before committing",
         "One item cannot become repaired and salvaged simultaneously",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
@@ -4426,7 +4426,7 @@
       ],
       "status": "specified_not_implemented",
       "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Diary is read-only; missing values are never presented as observed prices. Source recheck required before integration.",
-      "player_scenario": "Read historical seasonal prices with uncertainty markings before trading",
+      "player_scenario": "Read historical seasonal prices with uncertainty markings before trading; mark unavailable data as unknown rather than fabricating historical values",
       "player_verbs": [
         "read_village_price_memory",
         "preview_village_price_memory",
@@ -4488,7 +4488,7 @@
       },
       "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
       "acceptance": {
-        "positive": "In real Godot scene, Read historical seasonal prices with uncertainty markings before trading; verify rule: Diary is read-only; missing values are never presented as observed prices.",
+        "positive": "In real Godot scene, Read historical seasonal prices with uncertainty markings before trading; verify rule: Diary is read-only; missing values are never presented as observed prices.; mark unavailable data as unknown rather than fabricating historical values",
         "adversarial": "Opening price diary cannot change market prices",
         "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       },
@@ -4516,7 +4516,7 @@
       ],
       "cross_loop_boundary": "Emergence owns proposed regional_exchange mechanic decisions and journal; Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals. Builder owns structural construction, assets, physical building resources and any architecture affected by the proposal.",
       "godot_acceptance": [
-        "In real Godot scene, Read historical seasonal prices with uncertainty markings before trading; verify rule: Diary is read-only; missing values are never presented as observed prices.",
+        "In real Godot scene, Read historical seasonal prices with uncertainty markings before trading; verify rule: Diary is read-only; missing values are never presented as observed prices.; mark unavailable data as unknown rather than fabricating historical values",
         "Opening price diary cannot change market prices",
         "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
       ],
