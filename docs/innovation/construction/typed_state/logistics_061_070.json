@@ -1,0 +1,3415 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "base_main": "709fb9c665504610ea18c6b93245fb4b7dbeb7c8",
+  "source": "game/everbloom-construction-phaseB-100-20261102@f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+  "phaseC": "closed until entire 220 ledger jointly verified and Principal approves",
+  "migration_policy": "Do not register with SaveService or debit/credit inventory before approval",
+  "state_contracts": [
+    {
+      "id": "EB-B-061",
+      "title": "Cratewheel Manual Lift",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_61",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "trolley_track:typed_value",
+        "cargo_id:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "trolley_track": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "segment_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "slope_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "friction_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "max_load_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "anchored": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "segment_id": "",
+              "slope_pct": 0,
+              "friction_pct": 0,
+              "max_load_kg": 0,
+              "anchored": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "segment_id"
+        },
+        "cargo_id": {
+          "type": "object",
+          "fields": {
+            "cargo_id": {
+              "type": "string",
+              "min_length": 0,
+              "max_length": 96,
+              "default": ""
+            },
+            "segment_id": {
+              "type": "string",
+              "min_length": 0,
+              "max_length": 96,
+              "default": ""
+            },
+            "mass_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "moved_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "remaining_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "effort_units": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            }
+          },
+          "default": {
+            "cargo_id": "",
+            "segment_id": "",
+            "mass_kg": 0,
+            "moved_kg": 0,
+            "remaining_kg": 0,
+            "effort_units": 0
+          }
+        }
+      },
+      "rules": [
+        "lift_mass",
+        "lift_segment",
+        "lift_anchor",
+        "lift_capacity",
+        "lift_effort"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "trolley_track": [
+          {
+            "segment_id": "s1",
+            "slope_pct": 10,
+            "friction_pct": 10,
+            "max_load_kg": 80,
+            "anchored": true
+          }
+        ],
+        "cargo_id": {
+          "cargo_id": "crate1",
+          "segment_id": "s1",
+          "mass_kg": 50,
+          "moved_kg": 40,
+          "remaining_kg": 10,
+          "effort_units": 60
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "lift_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "trolley_track": [
+              {
+                "segment_id": "s1",
+                "slope_pct": 10,
+                "friction_pct": 10,
+                "max_load_kg": 80,
+                "anchored": true
+              }
+            ],
+            "cargo_id": {
+              "cargo_id": "crate1",
+              "segment_id": "s1",
+              "mass_kg": 50,
+              "moved_kg": 40,
+              "remaining_kg": 9,
+              "effort_units": 60
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "lift_segment",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "trolley_track": [
+              {
+                "segment_id": "s1",
+                "slope_pct": 10,
+                "friction_pct": 10,
+                "max_load_kg": 80,
+                "anchored": true
+              }
+            ],
+            "cargo_id": {
+              "cargo_id": "crate1",
+              "segment_id": "missing",
+              "mass_kg": 50,
+              "moved_kg": 40,
+              "remaining_kg": 10,
+              "effort_units": 60
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "lift_anchor",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "trolley_track": [
+              {
+                "segment_id": "s1",
+                "slope_pct": 10,
+                "friction_pct": 10,
+                "max_load_kg": 80,
+                "anchored": false
+              }
+            ],
+            "cargo_id": {
+              "cargo_id": "crate1",
+              "segment_id": "s1",
+              "mass_kg": 50,
+              "moved_kg": 40,
+              "remaining_kg": 10,
+              "effort_units": 60
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "lift_capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "trolley_track": [
+              {
+                "segment_id": "s1",
+                "slope_pct": 10,
+                "friction_pct": 10,
+                "max_load_kg": 49,
+                "anchored": true
+              }
+            ],
+            "cargo_id": {
+              "cargo_id": "crate1",
+              "segment_id": "s1",
+              "mass_kg": 50,
+              "moved_kg": 40,
+              "remaining_kg": 10,
+              "effort_units": 60
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "lift_effort",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "trolley_track": [
+              {
+                "segment_id": "s1",
+                "slope_pct": 10,
+                "friction_pct": 10,
+                "max_load_kg": 80,
+                "anchored": true
+              }
+            ],
+            "cargo_id": {
+              "cargo_id": "crate1",
+              "segment_id": "s1",
+              "mass_kg": 50,
+              "moved_kg": 40,
+              "remaining_kg": 10,
+              "effort_units": 59
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "iron": 3,
+        "glass": 3
+      },
+      "player_verbs": [
+        "preview_cratewheel",
+        "adjust_cratewheel",
+        "commit_cratewheel",
+        "cancel_cratewheel",
+        "undo_cratewheel"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to move stone crates up scaffolds with pulleys; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cratewheel manual lift modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Move stone crates up scaffolds with pulleys; trolley_track and cargo_id must affect the visible outcome under track slope and cargo mass bound effort.",
+        "Confirm once with {\"iron\":3,\"glass\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-062",
+      "title": "Barrowbalance Transport Trial",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_62",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "barrow_load:typed_value",
+        "spill_receipts:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "barrow_load": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "trip_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "mass_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "delivered_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "spilled_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "remaining_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "capacity_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "slope_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "center_offset_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              }
+            },
+            "default": {
+              "trip_id": "",
+              "mass_kg": 0,
+              "delivered_kg": 0,
+              "spilled_kg": 0,
+              "remaining_kg": 0,
+              "capacity_kg": 0,
+              "slope_pct": 0,
+              "center_offset_cm": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "trip_id"
+        },
+        "spill_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "trip_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "lost_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              }
+            },
+            "default": {
+              "receipt_id": "",
+              "trip_id": "",
+              "lost_kg": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "receipt_id"
+        }
+      },
+      "rules": [
+        "barrow_mass",
+        "barrow_capacity",
+        "barrow_balance",
+        "barrow_receipts",
+        "barrow_links"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "barrow_load": [
+          {
+            "trip_id": "t1",
+            "mass_kg": 20,
+            "delivered_kg": 18,
+            "spilled_kg": 2,
+            "remaining_kg": 0,
+            "capacity_kg": 30,
+            "slope_pct": 12,
+            "center_offset_cm": 6
+          }
+        ],
+        "spill_receipts": [
+          {
+            "receipt_id": "spill1",
+            "trip_id": "t1",
+            "lost_kg": 2
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "barrow_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "barrow_load": [
+              {
+                "trip_id": "t1",
+                "mass_kg": 20,
+                "delivered_kg": 18,
+                "spilled_kg": 2,
+                "remaining_kg": 1,
+                "capacity_kg": 30,
+                "slope_pct": 12,
+                "center_offset_cm": 6
+              }
+            ],
+            "spill_receipts": [
+              {
+                "receipt_id": "spill1",
+                "trip_id": "t1",
+                "lost_kg": 2
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "barrow_capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "barrow_load": [
+              {
+                "trip_id": "t1",
+                "mass_kg": 20,
+                "delivered_kg": 18,
+                "spilled_kg": 2,
+                "remaining_kg": 0,
+                "capacity_kg": 19,
+                "slope_pct": 12,
+                "center_offset_cm": 6
+              }
+            ],
+            "spill_receipts": [
+              {
+                "receipt_id": "spill1",
+                "trip_id": "t1",
+                "lost_kg": 2
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "barrow_balance",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "barrow_load": [
+              {
+                "trip_id": "t1",
+                "mass_kg": 20,
+                "delivered_kg": 18,
+                "spilled_kg": 2,
+                "remaining_kg": 0,
+                "capacity_kg": 30,
+                "slope_pct": 12,
+                "center_offset_cm": 50
+              }
+            ],
+            "spill_receipts": [
+              {
+                "receipt_id": "spill1",
+                "trip_id": "t1",
+                "lost_kg": 2
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "barrow_receipts",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "barrow_load": [
+              {
+                "trip_id": "t1",
+                "mass_kg": 20,
+                "delivered_kg": 18,
+                "spilled_kg": 2,
+                "remaining_kg": 0,
+                "capacity_kg": 30,
+                "slope_pct": 12,
+                "center_offset_cm": 6
+              }
+            ],
+            "spill_receipts": [
+              {
+                "receipt_id": "spill1",
+                "trip_id": "t1",
+                "lost_kg": 1
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "barrow_links",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "barrow_load": [
+              {
+                "trip_id": "t1",
+                "mass_kg": 20,
+                "delivered_kg": 18,
+                "spilled_kg": 2,
+                "remaining_kg": 0,
+                "capacity_kg": 30,
+                "slope_pct": 12,
+                "center_offset_cm": 6
+              }
+            ],
+            "spill_receipts": [
+              {
+                "receipt_id": "spill1",
+                "trip_id": "ghost",
+                "lost_kg": 2
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "fiber": 4,
+        "dye": 1
+      },
+      "player_verbs": [
+        "preview_barrowbalance",
+        "adjust_barrowbalance",
+        "commit_barrowbalance",
+        "cancel_barrowbalance",
+        "undo_barrowbalance"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to balance wheelbarrow loads over uneven ground; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic barrowbalance transport trial modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Balance wheelbarrow loads over uneven ground; barrow_load and spill_receipts must affect the visible outcome under center of mass and slope bound spills.",
+        "Confirm once with {\"fiber\":4,\"dye\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-063",
+      "title": "Drydock Supply Shed",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_63",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "bin_capacity:typed_value",
+        "material_lots:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "bin_capacity": {
+          "type": "object",
+          "fields": {
+            "volume_l": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "humidity_pct": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "sealed": {
+              "type": "boolean",
+              "default": false
+            },
+            "protected_pct": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            }
+          },
+          "default": {
+            "volume_l": 0,
+            "humidity_pct": 0,
+            "sealed": false,
+            "protected_pct": 0
+          }
+        },
+        "material_lots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lot_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "volume_l": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "remaining_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "removed_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "spoiled_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              }
+            },
+            "default": {
+              "lot_id": "",
+              "volume_l": 0,
+              "input_kg": 0,
+              "remaining_kg": 0,
+              "removed_kg": 0,
+              "spoiled_kg": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "lot_id"
+        }
+      },
+      "rules": [
+        "shed_mass",
+        "shed_volume",
+        "shed_humidity",
+        "shed_density"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "bin_capacity": {
+          "volume_l": 100,
+          "humidity_pct": 75,
+          "sealed": false,
+          "protected_pct": 40
+        },
+        "material_lots": [
+          {
+            "lot_id": "lot1",
+            "volume_l": 30,
+            "input_kg": 40,
+            "remaining_kg": 35,
+            "removed_kg": 3,
+            "spoiled_kg": 2
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "shed_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "bin_capacity": {
+              "volume_l": 100,
+              "humidity_pct": 75,
+              "sealed": false,
+              "protected_pct": 40
+            },
+            "material_lots": [
+              {
+                "lot_id": "lot1",
+                "volume_l": 30,
+                "input_kg": 40,
+                "remaining_kg": 36,
+                "removed_kg": 3,
+                "spoiled_kg": 2
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "shed_volume",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "bin_capacity": {
+              "volume_l": 20,
+              "humidity_pct": 75,
+              "sealed": false,
+              "protected_pct": 40
+            },
+            "material_lots": [
+              {
+                "lot_id": "lot1",
+                "volume_l": 30,
+                "input_kg": 40,
+                "remaining_kg": 35,
+                "removed_kg": 3,
+                "spoiled_kg": 2
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "shed_humidity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "bin_capacity": {
+              "volume_l": 100,
+              "humidity_pct": 75,
+              "sealed": false,
+              "protected_pct": 40
+            },
+            "material_lots": [
+              {
+                "lot_id": "lot1",
+                "volume_l": 30,
+                "input_kg": 40,
+                "remaining_kg": 35,
+                "removed_kg": 3,
+                "spoiled_kg": 0
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "shed_density",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "bin_capacity": {
+              "volume_l": 100,
+              "humidity_pct": 75,
+              "sealed": false,
+              "protected_pct": 40
+            },
+            "material_lots": [
+              {
+                "lot_id": "lot1",
+                "volume_l": 30,
+                "input_kg": 100,
+                "remaining_kg": 35,
+                "removed_kg": 3,
+                "spoiled_kg": 2
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "clay": 5,
+        "seed": 2
+      },
+      "player_verbs": [
+        "preview_drydock",
+        "adjust_drydock",
+        "commit_drydock",
+        "cancel_drydock",
+        "undo_drydock"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to store materials in protected finite-capacity bins; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic drydock supply shed modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Store materials in protected finite-capacity bins; bin_capacity and material_lots must affect the visible outcome under humidity and bin volume govern spoilage.",
+        "Confirm once with {\"clay\":5,\"seed\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-064",
+      "title": "Village Build Permit Hearing",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_64",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "permit_id:typed_value",
+        "impact_report:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "permit_id": {
+          "type": "object",
+          "fields": {
+            "id": {
+              "type": "string",
+              "min_length": 0,
+              "max_length": 96,
+              "default": ""
+            },
+            "status": {
+              "type": "enum",
+              "values": [
+                "draft",
+                "approved",
+                "rejected"
+              ],
+              "default": "draft"
+            },
+            "approval_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            },
+            "council_receipt": {
+              "type": "string",
+              "min_length": 0,
+              "max_length": 96,
+              "default": ""
+            }
+          },
+          "default": {
+            "id": "",
+            "status": "draft",
+            "approval_epoch": -1,
+            "council_receipt": ""
+          }
+        },
+        "impact_report": {
+          "type": "object",
+          "fields": {
+            "setback_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "required_setback_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "heritage_protected": {
+              "type": "boolean",
+              "default": false
+            },
+            "community_consent": {
+              "type": "boolean",
+              "default": false
+            },
+            "submitted_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            }
+          },
+          "default": {
+            "setback_cm": 0,
+            "required_setback_cm": 0,
+            "heritage_protected": false,
+            "community_consent": false,
+            "submitted_epoch": -1
+          }
+        }
+      },
+      "rules": [
+        "permit_setback",
+        "permit_consent",
+        "permit_receipt",
+        "permit_order",
+        "permit_epoch"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "permit_id": {
+          "id": "permit1",
+          "status": "approved",
+          "approval_epoch": 55,
+          "council_receipt": "council1"
+        },
+        "impact_report": {
+          "setback_cm": 300,
+          "required_setback_cm": 200,
+          "heritage_protected": true,
+          "community_consent": true,
+          "submitted_epoch": 54
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "permit_setback",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "permit_id": {
+              "id": "permit1",
+              "status": "approved",
+              "approval_epoch": 55,
+              "council_receipt": "council1"
+            },
+            "impact_report": {
+              "setback_cm": 100,
+              "required_setback_cm": 200,
+              "heritage_protected": true,
+              "community_consent": true,
+              "submitted_epoch": 54
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "permit_consent",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "permit_id": {
+              "id": "permit1",
+              "status": "approved",
+              "approval_epoch": 55,
+              "council_receipt": "council1"
+            },
+            "impact_report": {
+              "setback_cm": 300,
+              "required_setback_cm": 200,
+              "heritage_protected": true,
+              "community_consent": false,
+              "submitted_epoch": 54
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "permit_receipt",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "permit_id": {
+              "id": "permit1",
+              "status": "approved",
+              "approval_epoch": 55,
+              "council_receipt": ""
+            },
+            "impact_report": {
+              "setback_cm": 300,
+              "required_setback_cm": 200,
+              "heritage_protected": true,
+              "community_consent": true,
+              "submitted_epoch": 54
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "permit_order",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "permit_id": {
+              "id": "permit1",
+              "status": "approved",
+              "approval_epoch": 53,
+              "council_receipt": "council1"
+            },
+            "impact_report": {
+              "setback_cm": 300,
+              "required_setback_cm": 200,
+              "heritage_protected": true,
+              "community_consent": true,
+              "submitted_epoch": 54
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "permit_epoch",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "permit_id": {
+              "id": "permit1",
+              "status": "approved",
+              "approval_epoch": 57,
+              "council_receipt": "council1"
+            },
+            "impact_report": {
+              "setback_cm": 300,
+              "required_setback_cm": 200,
+              "heritage_protected": true,
+              "community_consent": true,
+              "submitted_epoch": 54
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "glass": 6,
+        "wood": 3
+      },
+      "player_verbs": [
+        "preview_village",
+        "adjust_village",
+        "commit_village",
+        "cancel_village",
+        "undo_village"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to submit public-impact construction plans to council; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic village build permit hearing modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Submit public-impact construction plans to council; permit_id and impact_report must affect the visible outcome under setbacks and heritage rules govern permits.",
+        "Confirm once with {\"glass\":6,\"wood\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-065",
+      "title": "Site Staging Planner",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_65",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "staging_zones:typed_value",
+        "route_graph:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "staging_zones": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "zone_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "capacity_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "loaded_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "blocks_emergency": {
+                "type": "boolean",
+                "default": false
+              },
+              "active": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "zone_id": "",
+              "capacity_kg": 0,
+              "loaded_kg": 0,
+              "blocks_emergency": false,
+              "active": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "zone_id"
+        },
+        "route_graph": {
+          "type": "object",
+          "fields": {
+            "emergency_path_open": {
+              "type": "boolean",
+              "default": false
+            },
+            "minimum_width_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "reachable_exits": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            }
+          },
+          "default": {
+            "emergency_path_open": false,
+            "minimum_width_cm": 0,
+            "reachable_exits": 0
+          }
+        }
+      },
+      "rules": [
+        "staging_capacity",
+        "staging_emergency",
+        "staging_width",
+        "staging_exits"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "staging_zones": [
+          {
+            "zone_id": "z1",
+            "capacity_kg": 100,
+            "loaded_kg": 60,
+            "blocks_emergency": false,
+            "active": true
+          }
+        ],
+        "route_graph": {
+          "emergency_path_open": true,
+          "minimum_width_cm": 150,
+          "reachable_exits": 2
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "staging_capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "staging_zones": [
+              {
+                "zone_id": "z1",
+                "capacity_kg": 100,
+                "loaded_kg": 101,
+                "blocks_emergency": false,
+                "active": true
+              }
+            ],
+            "route_graph": {
+              "emergency_path_open": true,
+              "minimum_width_cm": 150,
+              "reachable_exits": 2
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "staging_emergency",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "staging_zones": [
+              {
+                "zone_id": "z1",
+                "capacity_kg": 100,
+                "loaded_kg": 60,
+                "blocks_emergency": true,
+                "active": true
+              }
+            ],
+            "route_graph": {
+              "emergency_path_open": true,
+              "minimum_width_cm": 150,
+              "reachable_exits": 2
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "staging_width",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "staging_zones": [
+              {
+                "zone_id": "z1",
+                "capacity_kg": 100,
+                "loaded_kg": 60,
+                "blocks_emergency": false,
+                "active": true
+              }
+            ],
+            "route_graph": {
+              "emergency_path_open": true,
+              "minimum_width_cm": 80,
+              "reachable_exits": 2
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "staging_exits",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "staging_zones": [
+              {
+                "zone_id": "z1",
+                "capacity_kg": 100,
+                "loaded_kg": 60,
+                "blocks_emergency": false,
+                "active": true
+              }
+            ],
+            "route_graph": {
+              "emergency_path_open": true,
+              "minimum_width_cm": 150,
+              "reachable_exits": 0
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "dye": 7,
+        "stone": 1
+      },
+      "player_verbs": [
+        "preview_site",
+        "adjust_site",
+        "commit_site",
+        "cancel_site",
+        "undo_site"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to place delivery pallets around active work sites; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic site staging planner modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Place delivery pallets around active work sites; staging_zones and route_graph must affect the visible outcome under staging cannot block emergency access.",
+        "Confirm once with {\"dye\":7,\"stone\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-066",
+      "title": "Courier Window Scheduler",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_66",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "order_id:typed_value",
+        "arrival_epoch:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "order_id": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "order_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "dispatch_epoch": {
+                "type": "integer",
+                "min": -1,
+                "max": 9007199254740991,
+                "default": -1
+              },
+              "scheduled_epoch": {
+                "type": "integer",
+                "min": -1,
+                "max": 9007199254740991,
+                "default": -1
+              },
+              "arrival_epoch": {
+                "type": "integer",
+                "min": -1,
+                "max": 9007199254740991,
+                "default": -1
+              },
+              "settled": {
+                "type": "boolean",
+                "default": false
+              },
+              "settlement_receipt": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "road_closed": {
+                "type": "boolean",
+                "default": false
+              },
+              "alternate_route": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "order_id": "",
+              "dispatch_epoch": -1,
+              "scheduled_epoch": -1,
+              "arrival_epoch": -1,
+              "settled": false,
+              "settlement_receipt": "",
+              "road_closed": false,
+              "alternate_route": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "order_id"
+        },
+        "arrival_epoch": {
+          "type": "object",
+          "fields": {
+            "last_arrival_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            },
+            "arrived_count": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "settled_count": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            }
+          },
+          "default": {
+            "last_arrival_epoch": -1,
+            "arrived_count": 0,
+            "settled_count": 0
+          }
+        }
+      },
+      "rules": [
+        "courier_epochs",
+        "courier_closure",
+        "courier_receipts",
+        "courier_counts",
+        "courier_future"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "order_id": [
+          {
+            "order_id": "o1",
+            "dispatch_epoch": 50,
+            "scheduled_epoch": 55,
+            "arrival_epoch": 56,
+            "settled": true,
+            "settlement_receipt": "settle1",
+            "road_closed": true,
+            "alternate_route": true
+          }
+        ],
+        "arrival_epoch": {
+          "last_arrival_epoch": 56,
+          "arrived_count": 1,
+          "settled_count": 1
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "courier_epochs",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "order_id": [
+              {
+                "order_id": "o1",
+                "dispatch_epoch": 56,
+                "scheduled_epoch": 55,
+                "arrival_epoch": 56,
+                "settled": true,
+                "settlement_receipt": "settle1",
+                "road_closed": true,
+                "alternate_route": true
+              }
+            ],
+            "arrival_epoch": {
+              "last_arrival_epoch": 56,
+              "arrived_count": 1,
+              "settled_count": 1
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "courier_closure",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "order_id": [
+              {
+                "order_id": "o1",
+                "dispatch_epoch": 50,
+                "scheduled_epoch": 55,
+                "arrival_epoch": 56,
+                "settled": true,
+                "settlement_receipt": "settle1",
+                "road_closed": true,
+                "alternate_route": false
+              }
+            ],
+            "arrival_epoch": {
+              "last_arrival_epoch": 56,
+              "arrived_count": 1,
+              "settled_count": 1
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "courier_receipts",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "order_id": [
+              {
+                "order_id": "o1",
+                "dispatch_epoch": 50,
+                "scheduled_epoch": 55,
+                "arrival_epoch": 56,
+                "settled": true,
+                "settlement_receipt": "",
+                "road_closed": true,
+                "alternate_route": true
+              }
+            ],
+            "arrival_epoch": {
+              "last_arrival_epoch": 56,
+              "arrived_count": 1,
+              "settled_count": 1
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "courier_counts",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "order_id": [
+              {
+                "order_id": "o1",
+                "dispatch_epoch": 50,
+                "scheduled_epoch": 55,
+                "arrival_epoch": 56,
+                "settled": true,
+                "settlement_receipt": "settle1",
+                "road_closed": true,
+                "alternate_route": true
+              }
+            ],
+            "arrival_epoch": {
+              "last_arrival_epoch": 56,
+              "arrived_count": 1,
+              "settled_count": 2
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "courier_future",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "order_id": [
+              {
+                "order_id": "o1",
+                "dispatch_epoch": 50,
+                "scheduled_epoch": 55,
+                "arrival_epoch": 57,
+                "settled": true,
+                "settlement_receipt": "settle1",
+                "road_closed": true,
+                "alternate_route": true
+              }
+            ],
+            "arrival_epoch": {
+              "last_arrival_epoch": 56,
+              "arrived_count": 1,
+              "settled_count": 1
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "seed": 3,
+        "iron": 2
+      },
+      "player_verbs": [
+        "preview_courier",
+        "adjust_courier",
+        "commit_courier",
+        "cancel_courier",
+        "undo_courier"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to book deliveries around seasonal road closures; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic courier window scheduler modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Book deliveries around seasonal road closures; order_id and arrival_epoch must affect the visible outcome under arrival and settlement are once-only.",
+        "Confirm once with {\"seed\":3,\"iron\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-067",
+      "title": "Reversible Scaffold Builder",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_67",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "scaffold_nodes:typed_value",
+        "crew_positions:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "scaffold_nodes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "node_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "max_load_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "occupied_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "installed": {
+                "type": "boolean",
+                "default": false
+              },
+              "removal_requested": {
+                "type": "boolean",
+                "default": false
+              },
+              "braced": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "node_id": "",
+              "max_load_kg": 0,
+              "occupied_kg": 0,
+              "installed": false,
+              "removal_requested": false,
+              "braced": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "node_id"
+        },
+        "crew_positions": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "crew_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "node_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              }
+            },
+            "default": {
+              "crew_id": "",
+              "node_id": ""
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "crew_id"
+        }
+      },
+      "rules": [
+        "scaffold_load",
+        "scaffold_brace",
+        "scaffold_crew",
+        "scaffold_removal",
+        "scaffold_occupied"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "scaffold_nodes": [
+          {
+            "node_id": "n1",
+            "max_load_kg": 200,
+            "occupied_kg": 80,
+            "installed": true,
+            "removal_requested": false,
+            "braced": true
+          }
+        ],
+        "crew_positions": [
+          {
+            "crew_id": "crew1",
+            "node_id": "n1"
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "scaffold_load",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "scaffold_nodes": [
+              {
+                "node_id": "n1",
+                "max_load_kg": 200,
+                "occupied_kg": 201,
+                "installed": true,
+                "removal_requested": false,
+                "braced": true
+              }
+            ],
+            "crew_positions": [
+              {
+                "crew_id": "crew1",
+                "node_id": "n1"
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "scaffold_brace",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "scaffold_nodes": [
+              {
+                "node_id": "n1",
+                "max_load_kg": 200,
+                "occupied_kg": 80,
+                "installed": true,
+                "removal_requested": false,
+                "braced": false
+              }
+            ],
+            "crew_positions": [
+              {
+                "crew_id": "crew1",
+                "node_id": "n1"
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "scaffold_crew",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "scaffold_nodes": [
+              {
+                "node_id": "n1",
+                "max_load_kg": 200,
+                "occupied_kg": 80,
+                "installed": true,
+                "removal_requested": false,
+                "braced": true
+              }
+            ],
+            "crew_positions": [
+              {
+                "crew_id": "crew1",
+                "node_id": "ghost"
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "scaffold_removal",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "scaffold_nodes": [
+              {
+                "node_id": "n1",
+                "max_load_kg": 200,
+                "occupied_kg": 80,
+                "installed": true,
+                "removal_requested": true,
+                "braced": true
+              }
+            ],
+            "crew_positions": [
+              {
+                "crew_id": "crew1",
+                "node_id": "n1"
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "scaffold_occupied",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "scaffold_nodes": [
+              {
+                "node_id": "n1",
+                "max_load_kg": 200,
+                "occupied_kg": 80,
+                "installed": false,
+                "removal_requested": false,
+                "braced": true
+              }
+            ],
+            "crew_positions": [
+              {
+                "crew_id": "crew1",
+                "node_id": "n1"
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "wood": 4,
+        "fiber": 3
+      },
+      "player_verbs": [
+        "preview_reversible",
+        "adjust_reversible",
+        "commit_reversible",
+        "cancel_reversible",
+        "undo_reversible"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to erect and remove temporary work platforms; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic reversible scaffold builder modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Erect and remove temporary work platforms; scaffold_nodes and crew_positions must affect the visible outcome under occupied scaffolds cannot be dismantled.",
+        "Confirm once with {\"wood\":4,\"fiber\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-068",
+      "title": "Workshop Safety Drill",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_68",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "hazard_cells:typed_value",
+        "crew_readiness:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "hazard_cells": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cell_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "light_lux": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "clutter_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "hazard_level": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "reviewed": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "cell_id": "",
+              "light_lux": 0,
+              "clutter_pct": 0,
+              "hazard_level": 0,
+              "reviewed": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "cell_id"
+        },
+        "crew_readiness": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "crew_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "cell_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "fatigue_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "certified": {
+                "type": "boolean",
+                "default": false
+              },
+              "ready": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "crew_id": "",
+              "cell_id": "",
+              "fatigue_pct": 0,
+              "certified": false,
+              "ready": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "crew_id"
+        }
+      },
+      "rules": [
+        "drill_light",
+        "drill_clutter",
+        "drill_fatigue",
+        "drill_cert",
+        "drill_review",
+        "drill_reference"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "hazard_cells": [
+          {
+            "cell_id": "c1",
+            "light_lux": 120,
+            "clutter_pct": 10,
+            "hazard_level": 1,
+            "reviewed": true
+          }
+        ],
+        "crew_readiness": [
+          {
+            "crew_id": "crew1",
+            "cell_id": "c1",
+            "fatigue_pct": 20,
+            "certified": true,
+            "ready": true
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "drill_light",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hazard_cells": [
+              {
+                "cell_id": "c1",
+                "light_lux": 40,
+                "clutter_pct": 10,
+                "hazard_level": 1,
+                "reviewed": true
+              }
+            ],
+            "crew_readiness": [
+              {
+                "crew_id": "crew1",
+                "cell_id": "c1",
+                "fatigue_pct": 20,
+                "certified": true,
+                "ready": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "drill_clutter",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hazard_cells": [
+              {
+                "cell_id": "c1",
+                "light_lux": 120,
+                "clutter_pct": 90,
+                "hazard_level": 1,
+                "reviewed": true
+              }
+            ],
+            "crew_readiness": [
+              {
+                "crew_id": "crew1",
+                "cell_id": "c1",
+                "fatigue_pct": 20,
+                "certified": true,
+                "ready": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "drill_fatigue",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hazard_cells": [
+              {
+                "cell_id": "c1",
+                "light_lux": 120,
+                "clutter_pct": 10,
+                "hazard_level": 1,
+                "reviewed": true
+              }
+            ],
+            "crew_readiness": [
+              {
+                "crew_id": "crew1",
+                "cell_id": "c1",
+                "fatigue_pct": 90,
+                "certified": true,
+                "ready": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "drill_cert",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hazard_cells": [
+              {
+                "cell_id": "c1",
+                "light_lux": 120,
+                "clutter_pct": 10,
+                "hazard_level": 1,
+                "reviewed": true
+              }
+            ],
+            "crew_readiness": [
+              {
+                "crew_id": "crew1",
+                "cell_id": "c1",
+                "fatigue_pct": 20,
+                "certified": false,
+                "ready": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "drill_review",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hazard_cells": [
+              {
+                "cell_id": "c1",
+                "light_lux": 120,
+                "clutter_pct": 10,
+                "hazard_level": 1,
+                "reviewed": false
+              }
+            ],
+            "crew_readiness": [
+              {
+                "crew_id": "crew1",
+                "cell_id": "c1",
+                "fatigue_pct": 20,
+                "certified": true,
+                "ready": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "drill_reference",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "hazard_cells": [
+              {
+                "cell_id": "c1",
+                "light_lux": 120,
+                "clutter_pct": 10,
+                "hazard_level": 1,
+                "reviewed": true
+              }
+            ],
+            "crew_readiness": [
+              {
+                "crew_id": "crew1",
+                "cell_id": "ghost",
+                "fatigue_pct": 20,
+                "certified": true,
+                "ready": true
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "stone": 5,
+        "clay": 1
+      },
+      "player_verbs": [
+        "preview_workshop",
+        "adjust_workshop",
+        "commit_workshop",
+        "cancel_workshop",
+        "undo_workshop"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to teach crews to identify spatial building hazards; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic workshop safety drill modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Teach crews to identify spatial building hazards; hazard_cells and crew_readiness must affect the visible outcome under lighting clutter and fatigue affect readiness.",
+        "Confirm once with {\"stone\":5,\"clay\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-069",
+      "title": "Counterweight Crane Assembly",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_69",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "boom_angle:typed_value",
+        "counterweight_mass:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "boom_angle": {
+          "type": "object",
+          "fields": {
+            "angle_deg": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "reach_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "load_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "capacity_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "lifted": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "default": {
+            "angle_deg": 0,
+            "reach_cm": 0,
+            "load_kg": 0,
+            "capacity_kg": 0,
+            "lifted": false
+          }
+        },
+        "counterweight_mass": {
+          "type": "object",
+          "fields": {
+            "mass_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "arm_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "load_arm_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991,
+              "default": 0
+            },
+            "anchored": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "default": {
+            "mass_kg": 0,
+            "arm_cm": 0,
+            "load_arm_cm": 0,
+            "anchored": false
+          }
+        }
+      },
+      "rules": [
+        "crane_capacity",
+        "crane_moment",
+        "crane_angle",
+        "crane_anchor",
+        "crane_reach"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "boom_angle": {
+          "angle_deg": 45,
+          "reach_cm": 300,
+          "load_kg": 40,
+          "capacity_kg": 100,
+          "lifted": true
+        },
+        "counterweight_mass": {
+          "mass_kg": 80,
+          "arm_cm": 200,
+          "load_arm_cm": 200,
+          "anchored": true
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "crane_capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "boom_angle": {
+              "angle_deg": 45,
+              "reach_cm": 300,
+              "load_kg": 101,
+              "capacity_kg": 100,
+              "lifted": true
+            },
+            "counterweight_mass": {
+              "mass_kg": 80,
+              "arm_cm": 200,
+              "load_arm_cm": 200,
+              "anchored": true
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "crane_moment",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "boom_angle": {
+              "angle_deg": 45,
+              "reach_cm": 300,
+              "load_kg": 40,
+              "capacity_kg": 100,
+              "lifted": true
+            },
+            "counterweight_mass": {
+              "mass_kg": 20,
+              "arm_cm": 200,
+              "load_arm_cm": 200,
+              "anchored": true
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "crane_angle",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "boom_angle": {
+              "angle_deg": 10,
+              "reach_cm": 300,
+              "load_kg": 40,
+              "capacity_kg": 100,
+              "lifted": true
+            },
+            "counterweight_mass": {
+              "mass_kg": 80,
+              "arm_cm": 200,
+              "load_arm_cm": 200,
+              "anchored": true
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "crane_anchor",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "boom_angle": {
+              "angle_deg": 45,
+              "reach_cm": 300,
+              "load_kg": 40,
+              "capacity_kg": 100,
+              "lifted": true
+            },
+            "counterweight_mass": {
+              "mass_kg": 80,
+              "arm_cm": 200,
+              "load_arm_cm": 200,
+              "anchored": false
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "crane_reach",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "boom_angle": {
+              "angle_deg": 45,
+              "reach_cm": 500,
+              "load_kg": 40,
+              "capacity_kg": 100,
+              "lifted": true
+            },
+            "counterweight_mass": {
+              "mass_kg": 80,
+              "arm_cm": 200,
+              "load_arm_cm": 200,
+              "anchored": true
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "iron": 6,
+        "glass": 2
+      },
+      "player_verbs": [
+        "preview_counterweight",
+        "adjust_counterweight",
+        "commit_counterweight",
+        "cancel_counterweight",
+        "undo_counterweight"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to balance hand-powered cranes for heavy beams; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic counterweight crane assembly modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Balance hand-powered cranes for heavy beams; boom_angle and counterweight_mass must affect the visible outcome under moment and reach limit hoisting.",
+        "Confirm once with {\"iron\":6,\"glass\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    },
+    {
+      "id": "EB-B-070",
+      "title": "Weatherproof Material Tarps",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_70",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "tarp_footprints:typed_value",
+        "protected_lots:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        },
+        "tarp_footprints": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "tarp_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "area_m2": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "tie_downs": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "wind_rating": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "installed_epoch": {
+                "type": "integer",
+                "min": -1,
+                "max": 9007199254740991,
+                "default": -1
+              }
+            },
+            "default": {
+              "tarp_id": "",
+              "area_m2": 0,
+              "tie_downs": 0,
+              "wind_rating": 0,
+              "installed_epoch": -1
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "tarp_id"
+        },
+        "protected_lots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lot_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "tarp_id": {
+                "type": "string",
+                "min_length": 0,
+                "max_length": 96,
+                "default": ""
+              },
+              "area_m2": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "remaining_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "spoiled_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "removed_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              },
+              "storm_wind": {
+                "type": "integer",
+                "min": 0,
+                "max": 9007199254740991,
+                "default": 0
+              }
+            },
+            "default": {
+              "lot_id": "",
+              "tarp_id": "",
+              "area_m2": 0,
+              "input_kg": 0,
+              "remaining_kg": 0,
+              "spoiled_kg": 0,
+              "removed_kg": 0,
+              "storm_wind": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "lot_id"
+        }
+      },
+      "rules": [
+        "tarp_mass",
+        "tarp_area",
+        "tarp_ties",
+        "tarp_wind",
+        "tarp_epoch",
+        "tarp_reference"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "tarp_footprints": [
+          {
+            "tarp_id": "tar1",
+            "area_m2": 20,
+            "tie_downs": 6,
+            "wind_rating": 60,
+            "installed_epoch": 55
+          }
+        ],
+        "protected_lots": [
+          {
+            "lot_id": "l1",
+            "tarp_id": "tar1",
+            "area_m2": 10,
+            "input_kg": 30,
+            "remaining_kg": 29,
+            "spoiled_kg": 1,
+            "removed_kg": 0,
+            "storm_wind": 40
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "tarp_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tarp_footprints": [
+              {
+                "tarp_id": "tar1",
+                "area_m2": 20,
+                "tie_downs": 6,
+                "wind_rating": 60,
+                "installed_epoch": 55
+              }
+            ],
+            "protected_lots": [
+              {
+                "lot_id": "l1",
+                "tarp_id": "tar1",
+                "area_m2": 10,
+                "input_kg": 30,
+                "remaining_kg": 30,
+                "spoiled_kg": 1,
+                "removed_kg": 0,
+                "storm_wind": 40
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tarp_area",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tarp_footprints": [
+              {
+                "tarp_id": "tar1",
+                "area_m2": 20,
+                "tie_downs": 6,
+                "wind_rating": 60,
+                "installed_epoch": 55
+              }
+            ],
+            "protected_lots": [
+              {
+                "lot_id": "l1",
+                "tarp_id": "tar1",
+                "area_m2": 21,
+                "input_kg": 30,
+                "remaining_kg": 29,
+                "spoiled_kg": 1,
+                "removed_kg": 0,
+                "storm_wind": 40
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tarp_ties",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tarp_footprints": [
+              {
+                "tarp_id": "tar1",
+                "area_m2": 20,
+                "tie_downs": 4,
+                "wind_rating": 60,
+                "installed_epoch": 55
+              }
+            ],
+            "protected_lots": [
+              {
+                "lot_id": "l1",
+                "tarp_id": "tar1",
+                "area_m2": 10,
+                "input_kg": 30,
+                "remaining_kg": 29,
+                "spoiled_kg": 1,
+                "removed_kg": 0,
+                "storm_wind": 40
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tarp_wind",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tarp_footprints": [
+              {
+                "tarp_id": "tar1",
+                "area_m2": 20,
+                "tie_downs": 6,
+                "wind_rating": 30,
+                "installed_epoch": 55
+              }
+            ],
+            "protected_lots": [
+              {
+                "lot_id": "l1",
+                "tarp_id": "tar1",
+                "area_m2": 10,
+                "input_kg": 30,
+                "remaining_kg": 29,
+                "spoiled_kg": 1,
+                "removed_kg": 0,
+                "storm_wind": 40
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tarp_epoch",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tarp_footprints": [
+              {
+                "tarp_id": "tar1",
+                "area_m2": 20,
+                "tie_downs": 6,
+                "wind_rating": 60,
+                "installed_epoch": 57
+              }
+            ],
+            "protected_lots": [
+              {
+                "lot_id": "l1",
+                "tarp_id": "tar1",
+                "area_m2": 10,
+                "input_kg": 30,
+                "remaining_kg": 29,
+                "spoiled_kg": 1,
+                "removed_kg": 0,
+                "storm_wind": 40
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tarp_reference",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tarp_footprints": [
+              {
+                "tarp_id": "tar1",
+                "area_m2": 20,
+                "tie_downs": 6,
+                "wind_rating": 60,
+                "installed_epoch": 55
+              }
+            ],
+            "protected_lots": [
+              {
+                "lot_id": "l1",
+                "tarp_id": "ghost",
+                "area_m2": 10,
+                "input_kg": 30,
+                "remaining_kg": 29,
+                "spoiled_kg": 1,
+                "removed_kg": 0,
+                "storm_wind": 40
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction previews local state only; Principal authorizes inventory/settlement/save/replay; Village permits/crew; Farming material lots; Valley routes, weather and terrain.",
+      "resource_inputs_unapproved": {
+        "fiber": 7,
+        "dye": 3
+      },
+      "player_verbs": [
+        "preview_weatherproof",
+        "adjust_weatherproof",
+        "commit_weatherproof",
+        "cancel_weatherproof",
+        "undo_weatherproof"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to cover raw materials before storms; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic weatherproof material tarps modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Cover raw materials before storms; tarp_footprints and protected_lots must affect the visible outcome under coverage and tie-downs govern spoilage reduction.",
+        "Confirm once with {\"fiber\":7,\"dye\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "dependencies": [
+        "B12",
+        "V02",
+        "P07"
+      ],
+      "receipt_contract": "Capped local receipts cannot prove global uniqueness or lifetime replay prevention; no resource grants authorized.",
+      "native_gate": "Design-only, Phase C CLOSED; no new Godot feature, device or measured performance proof."
+    }
+  ]
+}
