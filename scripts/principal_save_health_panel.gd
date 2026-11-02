@@ -4,6 +4,10 @@ const SaveService = preload("res://scripts/save_service.gd")
 var game
 var opener: Button
 var panel: PanelContainer
+var column: VBoxContainer
+var size_row: GridContainer
+var action_row: GridContainer
+var panel_style: StyleBoxFlat
 var report_label: Label
 var report_scroll: ScrollContainer
 var title_label: Label
@@ -55,13 +59,16 @@ func setup(owner) -> void:
     style.border_color = Color(0.66, 0.81, 0.68)
     style.set_border_width_all(2)
     style.set_content_margin_all(16)
+    panel_style = style
     panel.add_theme_stylebox_override("panel", style)
     surface.add_child(panel)
-    var column := VBoxContainer.new()
+    column = VBoxContainer.new()
     column.add_theme_constant_override("separation", 12)
     panel.add_child(column)
     title_label = Label.new()
     title_label.name = "SaveHealthTitle"
+    title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     title_label.add_theme_font_size_override("font_size", 24)
     column.add_child(title_label)
     # The report may exceed a phone-sized viewport. Keep the actions visible
@@ -79,7 +86,8 @@ func setup(owner) -> void:
     report_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     report_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     report_scroll.add_child(report_label)
-    var size_row := HBoxContainer.new()
+    size_row = GridContainer.new()
+    size_row.columns = 2
     size_row.name = "TextSizeControls"
     column.add_child(size_row)
     decrease_text_button = Button.new()
@@ -96,23 +104,55 @@ func setup(owner) -> void:
     increase_text_button.focus_mode = Control.FOCUS_ALL
     increase_text_button.pressed.connect(func(): change_text_scale(1))
     size_row.add_child(increase_text_button)
-    var row := HBoxContainer.new()
-    column.add_child(row)
+    action_row = GridContainer.new()
+    action_row.columns = 2
+    column.add_child(action_row)
     refresh_button = Button.new()
     refresh_button.name = "RefreshSaveHealth"
     refresh_button.custom_minimum_size.y = 44.0
     refresh_button.focus_mode = Control.FOCUS_ALL
     refresh_button.pressed.connect(refresh_report)
-    row.add_child(refresh_button)
+    refresh_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    action_row.add_child(refresh_button)
     close_button = Button.new()
     close_button.name = "CloseSaveHealth"
     close_button.custom_minimum_size.y = 44.0
     close_button.focus_mode = Control.FOCUS_ALL
     close_button.pressed.connect(close_panel)
-    row.add_child(close_button)
+    close_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    action_row.add_child(close_button)
     panel.hide()
     _refresh_locale()
     _apply_text_scale()
+    _update_responsive_layout()
+    get_viewport().size_changed.connect(_update_responsive_layout)
+
+## Responsive presentation only. Never touches authoritative game or save state.
+## Narrow portrait stacks controls; short landscape retains two columns to
+## protect report space. Viewport changes can occur while the modal is open.
+func _update_responsive_layout() -> void:
+    if panel == null or size_row == null or action_row == null:
+        return
+    var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+    var compact: bool = viewport_size.x < 700.0 or viewport_size.y < 580.0
+    var stack_controls: bool = viewport_size.x < 540.0 and viewport_size.y >= 460.0
+    panel.anchor_left = 0.0 if compact else 0.10
+    panel.anchor_top = 0.0 if compact else 0.15
+    panel.anchor_right = 1.0 if compact else 0.90
+    panel.anchor_bottom = 1.0 if compact else 0.85
+    panel.offset_left = 8.0 if compact else 0.0
+    panel.offset_top = 8.0 if compact else 0.0
+    panel.offset_right = -8.0 if compact else 0.0
+    panel.offset_bottom = -8.0 if compact else 0.0
+    size_row.columns = 1 if stack_controls else 2
+    action_row.columns = 1 if stack_controls else 2
+    panel_style.set_content_margin_all(8 if compact else 16)
+    column.add_theme_constant_override("separation", 6 if compact else 12)
+    report_scroll.custom_minimum_size.y = 72.0 if compact else 100.0
+    opener.offset_left = -minf(200.0, maxf(72.0, viewport_size.x - 24.0))
+    opener.offset_right = -12.0
+    opener.offset_top = minf(200.0, maxf(12.0, viewport_size.y - 60.0))
+    opener.offset_bottom = opener.offset_top + 48.0
 
 ## Bounded, non-persistent UI preference. No save/load, economy or clock access.
 func change_text_scale(direction: int) -> void:
