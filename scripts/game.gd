@@ -4,6 +4,7 @@ const SAVE_PATH := "user://everbloom_save_v1.json"
 const SEASONS := ["Spring", "Summer", "Autumn", "Winter"]
 const TOOLS := ["till", "plant", "water", "harvest", "care", "talk", "forage"]
 var day: int = 1
+var year: int = 1
 var season_index: int = 0
 var minute_of_day: float = 360.0
 var weather: String = "Clear"
@@ -208,6 +209,8 @@ func next_day() -> void:
     if day > 14:
         day = 1
         season_index = (season_index + 1) % SEASONS.size()
+        if season_index == 0:
+            year += 1
     weather = "Rain" if (day * 13 + season_index * 5) % 7 < 2 else ("Mist" if day % 11 == 0 else "Clear")
     minute_of_day = 360.0
     energy = 100.0
@@ -219,6 +222,10 @@ func next_day() -> void:
 
 func season() -> String:
     return SEASONS[season_index]
+
+func day_epoch() -> int:
+    ## Monotonic day index; prevents annual repeat of once-per-day actions.
+    return (year - 1) * 56 + season_index * 14 + day
 
 func _ship() -> void:
     if hero.global_position.distance_to(Vector3(-5, 0, -5)) > 5.0:
@@ -256,7 +263,7 @@ func add_restoration(points: int) -> void:
 
 func save_game(with_feedback: bool = true) -> void:
     var payload: Dictionary = {
-        "schema":1,"day":day,"season":season_index,"minute":minute_of_day,
+        "schema":1,"year":year,"day":day,"season":season_index,"minute":minute_of_day,
         "gold":gold,"energy":energy,"weather":weather,"restoration":restoration,
         "crops_harvested":crops_harvested,"social_contacts":social_contacts,
         "care_actions":care_actions,"inventory":inventory,
@@ -280,6 +287,7 @@ func load_game() -> void:
     if not (content is Dictionary) or int(content.get("schema", 0)) != 1:
         _show("Save incompatible; preserving current session.")
         return
+    year = maxi(1, int(content.get("year", 1)))
     day = clampi(int(content.get("day", 1)), 1, 14)
     season_index = clampi(int(content.get("season", 0)), 0, 3)
     minute_of_day = clampf(float(content.get("minute", 360.0)), 360.0, 1319.0)
