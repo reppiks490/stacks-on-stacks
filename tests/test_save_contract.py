@@ -74,6 +74,24 @@ class SaveIntegrationContract(unittest.TestCase):
                      "assembled gift recollection failed to roundtrip exactly"):
             self.assertIn(case, native)
 
+    def test_earned_village_dialogue_is_strictly_validated_and_native_roundtripped(self):
+        boundary = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(encoding="utf-8")
+        for invariant in ('memory.has("dialogue_log")', 'history.size() > 12',
+                          'line.size() != 3', 'line["epoch"]',
+                          'line["locale"]', 'line["text"]',
+                          'line_epoch <= previous_epoch', 'spoken.length() > 256'):
+            self.assertIn(invariant, boundary)
+        for case in ("valid two-year bilingual dialogue history rejected",
+                     "legacy village memory without dialogue log rejected",
+                     "future dialogue epoch accepted", "duplicate dialogue epoch accepted",
+                     "unknown dialogue locale accepted", "oversized dialogue text accepted",
+                     "overlong dialogue history accepted",
+                     "future assembled dialogue history written",
+                     "invalid dialogue history modified authoritative save bytes",
+                     "assembled earned bilingual dialogue failed to roundtrip exactly"):
+            self.assertIn(case, native)
+
     def test_nested_festival_awards_are_validated_and_native_roundtripped(self):
         service = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
         native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(
