@@ -91,15 +91,41 @@ func _run() -> void:
     bad = base.duplicate(true)
     bad["social_contacts"] = {"mira": "not a boolean"}
     _check(not SaveService.validate_payload(bad), "invalid social contact flag accepted")
+    # P04/P05: Farm.load_state() discards every bed unless the snapshot has
+    # exactly 30 records. A legacy empty farm remains an accepted no-op.
+    var partial_farm: Dictionary = base.duplicate(true)
+    partial_farm["farm"] = [{"crop": "turnip"}]
+    _check(not SaveService.validate_payload(partial_farm),
+           "partial farm snapshot accepted and would be ignored")
+    var full_farm: Dictionary = base.duplicate(true)
+    full_farm["farm"] = []
+    for i in range(SaveService.FARM_BED_COUNT):
+        full_farm["farm"].append({"crop": ""})
+    _check(SaveService.validate_payload(full_farm), "valid 30-bed farm rejected")
+    var oversized_farm: Dictionary = full_farm.duplicate(true)
+    oversized_farm["farm"].append({"crop": ""})
+    _check(not SaveService.validate_payload(oversized_farm),
+           "oversized farm snapshot accepted and would be ignored")
+    var unknown_crop: Dictionary = full_farm.duplicate(true)
+    unknown_crop["farm"][0]["crop"] = "unknown_plant"
+    _check(not SaveService.validate_payload(unknown_crop),
+           "unknown crop ID accepted and would be discarded")
+    for crop_id in SaveService.CROP_IDS:
+        full_farm["farm"][0]["crop"] = crop_id
+        _check(SaveService.validate_payload(full_farm),
+               "catalog crop %s rejected" % crop_id)
     # P04/P05: domain loaders silently clamp otherwise accepted numbers.
     # Admission must be lossless at both limits and across hostile nested keys.
     var bounded: Dictionary = base.duplicate(true)
-    bounded["farm"] = [{
+    var bounded_bed: Dictionary = {
         "age": 100, "watered_days": 100, "moisture": 100,
         "fertility": 100, "weeds": 5, "stress": 9,
         "rotation_bonus": 1, "seed_vigor": 2,
         "last_family": "x".repeat(32), "last_harvest_epoch": 112
-    }]
+    }
+    bounded["farm"] = []
+    for i in range(SaveService.FARM_BED_COUNT):
+        bounded["farm"].append(bounded_bed.duplicate(true))
     bounded["animals"]["hen"] = {
         "bond": 100, "happiness": 100, "health": 100,
         "hunger": 100, "cleanliness": 100, "production_counter": 1,
@@ -362,7 +388,9 @@ func _run() -> void:
     rollover["year"] = 1
     rollover["season"] = 3
     rollover["day"] = 14 # epoch 56
-    rollover["farm"] = [{"last_harvest_epoch": 56}]
+    rollover["farm"] = []
+    for i in range(SaveService.FARM_BED_COUNT):
+        rollover["farm"].append({"last_harvest_epoch": 56})
     rollover["animals"]["hen"]["last_care"] = 56
     rollover["village"]["talked"] = {"mira": 56}
     rollover["village"]["gifted"] = {"mira": 56}
@@ -460,6 +488,20 @@ func _run() -> void:
     # The assembled save must reject lossy domain mutations without touching
     # the authoritative primary, money, inventory, relationships or paddocks.
     var original_domain_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
+    var partial_saved_farm: Dictionary = saved.duplicate(true)
+    partial_saved_farm["farm"].pop_back()
+    _check(not SaveService.write_payload(partial_saved_farm),
+           "assembled partial farm was written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == original_domain_bytes,
+           "rejected partial farm modified authoritative save bytes")
+    var unknown_saved_crop: Dictionary = saved.duplicate(true)
+    unknown_saved_crop["farm"][0]["crop"] = "unknown_plant"
+    _check(not SaveService.write_payload(unknown_saved_crop),
+           "assembled unknown crop was written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == original_domain_bytes,
+           "rejected unknown crop modified authoritative save bytes")
+    _check(session.gold == 901 and int(session.inventory.get("turnip", -1)) == 17,
+           "rejected farm snapshots mutated active player resources")
     var out_of_range_soil: Dictionary = saved.duplicate(true)
     out_of_range_soil["farm"][0]["moisture"] = 101
     _check(not SaveService.write_payload(out_of_range_soil),

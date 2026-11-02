@@ -13,6 +13,16 @@ const BACKUP_PATH: String = "user://everbloom_save_v1.json.bak"
 const QUARANTINE_PREFIX: String = "user://everbloom_save_v1.json.corrupt."
 const MAX_QUARANTINE_SLOTS: int = 8
 const SCHEMA: int = 1
+# Farm.load_state() accepts only 30 beds; an empty array is retained solely
+# for pre-farm schema-1 fixtures. Reject other sizes rather than silently
+# ignoring all soil progress. Keep this count aligned with Farm.BED_COUNT.
+const FARM_BED_COUNT: int = 30
+# The current original crop catalog. Reject unsupported IDs before Farm.load_state()
+# silently skips a planted bed. Catalog parity is checked in Python CI.
+const CROP_IDS := [
+    "turnip", "carrot", "strawberry", "tomato",
+    "melon", "pumpkin", "winterroot", "bluebell"
+]
 # Canonical original festival IDs. Update this schema boundary and its catalog
 # parity test together when a new festival is authored; unknown awards cannot
 # be silently discarded by Festival.load_state().
@@ -121,6 +131,10 @@ static func validate_payload(payload: Dictionary) -> bool:
     var field_records: Variant = payload.get("farm", null)
     if typeof(field_records) != TYPE_ARRAY:
         return false
+    # Nonempty snapshots with any other bed count are ignored wholesale by
+    # Farm.load_state(); accepting them would silently lose planted crops.
+    if not field_records.is_empty() and field_records.size() != FARM_BED_COUNT:
+        return false
     # Farm.load_state() clamps these ranges. An accepted save must never
     # silently lose soil state through that clamp. Optional legacy keys remain
     # optional; unrecognized nested fields require an explicit schema upgrade.
@@ -144,6 +158,8 @@ static func validate_payload(payload: Dictionary) -> bool:
             if soil.has(attribute) and typeof(soil[attribute]) != TYPE_STRING:
                 return false
         if soil.has("last_family") and (soil["last_family"] as String).length() > 32:
+            return false
+        if soil.has("crop") and soil["crop"] != "" and not CROP_IDS.has(soil["crop"]):
             return false
         for attribute in FARM_LIMITS:
             if soil.has(attribute) and not _whole_in_range(

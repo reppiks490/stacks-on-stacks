@@ -139,6 +139,29 @@ class SaveIntegrationContract(unittest.TestCase):
                       '"assembled out-of-range livestock was written"'):
             self.assertIn(token, boundary + native)
 
+    def test_farm_admission_matches_native_bed_count_and_original_crop_catalog(self):
+        import json
+        import re
+        farm = (ROOT / "scripts/farm.gd").read_text(encoding="utf-8")
+        boundary = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(encoding="utf-8")
+        crops = json.loads((ROOT / "data/crops.json").read_text(encoding="utf-8"))
+        farm_count = int(re.search(r"const BED_COUNT := (\\d+)", farm).group(1))
+        save_count = int(re.search(r"const FARM_BED_COUNT: int = (\\d+)", boundary).group(1))
+        self.assertEqual(farm_count, save_count)
+        registry = boundary.split("const CROP_IDS := [", 1)[1].split("]", 1)[0]
+        registered = re.findall(r'"([a-z0-9_]+)"', registry)
+        expected = [crop["id"] for crop in crops["crops"]]
+        self.assertEqual(len(registered), len(set(registered)))
+        self.assertEqual(set(registered), set(expected))
+        self.assertIn("records.size() != BED_COUNT", farm)
+        self.assertIn("field_records.size() != FARM_BED_COUNT", boundary)
+        self.assertIn('not CROP_IDS.has(soil["crop"])', boundary)
+        for case in ("partial farm snapshot accepted", "oversized farm snapshot accepted",
+                     "unknown crop ID accepted", "assembled partial farm was written",
+                     "assembled unknown crop was written"):
+            self.assertIn(case, native)
+
     def test_original_village_job_has_player_input_dispatch(self):
         game = (ROOT / "scripts/game.gd").read_text(encoding="utf-8")
         hud = (ROOT / "scripts/hud.gd").read_text(encoding="utf-8")

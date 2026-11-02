@@ -135,3 +135,8 @@ multi-writer exclusion, Windows file locking or schema-2 migrations.
 legitimately occur later. The Village owner must correct that separate
 lossy loader behavior with its own multi-epoch native roundtrip; Principal
 should not reject legitimate later recollections to hide the defect.
+
+
+## P04/P05 farm snapshot admission parity — isolated candidate (2026-11-02)
+
+`Farm.load_state()` requires exactly 30 ordered beds and skips a bed with an unknown crop ID. The central save boundary previously admitted arbitrary farm array lengths and any crop string, allowing a superficially valid snapshot to discard planted fields on load. Principal now rejects nonempty arrays other than 30 beds and nonempty crop IDs outside the original catalog, before touching active player state. Empty `farm: []` remains accepted solely for historical pre-farm schema-1 fixtures; it is **not** evidence of a fully restored farm and must be handled explicitly in any future migration. The crop registry and bed count are checked against `data/crops.json` and `Farm.BED_COUNT` by a separate Python contract test. Native regression covers positive 30-bed/8-crop cases, partial and oversized arrays, unknown crops, and assembled-game rejected writes preserving authoritative bytes, gold and inventory. This is schema-1 fail-closed admission, not a schema-2 migration, concurrent-write lock, physical-device proof or fsync durability guarantee. Candidate requires exact-HEAD native CI and full assembled QA before integration; no changes to Farming-owned source.
