@@ -1,0 +1,2977 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "base_main": "07546c9402bd0d44c899719a115c1a46b91d85cc",
+  "source": {
+    "commit": "f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+    "path": "docs/innovation/construction/phaseB_100_concepts.json",
+    "blob_sha": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b"
+  },
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "migration_policy": "Absent legacy namespace inactive. Present malformed nested state fails atomic admission. No implicit output grants, source receipt forgery, migration or settlement.",
+  "state_contracts": [
+    {
+      "id": "EB-B-051",
+      "title": "Waterwheel Timber Sawmill",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_051",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "log_batches:typed_value",
+        "plank_yield:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "log_batches": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "batch_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "planks_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "sawdust_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "waste_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "feed_mm": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              }
+            },
+            "default": {
+              "batch_id": "",
+              "input_kg": 0,
+              "planks_kg": 0,
+              "sawdust_kg": 0,
+              "waste_kg": 0,
+              "feed_mm": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "batch_id"
+        },
+        "plank_yield": {
+          "type": "object",
+          "fields": {
+            "water_flow_lps": {
+              "type": "integer",
+              "min": 0,
+              "max": 100,
+              "default": 0
+            },
+            "wheel_rpm": {
+              "type": "integer",
+              "min": 0,
+              "max": 300,
+              "default": 0
+            },
+            "produced_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            }
+          },
+          "default": {
+            "water_flow_lps": 0,
+            "wheel_rpm": 0,
+            "produced_kg": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "sawmill_mass",
+        "sawmill_feed",
+        "sawmill_power",
+        "sawmill_output"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "log_batches": [
+          {
+            "batch_id": "log1",
+            "input_kg": 100,
+            "planks_kg": 70,
+            "sawdust_kg": 20,
+            "waste_kg": 10,
+            "feed_mm": 8
+          }
+        ],
+        "plank_yield": {
+          "water_flow_lps": 20,
+          "wheel_rpm": 30,
+          "produced_kg": 70
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "sawmill_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "log_batches": [
+              {
+                "batch_id": "log1",
+                "input_kg": 100,
+                "planks_kg": 80,
+                "sawdust_kg": 20,
+                "waste_kg": 10,
+                "feed_mm": 8
+              }
+            ],
+            "plank_yield": {
+              "water_flow_lps": 20,
+              "wheel_rpm": 30,
+              "produced_kg": 70
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "sawmill_feed",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "log_batches": [
+              {
+                "batch_id": "log1",
+                "input_kg": 100,
+                "planks_kg": 70,
+                "sawdust_kg": 20,
+                "waste_kg": 10,
+                "feed_mm": 40
+              }
+            ],
+            "plank_yield": {
+              "water_flow_lps": 20,
+              "wheel_rpm": 30,
+              "produced_kg": 70
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "sawmill_power",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "log_batches": [
+              {
+                "batch_id": "log1",
+                "input_kg": 100,
+                "planks_kg": 70,
+                "sawdust_kg": 20,
+                "waste_kg": 10,
+                "feed_mm": 8
+              }
+            ],
+            "plank_yield": {
+              "water_flow_lps": 20,
+              "wheel_rpm": 80,
+              "produced_kg": 70
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "sawmill_output",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "log_batches": [
+              {
+                "batch_id": "log1",
+                "input_kg": 100,
+                "planks_kg": 70,
+                "sawdust_kg": 20,
+                "waste_kg": 10,
+                "feed_mm": 8
+              }
+            ],
+            "plank_yield": {
+              "water_flow_lps": 20,
+              "wheel_rpm": 30,
+              "produced_kg": 90
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "wood": 3,
+        "fiber": 2
+      },
+      "player_verbs": [
+        "preview_waterwheel",
+        "adjust_waterwheel",
+        "commit_waterwheel",
+        "cancel_waterwheel",
+        "undo_waterwheel"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to calibrate blade feed to cut planks from logs; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic waterwheel timber sawmill modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Calibrate blade feed to cut planks from logs; log_batches and plank_yield must affect the visible outcome under log mass equals planks sawdust and waste.",
+        "Confirm once with {\"wood\":3,\"fiber\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-052",
+      "title": "Clayfire Pottery Kiln",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_052",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "kiln_batches:typed_value",
+        "heat_curve:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "kiln_batches": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "batch_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "clay_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "tile_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "scrap_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "moisture_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "fuel_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "firing_epoch": {
+                "type": "integer",
+                "min": -1,
+                "max": 9007199254740991,
+                "default": -1
+              }
+            },
+            "default": {
+              "batch_id": "",
+              "clay_kg": 0,
+              "tile_kg": 0,
+              "scrap_kg": 0,
+              "moisture_pct": 0,
+              "fuel_kg": 0,
+              "firing_epoch": -1
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "batch_id"
+        },
+        "heat_curve": {
+          "type": "object",
+          "fields": {
+            "peak_temp_c": {
+              "type": "integer",
+              "min": 0,
+              "max": 1500,
+              "default": 0
+            },
+            "hold_hours": {
+              "type": "integer",
+              "min": 0,
+              "max": 48,
+              "default": 0
+            },
+            "cool_hours": {
+              "type": "integer",
+              "min": 0,
+              "max": 168,
+              "default": 0
+            },
+            "quality_pct": {
+              "type": "integer",
+              "min": 0,
+              "max": 100,
+              "default": 0
+            }
+          },
+          "default": {
+            "peak_temp_c": 0,
+            "hold_hours": 0,
+            "cool_hours": 0,
+            "quality_pct": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "kiln_mass",
+        "kiln_fuel",
+        "kiln_quality",
+        "kiln_epoch"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "kiln_batches": [
+          {
+            "batch_id": "kiln1",
+            "clay_kg": 100,
+            "tile_kg": 80,
+            "scrap_kg": 20,
+            "moisture_pct": 10,
+            "fuel_kg": 30,
+            "firing_epoch": 56
+          }
+        ],
+        "heat_curve": {
+          "peak_temp_c": 900,
+          "hold_hours": 4,
+          "cool_hours": 24,
+          "quality_pct": 80
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "kiln_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "kiln_batches": [
+              {
+                "batch_id": "kiln1",
+                "clay_kg": 100,
+                "tile_kg": 90,
+                "scrap_kg": 20,
+                "moisture_pct": 10,
+                "fuel_kg": 30,
+                "firing_epoch": 56
+              }
+            ],
+            "heat_curve": {
+              "peak_temp_c": 900,
+              "hold_hours": 4,
+              "cool_hours": 24,
+              "quality_pct": 80
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "kiln_fuel",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "kiln_batches": [
+              {
+                "batch_id": "kiln1",
+                "clay_kg": 100,
+                "tile_kg": 80,
+                "scrap_kg": 20,
+                "moisture_pct": 10,
+                "fuel_kg": 1,
+                "firing_epoch": 56
+              }
+            ],
+            "heat_curve": {
+              "peak_temp_c": 900,
+              "hold_hours": 4,
+              "cool_hours": 24,
+              "quality_pct": 80
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "kiln_quality",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "kiln_batches": [
+              {
+                "batch_id": "kiln1",
+                "clay_kg": 100,
+                "tile_kg": 80,
+                "scrap_kg": 20,
+                "moisture_pct": 10,
+                "fuel_kg": 30,
+                "firing_epoch": 56
+              }
+            ],
+            "heat_curve": {
+              "peak_temp_c": 900,
+              "hold_hours": 4,
+              "cool_hours": 2,
+              "quality_pct": 80
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "kiln_epoch",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "kiln_batches": [
+              {
+                "batch_id": "kiln1",
+                "clay_kg": 100,
+                "tile_kg": 80,
+                "scrap_kg": 20,
+                "moisture_pct": 10,
+                "fuel_kg": 30,
+                "firing_epoch": 57
+              }
+            ],
+            "heat_curve": {
+              "peak_temp_c": 900,
+              "hold_hours": 4,
+              "cool_hours": 24,
+              "quality_pct": 80
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "stone": 4,
+        "clay": 3
+      },
+      "player_verbs": [
+        "preview_clayfire",
+        "adjust_clayfire",
+        "commit_clayfire",
+        "cancel_clayfire",
+        "undo_clayfire"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to choose ceramic firing and cooling schedules; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic clayfire pottery kiln modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Choose ceramic firing and cooling schedules; kiln_batches and heat_curve must affect the visible outcome under fuel and moisture determine tile quality.",
+        "Confirm once with {\"stone\":4,\"clay\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-053",
+      "title": "Glasssong Window Foundry",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_053",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "glass_batches:typed_value",
+        "anneal_ticks:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "glass_batches": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "batch_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "raw_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "pane_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "scrap_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "stress_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "anneal_hours": {
+                "type": "integer",
+                "min": 0,
+                "max": 168,
+                "default": 0
+              }
+            },
+            "default": {
+              "batch_id": "",
+              "raw_kg": 0,
+              "pane_kg": 0,
+              "scrap_kg": 0,
+              "stress_pct": 0,
+              "anneal_hours": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "batch_id"
+        },
+        "anneal_ticks": {
+          "type": "object",
+          "fields": {
+            "total_hours": {
+              "type": "integer",
+              "min": 0,
+              "max": 1000,
+              "default": 0
+            },
+            "min_hours": {
+              "type": "integer",
+              "min": 0,
+              "max": 168,
+              "default": 0
+            },
+            "release_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            }
+          },
+          "default": {
+            "total_hours": 0,
+            "min_hours": 0,
+            "release_epoch": -1
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "glass_mass",
+        "glass_stress",
+        "glass_hours",
+        "glass_release"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "glass_batches": [
+          {
+            "batch_id": "glass1",
+            "raw_kg": 100,
+            "pane_kg": 80,
+            "scrap_kg": 20,
+            "stress_pct": 2,
+            "anneal_hours": 24
+          }
+        ],
+        "anneal_ticks": {
+          "total_hours": 24,
+          "min_hours": 12,
+          "release_epoch": 56
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "glass_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "glass_batches": [
+              {
+                "batch_id": "glass1",
+                "raw_kg": 100,
+                "pane_kg": 90,
+                "scrap_kg": 20,
+                "stress_pct": 2,
+                "anneal_hours": 24
+              }
+            ],
+            "anneal_ticks": {
+              "total_hours": 24,
+              "min_hours": 12,
+              "release_epoch": 56
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "glass_stress",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "glass_batches": [
+              {
+                "batch_id": "glass1",
+                "raw_kg": 100,
+                "pane_kg": 80,
+                "scrap_kg": 20,
+                "stress_pct": 30,
+                "anneal_hours": 24
+              }
+            ],
+            "anneal_ticks": {
+              "total_hours": 24,
+              "min_hours": 12,
+              "release_epoch": 56
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "glass_hours",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "glass_batches": [
+              {
+                "batch_id": "glass1",
+                "raw_kg": 100,
+                "pane_kg": 80,
+                "scrap_kg": 20,
+                "stress_pct": 2,
+                "anneal_hours": 24
+              }
+            ],
+            "anneal_ticks": {
+              "total_hours": 10,
+              "min_hours": 12,
+              "release_epoch": 56
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "glass_release",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "glass_batches": [
+              {
+                "batch_id": "glass1",
+                "raw_kg": 100,
+                "pane_kg": 80,
+                "scrap_kg": 20,
+                "stress_pct": 2,
+                "anneal_hours": 24
+              }
+            ],
+            "anneal_ticks": {
+              "total_hours": 24,
+              "min_hours": 12,
+              "release_epoch": 57
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "iron": 5,
+        "glass": 1
+      },
+      "player_verbs": [
+        "preview_glasssong",
+        "adjust_glasssong",
+        "commit_glasssong",
+        "cancel_glasssong",
+        "undo_glasssong"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to cast patterned panes and manage annealing; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic glasssong window foundry modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Cast patterned panes and manage annealing; glass_batches and anneal_ticks must affect the visible outcome under cooling time governs glass stress.",
+        "Confirm once with {\"iron\":5,\"glass\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-054",
+      "title": "Stonecut Facet Bench",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_054",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "cut_planes:typed_value",
+        "stone_offcuts:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "cut_planes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "cut_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "blocks_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "offcuts_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "dust_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "depth_cm": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              }
+            },
+            "default": {
+              "cut_id": "",
+              "input_kg": 0,
+              "blocks_kg": 0,
+              "offcuts_kg": 0,
+              "dust_kg": 0,
+              "depth_cm": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "cut_id"
+        },
+        "stone_offcuts": {
+          "type": "object",
+          "fields": {
+            "accounted_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            },
+            "reserved_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            }
+          },
+          "default": {
+            "accounted_kg": 0,
+            "reserved_kg": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "stone_mass",
+        "stone_depth",
+        "stone_offcuts"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "cut_planes": [
+          {
+            "cut_id": "cut1",
+            "input_kg": 100,
+            "blocks_kg": 70,
+            "offcuts_kg": 20,
+            "dust_kg": 10,
+            "depth_cm": 15
+          }
+        ],
+        "stone_offcuts": {
+          "accounted_kg": 20,
+          "reserved_kg": 5
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "stone_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "cut_planes": [
+              {
+                "cut_id": "cut1",
+                "input_kg": 100,
+                "blocks_kg": 80,
+                "offcuts_kg": 20,
+                "dust_kg": 10,
+                "depth_cm": 15
+              }
+            ],
+            "stone_offcuts": {
+              "accounted_kg": 20,
+              "reserved_kg": 5
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "stone_depth",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "cut_planes": [
+              {
+                "cut_id": "cut1",
+                "input_kg": 100,
+                "blocks_kg": 70,
+                "offcuts_kg": 20,
+                "dust_kg": 10,
+                "depth_cm": 50
+              }
+            ],
+            "stone_offcuts": {
+              "accounted_kg": 20,
+              "reserved_kg": 5
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "stone_offcuts",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "cut_planes": [
+              {
+                "cut_id": "cut1",
+                "input_kg": 100,
+                "blocks_kg": 70,
+                "offcuts_kg": 20,
+                "dust_kg": 10,
+                "depth_cm": 15
+              }
+            ],
+            "stone_offcuts": {
+              "accounted_kg": 30,
+              "reserved_kg": 5
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "fiber": 6,
+        "dye": 2
+      },
+      "player_verbs": [
+        "preview_stonecut",
+        "adjust_stonecut",
+        "commit_stonecut",
+        "cancel_stonecut",
+        "undo_stonecut"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to cut stone into blocks and usable offcuts; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic stonecut facet bench modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Cut stone into blocks and usable offcuts; cut_planes and stone_offcuts must affect the visible outcome under input mass equals blocks offcuts and dust.",
+        "Confirm once with {\"fiber\":6,\"dye\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-055",
+      "title": "Cordage Spinning Wheel",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_055",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "fiber_batches:typed_value",
+        "rope_grade:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "fiber_batches": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "batch_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "fiber_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "rope_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "waste_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "twist_per_m": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "length_m": {
+                "type": "integer",
+                "min": 0,
+                "max": 1000,
+                "default": 0
+              }
+            },
+            "default": {
+              "batch_id": "",
+              "fiber_kg": 0,
+              "rope_kg": 0,
+              "waste_kg": 0,
+              "twist_per_m": 0,
+              "length_m": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "batch_id"
+        },
+        "rope_grade": {
+          "type": "object",
+          "fields": {
+            "grade": {
+              "type": "enum",
+              "values": [
+                "none",
+                "light",
+                "sturdy"
+              ],
+              "default": "sturdy"
+            },
+            "load_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            },
+            "rated_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            }
+          },
+          "default": {
+            "grade": "sturdy",
+            "load_kg": 0,
+            "rated_kg": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "rope_mass",
+        "rope_grade",
+        "rope_capacity"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "fiber_batches": [
+          {
+            "batch_id": "fiber1",
+            "fiber_kg": 100,
+            "rope_kg": 80,
+            "waste_kg": 20,
+            "twist_per_m": 12,
+            "length_m": 20
+          }
+        ],
+        "rope_grade": {
+          "grade": "sturdy",
+          "load_kg": 200,
+          "rated_kg": 400
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "rope_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "fiber_batches": [
+              {
+                "batch_id": "fiber1",
+                "fiber_kg": 100,
+                "rope_kg": 90,
+                "waste_kg": 20,
+                "twist_per_m": 12,
+                "length_m": 20
+              }
+            ],
+            "rope_grade": {
+              "grade": "sturdy",
+              "load_kg": 200,
+              "rated_kg": 400
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "rope_grade",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "fiber_batches": [
+              {
+                "batch_id": "fiber1",
+                "fiber_kg": 100,
+                "rope_kg": 80,
+                "waste_kg": 20,
+                "twist_per_m": 3,
+                "length_m": 20
+              }
+            ],
+            "rope_grade": {
+              "grade": "sturdy",
+              "load_kg": 200,
+              "rated_kg": 400
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "rope_capacity",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "fiber_batches": [
+              {
+                "batch_id": "fiber1",
+                "fiber_kg": 100,
+                "rope_kg": 80,
+                "waste_kg": 20,
+                "twist_per_m": 12,
+                "length_m": 20
+              }
+            ],
+            "rope_grade": {
+              "grade": "sturdy",
+              "load_kg": 500,
+              "rated_kg": 400
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "clay": 7,
+        "seed": 3
+      },
+      "player_verbs": [
+        "preview_cordage",
+        "adjust_cordage",
+        "commit_cordage",
+        "cancel_cordage",
+        "undo_cordage"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to twist fibers into ropes of varying grade; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic cordage spinning wheel modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Twist fibers into ropes of varying grade; fiber_batches and rope_grade must affect the visible outcome under twist and fiber determine cable capacity.",
+        "Confirm once with {\"clay\":7,\"seed\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-056",
+      "title": "Forgefast Hardware Table",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_056",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "iron_lots:typed_value",
+        "hardware_recipe:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "iron_lots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "nails_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "hinges_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "brackets_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "slag_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "fuel_units": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "tool_wear_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              }
+            },
+            "default": {
+              "lot_id": "",
+              "input_kg": 0,
+              "nails_kg": 0,
+              "hinges_kg": 0,
+              "brackets_kg": 0,
+              "slag_kg": 0,
+              "fuel_units": 0,
+              "tool_wear_pct": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "lot_id"
+        },
+        "hardware_recipe": {
+          "type": "object",
+          "fields": {
+            "recipe": {
+              "type": "enum",
+              "values": [
+                "none",
+                "mixed",
+                "nails",
+                "hinges"
+              ],
+              "default": "mixed"
+            },
+            "output_kg": {
+              "type": "integer",
+              "min": 0,
+              "max": 100000,
+              "default": 0
+            },
+            "forge_heat_c": {
+              "type": "integer",
+              "min": 0,
+              "max": 2000,
+              "default": 0
+            },
+            "wear_after_pct": {
+              "type": "integer",
+              "min": 0,
+              "max": 100,
+              "default": 0
+            }
+          },
+          "default": {
+            "recipe": "mixed",
+            "output_kg": 0,
+            "forge_heat_c": 0,
+            "wear_after_pct": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "forge_mass",
+        "forge_fuel",
+        "forge_output",
+        "forge_wear"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "iron_lots": [
+          {
+            "lot_id": "iron1",
+            "input_kg": 100,
+            "nails_kg": 40,
+            "hinges_kg": 30,
+            "brackets_kg": 20,
+            "slag_kg": 10,
+            "fuel_units": 30,
+            "tool_wear_pct": 20
+          }
+        ],
+        "hardware_recipe": {
+          "recipe": "mixed",
+          "output_kg": 90,
+          "forge_heat_c": 900,
+          "wear_after_pct": 20
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "forge_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "iron_lots": [
+              {
+                "lot_id": "iron1",
+                "input_kg": 100,
+                "nails_kg": 50,
+                "hinges_kg": 30,
+                "brackets_kg": 20,
+                "slag_kg": 10,
+                "fuel_units": 30,
+                "tool_wear_pct": 20
+              }
+            ],
+            "hardware_recipe": {
+              "recipe": "mixed",
+              "output_kg": 90,
+              "forge_heat_c": 900,
+              "wear_after_pct": 20
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "forge_fuel",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "iron_lots": [
+              {
+                "lot_id": "iron1",
+                "input_kg": 100,
+                "nails_kg": 40,
+                "hinges_kg": 30,
+                "brackets_kg": 20,
+                "slag_kg": 10,
+                "fuel_units": 10,
+                "tool_wear_pct": 20
+              }
+            ],
+            "hardware_recipe": {
+              "recipe": "mixed",
+              "output_kg": 90,
+              "forge_heat_c": 900,
+              "wear_after_pct": 20
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "forge_output",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "iron_lots": [
+              {
+                "lot_id": "iron1",
+                "input_kg": 100,
+                "nails_kg": 40,
+                "hinges_kg": 30,
+                "brackets_kg": 20,
+                "slag_kg": 10,
+                "fuel_units": 30,
+                "tool_wear_pct": 20
+              }
+            ],
+            "hardware_recipe": {
+              "recipe": "mixed",
+              "output_kg": 100,
+              "forge_heat_c": 900,
+              "wear_after_pct": 20
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "forge_wear",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "iron_lots": [
+              {
+                "lot_id": "iron1",
+                "input_kg": 100,
+                "nails_kg": 40,
+                "hinges_kg": 30,
+                "brackets_kg": 20,
+                "slag_kg": 10,
+                "fuel_units": 30,
+                "tool_wear_pct": 20
+              }
+            ],
+            "hardware_recipe": {
+              "recipe": "mixed",
+              "output_kg": 90,
+              "forge_heat_c": 900,
+              "wear_after_pct": 10
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "glass": 3,
+        "wood": 1
+      },
+      "player_verbs": [
+        "preview_forgefast",
+        "adjust_forgefast",
+        "commit_forgefast",
+        "cancel_forgefast",
+        "undo_forgefast"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to forge nails hinges and brackets with finite metal; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic forgefast hardware table modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Forge nails hinges and brackets with finite metal; iron_lots and hardware_recipe must affect the visible outcome under metal fuel and wear constrain hardware output.",
+        "Confirm once with {\"glass\":3,\"wood\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-057",
+      "title": "Pigmentbinder Plaster Mill",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_057",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "plaster_batches:typed_value",
+        "finish_life:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "plaster_batches": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "batch_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "wet_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "applied_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "waste_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "substrate_moisture_pct": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "coat_mm": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              }
+            },
+            "default": {
+              "batch_id": "",
+              "wet_kg": 0,
+              "applied_kg": 0,
+              "waste_kg": 0,
+              "substrate_moisture_pct": 0,
+              "coat_mm": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "batch_id"
+        },
+        "finish_life": {
+          "type": "object",
+          "fields": {
+            "max_days": {
+              "type": "integer",
+              "min": 0,
+              "max": 5600,
+              "default": 0
+            },
+            "expected_days": {
+              "type": "integer",
+              "min": 0,
+              "max": 5600,
+              "default": 0
+            },
+            "applied_epoch": {
+              "type": "integer",
+              "min": -1,
+              "max": 9007199254740991,
+              "default": -1
+            }
+          },
+          "default": {
+            "max_days": 0,
+            "expected_days": 0,
+            "applied_epoch": -1
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "plaster_mass",
+        "plaster_coat",
+        "plaster_moisture",
+        "plaster_epoch"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "plaster_batches": [
+          {
+            "batch_id": "plaster1",
+            "wet_kg": 100,
+            "applied_kg": 90,
+            "waste_kg": 10,
+            "substrate_moisture_pct": 20,
+            "coat_mm": 5
+          }
+        ],
+        "finish_life": {
+          "max_days": 120,
+          "expected_days": 90,
+          "applied_epoch": 56
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "plaster_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "plaster_batches": [
+              {
+                "batch_id": "plaster1",
+                "wet_kg": 100,
+                "applied_kg": 95,
+                "waste_kg": 10,
+                "substrate_moisture_pct": 20,
+                "coat_mm": 5
+              }
+            ],
+            "finish_life": {
+              "max_days": 120,
+              "expected_days": 90,
+              "applied_epoch": 56
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "plaster_coat",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "plaster_batches": [
+              {
+                "batch_id": "plaster1",
+                "wet_kg": 100,
+                "applied_kg": 90,
+                "waste_kg": 10,
+                "substrate_moisture_pct": 20,
+                "coat_mm": 30
+              }
+            ],
+            "finish_life": {
+              "max_days": 120,
+              "expected_days": 90,
+              "applied_epoch": 56
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "plaster_moisture",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "plaster_batches": [
+              {
+                "batch_id": "plaster1",
+                "wet_kg": 100,
+                "applied_kg": 90,
+                "waste_kg": 10,
+                "substrate_moisture_pct": 70,
+                "coat_mm": 5
+              }
+            ],
+            "finish_life": {
+              "max_days": 120,
+              "expected_days": 90,
+              "applied_epoch": 56
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "plaster_epoch",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "plaster_batches": [
+              {
+                "batch_id": "plaster1",
+                "wet_kg": 100,
+                "applied_kg": 90,
+                "waste_kg": 10,
+                "substrate_moisture_pct": 20,
+                "coat_mm": 5
+              }
+            ],
+            "finish_life": {
+              "max_days": 120,
+              "expected_days": 90,
+              "applied_epoch": 57
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "dye": 4,
+        "stone": 2
+      },
+      "player_verbs": [
+        "preview_pigmentbinder",
+        "adjust_pigmentbinder",
+        "commit_pigmentbinder",
+        "cancel_pigmentbinder",
+        "undo_pigmentbinder"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to apply weather-sensitive limewash to facades; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic pigmentbinder plaster mill modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Apply weather-sensitive limewash to facades; plaster_batches and finish_life must affect the visible outcome under substrate dryness controls finish durability.",
+        "Confirm once with {\"dye\":4,\"stone\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-058",
+      "title": "Pressedleaf Tile Workshop",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_058",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "tile_molds:typed_value",
+        "emboss_depth:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "tile_molds": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "mold_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "clay_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "tile_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "scrap_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "emboss_mm": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              },
+              "thickness_mm": {
+                "type": "integer",
+                "min": 0,
+                "max": 100,
+                "default": 0
+              }
+            },
+            "default": {
+              "mold_id": "",
+              "clay_kg": 0,
+              "tile_kg": 0,
+              "scrap_kg": 0,
+              "emboss_mm": 0,
+              "thickness_mm": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "mold_id"
+        },
+        "emboss_depth": {
+          "type": "object",
+          "fields": {
+            "max_mm": {
+              "type": "integer",
+              "min": 0,
+              "max": 100,
+              "default": 0
+            },
+            "cracked_count": {
+              "type": "integer",
+              "min": 0,
+              "max": 100,
+              "default": 0
+            },
+            "total_count": {
+              "type": "integer",
+              "min": 0,
+              "max": 100,
+              "default": 0
+            }
+          },
+          "default": {
+            "max_mm": 0,
+            "cracked_count": 0,
+            "total_count": 0
+          }
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "tile_mass",
+        "tile_depth",
+        "tile_cracks",
+        "tile_total"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "tile_molds": [
+          {
+            "mold_id": "tile1",
+            "clay_kg": 100,
+            "tile_kg": 85,
+            "scrap_kg": 15,
+            "emboss_mm": 3,
+            "thickness_mm": 12
+          }
+        ],
+        "emboss_depth": {
+          "max_mm": 5,
+          "cracked_count": 0,
+          "total_count": 1
+        },
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "tile_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tile_molds": [
+              {
+                "mold_id": "tile1",
+                "clay_kg": 100,
+                "tile_kg": 90,
+                "scrap_kg": 15,
+                "emboss_mm": 3,
+                "thickness_mm": 12
+              }
+            ],
+            "emboss_depth": {
+              "max_mm": 5,
+              "cracked_count": 0,
+              "total_count": 1
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tile_depth",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tile_molds": [
+              {
+                "mold_id": "tile1",
+                "clay_kg": 100,
+                "tile_kg": 85,
+                "scrap_kg": 15,
+                "emboss_mm": 7,
+                "thickness_mm": 12
+              }
+            ],
+            "emboss_depth": {
+              "max_mm": 5,
+              "cracked_count": 0,
+              "total_count": 1
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tile_cracks",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tile_molds": [
+              {
+                "mold_id": "tile1",
+                "clay_kg": 100,
+                "tile_kg": 85,
+                "scrap_kg": 15,
+                "emboss_mm": 3,
+                "thickness_mm": 12
+              }
+            ],
+            "emboss_depth": {
+              "max_mm": 5,
+              "cracked_count": 1,
+              "total_count": 1
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "tile_total",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "tile_molds": [
+              {
+                "mold_id": "tile1",
+                "clay_kg": 100,
+                "tile_kg": 85,
+                "scrap_kg": 15,
+                "emboss_mm": 3,
+                "thickness_mm": 12
+              }
+            ],
+            "emboss_depth": {
+              "max_mm": 5,
+              "cracked_count": 0,
+              "total_count": 2
+            },
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "seed": 5,
+        "iron": 3
+      },
+      "player_verbs": [
+        "preview_pressedleaf",
+        "adjust_pressedleaf",
+        "commit_pressedleaf",
+        "cancel_pressedleaf",
+        "undo_pressedleaf"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to emboss original tile motifs before firing; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic pressedleaf tile workshop modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Emboss original tile motifs before firing; tile_molds and emboss_depth must affect the visible outcome under pattern depth affects cracking risk.",
+        "Confirm once with {\"seed\":5,\"iron\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-059",
+      "title": "Salvage Sorting Yard",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_059",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "salvage_lots:typed_value",
+        "grade_scores:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "salvage_lots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "source_receipt": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": ""
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "reusable_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "scrap_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "verified": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "lot_id": "",
+              "source_receipt": "",
+              "input_kg": 0,
+              "reusable_kg": 0,
+              "scrap_kg": 0,
+              "verified": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "lot_id"
+        },
+        "grade_scores": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "lot_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "grade": {
+                "type": "enum",
+                "values": [
+                  "A",
+                  "B",
+                  "C"
+                ],
+                "default": "A"
+              },
+              "credited_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              }
+            },
+            "default": {
+              "lot_id": "",
+              "grade": "A",
+              "credited_kg": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "lot_id"
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "salvage_mass",
+        "salvage_proof",
+        "salvage_credit",
+        "salvage_source"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "salvage_lots": [
+          {
+            "lot_id": "salvage1",
+            "source_receipt": "demolition-receipt-1",
+            "input_kg": 100,
+            "reusable_kg": 70,
+            "scrap_kg": 30,
+            "verified": true
+          }
+        ],
+        "grade_scores": [
+          {
+            "lot_id": "salvage1",
+            "grade": "A",
+            "credited_kg": 60
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "salvage_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "salvage_lots": [
+              {
+                "lot_id": "salvage1",
+                "source_receipt": "demolition-receipt-1",
+                "input_kg": 100,
+                "reusable_kg": 80,
+                "scrap_kg": 30,
+                "verified": true
+              }
+            ],
+            "grade_scores": [
+              {
+                "lot_id": "salvage1",
+                "grade": "A",
+                "credited_kg": 60
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "salvage_proof",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "salvage_lots": [
+              {
+                "lot_id": "salvage1",
+                "source_receipt": "demolition-receipt-1",
+                "input_kg": 100,
+                "reusable_kg": 70,
+                "scrap_kg": 30,
+                "verified": false
+              }
+            ],
+            "grade_scores": [
+              {
+                "lot_id": "salvage1",
+                "grade": "A",
+                "credited_kg": 60
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "salvage_credit",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "salvage_lots": [
+              {
+                "lot_id": "salvage1",
+                "source_receipt": "demolition-receipt-1",
+                "input_kg": 100,
+                "reusable_kg": 70,
+                "scrap_kg": 30,
+                "verified": true
+              }
+            ],
+            "grade_scores": [
+              {
+                "lot_id": "salvage1",
+                "grade": "A",
+                "credited_kg": 90
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "salvage_source",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "salvage_lots": [
+              {
+                "lot_id": "salvage1",
+                "source_receipt": "reused",
+                "input_kg": 100,
+                "reusable_kg": 70,
+                "scrap_kg": 30,
+                "verified": true
+              }
+            ],
+            "grade_scores": [
+              {
+                "lot_id": "salvage1",
+                "grade": "A",
+                "credited_kg": 60
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "wood": 6,
+        "fiber": 1
+      },
+      "player_verbs": [
+        "preview_salvage",
+        "adjust_salvage",
+        "commit_salvage",
+        "cancel_salvage",
+        "undo_salvage"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to grade recovered boards by rot and length; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic salvage sorting yard modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Grade recovered boards by rot and length; salvage_lots and grade_scores must affect the visible outcome under only proven salvaged lots may be graded.",
+        "Confirm once with {\"wood\":6,\"fiber\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    },
+    {
+      "id": "EB-B-060",
+      "title": "Handcarved Furniture Studio",
+      "state_version": 1,
+      "save_namespace": "construction.eb_b_060",
+      "source_fields": [
+        "site_id:string",
+        "revision:int",
+        "day_epoch:int",
+        "furniture_blueprints:typed_value",
+        "joinery_nodes:typed_value",
+        "receipts:[string]"
+      ],
+      "fields": {
+        "site_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 100000000,
+          "default": 0
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "furniture_blueprints": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "blueprint_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "input_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "parts_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "offcut_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "max_load_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              }
+            },
+            "default": {
+              "blueprint_id": "",
+              "input_kg": 0,
+              "parts_kg": 0,
+              "offcut_kg": 0,
+              "max_load_kg": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "blueprint_id"
+        },
+        "joinery_nodes": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "node_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "blueprint_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": ""
+              },
+              "joint_type": {
+                "type": "enum",
+                "values": [
+                  "mortise",
+                  "dovetail",
+                  "lap"
+                ],
+                "default": "mortise"
+              },
+              "supported_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              },
+              "required_kg": {
+                "type": "integer",
+                "min": 0,
+                "max": 10000,
+                "default": 0
+              }
+            },
+            "default": {
+              "node_id": "",
+              "blueprint_id": "",
+              "joint_type": "mortise",
+              "supported_kg": 0,
+              "required_kg": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "node_id"
+        },
+        "receipts": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 96,
+            "default": ""
+          },
+          "max_items": 128,
+          "default": []
+        }
+      },
+      "rules": [
+        "furniture_mass",
+        "furniture_refs",
+        "furniture_support"
+      ],
+      "valid_example": {
+        "site_id": "siteA",
+        "revision": 1,
+        "day_epoch": 56,
+        "furniture_blueprints": [
+          {
+            "blueprint_id": "chair1",
+            "input_kg": 100,
+            "parts_kg": 80,
+            "offcut_kg": 20,
+            "max_load_kg": 300
+          }
+        ],
+        "joinery_nodes": [
+          {
+            "node_id": "joint1",
+            "blueprint_id": "chair1",
+            "joint_type": "mortise",
+            "supported_kg": 250,
+            "required_kg": 200
+          }
+        ],
+        "receipts": [
+          "cmdA"
+        ]
+      },
+      "invalid_examples": [
+        {
+          "rule": "furniture_mass",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "furniture_blueprints": [
+              {
+                "blueprint_id": "chair1",
+                "input_kg": 100,
+                "parts_kg": 90,
+                "offcut_kg": 20,
+                "max_load_kg": 300
+              }
+            ],
+            "joinery_nodes": [
+              {
+                "node_id": "joint1",
+                "blueprint_id": "chair1",
+                "joint_type": "mortise",
+                "supported_kg": 250,
+                "required_kg": 200
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "furniture_refs",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "furniture_blueprints": [
+              {
+                "blueprint_id": "chair1",
+                "input_kg": 100,
+                "parts_kg": 80,
+                "offcut_kg": 20,
+                "max_load_kg": 300
+              }
+            ],
+            "joinery_nodes": [
+              {
+                "node_id": "joint1",
+                "blueprint_id": "missing",
+                "joint_type": "mortise",
+                "supported_kg": 250,
+                "required_kg": 200
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        },
+        {
+          "rule": "furniture_support",
+          "state": {
+            "site_id": "siteA",
+            "revision": 1,
+            "day_epoch": 56,
+            "furniture_blueprints": [
+              {
+                "blueprint_id": "chair1",
+                "input_kg": 100,
+                "parts_kg": 80,
+                "offcut_kg": 20,
+                "max_load_kg": 300
+              }
+            ],
+            "joinery_nodes": [
+              {
+                "node_id": "joint1",
+                "blueprint_id": "chair1",
+                "joint_type": "mortise",
+                "supported_kg": 100,
+                "required_kg": 200
+              }
+            ],
+            "receipts": [
+              "cmdA"
+            ]
+          }
+        }
+      ],
+      "authority": "Construction owns nonmutating preview and local material processing proposals; Principal owns authoritative inventory, source receipts, currency, durable replay prevention and assembled saves; Farming owns resource acquisition and hydrology; Village owns permissions; Valley owns geometry and navigation.",
+      "resource_inputs_unapproved": {
+        "stone": 7,
+        "clay": 2
+      },
+      "player_verbs": [
+        "preview_handcarved",
+        "adjust_handcarved",
+        "commit_handcarved",
+        "cancel_handcarved",
+        "undo_handcarved"
+      ],
+      "input_contract": {
+        "mouse_keyboard": "Toolbar select; drag to assemble custom chairs and tables from cut parts; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic handcarved furniture studio modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget_unmeasured": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "acceptance_after_phase_gate": [
+        "Native Godot scenario: Assemble custom chairs and tables from cut parts; furniture_blueprints and joinery_nodes must affect the visible outcome under joint geometry and offcuts determine stability.",
+        "Confirm once with {\"stone\":7,\"clay\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "receipt_contract": "Local capped receipts are illustrative only; Principal must atomically settle input consumption/output grants, validate source provenance, and persist durable command IDs.",
+      "native_gate": "Design-only; native Godot feature integration and physical input/performance not tested. Phase C closed."
+    }
+  ]
+}
