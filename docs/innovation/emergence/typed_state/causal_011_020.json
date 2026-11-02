@@ -113,7 +113,8 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "amount": {
                 "type": "integer",
@@ -148,7 +149,8 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "amount": {
                 "type": "integer",
@@ -232,7 +234,8 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "epoch": {
                 "type": "integer",
@@ -397,7 +400,8 @@
             "type": "string",
             "nullable": false,
             "max_length": 64,
-            "default": ""
+            "default": "",
+            "min_length": 1
           },
           "max_items": 32,
           "default": []
@@ -475,7 +479,8 @@
             "type": "string",
             "nullable": false,
             "max_length": 64,
-            "default": ""
+            "default": "",
+            "min_length": 1
           },
           "max_items": 32,
           "default": []
@@ -571,7 +576,8 @@
             "type": "string",
             "nullable": false,
             "max_length": 96,
-            "default": ""
+            "default": "",
+            "min_length": 1
           },
           "max_items": 16,
           "default": []
@@ -631,7 +637,8 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "epoch": {
                 "type": "integer",
@@ -643,7 +650,8 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "quantity": {
                 "type": "integer",
@@ -655,7 +663,8 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               }
             }
           },
@@ -678,13 +687,15 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "to_id": {
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               }
             }
           },
@@ -769,7 +780,8 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "bed_index": {
                 "type": "integer",
@@ -798,13 +810,15 @@
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               },
               "route_id": {
                 "type": "string",
                 "nullable": false,
                 "max_length": 80,
-                "default": ""
+                "default": "",
+                "min_length": 1
               }
             }
           },
