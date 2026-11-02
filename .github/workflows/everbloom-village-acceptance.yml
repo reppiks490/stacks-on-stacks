@@ -1,0 +1,46 @@
+name: Everbloom village multi-year native acceptance
+on:
+  push:
+    paths:
+      - 'scripts/village.gd'
+      - 'tests/village_test_host.gd'
+      - 'tests/native_village_calendar_test.gd'
+      - '.github/workflows/everbloom-village-acceptance.yml'
+permissions:
+  contents: read
+jobs:
+  village-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and authenticate official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Import original project and parse scripts
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee village_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' village_import.log; then exit 1; fi
+      - name: Two-year native village relationships and gifts
+        run: |
+          set -euo pipefail
+          timeout 50s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://tests/native_village_calendar_test.gd 2>&1 | tee village_acceptance.log
+          grep -q 'EVERBLOOM VILLAGE NATIVE ACCEPTANCE:' village_acceptance.log
+          grep -q '0 failures' village_acceptance.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open|VILLAGE ACCEPTANCE FAILED:' village_acceptance.log; then exit 1; fi
+      - name: Preserve exact-head village evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-village-native-${{ github.sha }}
+          path: |
+            village_import.log
+            village_acceptance.log
+          if-no-files-found: ignore
+          retention-days: 14

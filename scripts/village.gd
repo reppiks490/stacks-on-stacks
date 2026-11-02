@@ -48,7 +48,8 @@ func act(action: String, position: Vector3) -> String:
     if selected.is_empty():
         return "Visit a resident of Larkspur Village."
     var rid: String = str(selected["id"])
-    var epoch: int = game.season_index * 14 + game.day
+    # Calendar epoch is monotonic across years, preventing annual gift/talk locks.
+    var epoch: int = game.day_epoch()
     if action == "gift":
         if int(last_gift.get(rid, -1)) == epoch:
             return "%s smiles. One gift each day is enough." % selected["name"]
