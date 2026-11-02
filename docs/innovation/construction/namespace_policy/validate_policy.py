@@ -204,6 +204,52 @@ def self_test(rows: list[dict]) -> int:
     return passed
 
 
+
+def self_test_policy(doc: dict, source_bytes: bytes | None) -> int:
+    """Ensure forged policy or source provenance cannot silently pass."""
+    count = 0
+
+    def tamper(mutator) -> None:
+        nonlocal count
+        changed = copy.deepcopy(doc)
+        mutator(changed)
+        try:
+            verify_policy(changed, source_bytes)
+        except PolicyError:
+            count += 1
+            return
+        raise PolicyError("tampered policy was accepted")
+
+    attacks = [
+        lambda d: d["entries"].pop(),
+        lambda d: d["entries"][1].update(id=d["entries"][0]["id"]),
+        lambda d: d["entries"][0].update(id="EB-B-111"),
+        lambda d: d["entries"][0].update(namespace="construction.invalid"),
+        lambda d: d["entries"][0].update(legacy_alias="construction.eb_b_11"),
+        lambda d: d["entries"][0].update(epoch_min=0),
+        lambda d: d["entries"][0].update(sentinel_policy="not_allowed"),
+        lambda d: d["entries"][0].update(receipt_policy="scoped_only"),
+        lambda d: d["entries"][20].update(legacy_alias=None),
+        lambda d: d["policy"].update(legacy_aliases=9),
+        lambda d: d["policy"].update(negative_epoch_sentinels=59),
+        lambda d: d["source"].update(commit="0" * 40),
+        lambda d: d["source"].update(blob_sha="0" * 40),
+        lambda d: d.update(phase_c="OPEN"),
+        lambda d: d.update(status="APPROVED_GAMEPLAY"),
+    ]
+    for attack in attacks:
+        tamper(attack)
+    if source_bytes is not None:
+        try:
+            verify_policy(doc, source_bytes + b" ")
+        except PolicyError:
+            count += 1
+        else:
+            raise PolicyError("tampered source bytes accepted")
+    return count
+
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, help="pinned SOURCE_EVIDENCE.json; required for source-backed CI")
@@ -216,6 +262,8 @@ def main() -> None:
     if args.self_test:
         count = self_test(rows)
         print(f"PASS: {count}/{count} deterministic positive/negative dry-run checks")
+        tamper_count = self_test_policy(doc, source)
+        print(f"PASS: {tamper_count}/{tamper_count} adversarial policy/provenance mutations rejected")
     print("Phase C CLOSED; no Godot gameplay, actual save migration, inventory authority, or physical device verification.")
 
 
