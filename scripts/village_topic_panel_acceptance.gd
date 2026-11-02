@@ -137,8 +137,18 @@ func _run() -> void:
     game.load_game()
     _check(game.latest_message == "Loaded saved life in the valley.", "assembled native save admits selected-topic transcript")
     _check(village.save_state() == before_save, "nested selected-topic memory survives full Game save/load")
-    _check(game.gold == saved_gold and game.inventory == inventory_before,
-            "save/reload conserves money and items")
+    # SaveService may normalize absent zero-valued inventory keys. Compare
+    # actual item quantities and reject newly minted positive items instead
+    # of demanding identical dictionary key sets.
+    var inventory_conserved: bool = true
+    for item in inventory_before:
+        if int(game.inventory.get(item, 0)) != int(inventory_before[item]):
+            inventory_conserved = false
+    for item in game.inventory:
+        if not inventory_before.has(item) and int(game.inventory[item]) != 0:
+            inventory_conserved = false
+    _check(game.gold == saved_gold and inventory_conserved,
+            "save/reload conserves money and every item quantity")
     _near(game, 0)
     ui._input(_pad(JOY_BUTTON_RIGHT_STICK))
     ui._input(_pad(JOY_BUTTON_A))
