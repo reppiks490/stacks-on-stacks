@@ -126,7 +126,16 @@ func _run() -> void:
     game.load_game()
     _check(game.latest_message == "Loaded saved life in the valley.",
             "central save validator admits actual gift history")
-    _check(game.inventory == saved_inventory, "full-game JSON reload restores every item")
+    # JSON may decode whole-number values as floats. Compare item quantities,
+    # not Variant numeric subtypes, and reject newly minted positive keys.
+    var items_conserved: bool = true
+    for item in saved_inventory:
+        if int(game.inventory.get(item, -1)) != int(saved_inventory[item]):
+            items_conserved = false
+    for item in game.inventory:
+        if not saved_inventory.has(item) and int(game.inventory[item]) != 0:
+            items_conserved = false
+    _check(items_conserved, "full-game JSON reload restores every item quantity")
     _check(village.save_state() == saved_social, "nested gift history survives assembled reload")
     _check(game.restoration == saved_restoration and game.gold == saved_gold,
             "full-game reload cannot mint money or restoration")
