@@ -173,7 +173,9 @@ func _gift_memory_dialogue(profile: Dictionary, rid: String, epoch: int) -> Stri
     var line: String = str(profile.get(line_key, ""))
     if line.is_empty():
         return ""
-    record["recalled_gift_epoch"] = gifted_epoch
+    # Record the day the resident actually spoke the recollection, not the gift day.
+    # Principal save admission requires this chronology to survive JSON reload.
+    record["recalled_gift_epoch"] = epoch
     record["gift_recollections"] = mini(1000000, maxi(0, int(record.get("gift_recollections", 0))) + 1)
     memories[rid] = record
     return line % item
@@ -266,6 +268,9 @@ func _gift(resident: Dictionary, rid: String, epoch: int) -> String:
     var memory: Dictionary = memories.get(rid, _fresh_memory())
     memory["last_gift_item"] = found
     memory["last_gift_epoch"] = epoch
+    # A new gift is pending even when it follows an earlier recollection today.
+    # Preserve the lifetime count, but clear the latest-gift recollection marker.
+    memory["recalled_gift_epoch"] = -1
     memory["last_gift_favorite"] = favorite
     memories[rid] = memory
     _record_memory(rid, "gifts")
@@ -404,7 +409,9 @@ func load_state(state: Dictionary) -> void:
             var inferred_favorite: bool = not favorite_item.is_empty() and record["last_gift_item"] == favorite_item
             var saved_favorite: Variant = incoming.get("last_gift_favorite", inferred_favorite)
             record["last_gift_favorite"] = saved_favorite if typeof(saved_favorite) == TYPE_BOOL else inferred_favorite
-            record["recalled_gift_epoch"] = clampi(int(incoming.get("recalled_gift_epoch", -1)), -1, int(record["last_gift_epoch"]))
+            # Recollection can occur days or years AFTER the gift. Never clamp
+            # its actual conversation epoch to the earlier gift epoch.
+            record["recalled_gift_epoch"] = clampi(int(incoming.get("recalled_gift_epoch", -1)), -1, game.day_epoch())
             record["gift_recollections"] = clampi(int(incoming.get("gift_recollections", 0)), 0, 1000000)
             # Optional historical dialogue log. Reject malformed or future-dated
             # entries rather than inventing conversation history on old saves.

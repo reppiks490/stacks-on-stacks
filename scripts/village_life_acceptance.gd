@@ -78,7 +78,7 @@ func _run() -> void:
     var recollection_spot: Vector3 = reloaded.residents[0]["node"].global_position
     var remembered_line: String = reloaded.act("talk", recollection_spot)
     _check("herb journal" in remembered_line and "bluebell" in remembered_line, "authored favorite-gift recollection on later day")
-    _check(int(reloaded.memories[rid]["recalled_gift_epoch"]) == 1, "recollection keyed to original monotonic gift epoch")
+    _check(int(reloaded.memories[rid]["recalled_gift_epoch"]) == 2, "recollection records later conversation epoch")
     _check(int(reloaded.memories[rid]["gift_recollections"]) == 1, "one personal recollection counted")
     _check("herb journal" not in reloaded.act("talk", recollection_spot), "same-day repeat dialogue cannot repeat gift memory")
     var recollection_save: Variant = JSON.parse_string(JSON.stringify(reloaded.save_state()))
@@ -180,7 +180,7 @@ func _run() -> void:
     var rowan_new_spot: Vector3 = fourth.residents[1]["node"].global_position
     var year_five_line: String = fourth.act("talk", rowan_new_spot)
     _check("wood" in year_five_line and "lovely grain" in year_five_line, "gift memory crosses year boundary")
-    _check(int(fourth.memories["rowan"]["recalled_gift_epoch"]) == 224, "recollection uses absolute day 224")
+    _check(int(fourth.memories["rowan"]["recalled_gift_epoch"]) == 225, "recollection records absolute year-five day 225")
     _check(int(fourth.memories["rowan"]["gift_recollections"]) == 1, "year-spanning memory recalled once")
     _check("lovely grain" not in fourth.act("talk", rowan_new_spot), "no duplicate year-spanning recollection")
     _check(int(host.inventory["wood"]) == wood_before - 1, "memory dialogue does not consume another gift")
@@ -274,6 +274,77 @@ func _run() -> void:
     dialogue_reload.queue_free()
     dialogue_village.queue_free()
     dialogue_host.queue_free()
+
+
+    # V03/V06: a gift recollected on a later day must survive strict chronology
+    # and not prevent a fresh gift after a conversation on the SAME day.
+    var chronology_host = load("res://scripts/village_life_test_host.gd").new()
+    root.add_child(chronology_host)
+    chronology_host.year = 4
+    chronology_host.season_index = 3
+    chronology_host.day = 14
+    chronology_host.minute_of_day = 600.0
+    chronology_host.inventory["wild_herb"] = 0
+    var chronology_village = load("res://scripts/village.gd").new()
+    root.add_child(chronology_village)
+    chronology_village.setup(chronology_host)
+    var chronology_spot: Vector3 = chronology_village.residents[0]["node"].global_position
+    var chronology_gold: int = chronology_host.gold
+    var chronology_flowers: int = int(chronology_host.inventory["bluebell"])
+    _check("treasured favorite" in chronology_village.act("gift", chronology_spot).to_lower(), "year-four gift starts pending recollection")
+    _check(int(chronology_village.memories["mira"]["recalled_gift_epoch"]) == -1, "new gift has no false recollection date")
+    chronology_host.year = 5
+    chronology_host.season_index = 0
+    chronology_host.day = 1
+    chronology_village.sync_schedule(true)
+    chronology_spot = chronology_village.residents[0]["node"].global_position
+    _check("herb journal" in chronology_village.act("talk", chronology_spot), "year-five talk recollects previous-year gift")
+    _check(int(chronology_village.memories["mira"]["last_gift_epoch"]) == 224, "original gift day preserved")
+    _check(int(chronology_village.memories["mira"]["recalled_gift_epoch"]) == 225, "actual recollection day is 225")
+    _check("treasured favorite" in chronology_village.act("gift", chronology_spot).to_lower(), "new gift accepted after recollection on same day")
+    _check(int(chronology_village.memories["mira"]["recalled_gift_epoch"]) == -1, "same-day new gift resets recollection pending marker")
+    _check(int(chronology_village.memories["mira"]["gift_recollections"]) == 1, "reset preserves lifetime recollection count")
+    var chronology_save: Variant = JSON.parse_string(JSON.stringify(chronology_village.save_state()))
+    _check(chronology_save is Dictionary, "multi-gift chronology JSON snapshot")
+    var chronology_reload = load("res://scripts/village.gd").new()
+    root.add_child(chronology_reload)
+    chronology_reload.setup(chronology_host)
+    if chronology_save is Dictionary:
+        chronology_reload.load_state(chronology_save)
+    _check(chronology_reload.save_state() == chronology_village.save_state(), "pending same-day gift survives JSON reload unchanged")
+    chronology_host.day = 2
+    chronology_reload.sync_schedule(true)
+    chronology_spot = chronology_reload.residents[0]["node"].global_position
+    _check("herb journal" in chronology_reload.act("talk", chronology_spot), "second gift recollected on next day")
+    _check(int(chronology_reload.memories["mira"]["last_gift_epoch"]) == 225, "second gift's original epoch retained")
+    _check(int(chronology_reload.memories["mira"]["recalled_gift_epoch"]) == 226, "second recollection records actual later day")
+    _check(int(chronology_reload.memories["mira"]["gift_recollections"]) == 2, "two distinct recollections counted exactly once")
+    var chronology_recalled_save: Variant = JSON.parse_string(JSON.stringify(chronology_reload.save_state()))
+    if chronology_recalled_save is Dictionary:
+        chronology_reload.load_state(chronology_recalled_save)
+    _check(int(chronology_reload.memories["mira"]["recalled_gift_epoch"]) == 226, "later recollection epoch not truncated by loader")
+    _check("herb journal" not in chronology_reload.act("talk", chronology_spot), "reload cannot repeat second recollection")
+    chronology_host.day = 3
+    chronology_reload.sync_schedule(true)
+    chronology_spot = chronology_reload.residents[0]["node"].global_position
+    _check("treasured favorite" in chronology_reload.act("gift", chronology_spot).to_lower(), "third gift accepted")
+    chronology_host.weather = "Rain"
+    _check("herb journal" not in chronology_reload.act("talk", chronology_spot), "rain defers rather than consumes gift recollection")
+    _check(int(chronology_reload.memories["mira"]["recalled_gift_epoch"]) == -1, "deferred gift stays pending")
+    chronology_host.day = 4
+    chronology_host.weather = "Clear"
+    chronology_reload.sync_schedule(true)
+    chronology_spot = chronology_reload.residents[0]["node"].global_position
+    _check("herb journal" in chronology_reload.act("talk", chronology_spot), "deferred gift recalled on first clear conversation")
+    _check(int(chronology_reload.memories["mira"]["last_gift_epoch"]) == 227, "deferred gift retains original day")
+    _check(int(chronology_reload.memories["mira"]["recalled_gift_epoch"]) == 228, "deferred recollection uses actual conversation day")
+    _check(int(chronology_reload.memories["mira"]["gift_recollections"]) == 3, "three recollections with no replay")
+    _check(int(chronology_host.inventory["bluebell"]) == chronology_flowers - 3, "three gifts consume exactly three flowers")
+    _check(chronology_host.gold == chronology_gold, "recollection and reload mint no money")
+    _check(int(chronology_reload.memories["mira"]["recalled_gift_epoch"]) >= int(chronology_reload.memories["mira"]["last_gift_epoch"]), "strict save chronology accepted")
+    chronology_reload.queue_free()
+    chronology_village.queue_free()
+    chronology_host.queue_free()
 
     print("EVERBLOOM VILLAGE LIFE NATIVE ACCEPTANCE: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
