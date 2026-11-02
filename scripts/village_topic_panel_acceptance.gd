@@ -70,6 +70,25 @@ func _run() -> void:
     _check(ui.panel.visible and paused, "mouse/touch opener pauses the world")
     _check(ui.active_resident_id == "mira", "nearby NPC is selected by actual world distance")
     _check(ui.topic_ids.size() == 2 and "Mira" in ui.title_label.text, "visible NPC-specific choice text")
+    _check(ui.language_button.custom_minimum_size.y >= 44.0
+            and ui.language_button.focus_mode == Control.FOCUS_ALL,
+            "live language control is touch-sized and controller-focusable")
+    var stable_topic_ids: Array[String] = ui.topic_ids.duplicate()
+    var english_choice: String = ui.topic_buttons[0].text
+    ui.language_button.pressed.emit()
+    _check(village.dialogue_locale == "es" and "Elige" in ui.title_label.text
+            and "Mira" in ui.title_label.text and ui.language_button.text == "English",
+            "touch/mouse language button localizes active NPC menu")
+    _check(ui.topic_ids == stable_topic_ids and ui.topic_buttons[0].text != english_choice
+            and "Preguntar" in ui.topic_buttons[0].text,
+            "Spanish choices translate without reordering stable topic IDs")
+    _check(ui.panel.visible and paused and village.save_state() == initial
+            and game.gold == gold_before and game.inventory == inventory_before,
+            "language switch conserves paused game and all authoritative social/economic state")
+    ui._input(_key(KEY_C))
+    _check(village.dialogue_locale == "en" and ui.topic_buttons[0].text == english_choice
+            and ui.topic_ids == stable_topic_ids and paused,
+            "keyboard C restores English in place without losing selected topic")
     _check(village.save_state() == initial and game.gold == gold_before, "opening dialogue menu has no economy/social effects")
     _check(not village.social_journal.panel.visible, "journal initially closed")
     village.social_journal.open_journal()
@@ -204,6 +223,15 @@ func _run() -> void:
     _check(ui.panel.visible and ui.topic_ids.size() == 3
             and ui.topic_buttons[2].visible and not ui.topic_buttons[3].visible,
             "third visible choice appears only when actually earned")
+    var earned_topic_ids: Array[String] = ui.topic_ids.duplicate()
+    ui._input(_pad(JOY_BUTTON_X))
+    _check(village.dialogue_locale == "es" and "plántulas" in ui.topic_buttons[2].text
+            and ui.topic_ids == earned_topic_ids and paused,
+            "controller X localizes unlocked earned chapter without altering IDs")
+    ui._input(_pad(JOY_BUTTON_X))
+    _check(village.dialogue_locale == "en" and "seedlings" in ui.topic_buttons[2].text
+            and ui.topic_ids == earned_topic_ids and paused,
+            "controller X roundtrip restores earned chapter and menu focus")
     ui._input(_key(KEY_3))
     _check(not ui.panel.visible and authored_shift in ui.last_result,
             "keyboard 3 plays original earned shift chapter")
