@@ -95,6 +95,8 @@ func _run() -> void:
     _check(ui.is_open and paused, "keyboard Y opens and pauses")
     _check(ui.last_report.get("selected_source") == "none", "empty save explicitly reported")
     _check("No valid save" in ui.report_label.text, "player sees missing-save warning")
+    _check("Scroll report: PageUp/PageDown, LB/RB" in ui.report_label.text,
+           "English keyboard/controller scrolling instructions visible")
     _check("not present" in ui.report_label.text and "none" in ui.report_label.text,
            "empty slots use readable labels")
     # Force genuine report overflow in the assembled scene, rather than
