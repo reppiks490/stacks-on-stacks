@@ -1,0 +1,3013 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "phase": "B_additional_200",
+  "owner": "Emergence Architect",
+  "engine": "Godot 4.x",
+  "base_main": "593c0296a94549119b4b5ad93149be7f31a9eb68",
+  "phaseA_approval": "https://github.com/reppiks490/stacks-on-stacks/issues/2#issuecomment-6573235593",
+  "status": "design_only_not_implemented",
+  "range": "EB-E-011..050",
+  "concepts": [
+    {
+      "id": "EB-E-011",
+      "title": "Tideglass Forecast Bargain",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: One slot per epoch; rescheduling transfers rather than duplicates the reward. Source recheck required before integration.",
+      "player_scenario": "Reserve one protected outdoor activity slot before a storm; choose a fallback if the forecast shifts",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "One slot per epoch; rescheduling transfers rather than duplicates the reward",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "forecast_id",
+          "slot_epoch",
+          "reservation_id",
+          "shift_count"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_tideglass_forecast_bargain(actor,world_revision)->{choices,quote,reasons}",
+        "commit_tideglass_forecast_bargain(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_tideglass_forecast_bargain(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Tideglass Forecast Bargain; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Reserve one protected outdoor activity slot before a storm; choose a fallback if the forecast shifts; verify rule: One slot per epoch; rescheduling transfers rather than duplicates the reward.",
+        "adversarial": "Reload during forecast change cannot award original and replacement slots",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-012",
+      "title": "Echo Debt of the Valley",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Debt repaid only by unique verified ecological improvements, not repeated dialogue. Source recheck required before integration.",
+      "player_scenario": "Trace extraction's long-term effects and negotiate a measurable habitat restoration pact",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Debt repaid only by unique verified ecological improvements, not repeated dialogue",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "region_id",
+          "extraction_receipts",
+          "ecology_debt",
+          "repair_receipts"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_echo_debt_of_the_valley(actor,world_revision)->{choices,quote,reasons}",
+        "commit_echo_debt_of_the_valley(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_echo_debt_of_the_valley(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Echo Debt of the Valley; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Trace extraction's long-term effects and negotiate a measurable habitat restoration pact; verify rule: Debt repaid only by unique verified ecological improvements, not repeated dialogue.",
+        "adversarial": "One repair receipt cannot erase several independent extraction events",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-013",
+      "title": "Windborne Message Relay",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Finite hops and weather delays; failed delivery returns undelivered parcel state. Source recheck required before integration.",
+      "player_scenario": "Send a message across weather-limited lookout relays when roads close",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Finite hops and weather delays; failed delivery returns undelivered parcel state",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "message_id",
+          "relay_hops",
+          "weather_epoch",
+          "delivery_state"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_windborne_message_relay(actor,world_revision)->{choices,quote,reasons}",
+        "commit_windborne_message_relay(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_windborne_message_relay(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Windborne Message Relay; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Send a message across weather-limited lookout relays when roads close; verify rule: Finite hops and weather delays; failed delivery returns undelivered parcel state.",
+        "adversarial": "Interrupted relay cannot both deliver and refund a parcel",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-014",
+      "title": "Borrowed Dawn Exchange",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Earlier access trades against bounded fatigue; calendar never rewinds. Source recheck required before integration.",
+      "player_scenario": "Start an expedition early in return for an explicit next-day fatigue burden",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Earlier access trades against bounded fatigue; calendar never rewinds",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "event_epoch",
+          "early_start",
+          "fatigue_debt",
+          "reward_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_borrowed_dawn_exchange(actor,world_revision)->{choices,quote,reasons}",
+        "commit_borrowed_dawn_exchange(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_borrowed_dawn_exchange(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Borrowed Dawn Exchange; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Start an expedition early in return for an explicit next-day fatigue burden; verify rule: Earlier access trades against bounded fatigue; calendar never rewinds.",
+        "adversarial": "Reload cannot clear fatigue while retaining early access rewards",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-015",
+      "title": "Frostline Witness Trail",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Only observations made before thaw can inform protection; no retroactive rescues. Source recheck required before integration.",
+      "player_scenario": "Inspect frost clues before thaw to identify and shelter a vulnerable crop patch",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Only observations made before thaw can inform protection; no retroactive rescues",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "clue_ids",
+          "observation_epoch",
+          "thaw_epoch",
+          "verdict"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_frostline_witness_trail(actor,world_revision)->{choices,quote,reasons}",
+        "commit_frostline_witness_trail(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_frostline_witness_trail(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Frostline Witness Trail; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Inspect frost clues before thaw to identify and shelter a vulnerable crop patch; verify rule: Only observations made before thaw can inform protection; no retroactive rescues.",
+        "adversarial": "Late clue cannot change an already settled crop outcome",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-016",
+      "title": "Moonlit Firefly Census",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Confidence increases by distinct habitat coverage, not repeated observation. Source recheck required before integration.",
+      "player_scenario": "Survey distinct nocturnal habitats to estimate pollinator recovery for the village",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Confidence increases by distinct habitat coverage, not repeated observation",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "habitat_ids",
+          "survey_epoch",
+          "confidence",
+          "report_id"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_moonlit_firefly_census(actor,world_revision)->{choices,quote,reasons}",
+        "commit_moonlit_firefly_census(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_moonlit_firefly_census(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Moonlit Firefly Census; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Survey distinct nocturnal habitats to estimate pollinator recovery for the village; verify rule: Confidence increases by distinct habitat coverage, not repeated observation.",
+        "adversarial": "One swarm repeatedly counted cannot inflate biodiversity",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-017",
+      "title": "Forked Trail Consequence Board",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: One choice commits per region revision; downstream effects are applied once. Source recheck required before integration.",
+      "player_scenario": "Compare mutually exclusive valley restoration paths and their social/ecological consequences",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "One choice commits per region revision; downstream effects are applied once",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "project_id",
+          "world_revision",
+          "choice_receipt",
+          "effect_receipts"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_forked_trail_consequence_board(actor,world_revision)->{choices,quote,reasons}",
+        "commit_forked_trail_consequence_board(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_forked_trail_consequence_board(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Forked Trail Consequence Board; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Compare mutually exclusive valley restoration paths and their social/ecological consequences; verify rule: One choice commits per region revision; downstream effects are applied once.",
+        "adversarial": "Concurrent incompatible choices cannot both apply",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-018",
+      "title": "Harvest Echo Exchange",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Historical playback is read-only; it never grants crops or resets cooldowns. Source recheck required before integration.",
+      "player_scenario": "Replay past harvest decisions through a causal visualization without repeating rewards",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Historical playback is read-only; it never grants crops or resets cooldowns",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "season_log",
+          "read_cursor",
+          "causal_links"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_harvest_echo_exchange(actor,world_revision)->{choices,quote,reasons}",
+        "commit_harvest_echo_exchange(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_harvest_echo_exchange(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Harvest Echo Exchange; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Replay past harvest decisions through a causal visualization without repeating rewards; verify rule: Historical playback is read-only; it never grants crops or resets cooldowns.",
+        "adversarial": "Scrubbing history cannot change inventory or scheduler",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-019",
+      "title": "Storm Refuge Queue",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Capacity and schedule limits respected; unserved NPCs have safe fallback. Source recheck required before integration.",
+      "player_scenario": "Allocate finite shelter capacity fairly among consenting villagers during a storm",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Capacity and schedule limits respected; unserved NPCs have safe fallback",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "shelter_id",
+          "capacity",
+          "assignments",
+          "alternatives"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_storm_refuge_queue(actor,world_revision)->{choices,quote,reasons}",
+        "commit_storm_refuge_queue(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_storm_refuge_queue(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Storm Refuge Queue; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Allocate finite shelter capacity fairly among consenting villagers during a storm; verify rule: Capacity and schedule limits respected; unserved NPCs have safe fallback.",
+        "adversarial": "Reload cannot double-book a bed or strand an NPC",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-020",
+      "title": "Sunset Decision Window",
+      "domain": "causal_world",
+      "mission_ids": [
+        "E03",
+        "E04"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Deadline uses monotonic epoch/minutes; expiry never reopens the original reward. Source recheck required before integration.",
+      "player_scenario": "Answer a fleeting sunset request or pursue an accessible alternate outcome after expiry",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Deadline uses monotonic epoch/minutes; expiry never reopens the original reward",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "event_id",
+          "deadline_minute",
+          "choice",
+          "expired_fallback"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_sunset_decision_window(actor,world_revision)->{choices,quote,reasons}",
+        "commit_sunset_decision_window(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_sunset_decision_window(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal weather/epoch; Emergence causal director; each domain owns effects",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic causal_world cues, legible iconography and optional original ambient audio for Sunset Decision Window; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Answer a fleeting sunset request or pursue an accessible alternate outcome after expiry; verify rule: Deadline uses monotonic epoch/minutes; expiry never reopens the original reward.",
+        "adversarial": "Save/reload at deadline cannot reopen expired rewards",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-021",
+      "title": "Mycelium Neighbor Network",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Removing a log reduces connectivity; restoring a unique log may repair one link. Source recheck required before integration.",
+      "player_scenario": "Observe fungal links between trees and decide which fallen logs to retain",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Removing a log reduces connectivity; restoring a unique log may repair one link",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "network_nodes",
+          "log_receipts",
+          "connectivity",
+          "regrowth_epoch"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_mycelium_neighbor_network(actor,world_revision)->{choices,quote,reasons}",
+        "commit_mycelium_neighbor_network(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_mycelium_neighbor_network(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Mycelium Neighbor Network; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Observe fungal links between trees and decide which fallen logs to retain; verify rule: Removing a log reduces connectivity; restoring a unique log may repair one link.",
+        "adversarial": "Duplicating a log receipt cannot regenerate two links",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-022",
+      "title": "Migratory Seed Hitchhikers",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Seed dispersal follows observed carriers and bounded seasonal movement. Source recheck required before integration.",
+      "player_scenario": "Tag native seeds carried by wildlife and establish corridors to damaged habitats",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Seed dispersal follows observed carriers and bounded seasonal movement",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "tagged_seeds",
+          "carrier_routes",
+          "dispersal_epoch",
+          "germinations"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_migratory_seed_hitchhikers(actor,world_revision)->{choices,quote,reasons}",
+        "commit_migratory_seed_hitchhikers(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_migratory_seed_hitchhikers(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Migratory Seed Hitchhikers; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Tag native seeds carried by wildlife and establish corridors to damaged habitats; verify rule: Seed dispersal follows observed carriers and bounded seasonal movement.",
+        "adversarial": "One seed cannot germinate in two cells",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-023",
+      "title": "Mosslight Microhabitats",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Habitat observations never mint authoritative Farming water units. Source recheck required before integration.",
+      "player_scenario": "Compare shaded moss plots with sunlit controls to learn moisture retention",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Habitat observations never mint authoritative Farming water units",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "plot_ids",
+          "shade_state",
+          "moisture_observations",
+          "score"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_mosslight_microhabitats(actor,world_revision)->{choices,quote,reasons}",
+        "commit_mosslight_microhabitats(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_mosslight_microhabitats(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Mosslight Microhabitats; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Compare shaded moss plots with sunlit controls to learn moisture retention; verify rule: Habitat observations never mint authoritative Farming water units.",
+        "adversarial": "Removing shade cannot leave an invisible permanent moisture buff",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-024",
+      "title": "Beetle Bark Rescue",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Species-specific populations remain bounded; Farming owns any crop effect. Source recheck required before integration.",
+      "player_scenario": "Differentiate helpful and harmful beetle traces and choose targeted intervention",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Species-specific populations remain bounded; Farming owns any crop effect",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "tree_id",
+          "beetle_mix",
+          "intervention_receipts",
+          "season_epoch"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_beetle_bark_rescue(actor,world_revision)->{choices,quote,reasons}",
+        "commit_beetle_bark_rescue(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_beetle_bark_rescue(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Beetle Bark Rescue; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Differentiate helpful and harmful beetle traces and choose targeted intervention; verify rule: Species-specific populations remain bounded; Farming owns any crop effect.",
+        "adversarial": "Repeat intervention cannot create negative populations",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-025",
+      "title": "Meadow Song Diversity",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Distinct species/cells count once; captions provide audio-independent completion. Source recheck required before integration.",
+      "player_scenario": "Identify original bird calls and map habitat fragmentation using visual/audio cues",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Distinct species/cells count once; captions provide audio-independent completion",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "species_signals",
+          "heard_cells",
+          "diversity_index"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_meadow_song_diversity(actor,world_revision)->{choices,quote,reasons}",
+        "commit_meadow_song_diversity(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_meadow_song_diversity(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Meadow Song Diversity; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Identify original bird calls and map habitat fragmentation using visual/audio cues; verify rule: Distinct species/cells count once; captions provide audio-independent completion.",
+        "adversarial": "Muted audio cannot prevent full survey completion",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-026",
+      "title": "Turtle Crossing Steward",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Crossing windows finite; Valley navigation remains authoritative. Source recheck required before integration.",
+      "player_scenario": "Coordinate safe wetland wildlife crossings with seasonal path detours",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Crossing windows finite; Valley navigation remains authoritative",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "crossing_id",
+          "window_epoch",
+          "escort_state",
+          "detour"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_turtle_crossing_steward(actor,world_revision)->{choices,quote,reasons}",
+        "commit_turtle_crossing_steward(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_turtle_crossing_steward(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Turtle Crossing Steward; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Coordinate safe wetland wildlife crossings with seasonal path detours; verify rule: Crossing windows finite; Valley navigation remains authoritative.",
+        "adversarial": "Closed paths cannot trap residents or duplicate creatures",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-027",
+      "title": "Wildflower Succession Diary",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Each habitat patch advances at most one eligible stage per epoch. Source recheck required before integration.",
+      "player_scenario": "Track pioneer plants, meadows and woodland regeneration over multiple years",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Each habitat patch advances at most one eligible stage per epoch",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "patch_id",
+          "succession_stage",
+          "last_epoch",
+          "observations"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_wildflower_succession_diary(actor,world_revision)->{choices,quote,reasons}",
+        "commit_wildflower_succession_diary(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_wildflower_succession_diary(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Wildflower Succession Diary; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Track pioneer plants, meadows and woodland regeneration over multiple years; verify rule: Each habitat patch advances at most one eligible stage per epoch.",
+        "adversarial": "Reload cannot skip ecological succession stages",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-028",
+      "title": "Nocturnal Pollination Pact",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Only valid dark habitat windows yield bounded pollination credit. Source recheck required before integration.",
+      "player_scenario": "Arrange dark garden hours for moths while balancing village lighting needs",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Only valid dark habitat windows yield bounded pollination credit",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "garden_id",
+          "dark_hours",
+          "moth_visits",
+          "credits"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_nocturnal_pollination_pact(actor,world_revision)->{choices,quote,reasons}",
+        "commit_nocturnal_pollination_pact(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_nocturnal_pollination_pact(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Nocturnal Pollination Pact; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Arrange dark garden hours for moths while balancing village lighting needs; verify rule: Only valid dark habitat windows yield bounded pollination credit.",
+        "adversarial": "One moth visit cannot grant multiple harvest bonuses",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-029",
+      "title": "River Pebble Sorting Study",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Field predictions update knowledge only; authorized adapters change fish state. Source recheck required before integration.",
+      "player_scenario": "Classify streambed substrate to predict fish nursery zones without altering flow",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Field predictions update knowledge only; authorized adapters change fish state",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "sample_sites",
+          "substrate_class",
+          "confidence",
+          "advice"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_river_pebble_sorting_study(actor,world_revision)->{choices,quote,reasons}",
+        "commit_river_pebble_sorting_study(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_river_pebble_sorting_study(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for River Pebble Sorting Study; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Classify streambed substrate to predict fish nursery zones without altering flow; verify rule: Field predictions update knowledge only; authorized adapters change fish state.",
+        "adversarial": "Wrong prediction cannot rewrite fish population",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-030",
+      "title": "Winter Dormancy Sanctuaries",
+      "domain": "biome_stewardship",
+      "mission_ids": [
+        "E03",
+        "E05"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Seasonal access restrictions use monotonic epoch; alternate routes remain viable. Source recheck required before integration.",
+      "player_scenario": "Protect hibernating animals and choose navigable winter detours",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Seasonal access restrictions use monotonic epoch; alternate routes remain viable",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "refuge_ids",
+          "occupants",
+          "season_lock",
+          "detour_path"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_winter_dormancy_sanctuaries(actor,world_revision)->{choices,quote,reasons}",
+        "commit_winter_dormancy_sanctuaries(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_winter_dormancy_sanctuaries(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Farming hydrology/crops; Valley habitat/navigation; Emergence ecological observations",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic biome_stewardship cues, legible iconography and optional original ambient audio for Winter Dormancy Sanctuaries; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Protect hibernating animals and choose navigable winter detours; verify rule: Seasonal access restrictions use monotonic epoch; alternate routes remain viable.",
+        "adversarial": "Winter rollover cannot strand player or reopen refuge early",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-031",
+      "title": "Unsent Apology Workshop",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Rejection is respected and no delivery without recipient consent. Source recheck required before integration.",
+      "player_scenario": "Draft, revise or archive an apology; seek consent before delivery",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Rejection is respected and no delivery without recipient consent",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "draft_id",
+          "recipient_consent",
+          "revision",
+          "delivery_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_unsent_apology_workshop(actor,world_revision)->{choices,quote,reasons}",
+        "commit_unsent_apology_workshop(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_unsent_apology_workshop(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Unsent Apology Workshop; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Draft, revise or archive an apology; seek consent before delivery; verify rule: Rejection is respected and no delivery without recipient consent.",
+        "adversarial": "Repeated delivery cannot multiply friendship gains",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-032",
+      "title": "Market Gossip Provenance",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Unverified claims never become authoritative NPC facts. Source recheck required before integration.",
+      "player_scenario": "Trace a rumor through consenting witnesses and distinguish hearsay from direct evidence",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Unverified claims never become authoritative NPC facts",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "claim_id",
+          "witness_links",
+          "confidence",
+          "privacy_flags"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_market_gossip_provenance(actor,world_revision)->{choices,quote,reasons}",
+        "commit_market_gossip_provenance(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_market_gossip_provenance(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Market Gossip Provenance; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Trace a rumor through consenting witnesses and distinguish hearsay from direct evidence; verify rule: Unverified claims never become authoritative NPC facts.",
+        "adversarial": "Fabricated witness cannot become verified after reload",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-033",
+      "title": "Festival Heirloom Stewardship",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Ownership and visibility consent checked before each display. Source recheck required before integration.",
+      "player_scenario": "Help an elder document an heirloom and negotiate private or public exhibition",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Ownership and visibility consent checked before each display",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "heirloom_id",
+          "owner_id",
+          "consent",
+          "display_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_festival_heirloom_stewardship(actor,world_revision)->{choices,quote,reasons}",
+        "commit_festival_heirloom_stewardship(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_festival_heirloom_stewardship(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Festival Heirloom Stewardship; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Help an elder document an heirloom and negotiate private or public exhibition; verify rule: Ownership and visibility consent checked before each display.",
+        "adversarial": "Withdrawing consent removes display without cloning item",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-034",
+      "title": "Shared Recipe Reconciliation",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Both contributors must approve a versioned public recipe. Source recheck required before integration.",
+      "player_scenario": "Mediate two residents combining family recipes while retaining attribution",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Both contributors must approve a versioned public recipe",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "recipe_id",
+          "contributors",
+          "consents",
+          "recipe_revision"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_shared_recipe_reconciliation(actor,world_revision)->{choices,quote,reasons}",
+        "commit_shared_recipe_reconciliation(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_shared_recipe_reconciliation(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Shared Recipe Reconciliation; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Mediate two residents combining family recipes while retaining attribution; verify rule: Both contributors must approve a versioned public recipe.",
+        "adversarial": "Vetoed recipe cannot appear in shop inventory",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-035",
+      "title": "Quiet Neighbor Signal",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Only approved gestures influence trust; decline is penalty-free. Source recheck required before integration.",
+      "player_scenario": "Offer optional nonverbal help to a stressed neighbor without forcing conversation",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Only approved gestures influence trust; decline is penalty-free",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "npc_id",
+          "preferred_gestures",
+          "last_contact_epoch",
+          "consent"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_quiet_neighbor_signal(actor,world_revision)->{choices,quote,reasons}",
+        "commit_quiet_neighbor_signal(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_quiet_neighbor_signal(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Quiet Neighbor Signal; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Offer optional nonverbal help to a stressed neighbor without forcing conversation; verify rule: Only approved gestures influence trust; decline is penalty-free.",
+        "adversarial": "Gesture spam cannot bypass daily relationship caps",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-036",
+      "title": "Memory Map of Kindness",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Private favors remain private; each unique favor has one receipt. Source recheck required before integration.",
+      "player_scenario": "Map small verified favors with each resident's permission and invite reciprocity",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Private favors remain private; each unique favor has one receipt",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "favor_id",
+          "visibility_consent",
+          "map_pin",
+          "reciprocity_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_memory_map_of_kindness(actor,world_revision)->{choices,quote,reasons}",
+        "commit_memory_map_of_kindness(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_memory_map_of_kindness(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Memory Map of Kindness; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Map small verified favors with each resident's permission and invite reciprocity; verify rule: Private favors remain private; each unique favor has one receipt.",
+        "adversarial": "Duplicate favor cannot create unlimited rewards",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-037",
+      "title": "Seasonal Reunion Planner",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Exclusive schedule slots and consent; missed visits can be rescheduled. Source recheck required before integration.",
+      "player_scenario": "Invite returning friends while respecting travel times, work and availability",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Exclusive schedule slots and consent; missed visits can be rescheduled",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "reunion_id",
+          "invitees",
+          "slot_reservations",
+          "travel_eta"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_seasonal_reunion_planner(actor,world_revision)->{choices,quote,reasons}",
+        "commit_seasonal_reunion_planner(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_seasonal_reunion_planner(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Seasonal Reunion Planner; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Invite returning friends while respecting travel times, work and availability; verify rule: Exclusive schedule slots and consent; missed visits can be rescheduled.",
+        "adversarial": "Overlapping bookings cannot teleport an NPC",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-038",
+      "title": "Civic Mediation Table",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Joint outcome requires both parties' agreement; no forced reconciliation. Source recheck required before integration.",
+      "player_scenario": "Hear both sides of a dispute and offer transparent compromise or abstain",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Joint outcome requires both parties' agreement; no forced reconciliation",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "dispute_id",
+          "statements",
+          "proposal",
+          "party_consents"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_civic_mediation_table(actor,world_revision)->{choices,quote,reasons}",
+        "commit_civic_mediation_table(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_civic_mediation_table(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Civic Mediation Table; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Hear both sides of a dispute and offer transparent compromise or abstain; verify rule: Joint outcome requires both parties' agreement; no forced reconciliation.",
+        "adversarial": "One-sided consent cannot settle a joint dispute",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-039",
+      "title": "Lost Craft Mentor Chain",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Skill transfers only after completed lessons; no instant cascading mastery. Source recheck required before integration.",
+      "player_scenario": "Arrange skill lessons and apprenticeships with traceable learning progression",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Skill transfers only after completed lessons; no instant cascading mastery",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "mentor_id",
+          "learner_id",
+          "lesson_steps",
+          "skill_receipts"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_lost_craft_mentor_chain(actor,world_revision)->{choices,quote,reasons}",
+        "commit_lost_craft_mentor_chain(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_lost_craft_mentor_chain(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Lost Craft Mentor Chain; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Arrange skill lessons and apprenticeships with traceable learning progression; verify rule: Skill transfers only after completed lessons; no instant cascading mastery.",
+        "adversarial": "Reload mid-lesson cannot award completion twice",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-040",
+      "title": "Neighborhood Story Circle",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Stories are versioned and privacy permissions govern public recaps. Source recheck required before integration.",
+      "player_scenario": "Host opt-in storytelling and let residents retract or correct their own memories",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Stories are versioned and privacy permissions govern public recaps",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "circle_id",
+          "participants",
+          "story_versions",
+          "visibility"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_neighborhood_story_circle(actor,world_revision)->{choices,quote,reasons}",
+        "commit_neighborhood_story_circle(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_neighborhood_story_circle(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic social_agency cues, legible iconography and optional original ambient audio for Neighborhood Story Circle; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Host opt-in storytelling and let residents retract or correct their own memories; verify rule: Stories are versioned and privacy permissions govern public recaps.",
+        "adversarial": "Retracted story cannot remain publicly visible after load",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-041",
+      "title": "Barter Fairness Lens",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Trades exchange exactly quoted quantities atomically; preview is free. Source recheck required before integration.",
+      "player_scenario": "Compare a two-item barter with transparent local price history before committing",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Trades exchange exactly quoted quantities atomically; preview is free",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "offer_id",
+          "item_quotes",
+          "valuation_epoch",
+          "trade_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_barter_fairness_lens(actor,world_revision)->{choices,quote,reasons}",
+        "commit_barter_fairness_lens(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_barter_fairness_lens(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Barter Fairness Lens; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Compare a two-item barter with transparent local price history before committing; verify rule: Trades exchange exactly quoted quantities atomically; preview is free.",
+        "adversarial": "Double confirmation cannot duplicate goods",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-042",
+      "title": "Community Loan Library",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Unique tool has one borrower; escrow deposit returns exactly once. Source recheck required before integration.",
+      "player_scenario": "Borrow reusable tools from a shared library with return deadlines and deposits",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Unique tool has one borrower; escrow deposit returns exactly once",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "tool_id",
+          "borrower_id",
+          "due_epoch",
+          "deposit_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_community_loan_library(actor,world_revision)->{choices,quote,reasons}",
+        "commit_community_loan_library(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_community_loan_library(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Community Loan Library; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Borrow reusable tools from a shared library with return deadlines and deposits; verify rule: Unique tool has one borrower; escrow deposit returns exactly once.",
+        "adversarial": "Reload cannot return tool or deposit twice",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-043",
+      "title": "Perishable Delivery Routes",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Quality decays by elapsed time; delivered units leave inventory. Source recheck required before integration.",
+      "player_scenario": "Plan produce delivery stops before spoilage and receive quality-adjusted settlement",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Quality decays by elapsed time; delivered units leave inventory",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "delivery_id",
+          "route_stops",
+          "quality_clock",
+          "settlement"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_perishable_delivery_routes(actor,world_revision)->{choices,quote,reasons}",
+        "commit_perishable_delivery_routes(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_perishable_delivery_routes(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Perishable Delivery Routes; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Plan produce delivery stops before spoilage and receive quality-adjusted settlement; verify rule: Quality decays by elapsed time; delivered units leave inventory.",
+        "adversarial": "Changing route after delivery cannot restore stock",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-044",
+      "title": "Seed Commons Exchange",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Donated seed lots are debited once; claims have unique ownership receipts. Source recheck required before integration.",
+      "player_scenario": "Trade native seeds with neighbors under a biodiversity-sharing agreement",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Donated seed lots are debited once; claims have unique ownership receipts",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "seed_lot_id",
+          "donor",
+          "recipient",
+          "exchange_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_seed_commons_exchange(actor,world_revision)->{choices,quote,reasons}",
+        "commit_seed_commons_exchange(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_seed_commons_exchange(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Seed Commons Exchange; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Trade native seeds with neighbors under a biodiversity-sharing agreement; verify rule: Donated seed lots are debited once; claims have unique ownership receipts.",
+        "adversarial": "One seed lot cannot be redeemed twice",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-045",
+      "title": "Craft Commission Escrow",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Escrow releases per completed stage; cancellation refunds only unspent amounts. Source recheck required before integration.",
+      "player_scenario": "Accept a nonconstruction craft order with staged deposits and quality review",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Escrow releases per completed stage; cancellation refunds only unspent amounts",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "commission_id",
+          "escrow",
+          "quality_gate",
+          "stage_receipts"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_craft_commission_escrow(actor,world_revision)->{choices,quote,reasons}",
+        "commit_craft_commission_escrow(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_craft_commission_escrow(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Craft Commission Escrow; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Accept a nonconstruction craft order with staged deposits and quality review; verify rule: Escrow releases per completed stage; cancellation refunds only unspent amounts.",
+        "adversarial": "Cancellation after delivery cannot refund all escrow",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-046",
+      "title": "Weather Risk Pool",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Claims require unique loss receipts and are capped by available fund. Source recheck required before integration.",
+      "player_scenario": "Join a voluntary mutual aid fund paying verified weather-related losses",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Claims require unique loss receipts and are capped by available fund",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "pool_id",
+          "contributions",
+          "loss_receipts",
+          "payouts"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_weather_risk_pool(actor,world_revision)->{choices,quote,reasons}",
+        "commit_weather_risk_pool(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_weather_risk_pool(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Weather Risk Pool; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Join a voluntary mutual aid fund paying verified weather-related losses; verify rule: Claims require unique loss receipts and are capped by available fund.",
+        "adversarial": "One storm loss cannot be claimed repeatedly",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-047",
+      "title": "Traveling Skills Exchange",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Both participants reserve one real time slot; reward after completion only. Source recheck required before integration.",
+      "player_scenario": "Trade a completed lesson with a visiting specialist instead of paying currency",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Both participants reserve one real time slot; reward after completion only",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "lesson_id",
+          "teacher",
+          "student",
+          "slot",
+          "skill_receipt"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_traveling_skills_exchange(actor,world_revision)->{choices,quote,reasons}",
+        "commit_traveling_skills_exchange(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_traveling_skills_exchange(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Traveling Skills Exchange; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Trade a completed lesson with a visiting specialist instead of paying currency; verify rule: Both participants reserve one real time slot; reward after completion only.",
+        "adversarial": "Canceled lesson cannot grant skill",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-048",
+      "title": "Harvest Futures Board",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Settlement consumes actual produce; obligations cannot mint goods. Source recheck required before integration.",
+      "player_scenario": "Promise a capped future crop delivery with fair fallback for poor harvest",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Settlement consumes actual produce; obligations cannot mint goods",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "contract_id",
+          "due_epoch",
+          "quantity",
+          "escrow",
+          "settlement"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_harvest_futures_board(actor,world_revision)->{choices,quote,reasons}",
+        "commit_harvest_futures_board(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_harvest_futures_board(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Harvest Futures Board; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Promise a capped future crop delivery with fair fallback for poor harvest; verify rule: Settlement consumes actual produce; obligations cannot mint goods.",
+        "adversarial": "Unharvested crops cannot be sold twice",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-049",
+      "title": "Repair Cafe Circularity",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: One durability ledger and mutually exclusive repair/salvage receipts. Source recheck required before integration.",
+      "player_scenario": "Repair a damaged nonstructural tool or salvage it, but not both",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "One durability ledger and mutually exclusive repair/salvage receipts",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "item_instance",
+          "condition",
+          "repair_receipt",
+          "salvage_choice"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_repair_cafe_circularity(actor,world_revision)->{choices,quote,reasons}",
+        "commit_repair_cafe_circularity(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_repair_cafe_circularity(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Repair Cafe Circularity; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Repair a damaged nonstructural tool or salvage it, but not both; verify rule: One durability ledger and mutually exclusive repair/salvage receipts.",
+        "adversarial": "One item cannot become repaired and salvaged simultaneously",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    },
+    {
+      "id": "EB-E-050",
+      "title": "Village Price Memory",
+      "domain": "regional_exchange",
+      "mission_ids": [
+        "E03",
+        "E08"
+      ],
+      "status": "specified_not_implemented",
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Diary is read-only; missing values are never presented as observed prices. Source recheck required before integration.",
+      "player_scenario": "Read historical seasonal prices with uncertainty markings before trading",
+      "player_verbs": [
+        "inspect",
+        "preview",
+        "choose",
+        "commit",
+        "review_or_cancel"
+      ],
+      "simulation_rules": [
+        "Diary is read-only; missing values are never presented as observed prices",
+        "All preview operations are pure. A unique command_id and expected revision enforce exactly-once outcomes; invalid or stale commands reject without mutation.",
+        "Calendar gating uses Principal's monotonic day_epoch and minute_of_day. Core farming remains playable when this feature is disabled."
+      ],
+      "state_schema": {
+        "version": 1,
+        "fields": [
+          "price_series",
+          "market_epoch",
+          "read_cursor",
+          "confidence"
+        ],
+        "receipts": [
+          "command_id",
+          "expected_revision",
+          "effect_digest",
+          "day_epoch"
+        ],
+        "legacy_policy": "Missing optional state defaults safely; malformed present state rejects atomically through Principal save validation."
+      },
+      "command_contract": [
+        "preview_village_price_memory(actor,world_revision)->{choices,quote,reasons}",
+        "commit_village_price_memory(command_id,expected_revision,choice)->{receipt,effects}",
+        "cancel_village_price_memory(receipt)->{refund_or_fallback}"
+      ],
+      "service_contracts": [
+        "Principal economy/inventory; Village shop schedules; Emergence finite exchange proposals",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "controls": {
+        "keyboard_mouse": "Focus target, inspect preview, choose with arrows/pointer, remappable confirm/cancel.",
+        "controller": "D-pad/stick focus; shoulders change choice; A confirm, B cancel; accessible explanation.",
+        "touch": "Tap-to-inspect; large confirmation/cancel controls; long-press for details; no precision drag required.",
+        "accessibility": "Text alternatives to color/audio, captions, scalable UI and recoverable timers."
+      },
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations."
+      },
+      "original_art_audio": "Original stylized-realistic regional_exchange cues, legible iconography and optional original ambient audio for Village Price Memory; provenance manifest and low-spec fallback required.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 8,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "acceptance": {
+        "positive": "In real Godot scene, Read historical seasonal prices with uncertainty markings before trading; verify rule: Diary is read-only; missing values are never presented as observed prices.",
+        "adversarial": "Opening price diary cannot change market prices",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "engine_portability": "Pure state and command schema with Godot adapter only until verified baseline; Unreal/Unity migration requires later approval.",
+      "phase_gate": "Phase B design only; Phase C closed until all 220 concepts independently and jointly verified."
+    }
+  ]
+}
