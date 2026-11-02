@@ -6,6 +6,9 @@ extends RefCounted
 const SAVE_PATH: String = "user://everbloom_save_v1.json"
 const TEMP_PATH: String = "user://everbloom_save_v1.json.tmp"
 const BACKUP_PATH: String = "user://everbloom_save_v1.json.bak"
+# Damaged primary bytes are retained separately; never overwrite an earlier quarantine.
+const QUARANTINE_PREFIX: String = "user://everbloom_save_v1.json.corrupt."
+const MAX_QUARANTINE_SLOTS: int = 8
 const SCHEMA: int = 1
 
 static func _is_number(value: Variant) -> bool:
@@ -227,15 +230,32 @@ static func read_payload() -> Dictionary:
         return backup
     return {}
 
+static func _available_quarantine_path() -> String:
+    for slot in range(1, MAX_QUARANTINE_SLOTS + 1):
+        var candidate: String = "%s%03d" % [QUARANTINE_PREFIX, slot]
+        if not FileAccess.file_exists(candidate):
+            return candidate
+    return ""
+
 static func write_payload(payload: Dictionary) -> bool:
     if not validate_payload(payload):
         push_error("EVERBLOOM: refused to write invalid schema-1 save")
         return false
 
-    # Never overwrite an existing corrupt save: preserve it for manual recovery.
-    if FileAccess.file_exists(SAVE_PATH) and _read_one(SAVE_PATH).is_empty():
-        push_error("EVERBLOOM: existing primary is invalid; refusing to overwrite")
-        return false
+    # A recovered player must be able to save again. Preserve the corrupt
+    # primary byte-for-byte in a free quarantine slot, and keep the last valid
+    # backup intact. Without a valid backup, fail closed instead of inventing
+    # an authoritative save or destroying forensic evidence.
+    var damaged_primary: bool = FileAccess.file_exists(SAVE_PATH) and _read_one(SAVE_PATH).is_empty()
+    var quarantine_path: String = ""
+    if damaged_primary:
+        if _read_one(BACKUP_PATH).is_empty():
+            push_error("EVERBLOOM: damaged primary has no valid backup; refusing overwrite")
+            return false
+        quarantine_path = _available_quarantine_path()
+        if quarantine_path.is_empty():
+            push_error("EVERBLOOM: damaged-save quarantine is full; refusing overwrite")
+            return false
 
     var temp: FileAccess = FileAccess.open(TEMP_PATH, FileAccess.WRITE)
     if temp == null:
@@ -255,7 +275,14 @@ static func write_payload(payload: Dictionary) -> bool:
     var source: String = ProjectSettings.globalize_path(TEMP_PATH)
     var target: String = ProjectSettings.globalize_path(SAVE_PATH)
     var backup: String = ProjectSettings.globalize_path(BACKUP_PATH)
-    if FileAccess.file_exists(SAVE_PATH):
+    if damaged_primary:
+        # Only the corrupt primary is moved. Never copy its bytes over a
+        # validated backup, and never reuse an occupied quarantine filename.
+        if DirAccess.rename_absolute(target, ProjectSettings.globalize_path(quarantine_path)) != OK:
+            push_error("EVERBLOOM: could not quarantine damaged primary; backup preserved")
+            return false
+        push_warning("EVERBLOOM: damaged primary quarantined at " + quarantine_path)
+    elif FileAccess.file_exists(SAVE_PATH):
         if DirAccess.copy_absolute(target, backup) != OK:
             push_error("EVERBLOOM: could not create save backup; original preserved")
             return false
