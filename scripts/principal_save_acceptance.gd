@@ -364,6 +364,34 @@ func _run() -> void:
            "assembled festival award failed to roundtrip without duplication")
     _check(session.festivals.awarded.size() == 1,
            "assembled festival award count changed after reload")
+    # P02/P04: every accepted schema-1 minute must survive the assembled
+    # Game -> SaveService -> Game roundtrip, including historical off-hours.
+    # Freeze rendering ticks here; gameplay auto-sleep at 22:00 is a separate
+    # state transition and must not silently rewrite a loaded snapshot.
+    session.set_process(false)
+    for sample in [0.0, 359.5, 360.0, 1319.0, 1320.0, 1440.0]:
+        var clock_sample: float = float(sample)
+        session.minute_of_day = clock_sample
+        session.save_game(false)
+        var clock_payload: Dictionary = SaveService.read_payload()
+        _check(clock_payload.get("minute", -1.0) == clock_sample,
+               "assembled clock was not persisted at %s" % str(clock_sample))
+        session.minute_of_day = 700.0
+        session.load_game()
+        _check(session.minute_of_day == clock_sample,
+               "accepted schema-1 clock was clamped during load at %s" % str(clock_sample))
+        _check(session.gold == 901 and int(session.inventory.get("turnip", -1)) == 17,
+               "clock roundtrip changed assembled money or inventory")
+    var clock_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
+    for invalid_minute in [-0.01, 1440.01, INF]:
+        var bad_clock: Dictionary = SaveService.read_payload().duplicate(true)
+        bad_clock["minute"] = invalid_minute
+        _check(not SaveService.validate_payload(bad_clock),
+               "invalid schema-1 minute accepted: %s" % str(invalid_minute))
+        _check(not SaveService.write_payload(bad_clock),
+               "invalid schema-1 minute written: %s" % str(invalid_minute))
+        _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == clock_bytes,
+               "invalid clock write mutated authoritative save bytes")
     _check(SaveService.validate_payload(base), "mutating deep duplicates corrupted valid fixture")
     print("PRINCIPAL SAVE VALIDATION: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
