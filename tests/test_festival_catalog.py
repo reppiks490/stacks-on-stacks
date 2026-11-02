@@ -119,6 +119,20 @@ class FestivalCatalogTests(unittest.TestCase):
         ):
             self.assertIn(symbol, source)
 
+    def test_all_donations_are_obtainable_in_current_game(self):
+        # Do not accept decorative content specs that cannot be fulfilled.
+        crop_data = json.loads((ROOT / "data/crops.json").read_text(encoding="utf-8"))
+        animal_data = json.loads((ROOT / "data/animals.json").read_text(encoding="utf-8"))
+        crop_ids = {str(x["id"]) for x in crop_data["crops"]}
+        obtained = crop_ids | {x + "_seed" for x in crop_ids}
+        obtained |= {str(x["product"]) for x in animal_data["animals"]}
+        obtained |= {"fish", "wild_herb"}
+        for event in self.data["festivals"]:
+            self.assertIn(
+                event["donation"]["item"], obtained,
+                msg=f"unobtainable donation blocks {event['id']}"
+            )
+
     def test_main_scene_has_real_gameplay_hook(self):
         source = (ROOT / "scripts/game.gd").read_text(encoding="utf-8")
         for symbol in (

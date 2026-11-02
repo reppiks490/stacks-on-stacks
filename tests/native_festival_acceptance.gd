@@ -32,6 +32,11 @@ func _run() -> void:
     game.minute_of_day = 600.0
     game.festivals.refresh()
     _check(game.festivals.stage.visible, "original event stage appears on festival day")
+    game.weather = "Rain"
+    game.festivals.refresh()
+    _check("Rain shelter" in game.festivals.sign.text, "festival shelter remains available in rain")
+    game.weather = "Clear"
+    game.festivals.refresh()
     _check(str(game.festivals.today()["id"]) == "spring_seed_exchange", "first festival identity")
     var start_gold: int = game.gold
     var start_ribbons: int = int(game.inventory.get("festival_ribbon", 0))
@@ -53,8 +58,14 @@ func _run() -> void:
            "item requirement enforced")
     _check(game.gold == start_gold, "missing offering cannot grant currency")
     game.inventory["turnip_seed"] = 2
-    var earned: String = game.festivals.act(site)
-    _check("Thank you" in earned, "valid contribution accepted")
+    # Exercise the real game input-handler route, not only the festival method.
+    game.hero.global_position = site + Vector3(0.0, 1.0, 0.0)
+    var input_event := InputEventAction.new()
+    input_event.action = "festival"
+    input_event.pressed = true
+    game._unhandled_input(input_event)
+    var earned: String = game.latest_message
+    _check("Thank you" in earned, "valid contribution accepted through main game input")
     _check(game.gold == start_gold + 26, "exact first event currency award")
     _check(int(game.inventory["turnip_seed"]) == 0, "exact item debit")
     _check(int(game.inventory.get("festival_ribbon", 0)) == start_ribbons + 1,

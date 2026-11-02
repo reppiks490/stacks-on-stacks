@@ -208,10 +208,10 @@
       "season": "Winter",
       "day": 8,
       "title": "Evergreen Craft Fair",
-      "description": "Handcrafted gifts brighten short afternoons.",
+      "description": "Gather aromatic herbs for handcrafted winter garlands and gifts.",
       "activity": "seedling",
       "donation": {
-        "item": "wood",
+        "item": "wild_herb",
         "quantity": 2
       },
       "reward": {

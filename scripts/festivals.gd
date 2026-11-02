@@ -65,6 +65,8 @@ func _make_stage() -> void:
     add_child(stage)
     _box(stage, Vector3(0.0, 0.23, 0.0), Vector3(6.5, 0.42, 5.0), "#c09a72")
     _box(stage, Vector3(0.0, 0.48, -2.25), Vector3(5.5, 0.3, 0.36), "#805b4b")
+    # A tangible original covered market roof: celebrations remain usable in rain.
+    _box(stage, Vector3(0.0, 4.55, -0.2), Vector3(6.9, 0.24, 5.5), "#f5e1bb")
     for side in [-1.0, 1.0]:
         _box(stage, Vector3(side * 2.7, 2.1, -1.6), Vector3(0.22, 3.6, 0.22), "#805b4b")
         _orb(stage, Vector3(side * 2.7, 3.95, -1.6), 0.40, "#f9da91")
@@ -107,6 +109,8 @@ func refresh() -> void:
     stage.visible = not occasion.is_empty()
     if not occasion.is_empty():
         sign.text = str(occasion.get("title", "EVERBLOOM"))
+        if str(game.weather) == "Rain":
+            sign.text += " | Rain shelter"
         sign.modulate = Color.html(str(occasion.get("color", "#fff4db")))
 
 func today() -> Dictionary:

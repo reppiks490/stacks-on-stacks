@@ -15,7 +15,7 @@ The original seasonal calendar has **12 distinct celebration days, three per sea
 | Autumn | Amberroot Fair | Ember Orchard Stories | Cloudthread Weaving Day |
 | Winter | Hearthglass Market | Evergreen Craft Fair | Nightglow Promise |
 
-The engine loads `data/festivals.json`, a distinct event for each season/day pair. All offering requirements are items obtainable through the existing Everbloom farming, animal care, gathering or fishing features. The events have original descriptions, distinct themes and rain shelter design, not third-party artwork or music. The prototype stage currently uses **original Godot primitive materials** and two softly pulsing lantern lights. Real art, stalls, animations, villagers and minigames are future production work.
+The engine loads `data/festivals.json`, a distinct event for each season/day pair. All offering requirements are verified against obtainable crop seeds/produce, animal products, wild herbs or fish. The original Winter craft-fair offering uses foraged herbs, since the first game build does not yet implement wood gathering. The events have original descriptions, distinct themes and rain shelter design, not third-party artwork or music. The prototype stage currently uses **original Godot primitive materials** and two softly pulsing lantern lights. Real art, stalls, animations, villagers and minigames are future production work.
 
 ## Canonical integration contracts
 
