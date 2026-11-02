@@ -1,0 +1,2331 @@
+{
+  "schema_version": 1,
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "source": {
+    "branch": "game/everbloom-emergence-phaseB-100-20261102",
+    "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+    "path": "docs/innovation/emergence/phaseB_051_110.json",
+    "blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac"
+  },
+  "base_main": "edeeb2e4acffdc8f6f5d1b08a5e41c2ca6786867",
+  "owner": "Emergence",
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "state_contracts": [
+    {
+      "id": "EB-E-071",
+      "title": "First Harvest Sharing Table",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_071",
+      "source_fields": [
+        "event_id",
+        "invitees",
+        "portion_ledger",
+        "meal_memories"
+      ],
+      "source_field_mapping": {
+        "event_id": "event_id",
+        "invitees": "invitees",
+        "portion_ledger": "portion_ledger",
+        "meal_memories": "meal_memories"
+      },
+      "player_scenario": "Invite consenting neighbors to a harvest table, preview dietary compatibility and commit finite individually receipted servings.",
+      "player_verbs": [
+        "preview_first_harvest_sharing_table",
+        "inspect_first_harvest_sharing_table",
+        "confirm_first_harvest_sharing_table",
+        "review_first_harvest_sharing_table",
+        "cancel_first_harvest_sharing_table"
+      ],
+      "fields": {
+        "event_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "invitees": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "consent": {
+                "type": "boolean"
+              },
+              "diet_tag": {
+                "type": "enum",
+                "values": [
+                  "general",
+                  "plant",
+                  "allergen_free"
+                ]
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "resident_id"
+        },
+        "portion_ledger": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "portion_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "food_receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "diet_tag": {
+                "type": "enum",
+                "values": [
+                  "general",
+                  "plant",
+                  "allergen_free"
+                ]
+              },
+              "quantity": {
+                "type": "integer",
+                "min": 1,
+                "max": 1
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "portion_id"
+        },
+        "meal_memories": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "memory_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "portion_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "memory_id"
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "event_id": "",
+            "day_epoch": -1,
+            "invitees": [],
+            "portion_ledger": [],
+            "meal_memories": []
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "event_id": "harvest-57",
+            "day_epoch": 57,
+            "invitees": [
+              {
+                "resident_id": "ivy",
+                "consent": true,
+                "diet_tag": "plant"
+              },
+              {
+                "resident_id": "sol",
+                "consent": true,
+                "diet_tag": "general"
+              }
+            ],
+            "portion_ledger": [
+              {
+                "portion_id": "p1",
+                "food_receipt_id": "debit1",
+                "resident_id": "ivy",
+                "diet_tag": "plant",
+                "quantity": 1
+              },
+              {
+                "portion_id": "p2",
+                "food_receipt_id": "debit2",
+                "resident_id": "sol",
+                "diet_tag": "general",
+                "quantity": 1
+              }
+            ],
+            "meal_memories": [
+              {
+                "memory_id": "m1",
+                "resident_id": "ivy",
+                "portion_id": "p1"
+              }
+            ]
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "duplicate_food_debit",
+          "patch": {
+            "portion_ledger": [
+              {
+                "portion_id": "p1",
+                "food_receipt_id": "debit1",
+                "resident_id": "ivy",
+                "diet_tag": "plant",
+                "quantity": 1
+              },
+              {
+                "portion_id": "p2",
+                "food_receipt_id": "debit1",
+                "resident_id": "sol",
+                "diet_tag": "general",
+                "quantity": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "uninvited_serving",
+          "patch": {
+            "invitees": [
+              {
+                "resident_id": "ivy",
+                "consent": true,
+                "diet_tag": "plant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "diet_mismatch",
+          "patch": {
+            "portion_ledger": [
+              {
+                "portion_id": "p1",
+                "food_receipt_id": "debit1",
+                "resident_id": "ivy",
+                "diet_tag": "general",
+                "quantity": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "phantom_memory",
+          "patch": {
+            "meal_memories": [
+              {
+                "memory_id": "m1",
+                "resident_id": "ivy",
+                "portion_id": "missing"
+              }
+            ]
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic first harvest sharing table props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-072",
+      "title": "Rain Gratitude Listening Walk",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_072",
+      "source_fields": [
+        "storm_epoch",
+        "participants",
+        "stories",
+        "visibility"
+      ],
+      "source_field_mapping": {
+        "storm_epoch": "storm_epoch",
+        "participants": "participants",
+        "stories": "stories",
+        "visibility": "visibility"
+      },
+      "player_scenario": "Replay a recorded storm's provenance and host a consent-based listening walk with private/public story controls.",
+      "player_verbs": [
+        "preview_rain_gratitude_listening_walk",
+        "inspect_rain_gratitude_listening_walk",
+        "confirm_rain_gratitude_listening_walk",
+        "review_rain_gratitude_listening_walk",
+        "cancel_rain_gratitude_listening_walk"
+      ],
+      "fields": {
+        "storm_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "weather_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "participants": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "consent": {
+                "type": "boolean"
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "resident_id"
+        },
+        "stories": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "story_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "storm_epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991
+              },
+              "visibility": {
+                "type": "enum",
+                "values": [
+                  "private",
+                  "public"
+                ]
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "story_id"
+        },
+        "visibility": {
+          "type": "enum",
+          "values": [
+            "private",
+            "public"
+          ]
+        },
+        "reward_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "storm_epoch": -1,
+            "day_epoch": -1,
+            "weather_receipt": null,
+            "participants": [],
+            "stories": [],
+            "visibility": "private",
+            "reward_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "storm_epoch": 59,
+            "day_epoch": 60,
+            "weather_receipt": "weather-59",
+            "participants": [
+              {
+                "resident_id": "ivy",
+                "consent": true
+              }
+            ],
+            "stories": [
+              {
+                "story_id": "story1",
+                "resident_id": "ivy",
+                "storm_epoch": 59,
+                "visibility": "private"
+              }
+            ],
+            "visibility": "private",
+            "reward_receipt": "listen-60"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "fabricated_storm",
+          "patch": {
+            "weather_receipt": null
+          }
+        },
+        {
+          "name": "future_storm",
+          "patch": {
+            "storm_epoch": 61
+          }
+        },
+        {
+          "name": "no_consent",
+          "patch": {
+            "participants": [
+              {
+                "resident_id": "ivy",
+                "consent": false
+              }
+            ]
+          }
+        },
+        {
+          "name": "private_story_leak",
+          "patch": {
+            "stories": [
+              {
+                "story_id": "story1",
+                "resident_id": "ivy",
+                "storm_epoch": 59,
+                "visibility": "public"
+              }
+            ]
+          }
+        },
+        {
+          "name": "empty_reward",
+          "patch": {
+            "stories": []
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic rain gratitude listening walk props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-073",
+      "title": "Village Folk Melody Exchange",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_073",
+      "source_fields": [
+        "melody_id",
+        "contributors",
+        "consent",
+        "performance_receipt"
+      ],
+      "source_field_mapping": {
+        "melody_id": "melody_id",
+        "contributors": "contributors",
+        "consent": "contributors",
+        "performance_receipt": "performance_receipt"
+      },
+      "player_scenario": "Compose an original short tune with attributed contributors; revoke public performance consent without deleting private work.",
+      "player_verbs": [
+        "preview_village_folk_melody_exchange",
+        "inspect_village_folk_melody_exchange",
+        "confirm_village_folk_melody_exchange",
+        "review_village_folk_melody_exchange",
+        "cancel_village_folk_melody_exchange"
+      ],
+      "fields": {
+        "melody_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "contributors": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "consent": {
+                "type": "boolean"
+              },
+              "attribution": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 8,
+          "unique_by": "resident_id"
+        },
+        "notes": {
+          "type": "list",
+          "items": {
+            "type": "integer",
+            "min": 0,
+            "max": 11
+          },
+          "max_items": 32
+        },
+        "visibility": {
+          "type": "enum",
+          "values": [
+            "private",
+            "public"
+          ]
+        },
+        "performance_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "playback_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "visual_fallback": {
+          "type": "boolean"
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "melody_id": "",
+            "contributors": [],
+            "notes": [],
+            "visibility": "private",
+            "performance_receipt": null,
+            "playback_epoch": -1,
+            "visual_fallback": true
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "melody_id": "melody1",
+            "contributors": [
+              {
+                "resident_id": "ivy",
+                "consent": true,
+                "attribution": "Ivy"
+              }
+            ],
+            "notes": [
+              0,
+              4,
+              7,
+              4
+            ],
+            "visibility": "public",
+            "performance_receipt": "performance-57",
+            "playback_epoch": 57,
+            "visual_fallback": true
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "revoked_consent",
+          "patch": {
+            "contributors": [
+              {
+                "resident_id": "ivy",
+                "consent": false,
+                "attribution": "Ivy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "private_public_receipt",
+          "patch": {
+            "visibility": "private"
+          }
+        },
+        {
+          "name": "empty_score",
+          "patch": {
+            "notes": []
+          }
+        },
+        {
+          "name": "no_visual_alternative",
+          "patch": {
+            "visual_fallback": false
+          }
+        },
+        {
+          "name": "futureless_playback",
+          "patch": {
+            "playback_epoch": -1
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic village folk melody exchange props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-074",
+      "title": "Lantern River Farewell",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_074",
+      "source_fields": [
+        "ceremony_id",
+        "light_instances",
+        "return_receipts",
+        "water_state"
+      ],
+      "source_field_mapping": {
+        "ceremony_id": "ceremony_id",
+        "light_instances": "light_instances",
+        "return_receipts": "return_receipts",
+        "water_state": "water_state"
+      },
+      "player_scenario": "Borrow reusable original floating lights, inspect water protection, and return each light without inventory duplication.",
+      "player_verbs": [
+        "preview_lantern_river_farewell",
+        "inspect_lantern_river_farewell",
+        "confirm_lantern_river_farewell",
+        "review_lantern_river_farewell",
+        "cancel_lantern_river_farewell"
+      ],
+      "fields": {
+        "ceremony_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "light_instances": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "light_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "owner_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "state": {
+                "type": "enum",
+                "values": [
+                  "reserved",
+                  "floating",
+                  "returned"
+                ]
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "light_id"
+        },
+        "escrow_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "light_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "light_id"
+        },
+        "return_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "light_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "light_id"
+        },
+        "water_state": {
+          "type": "enum",
+          "values": [
+            "clear",
+            "protected"
+          ]
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "ceremony_id": "",
+            "day_epoch": -1,
+            "light_instances": [],
+            "escrow_receipts": [],
+            "return_receipts": [],
+            "water_state": "clear"
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "ceremony_id": "farewell1",
+            "day_epoch": 57,
+            "light_instances": [
+              {
+                "light_id": "light1",
+                "owner_id": "ivy",
+                "state": "returned"
+              },
+              {
+                "light_id": "light2",
+                "owner_id": "sol",
+                "state": "floating"
+              }
+            ],
+            "escrow_receipts": [
+              {
+                "light_id": "light1",
+                "receipt_id": "escrow1"
+              },
+              {
+                "light_id": "light2",
+                "receipt_id": "escrow2"
+              }
+            ],
+            "return_receipts": [
+              {
+                "light_id": "light1",
+                "receipt_id": "return1"
+              }
+            ],
+            "water_state": "clear"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "no_escrow",
+          "patch": {
+            "escrow_receipts": [
+              {
+                "light_id": "light1",
+                "receipt_id": "escrow1"
+              }
+            ]
+          }
+        },
+        {
+          "name": "phantom_return",
+          "patch": {
+            "return_receipts": [
+              {
+                "light_id": "light2",
+                "receipt_id": "return2"
+              }
+            ]
+          }
+        },
+        {
+          "name": "protected_water",
+          "patch": {
+            "water_state": "protected"
+          }
+        },
+        {
+          "name": "duplicate_escrow_receipt",
+          "patch": {
+            "escrow_receipts": [
+              {
+                "light_id": "light1",
+                "receipt_id": "escrow1"
+              },
+              {
+                "light_id": "light2",
+                "receipt_id": "escrow1"
+              }
+            ]
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic lantern river farewell props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-075",
+      "title": "Community Welcome Circle",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_075",
+      "source_fields": [
+        "resident_id",
+        "arrival_epoch",
+        "consent",
+        "ritual_receipt"
+      ],
+      "source_field_mapping": {
+        "resident_id": "resident_id",
+        "arrival_epoch": "arrival_epoch",
+        "consent": "consent",
+        "ritual_receipt": "ritual_receipt"
+      },
+      "player_scenario": "Offer an optional welcome to a new resident; refusal never blocks relationships or grants an arrival reward.",
+      "player_verbs": [
+        "preview_community_welcome_circle",
+        "inspect_community_welcome_circle",
+        "confirm_community_welcome_circle",
+        "review_community_welcome_circle",
+        "cancel_community_welcome_circle"
+      ],
+      "fields": {
+        "resident_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "arrival_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "consent": {
+          "type": "enum",
+          "values": [
+            "pending",
+            "accepted",
+            "declined"
+          ]
+        },
+        "ritual_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "reward_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "invitation_count": {
+          "type": "integer",
+          "min": 0,
+          "max": 2
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "resident_id": "",
+            "arrival_epoch": -1,
+            "day_epoch": -1,
+            "consent": "pending",
+            "ritual_receipt": null,
+            "reward_receipt": null,
+            "invitation_count": 0
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "resident_id": "newcomer",
+            "arrival_epoch": 57,
+            "day_epoch": 58,
+            "consent": "accepted",
+            "ritual_receipt": "welcome-58",
+            "reward_receipt": "welcome-credit-58",
+            "invitation_count": 1
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "repeat_invitation",
+          "patch": {
+            "invitation_count": 2
+          }
+        },
+        {
+          "name": "declined_reward",
+          "patch": {
+            "consent": "declined"
+          }
+        },
+        {
+          "name": "future_arrival",
+          "patch": {
+            "arrival_epoch": 59
+          }
+        },
+        {
+          "name": "accepted_without_ritual",
+          "patch": {
+            "ritual_receipt": null
+          }
+        },
+        {
+          "name": "pending_reward",
+          "patch": {
+            "consent": "pending"
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic community welcome circle props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-076",
+      "title": "Quiet Solstice Observatory",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_076",
+      "source_fields": [
+        "year",
+        "attendees",
+        "mode",
+        "attendance_receipts"
+      ],
+      "source_field_mapping": {
+        "year": "year",
+        "attendees": "attendees",
+        "mode": "mode",
+        "attendance_receipts": "attendance_receipts"
+      },
+      "player_scenario": "Host one optional quiet or captioned seasonal observatory without displacing Village festival bookings.",
+      "player_verbs": [
+        "preview_quiet_solstice_observatory",
+        "inspect_quiet_solstice_observatory",
+        "confirm_quiet_solstice_observatory",
+        "review_quiet_solstice_observatory",
+        "cancel_quiet_solstice_observatory"
+      ],
+      "fields": {
+        "year": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000000
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "attendees": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "consent": {
+                "type": "boolean"
+              },
+              "booking_receipt": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "resident_id"
+        },
+        "mode": {
+          "type": "enum",
+          "values": [
+            "silent",
+            "captioned"
+          ]
+        },
+        "attendance_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "year": {
+                "type": "integer",
+                "min": 1,
+                "max": 1000000
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "resident_id"
+        },
+        "festival_clearance_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "event_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "year": 0,
+            "day_epoch": -1,
+            "attendees": [],
+            "mode": "captioned",
+            "attendance_receipts": [],
+            "festival_clearance_receipt": null,
+            "event_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "year": 2,
+            "day_epoch": 57,
+            "attendees": [
+              {
+                "resident_id": "ivy",
+                "consent": true,
+                "booking_receipt": "book1"
+              }
+            ],
+            "mode": "captioned",
+            "attendance_receipts": [
+              {
+                "resident_id": "ivy",
+                "receipt_id": "attend1",
+                "year": 2
+              }
+            ],
+            "festival_clearance_receipt": "village-clear-2",
+            "event_receipt": "observatory-2"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "wrong_year",
+          "patch": {
+            "year": 1
+          }
+        },
+        {
+          "name": "festival_collision",
+          "patch": {
+            "festival_clearance_receipt": null
+          }
+        },
+        {
+          "name": "refused_attendee",
+          "patch": {
+            "attendees": [
+              {
+                "resident_id": "ivy",
+                "consent": false,
+                "booking_receipt": "book1"
+              }
+            ]
+          }
+        },
+        {
+          "name": "outsider_receipt",
+          "patch": {
+            "attendance_receipts": [
+              {
+                "resident_id": "stranger",
+                "receipt_id": "attend1",
+                "year": 2
+              }
+            ]
+          }
+        },
+        {
+          "name": "replayed_year_receipt",
+          "patch": {
+            "attendance_receipts": [
+              {
+                "resident_id": "ivy",
+                "receipt_id": "attend1",
+                "year": 1
+              }
+            ]
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic quiet solstice observatory props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-077",
+      "title": "Memory Ribbon Archive",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_077",
+      "source_fields": [
+        "milestone_id",
+        "owner",
+        "visibility",
+        "archive_revision"
+      ],
+      "source_field_mapping": {
+        "milestone_id": "milestone_id",
+        "owner": "owner_id",
+        "visibility": "visibility",
+        "archive_revision": "archive_revision"
+      },
+      "player_scenario": "Let a resident publish, privatize or retract a consented milestone; public projection must disappear after retraction.",
+      "player_verbs": [
+        "preview_memory_ribbon_archive",
+        "inspect_memory_ribbon_archive",
+        "confirm_memory_ribbon_archive",
+        "review_memory_ribbon_archive",
+        "cancel_memory_ribbon_archive"
+      ],
+      "fields": {
+        "milestone_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "owner_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "visibility": {
+          "type": "enum",
+          "values": [
+            "private",
+            "public",
+            "retracted"
+          ]
+        },
+        "archive_revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000000
+        },
+        "content_digest": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "public_projection_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "retraction_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "owner_consent": {
+          "type": "boolean"
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "milestone_id": "",
+            "owner_id": "",
+            "visibility": "private",
+            "archive_revision": 0,
+            "content_digest": "",
+            "public_projection_receipt": null,
+            "retraction_receipt": null,
+            "owner_consent": false
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "milestone_id": "mile1",
+            "owner_id": "ivy",
+            "visibility": "public",
+            "archive_revision": 3,
+            "content_digest": "sha256:original-local-content",
+            "public_projection_receipt": "project-v3",
+            "retraction_receipt": null,
+            "owner_consent": true
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "consent_revoked",
+          "patch": {
+            "owner_consent": false
+          }
+        },
+        {
+          "name": "retracted_still_public",
+          "patch": {
+            "visibility": "retracted",
+            "retraction_receipt": "retract-v4"
+          }
+        },
+        {
+          "name": "revision_reset",
+          "patch": {
+            "archive_revision": 0
+          }
+        },
+        {
+          "name": "private_projection",
+          "patch": {
+            "visibility": "private"
+          }
+        },
+        {
+          "name": "empty_owner",
+          "patch": {
+            "owner_id": ""
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic memory ribbon archive props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-078",
+      "title": "Culinary Heritage Vote",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_078",
+      "source_fields": [
+        "season_epoch",
+        "ballots",
+        "chosen_recipe",
+        "stock_receipts"
+      ],
+      "source_field_mapping": {
+        "season_epoch": "season_epoch",
+        "ballots": "ballots",
+        "chosen_recipe": "chosen_recipe",
+        "stock_receipts": "stock_receipts"
+      },
+      "player_scenario": "Run one consented ballot per eligible resident and only serve a chosen recipe after authoritative stock receipts.",
+      "player_verbs": [
+        "preview_culinary_heritage_vote",
+        "inspect_culinary_heritage_vote",
+        "confirm_culinary_heritage_vote",
+        "review_culinary_heritage_vote",
+        "cancel_culinary_heritage_vote"
+      ],
+      "fields": {
+        "season_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "ballots": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "recipe_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "eligible": {
+                "type": "boolean"
+              },
+              "consent": {
+                "type": "boolean"
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "resident_id"
+        },
+        "chosen_recipe": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "stock_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "item_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "quantity": {
+                "type": "integer",
+                "min": 1,
+                "max": 99
+              }
+            }
+          },
+          "max_items": 16,
+          "unique_by": "receipt_id"
+        },
+        "close_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "season_epoch": -1,
+            "day_epoch": -1,
+            "ballots": [],
+            "chosen_recipe": "",
+            "stock_receipts": [],
+            "close_receipt": null
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "season_epoch": 57,
+            "day_epoch": 58,
+            "ballots": [
+              {
+                "resident_id": "ivy",
+                "recipe_id": "stew",
+                "receipt_id": "ballot1",
+                "eligible": true,
+                "consent": true
+              },
+              {
+                "resident_id": "sol",
+                "recipe_id": "stew",
+                "receipt_id": "ballot2",
+                "eligible": true,
+                "consent": true
+              }
+            ],
+            "chosen_recipe": "stew",
+            "stock_receipts": [
+              {
+                "item_id": "root1",
+                "receipt_id": "stock1",
+                "quantity": 2
+              }
+            ],
+            "close_receipt": "close-vote-58"
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "duplicate_ballot_receipt",
+          "patch": {
+            "ballots": [
+              {
+                "resident_id": "ivy",
+                "recipe_id": "stew",
+                "receipt_id": "ballot1",
+                "eligible": true,
+                "consent": true
+              },
+              {
+                "resident_id": "sol",
+                "recipe_id": "stew",
+                "receipt_id": "ballot1",
+                "eligible": true,
+                "consent": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "ineligible_ballot",
+          "patch": {
+            "ballots": [
+              {
+                "resident_id": "ivy",
+                "recipe_id": "stew",
+                "receipt_id": "ballot1",
+                "eligible": false,
+                "consent": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "no_stock",
+          "patch": {
+            "stock_receipts": []
+          }
+        },
+        {
+          "name": "invalid_recipe",
+          "patch": {
+            "chosen_recipe": "pie"
+          }
+        },
+        {
+          "name": "future_season",
+          "patch": {
+            "season_epoch": 59
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic culinary heritage vote props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-079",
+      "title": "Night Market Story Tokens",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_079",
+      "source_fields": [
+        "event_id",
+        "prompt_tokens",
+        "consent",
+        "story_receipts"
+      ],
+      "source_field_mapping": {
+        "event_id": "event_id",
+        "prompt_tokens": "prompt_tokens",
+        "consent": "consent",
+        "story_receipts": "story_receipts"
+      },
+      "player_scenario": "Trade nonmonetary story prompts with consenting residents; never mint money or repeat relationship awards.",
+      "player_verbs": [
+        "preview_night_market_story_tokens",
+        "inspect_night_market_story_tokens",
+        "confirm_night_market_story_tokens",
+        "review_night_market_story_tokens",
+        "cancel_night_market_story_tokens"
+      ],
+      "fields": {
+        "event_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 96
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "prompt_tokens": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "token_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "owner_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "spent": {
+                "type": "boolean"
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "token_id"
+        },
+        "consent": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "allowed": {
+                "type": "boolean"
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "resident_id"
+        },
+        "story_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "token_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "relationship_delta": {
+                "type": "integer",
+                "min": 0,
+                "max": 1
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "receipt_id"
+        },
+        "currency_delta": {
+          "type": "integer",
+          "min": 0,
+          "max": 0
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "event_id": "",
+            "day_epoch": -1,
+            "prompt_tokens": [],
+            "consent": [],
+            "story_receipts": [],
+            "currency_delta": 0
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "event_id": "night1",
+            "day_epoch": 57,
+            "prompt_tokens": [
+              {
+                "token_id": "token1",
+                "owner_id": "ivy",
+                "spent": true
+              },
+              {
+                "token_id": "token2",
+                "owner_id": "sol",
+                "spent": false
+              }
+            ],
+            "consent": [
+              {
+                "resident_id": "ivy",
+                "allowed": true
+              }
+            ],
+            "story_receipts": [
+              {
+                "receipt_id": "story1",
+                "token_id": "token1",
+                "resident_id": "ivy",
+                "relationship_delta": 1
+              }
+            ],
+            "currency_delta": 0
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "double_spend",
+          "patch": {
+            "story_receipts": [
+              {
+                "receipt_id": "story1",
+                "token_id": "token1",
+                "resident_id": "ivy",
+                "relationship_delta": 1
+              },
+              {
+                "receipt_id": "story2",
+                "token_id": "token1",
+                "resident_id": "ivy",
+                "relationship_delta": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "unconsented_story",
+          "patch": {
+            "consent": [
+              {
+                "resident_id": "ivy",
+                "allowed": false
+              }
+            ]
+          }
+        },
+        {
+          "name": "currency_mint",
+          "patch": {
+            "currency_delta": 1
+          }
+        },
+        {
+          "name": "unspent_reward",
+          "patch": {
+            "story_receipts": [
+              {
+                "receipt_id": "story1",
+                "token_id": "token2",
+                "resident_id": "ivy",
+                "relationship_delta": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "no_story_for_spent",
+          "patch": {
+            "story_receipts": []
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic night market story tokens props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    },
+    {
+      "id": "EB-E-080",
+      "title": "Annual Theme Stewardship",
+      "domain": "ritual_culture",
+      "owner": "Emergence",
+      "mission_ids": [
+        "E03",
+        "E06",
+        "E18"
+      ],
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "save_namespace": "emergence.eb_e_080",
+      "source_fields": [
+        "year",
+        "theme_vote",
+        "projects",
+        "closing_receipt"
+      ],
+      "source_field_mapping": {
+        "year": "year",
+        "theme_vote": "theme_vote",
+        "projects": "projects",
+        "closing_receipt": "closing_receipt"
+      },
+      "player_scenario": "Propose a voluntary year-long theme, tally opt-in contributions, and close once with bounded credits.",
+      "player_verbs": [
+        "preview_annual_theme_stewardship",
+        "inspect_annual_theme_stewardship",
+        "confirm_annual_theme_stewardship",
+        "review_annual_theme_stewardship",
+        "cancel_annual_theme_stewardship"
+      ],
+      "fields": {
+        "year": {
+          "type": "integer",
+          "min": 0,
+          "max": 1000000
+        },
+        "day_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991
+        },
+        "theme_vote": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "resident_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "theme_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "consent": {
+                "type": "boolean"
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "resident_id"
+        },
+        "projects": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "project_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "contributor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "theme_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96
+              },
+              "voluntary": {
+                "type": "boolean"
+              },
+              "credit": {
+                "type": "integer",
+                "min": 0,
+                "max": 5
+              }
+            }
+          },
+          "max_items": 12,
+          "unique_by": "project_id"
+        },
+        "closing_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "nullable": true
+        },
+        "bonus_points": {
+          "type": "integer",
+          "min": 0,
+          "max": 10
+        },
+        "event_booking_clearance": {
+          "type": "boolean"
+        }
+      },
+      "positive_fixtures": [
+        {
+          "name": "inactive",
+          "state": {
+            "year": 0,
+            "day_epoch": -1,
+            "theme_vote": [],
+            "projects": [],
+            "closing_receipt": null,
+            "bonus_points": 0,
+            "event_booking_clearance": false
+          }
+        },
+        {
+          "name": "active",
+          "state": {
+            "year": 2,
+            "day_epoch": 112,
+            "theme_vote": [
+              {
+                "resident_id": "ivy",
+                "theme_id": "habitat",
+                "consent": true
+              }
+            ],
+            "projects": [
+              {
+                "project_id": "p1",
+                "contributor_id": "ivy",
+                "theme_id": "habitat",
+                "voluntary": true,
+                "credit": 2
+              }
+            ],
+            "closing_receipt": "close-2",
+            "bonus_points": 2,
+            "event_booking_clearance": true
+          }
+        }
+      ],
+      "negative_cases": [
+        {
+          "name": "forced_project",
+          "patch": {
+            "projects": [
+              {
+                "project_id": "p1",
+                "contributor_id": "ivy",
+                "theme_id": "habitat",
+                "voluntary": false,
+                "credit": 2
+              }
+            ]
+          }
+        },
+        {
+          "name": "unvoted_theme",
+          "patch": {
+            "projects": [
+              {
+                "project_id": "p1",
+                "contributor_id": "ivy",
+                "theme_id": "unknown",
+                "voluntary": true,
+                "credit": 2
+              }
+            ]
+          }
+        },
+        {
+          "name": "bonus_without_close",
+          "patch": {
+            "closing_receipt": null
+          }
+        },
+        {
+          "name": "inflated_bonus",
+          "patch": {
+            "bonus_points": 5
+          }
+        },
+        {
+          "name": "festival_not_cleared",
+          "patch": {
+            "event_booking_clearance": false
+          }
+        },
+        {
+          "name": "wrong_year",
+          "patch": {
+            "year": 1
+          }
+        }
+      ],
+      "rule_codes": [
+        "inactive_state_exact",
+        "consent_and_participant_authority",
+        "unique_receipts_and_no_double_effect",
+        "56_day_monotonic_epoch",
+        "cross_domain_authority",
+        "fail_closed_on_malformed_nested"
+      ],
+      "controls": {
+        "keyboard_mouse": "Inspect preview, choose with remappable keys/pointer; confirm and cancel.",
+        "controller": "D-pad/stick focus, A confirm, B cancel; no timed precision required.",
+        "touch": "Large tap targets, long-press details, explicit confirm/cancel.",
+        "accessibility": "Captions, no-audio and no-color alternatives, reduced-motion and scalable text."
+      },
+      "ui_feedback": {
+        "preview": "Show authoritative availability, voluntary consent and exact proposed costs before commit.",
+        "rejected": "Show nonpunitive reason; do not debit or mutate on rejection.",
+        "accepted": "Show one receipt and updated journal/ritual state.",
+        "recovery": "Show saved state and safe cancellation or correction after reload."
+      },
+      "dependencies": [
+        "Principal owns day_epoch, command IDs, assembled save and authoritative economy/inventory",
+        "Village owns resident consent, annual festivals, schedule and NPC attendance",
+        "Emergence owns optional ritual design and non-authoritative typed journal",
+        "Original authored assets and localization before implementation"
+      ],
+      "original_asset_plan": "Original pastoral stylized-realistic annual theme stewardship props/icons/audio composed in-house; provenance manifest, low-LOD desktop/mobile tiers, captioned/reduced-motion fallback; no proprietary extracted media.",
+      "performance_budget": {
+        "status": "proposed_not_measured",
+        "active_instances_cap": 12,
+        "logic_ms_desktop_target": 0.4,
+        "logic_ms_mobile_target": 0.2,
+        "extra_draw_calls_mobile_cap": 4
+      },
+      "native_gate": "After joint 220 approval: native Godot actual interaction, command replay, hostile save, 112-day rollover, authoritative cross-domain receipts and input parity; not satisfied by this contract validator.",
+      "status_notes": "Design-only schema/fixtures; no game code, no real asset, no device benchmark, no authoritative payout."
+    }
+  ]
+}
