@@ -12,6 +12,8 @@ var last_job: Dictionary = {}
 var festival_visits: Dictionary = {}
 var memories: Dictionary = {}
 var life_data: Dictionary = {}
+## Presentation-only locale; not a gameplay or economy save field.
+var dialogue_locale: String = "en"
 
 func setup(host) -> void:
     game = host
@@ -175,6 +177,9 @@ func _dialogue(resident: Dictionary, rid: String, epoch: int) -> String:
     var recollection: String = _gift_memory_dialogue(profile, rid, epoch)
     if not recollection.is_empty():
         return recollection
+    var contextual: String = _conditional_dialogue(resident, profile, rid)
+    if not contextual.is_empty():
+        return contextual
     if int(affection.get(rid, 0)) >= 220:
         return str(profile.get("bond_line", "I'm glad you came by."))
     if str(resident.get("place", "")) == str(profile.get("workplace", "")):
@@ -184,6 +189,31 @@ func _dialogue(resident: Dictionary, rid: String, epoch: int) -> String:
         return str(seasonal[_season()])
     var lines: Array = resident.get("dialogue", ["It's good to see you."])
     return str(lines[epoch % maxi(1, lines.size())])
+
+## V05: authored predicate branches, ordered most specific first.
+## Reads existing persisted memory/affection; never mutates rewards or save shape.
+func set_dialogue_locale(code: String) -> void:
+    dialogue_locale = code if code in ["en", "es"] else "en"
+
+func _conditional_dialogue(resident: Dictionary, profile: Dictionary, rid: String) -> String:
+    var catalog: Dictionary = life_data.get("dialogue_branches", {})
+    var branches: Array = catalog.get(rid, [])
+    var memory: Dictionary = memories.get(rid, _fresh_memory())
+    for branch in branches:
+        if not (branch is Dictionary):
+            continue
+        var predicate: Dictionary = branch.get("when", {})
+        if int(memory.get("jobs", 0)) < int(predicate.get("min_jobs", 0)):
+            continue
+        if int(affection.get(rid, 0)) < int(predicate.get("min_affection", 0)):
+            continue
+        if bool(predicate.get("at_work", false)) and str(resident.get("place", "")) != str(profile.get("workplace", "")):
+            continue
+        var lines: Dictionary = branch.get("text", {})
+        var result: String = str(lines.get(dialogue_locale, lines.get("en", "")))
+        if not result.is_empty():
+            return result
+    return ""
 
 func _record_memory(rid: String, field: String) -> void:
     var record: Dictionary = memories.get(rid, _fresh_memory())
