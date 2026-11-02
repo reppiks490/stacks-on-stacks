@@ -1,0 +1,824 @@
+{
+  "schema_version": 1,
+  "status": "PROPOSED_NOT_APPROVED_NOT_GAMEPLAY",
+  "phase_c": "CLOSED",
+  "source": {
+    "repository": "reppiks490/stacks-on-stacks",
+    "ref": "game/everbloom-construction-b19-typed100-crossaudit-20261102",
+    "commit": "d73fc5641552ab192e57ed7327e815c3370d0181",
+    "path": "docs/innovation/construction/typed100_crossaudit/SOURCE_EVIDENCE.json",
+    "blob_sha": "586fc1998741af620fa3251734f3376cf75cb2dd"
+  },
+  "policy": {
+    "scope": "detached namespace-to-state map only; not Godot save payload",
+    "legacy_aliases": 10,
+    "negative_epoch_sentinels": 60,
+    "receipt_uniqueness": "global across the 100 known construction namespaces; requires Principal P03 approval",
+    "sentinel": "-1 allowed for inert draft with revision=0 and no receipts; no action allowed at epoch<1; requires Principal P02 approval",
+    "unknown_namespace": "preserve byte-for-byte semantic content; do not infer new feature",
+    "unknown_nested_fields": "deep-copy without deletion; full typed-schema validation deferred",
+    "authority": "No inventory/money changes or live save migrations"
+  },
+  "entries": [
+    {
+      "id": "EB-B-011",
+      "namespace": "construction.eb_b_011",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-012",
+      "namespace": "construction.eb_b_012",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-013",
+      "namespace": "construction.eb_b_013",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-014",
+      "namespace": "construction.eb_b_014",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-015",
+      "namespace": "construction.eb_b_015",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-016",
+      "namespace": "construction.eb_b_016",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-017",
+      "namespace": "construction.eb_b_017",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-018",
+      "namespace": "construction.eb_b_018",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-019",
+      "namespace": "construction.eb_b_019",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-020",
+      "namespace": "construction.eb_b_020",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-021",
+      "namespace": "construction.eb_b_021",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-022",
+      "namespace": "construction.eb_b_022",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-023",
+      "namespace": "construction.eb_b_023",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-024",
+      "namespace": "construction.eb_b_024",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-025",
+      "namespace": "construction.eb_b_025",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-026",
+      "namespace": "construction.eb_b_026",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-027",
+      "namespace": "construction.eb_b_027",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-028",
+      "namespace": "construction.eb_b_028",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-029",
+      "namespace": "construction.eb_b_029",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-030",
+      "namespace": "construction.eb_b_030",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-031",
+      "namespace": "construction.eb_b_031",
+      "legacy_alias": "construction.eb_b_31",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-032",
+      "namespace": "construction.eb_b_032",
+      "legacy_alias": "construction.eb_b_32",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-033",
+      "namespace": "construction.eb_b_033",
+      "legacy_alias": "construction.eb_b_33",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-034",
+      "namespace": "construction.eb_b_034",
+      "legacy_alias": "construction.eb_b_34",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-035",
+      "namespace": "construction.eb_b_035",
+      "legacy_alias": "construction.eb_b_35",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-036",
+      "namespace": "construction.eb_b_036",
+      "legacy_alias": "construction.eb_b_36",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-037",
+      "namespace": "construction.eb_b_037",
+      "legacy_alias": "construction.eb_b_37",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-038",
+      "namespace": "construction.eb_b_038",
+      "legacy_alias": "construction.eb_b_38",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-039",
+      "namespace": "construction.eb_b_039",
+      "legacy_alias": "construction.eb_b_39",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-040",
+      "namespace": "construction.eb_b_040",
+      "legacy_alias": "construction.eb_b_40",
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-041",
+      "namespace": "construction.eb_b_041",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-042",
+      "namespace": "construction.eb_b_042",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-043",
+      "namespace": "construction.eb_b_043",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-044",
+      "namespace": "construction.eb_b_044",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-045",
+      "namespace": "construction.eb_b_045",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-046",
+      "namespace": "construction.eb_b_046",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-047",
+      "namespace": "construction.eb_b_047",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-048",
+      "namespace": "construction.eb_b_048",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-049",
+      "namespace": "construction.eb_b_049",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-050",
+      "namespace": "construction.eb_b_050",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-051",
+      "namespace": "construction.eb_b_051",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-052",
+      "namespace": "construction.eb_b_052",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-053",
+      "namespace": "construction.eb_b_053",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-054",
+      "namespace": "construction.eb_b_054",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-055",
+      "namespace": "construction.eb_b_055",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-056",
+      "namespace": "construction.eb_b_056",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-057",
+      "namespace": "construction.eb_b_057",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-058",
+      "namespace": "construction.eb_b_058",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-059",
+      "namespace": "construction.eb_b_059",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-060",
+      "namespace": "construction.eb_b_060",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-061",
+      "namespace": "construction.eb_b_061",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-062",
+      "namespace": "construction.eb_b_062",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-063",
+      "namespace": "construction.eb_b_063",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-064",
+      "namespace": "construction.eb_b_064",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-065",
+      "namespace": "construction.eb_b_065",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-066",
+      "namespace": "construction.eb_b_066",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-067",
+      "namespace": "construction.eb_b_067",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-068",
+      "namespace": "construction.eb_b_068",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-069",
+      "namespace": "construction.eb_b_069",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-070",
+      "namespace": "construction.eb_b_070",
+      "legacy_alias": null,
+      "epoch_min": -1,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "inert_only_no_receipts"
+    },
+    {
+      "id": "EB-B-071",
+      "namespace": "construction.eb_b_071",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-072",
+      "namespace": "construction.eb_b_072",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-073",
+      "namespace": "construction.eb_b_073",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-074",
+      "namespace": "construction.eb_b_074",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-075",
+      "namespace": "construction.eb_b_075",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-076",
+      "namespace": "construction.eb_b_076",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-077",
+      "namespace": "construction.eb_b_077",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-078",
+      "namespace": "construction.eb_b_078",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-079",
+      "namespace": "construction.eb_b_079",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-080",
+      "namespace": "construction.eb_b_080",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-081",
+      "namespace": "construction.eb_b_081",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-082",
+      "namespace": "construction.eb_b_082",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-083",
+      "namespace": "construction.eb_b_083",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-084",
+      "namespace": "construction.eb_b_084",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-085",
+      "namespace": "construction.eb_b_085",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-086",
+      "namespace": "construction.eb_b_086",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-087",
+      "namespace": "construction.eb_b_087",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-088",
+      "namespace": "construction.eb_b_088",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-089",
+      "namespace": "construction.eb_b_089",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-090",
+      "namespace": "construction.eb_b_090",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-091",
+      "namespace": "construction.eb_b_091",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-092",
+      "namespace": "construction.eb_b_092",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-093",
+      "namespace": "construction.eb_b_093",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-094",
+      "namespace": "construction.eb_b_094",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-095",
+      "namespace": "construction.eb_b_095",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-096",
+      "namespace": "construction.eb_b_096",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-097",
+      "namespace": "construction.eb_b_097",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-098",
+      "namespace": "construction.eb_b_098",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-099",
+      "namespace": "construction.eb_b_099",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-100",
+      "namespace": "construction.eb_b_100",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-101",
+      "namespace": "construction.eb_b_101",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-102",
+      "namespace": "construction.eb_b_102",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-103",
+      "namespace": "construction.eb_b_103",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-104",
+      "namespace": "construction.eb_b_104",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-105",
+      "namespace": "construction.eb_b_105",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-106",
+      "namespace": "construction.eb_b_106",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-107",
+      "namespace": "construction.eb_b_107",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-108",
+      "namespace": "construction.eb_b_108",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-109",
+      "namespace": "construction.eb_b_109",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    },
+    {
+      "id": "EB-B-110",
+      "namespace": "construction.eb_b_110",
+      "legacy_alias": null,
+      "epoch_min": 0,
+      "receipt_policy": "global_unique_nonempty",
+      "sentinel_policy": "not_allowed"
+    }
+  ]
+}
