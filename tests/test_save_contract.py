@@ -74,6 +74,21 @@ class SaveIntegrationContract(unittest.TestCase):
                      "assembled gift recollection failed to roundtrip exactly"):
             self.assertIn(case, native)
 
+    def test_nested_festival_awards_are_validated_and_native_roundtripped(self):
+        service = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        native = (ROOT / "scripts/principal_save_acceptance.gd").read_text(
+            encoding="utf-8")
+        for token in ('payload.has("festivals")', 'festival_state.get("schema", null)',
+                      'awarded.size() > 5000', 'award_keys.has(key)',
+                      'award_year > saved_year'):
+            self.assertIn(token, service)
+        for case in ("valid multi-year festival awards rejected",
+                     "duplicate festival award accepted",
+                     "future-year festival award accepted",
+                     "future-year assembled festival award written",
+                     "assembled festival award failed to roundtrip without duplication"):
+            self.assertIn(case, native)
+
     def test_original_village_job_has_player_input_dispatch(self):
         game = (ROOT / "scripts/game.gd").read_text(encoding="utf-8")
         hud = (ROOT / "scripts/hud.gd").read_text(encoding="utf-8")
