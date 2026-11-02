@@ -1,0 +1,1257 @@
+{
+  "schema_version": 1,
+  "status": "design_only_non_authorizing",
+  "engine": "Godot 4.x",
+  "source": {
+    "branch": "game/everbloom-emergence-phaseB-100-20261102",
+    "commit": "63cab5d05c742c61205933482e38fac2a4086764",
+    "path": "docs/innovation/emergence/phaseB_011_050.json",
+    "blob_sha": "a5def76918e77e0ded7e3e8085444698b4e0b549"
+  },
+  "base_main": "21d325eb4f05c90f37c1047a76a48b2a90767e31",
+  "owner": "Emergence",
+  "phaseC": "closed_pending_Principal_joint_220_approval",
+  "state_contracts": [
+    {
+      "id": "EB-E-031",
+      "title": "Unsent Apology Workshop",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "draft_id",
+        "recipient_consent",
+        "revision",
+        "delivery_receipt"
+      ],
+      "additions": [
+        "delivery_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_31",
+      "fields": {
+        "draft_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "recipient_consent": {
+          "type": "enum",
+          "values": [
+            "pending",
+            "granted",
+            "denied",
+            "withdrawn"
+          ],
+          "default": "pending"
+        },
+        "revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 64,
+          "default": 0
+        },
+        "delivery_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "delivery_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "delivery_requires_consent",
+        "revision_required_for_delivery",
+        "epoch_receipt_pair",
+        "empty_draft_cannot_deliver"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Draft, revise or archive an apology; seek consent before delivery; choose to withhold delivery if the recipient declines the message",
+      "player_verbs": [
+        "draft_unsent_apology_workshop",
+        "preview_unsent_apology_workshop",
+        "confirm_unsent_apology_workshop",
+        "review_unsent_apology_workshop",
+        "cancel_unsent_apology_workshop"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "A denied recipient or empty draft must not receive an apology, and replay must not award trust.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-032",
+      "title": "Market Gossip Provenance",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "claim_id",
+        "witness_links",
+        "confidence",
+        "privacy_flags"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_32",
+      "fields": {
+        "claim_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "witness_links": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "witness_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "evidence": {
+                "type": "enum",
+                "values": [
+                  "firsthand",
+                  "hearsay"
+                ],
+                "default": "firsthand"
+              },
+              "consent": {
+                "type": "boolean",
+                "default": false
+              },
+              "verified": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "witness_id": "unassigned",
+              "evidence": "firsthand",
+              "consent": false,
+              "verified": false
+            }
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "witness_id"
+        },
+        "confidence": {
+          "type": "integer",
+          "min": 0,
+          "max": 100,
+          "default": 0
+        },
+        "privacy_flags": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 80,
+            "default": "unassigned"
+          },
+          "max_items": 32,
+          "default": [],
+          "unique_by": "$value"
+        }
+      },
+      "rule_codes": [
+        "private_refs_exist",
+        "verification_requires_consent_and_firsthand",
+        "confidence_requires_verified_firsthand",
+        "empty_claim_has_no_evidence"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Trace a rumor through consenting witnesses and distinguish hearsay from direct evidence",
+      "player_verbs": [
+        "trace_market_gossip_provenance",
+        "preview_market_gossip_provenance",
+        "confirm_market_gossip_provenance",
+        "review_market_gossip_provenance",
+        "cancel_market_gossip_provenance"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "Forged, hearsay or nonconsenting witnesses cannot raise confidence or become authoritative NPC facts.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-033",
+      "title": "Festival Heirloom Stewardship",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "heirloom_id",
+        "owner_id",
+        "consent",
+        "display_receipt"
+      ],
+      "additions": [
+        "display_epoch"
+      ],
+      "save_namespace": "emergence.eb_e_33",
+      "fields": {
+        "heirloom_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "owner_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "consent": {
+          "type": "enum",
+          "values": [
+            "private",
+            "public",
+            "withdrawn"
+          ],
+          "default": "private"
+        },
+        "display_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "display_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        }
+      },
+      "rule_codes": [
+        "display_requires_public_consent",
+        "display_requires_owner_and_item",
+        "epoch_receipt_pair",
+        "withdrawn_hides_display"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Help an elder document an heirloom and negotiate private or public exhibition",
+      "player_verbs": [
+        "help_festival_heirloom_stewardship",
+        "preview_festival_heirloom_stewardship",
+        "confirm_festival_heirloom_stewardship",
+        "review_festival_heirloom_stewardship",
+        "cancel_festival_heirloom_stewardship"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "Withdrawing consent must remove public display without copying or refunding the original item.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-034",
+      "title": "Shared Recipe Reconciliation",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "recipe_id",
+        "contributors",
+        "consents",
+        "recipe_revision"
+      ],
+      "additions": [
+        "publication_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_34",
+      "fields": {
+        "recipe_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "contributors": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 80,
+            "default": "unassigned"
+          },
+          "max_items": 2,
+          "default": [],
+          "unique_by": "$value"
+        },
+        "consents": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "contributor_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "revision": {
+                "type": "integer",
+                "min": 0,
+                "max": 32,
+                "default": 0
+              },
+              "approved": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "contributor_id": "unassigned",
+              "revision": 0,
+              "approved": false
+            }
+          },
+          "max_items": 2,
+          "default": [],
+          "unique_by": "contributor_id"
+        },
+        "recipe_revision": {
+          "type": "integer",
+          "min": 0,
+          "max": 32,
+          "default": 0
+        },
+        "publication_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "exactly_two_distinct_contributors",
+        "consent_refs_match_contributors",
+        "publication_requires_two_current_approvals",
+        "revision_requires_recipe"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Mediate two residents combining family recipes while retaining attribution; both cooks must consent before the joint recipe enters the town archive",
+      "player_verbs": [
+        "mediate_shared_recipe_reconciliation",
+        "preview_shared_recipe_reconciliation",
+        "confirm_shared_recipe_reconciliation",
+        "review_shared_recipe_reconciliation",
+        "cancel_shared_recipe_reconciliation"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "A single approval or approval for an earlier revision cannot publish or mint a recipe.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-035",
+      "title": "Quiet Neighbor Signal",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "npc_id",
+        "preferred_gestures",
+        "last_contact_epoch",
+        "consent"
+      ],
+      "additions": [
+        "contact_receipts"
+      ],
+      "save_namespace": "emergence.eb_e_35",
+      "fields": {
+        "npc_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "preferred_gestures": {
+          "type": "list",
+          "items": {
+            "type": "enum",
+            "values": [
+              "wave",
+              "nod",
+              "leave_note",
+              "offer_space",
+              "hand_signal"
+            ],
+            "default": "wave"
+          },
+          "max_items": 5,
+          "default": [],
+          "unique_by": "$value"
+        },
+        "last_contact_epoch": {
+          "type": "integer",
+          "min": -1,
+          "max": 9007199254740991,
+          "default": -1
+        },
+        "consent": {
+          "type": "boolean",
+          "default": false
+        },
+        "contact_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "gesture": {
+                "type": "enum",
+                "values": [
+                  "wave",
+                  "nod",
+                  "leave_note",
+                  "offer_space",
+                  "hand_signal"
+                ],
+                "default": "wave"
+              }
+            },
+            "default": {
+              "receipt_id": "unassigned",
+              "epoch": 1,
+              "gesture": "wave"
+            }
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "receipt_id"
+        }
+      },
+      "rule_codes": [
+        "contact_requires_consent",
+        "gesture_must_be_preferred",
+        "one_contact_per_epoch",
+        "last_epoch_covers_contacts"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Offer optional nonverbal help to a stressed neighbor without forcing conversation",
+      "player_verbs": [
+        "offer_quiet_neighbor_signal",
+        "preview_quiet_neighbor_signal",
+        "confirm_quiet_neighbor_signal",
+        "review_quiet_neighbor_signal",
+        "cancel_quiet_neighbor_signal"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "Gesture spam or a declined gesture cannot bypass daily relationship caps.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-036",
+      "title": "Memory Map of Kindness",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "favor_id",
+        "visibility_consent",
+        "map_pin",
+        "reciprocity_receipt"
+      ],
+      "additions": [
+        "source_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_36",
+      "fields": {
+        "favor_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "visibility_consent": {
+          "type": "enum",
+          "values": [
+            "private",
+            "public",
+            "withdrawn"
+          ],
+          "default": "private"
+        },
+        "map_pin": {
+          "type": "object",
+          "fields": {
+            "cell_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 80,
+              "default": "unassigned"
+            },
+            "visible": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "default": null,
+          "nullable": true
+        },
+        "reciprocity_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        },
+        "source_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "public_pin_requires_consent",
+        "pin_requires_favor",
+        "reciprocity_requires_source",
+        "withdrawn_pin_hidden"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Map small verified favors with each resident's permission and invite reciprocity",
+      "player_verbs": [
+        "map_memory_map_of_kindness",
+        "preview_memory_map_of_kindness",
+        "confirm_memory_map_of_kindness",
+        "review_memory_map_of_kindness",
+        "cancel_memory_map_of_kindness"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "Private favor pins must not leak and replaying reciprocity must not duplicate rewards.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-037",
+      "title": "Seasonal Reunion Planner",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "reunion_id",
+        "invitees",
+        "slot_reservations",
+        "travel_eta"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_37",
+      "fields": {
+        "reunion_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "invitees": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "npc_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "consent": {
+                "type": "boolean",
+                "default": false
+              },
+              "travel_minutes": {
+                "type": "integer",
+                "min": 0,
+                "max": 1440,
+                "default": 0
+              }
+            },
+            "default": {
+              "npc_id": "unassigned",
+              "consent": false,
+              "travel_minutes": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "npc_id"
+        },
+        "slot_reservations": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "npc_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              },
+              "minute": {
+                "type": "integer",
+                "min": 0,
+                "max": 1439,
+                "default": 0
+              }
+            },
+            "default": {
+              "npc_id": "unassigned",
+              "epoch": 1,
+              "minute": 0
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "npc_id"
+        },
+        "travel_eta": {
+          "type": "integer",
+          "min": 0,
+          "max": 1440,
+          "default": 0
+        }
+      },
+      "rule_codes": [
+        "slot_refs_consenting_invitees",
+        "reservation_respects_travel_eta",
+        "slot_epoch_unique",
+        "empty_reunion_no_bookings"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Invite returning friends while respecting travel times, work and availability",
+      "player_verbs": [
+        "invite_seasonal_reunion_planner",
+        "preview_seasonal_reunion_planner",
+        "confirm_seasonal_reunion_planner",
+        "review_seasonal_reunion_planner",
+        "cancel_seasonal_reunion_planner"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "Overlapping or unconsented reservations must not teleport NPCs or steal Village schedule slots.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-038",
+      "title": "Civic Mediation Table",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "dispute_id",
+        "statements",
+        "proposal",
+        "party_consents"
+      ],
+      "additions": [
+        "settlement_receipt"
+      ],
+      "save_namespace": "emergence.eb_e_38",
+      "fields": {
+        "dispute_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "statements": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "npc_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "text": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 256,
+                "default": "unassigned"
+              }
+            },
+            "default": {
+              "npc_id": "unassigned",
+              "text": "unassigned"
+            }
+          },
+          "max_items": 2,
+          "default": [],
+          "unique_by": "npc_id"
+        },
+        "proposal": {
+          "type": "enum",
+          "values": [
+            "none",
+            "compromise",
+            "abstain"
+          ],
+          "default": "none"
+        },
+        "party_consents": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "npc_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "approved": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "npc_id": "unassigned",
+              "approved": false
+            }
+          },
+          "max_items": 2,
+          "default": [],
+          "unique_by": "npc_id"
+        },
+        "settlement_receipt": {
+          "type": "string",
+          "min_length": 1,
+          "max_length": 96,
+          "default": null,
+          "nullable": true
+        }
+      },
+      "rule_codes": [
+        "party_sets_match",
+        "settlement_requires_compromise",
+        "settlement_requires_both_approvals",
+        "empty_dispute_cannot_settle"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Hear both sides of a dispute and offer transparent compromise or abstain; verify that each participant can decline without forced reconciliation",
+      "player_verbs": [
+        "hear_civic_mediation_table",
+        "preview_civic_mediation_table",
+        "confirm_civic_mediation_table",
+        "review_civic_mediation_table",
+        "cancel_civic_mediation_table"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "One-sided consent must never force reconciliation or change Village relationships.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-039",
+      "title": "Lost Craft Mentor Chain",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "mentor_id",
+        "learner_id",
+        "lesson_steps",
+        "skill_receipts"
+      ],
+      "additions": [],
+      "save_namespace": "emergence.eb_e_39",
+      "fields": {
+        "mentor_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "learner_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "lesson_steps": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "step_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "completed": {
+                "type": "boolean",
+                "default": false
+              },
+              "completed_epoch": {
+                "type": "integer",
+                "min": -1,
+                "max": 9007199254740991,
+                "default": -1
+              }
+            },
+            "default": {
+              "step_id": "unassigned",
+              "completed": false,
+              "completed_epoch": -1
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "step_id"
+        },
+        "skill_receipts": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "step_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "receipt_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 96,
+                "default": "unassigned"
+              },
+              "epoch": {
+                "type": "integer",
+                "min": 1,
+                "max": 9007199254740991,
+                "default": 1
+              }
+            },
+            "default": {
+              "step_id": "unassigned",
+              "receipt_id": "unassigned",
+              "epoch": 1
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "receipt_id"
+        }
+      },
+      "rule_codes": [
+        "mentor_learner_distinct",
+        "completion_epoch_pair",
+        "receipts_require_completed_steps",
+        "steps_complete_in_order"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Arrange skill lessons and apprenticeships with traceable learning progression",
+      "player_verbs": [
+        "arrange_lost_craft_mentor_chain",
+        "preview_lost_craft_mentor_chain",
+        "confirm_lost_craft_mentor_chain",
+        "review_lost_craft_mentor_chain",
+        "cancel_lost_craft_mentor_chain"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "Reloading a partially completed lesson must not grant skill twice or skip prerequisites.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    },
+    {
+      "id": "EB-E-040",
+      "title": "Neighborhood Story Circle",
+      "domain": "social_agency",
+      "mission_ids": [
+        "E03",
+        "E07",
+        "E18"
+      ],
+      "owner": "Emergence",
+      "phase": "design_only_no_runtime_implementation",
+      "state_version": 1,
+      "source_fields": [
+        "circle_id",
+        "participants",
+        "story_versions",
+        "visibility"
+      ],
+      "additions": [
+        "published_story_ids"
+      ],
+      "save_namespace": "emergence.eb_e_40",
+      "fields": {
+        "circle_id": {
+          "type": "string",
+          "min_length": 0,
+          "max_length": 80,
+          "default": ""
+        },
+        "participants": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "npc_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "consent": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "default": {
+              "npc_id": "unassigned",
+              "consent": false
+            }
+          },
+          "max_items": 16,
+          "default": [],
+          "unique_by": "npc_id"
+        },
+        "story_versions": {
+          "type": "list",
+          "items": {
+            "type": "object",
+            "fields": {
+              "story_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "author_id": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 80,
+                "default": "unassigned"
+              },
+              "version": {
+                "type": "integer",
+                "min": 1,
+                "max": 128,
+                "default": 1
+              },
+              "visibility": {
+                "type": "enum",
+                "values": [
+                  "private",
+                  "public",
+                  "retracted"
+                ],
+                "default": "private"
+              }
+            },
+            "default": {
+              "story_id": "unassigned",
+              "author_id": "unassigned",
+              "version": 1,
+              "visibility": "private"
+            }
+          },
+          "max_items": 64,
+          "default": []
+        },
+        "visibility": {
+          "type": "enum",
+          "values": [
+            "private",
+            "public"
+          ],
+          "default": "private"
+        },
+        "published_story_ids": {
+          "type": "list",
+          "items": {
+            "type": "string",
+            "min_length": 1,
+            "max_length": 80,
+            "default": "unassigned"
+          },
+          "max_items": 64,
+          "default": [],
+          "unique_by": "$value"
+        }
+      },
+      "rule_codes": [
+        "story_author_is_participant",
+        "version_sequence_unique",
+        "published_only_latest_consented",
+        "retracted_not_published"
+      ],
+      "migration": "Optional absent namespace defaults to inactive projection. Present malformed state rejects atomically. Existing Village NPC identity, relationships, schedules, jobs, privacy and inventory remain authoritative; no automatic v1 save migration.",
+      "authority": "Emergence stores consent-gated narrative proposals and immutable receipt references only. Village owns NPC consent, social memory and relationship effects; Principal owns epoch, transaction receipts and save admission. Never write shadow NPC facts or currency.",
+      "receipt_contract": {
+        "command_id": "globally unique stable 1..96-character identifier",
+        "expected_revision": "nonnegative JSON-safe integer; stale commands rejected",
+        "day_epoch": "Principal monotonic 56-day calendar; annual/day checks never use day-of-season",
+        "effect_digest": "authoritative-owner effect hash; no replay grant"
+      },
+      "controls": {
+        "keyboard_mouse": "Focus participant, inspect preview, remappable confirm/cancel, consent explanation.",
+        "controller": "D-pad/stick focus; A confirm, B cancel; explicit denial status.",
+        "touch": "Tap inspect, large confirm/cancel, long-press details; no precision dragging.",
+        "accessibility": "Captions, contrast-independent consent indicators, scalable text, reduced motion and privacy-aware summaries."
+      },
+      "player_scenario": "Host opt-in storytelling and let residents retract or correct their own memories",
+      "player_verbs": [
+        "host_neighborhood_story_circle",
+        "preview_neighborhood_story_circle",
+        "confirm_neighborhood_story_circle",
+        "review_neighborhood_story_circle",
+        "cancel_neighborhood_story_circle"
+      ],
+      "dependencies": [
+        "Village NPC schedules/consent/relationships; Emergence opt-in narrative",
+        "Domain ownership is authoritative; cross-system changes use typed idempotent commands, never shadow inventory/NPC/weather/habitat ledgers."
+      ],
+      "original_asset_plan": "Original authored journal cards, restrained NPC gestures and accessible caption/audio cues; no external proprietary art.",
+      "performance_budget": "At most 64 narrative receipts per active feature and 16 participants; bounded O(n²) comparisons only for <=64 records, cache journal summaries; desktop/mobile profiling pending.",
+      "negative": "Retracted stories must never reappear publicly after reload or translation.",
+      "native_gate": "NOT NATIVE TESTED. Requires Principal and Village approval of optional namespace, atomic save rejection, authority-mediated consent/effects, 112-day replay and real keyboard/controller/touch and performance tests."
+    }
+  ]
+}
