@@ -223,6 +223,74 @@ func _run() -> void:
     bad["village"]["memories"]["mira"]["last_gift_item"] = 7
     _check(not SaveService.validate_payload(bad), "numeric gift item accepted")
 
+    # P04/P05: optional V19 earned dialogue must be admitted losslessly or
+    # rejected atomically. Year one epoch 56 precedes year two epoch 57.
+    var dialogue_fixture: Dictionary = integrated.duplicate(true)
+    dialogue_fixture["village"]["memories"]["mira"]["dialogue_log"] = [
+        {"epoch": 56, "locale": "en", "text": "Welcome to the valley."},
+        {"epoch": 57, "locale": "es", "text": "Buenos dias, vecino."}]
+    _check(SaveService.validate_payload(dialogue_fixture),
+           "valid two-year bilingual dialogue history rejected")
+    var dialogue_legacy: Dictionary = dialogue_fixture.duplicate(true)
+    dialogue_legacy["village"]["memories"]["mira"].erase("dialogue_log")
+    _check(SaveService.validate_payload(dialogue_legacy),
+           "legacy village memory without dialogue log rejected")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"] = "not a history"
+    _check(not SaveService.validate_payload(bad), "string dialogue history accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"] = [null]
+    _check(not SaveService.validate_payload(bad), "null dialogue entry accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][0]["epoch"] = "56"
+    _check(not SaveService.validate_payload(bad), "string dialogue epoch accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][0]["epoch"] = 56.5
+    _check(not SaveService.validate_payload(bad), "fractional dialogue epoch accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["epoch"] = 113
+    _check(not SaveService.validate_payload(bad), "future dialogue epoch accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][0]["epoch"] = 0
+    _check(not SaveService.validate_payload(bad), "zero dialogue epoch accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["epoch"] = 56
+    _check(not SaveService.validate_payload(bad), "duplicate dialogue epoch accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][0]["epoch"] = 58
+    _check(not SaveService.validate_payload(bad), "descending dialogue epochs accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["locale"] = "fr"
+    _check(not SaveService.validate_payload(bad), "unknown dialogue locale accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["locale"] = 1
+    _check(not SaveService.validate_payload(bad), "numeric dialogue locale accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["text"] = ""
+    _check(not SaveService.validate_payload(bad), "empty dialogue text accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["text"] = 9
+    _check(not SaveService.validate_payload(bad), "numeric dialogue text accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["text"] = "x".repeat(257)
+    _check(not SaveService.validate_payload(bad), "oversized dialogue text accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1].erase("text")
+    _check(not SaveService.validate_payload(bad), "missing dialogue text accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["unowned"] = true
+    _check(not SaveService.validate_payload(bad), "extra dialogue entry field accepted")
+    bad = dialogue_fixture.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"] = []
+    for epoch in range(1, 14):
+        bad["village"]["memories"]["mira"]["dialogue_log"].append(
+            {"epoch": epoch, "locale": "en", "text": "Recorded line"})
+    _check(not SaveService.validate_payload(bad), "overlong dialogue history accepted")
+    var dialogue_boundary: Dictionary = dialogue_fixture.duplicate(true)
+    dialogue_boundary["village"]["memories"]["mira"]["dialogue_log"][1]["text"] = "x".repeat(256)
+    _check(SaveService.validate_payload(dialogue_boundary),
+           "exactly 256-character dialogue text rejected")
+
     # P02/P04/P05: all once-per-day ledgers must fit the *saved* 56-day
     # monotonic epoch. Domain loaders previously clamped future values,
     # silently altering otherwise accepted snapshots.
@@ -296,6 +364,10 @@ func _run() -> void:
     session.village.memories["mira"]["last_gift_favorite"] = true
     session.village.memories["mira"]["recalled_gift_epoch"] = 130
     session.village.memories["mira"]["gift_recollections"] = 2
+    var earned_lines: Array = [
+        {"epoch": 129, "locale": "en", "text": "Good morning, neighbor."},
+        {"epoch": 130, "locale": "es", "text": "La cosecha prospera."}]
+    session.village.memories["mira"]["dialogue_log"] = earned_lines.duplicate(true)
     session.animals.paddocks[0]["forage"] = 5
     session.festivals.awarded["3:spring_seed_exchange"] = true
     session.save_game(false)
@@ -307,11 +379,20 @@ func _run() -> void:
            "assembled grazing state did not persist")
     _check(saved.get("village", {}).get("memories", {}).has("mira"),
            "assembled village memory did not persist")
+    _check(saved.get("village", {}).get("memories", {}).get("mira", {}).get("dialogue_log", []) == earned_lines,
+           "assembled earned dialogue missing or changed in saved JSON")
     _check(saved.get("festivals", {}).get("awarded", []).has("3:spring_seed_exchange"),
            "assembled festival award missing from saved snapshot")
     # Invalid in-memory payload must not replace the last valid on-disk
     # snapshot or mutate the assembled player's state.
     var saved_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
+    bad = saved.duplicate(true)
+    bad["village"]["memories"]["mira"]["dialogue_log"][1]["epoch"] = session.day_epoch() + 1
+    _check(not SaveService.write_payload(bad), "future assembled dialogue history written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == saved_bytes,
+           "invalid dialogue history modified authoritative save bytes")
+    _check(session.gold == 901 and int(session.inventory.get("turnip", -1)) == 17,
+           "rejected dialogue save mutated live currency or inventory")
     bad = saved.duplicate(true)
     bad["village"]["memories"]["mira"]["last_gift_favorite"] = "tampered"
     _check(not SaveService.write_payload(bad), "invalid assembled gift memory written")
@@ -342,6 +423,7 @@ func _run() -> void:
     session.day = 1
     session.animals.paddocks[0]["forage"] = 0
     session.village.memories["mira"]["talks"] = 0
+    session.village.memories["mira"]["dialogue_log"] = []
     session.festivals.awarded.clear()
     session.village.memories["mira"]["last_gift_favorite"] = false
     session.village.memories["mira"]["recalled_gift_epoch"] = -1
@@ -356,6 +438,8 @@ func _run() -> void:
            "assembled paddock failed to restore")
     _check(int(session.village.memories["mira"]["talks"]) == 9,
            "assembled village memory failed to restore")
+    _check(session.village.memories["mira"]["dialogue_log"] == earned_lines,
+           "assembled earned bilingual dialogue failed to roundtrip exactly")
     _check(session.village.memories["mira"]["last_gift_favorite"] == true
            and int(session.village.memories["mira"]["recalled_gift_epoch"]) == 130
            and int(session.village.memories["mira"]["gift_recollections"]) == 2,
