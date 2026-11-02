@@ -1,0 +1,32 @@
+name: Everbloom E091-E100 sky design-state validation
+on:
+  push:
+    paths:
+      - 'docs/innovation/emergence/typed_state/sky_091_100.json'
+      - 'docs/innovation/emergence/typed_state/validate_sky_091_100.py'
+      - 'docs/innovation/emergence/typed_state/SKY_STATE_HANDOFF.md'
+      - '.github/workflows/everbloom-emergence-e14-sky-types.yml'
+permissions:
+  contents: read
+jobs:
+  sky-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact HEAD and clean source checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          echo "SKY_CONTRACT_HEAD=$GITHUB_SHA"
+      - name: Strict E091-E100 state validation and seeded adversarial tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/innovation/emergence/typed_state/validate_sky_091_100.py
+          python docs/innovation/emergence/typed_state/validate_sky_091_100.py --self-test
