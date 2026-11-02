@@ -130,5 +130,62 @@ func _run() -> void:
         if FileAccess.file_exists(path):
             _check(DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK,
                    "remove only test-created artifact: " + path)
+    # Exercise the assembled Game coordinator, not just SaveService fixtures.
+    # The recovered session must be able to earn/spend/save without restoring
+    # a stale corrupt primary or doubling any domain balance.
+    var game = load("res://scripts/game.gd").new()
+    root.add_child(game)
+    game.year = 2
+    game.season_index = 3
+    game.day = 13
+    game.gold = 500
+    game.inventory["turnip_seed"] = 10
+    game.village.memories["mira"]["talks"] = 3
+    game.animals.paddocks[0]["forage"] = 5
+    game.save_game(false)
+    _check(int(SaveService.read_payload().get("gold", -1)) == 500,
+           "assembled first game save")
+    game.gold = 510
+    game.inventory["turnip_seed"] = 8
+    game.village.memories["mira"]["talks"] = 4
+    game.animals.paddocks[0]["forage"] = 4
+    game.save_game(false)
+    _check(int(SaveService._read_one(SaveService.BACKUP_PATH).get("gold", -1)) == 500,
+           "assembled backup is previous live state")
+    _check(_write_raw(SaveService.SAVE_PATH, "{assembled-damage"),
+           "damage assembled primary")
+    game.gold = 0
+    game.inventory["turnip_seed"] = 0
+    game.village.memories["mira"]["talks"] = 0
+    game.animals.paddocks[0]["forage"] = 0
+    game.load_game()
+    _check(game.gold == 500 and game.year == 2 and game.day == 13,
+           "assembled game restores backed-up calendar and currency")
+    _check(int(game.inventory["turnip_seed"]) == 10
+           and int(game.village.memories["mira"]["talks"]) == 3
+           and int(game.animals.paddocks[0]["forage"]) == 5,
+           "assembled game restores all nested domains")
+    game.gold += 7
+    game.inventory["turnip_seed"] -= 2
+    game.village.memories["mira"]["talks"] += 1
+    game.animals.paddocks[0]["forage"] -= 1
+    game.save_game(false)
+    var assembled: Dictionary = SaveService.read_payload()
+    _check(int(assembled.get("gold", -1)) == 507,
+           "assembled resumed currency conserved")
+    _check(int(assembled.get("inventory", {}).get("turnip_seed", -1)) == 8,
+           "assembled resumed inventory conserved")
+    _check(int(assembled.get("village", {}).get("memories", {}).get("mira", {}).get("talks", -1)) == 4,
+           "assembled resumed social history conserved")
+    _check(int(assembled.get("animals", {}).get("__paddocks__", [])[0].get("forage", -1)) == 4,
+           "assembled resumed grazing state conserved")
+    _check(int(SaveService._read_one(SaveService.BACKUP_PATH).get("gold", -1)) == 500,
+           "assembled resume does not replace valid backup with corrupt bytes")
+    _check(FileAccess.get_file_as_string(SaveService.QUARANTINE_PREFIX + "001")
+           == "{assembled-damage", "assembled corrupt primary quarantined intact")
+    for path in paths:
+        if FileAccess.file_exists(path):
+            _check(DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK,
+                   "remove assembled test artifact: " + path)
     print("PRINCIPAL RECOVERY RESUME: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
