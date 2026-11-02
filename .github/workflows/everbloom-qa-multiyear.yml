@@ -5,6 +5,8 @@ on:
       - 'tests/native_qa_multiyear.gd'
       - 'tests/test_qa_calendar_contract.py'
       - 'tools/qa_calendar_contract.py'
+      - 'tools/package_source.py'
+      - 'tests/test_source_package.py'
       - 'docs/QA_RELEASE_EVIDENCE.md'
       - 'scripts/game.gd'
       - 'scripts/save_service.gd'
@@ -33,6 +35,12 @@ jobs:
           set -euo pipefail
           python tools/qa_calendar_contract.py
           python -m unittest discover -s tests -p 'test_qa_calendar_contract.py' -v
+      - name: Build and verify reproducible first-party source archive locally
+        run: |
+          set -euo pipefail
+          python tools/package_source.py --output "$RUNNER_TEMP/everbloom-source.zip" | tee qa_package.log
+          test -s "$RUNNER_TEMP/everbloom-source.zip"
+          # Source-only archive is not uploaded, published or released.
       - name: Download checksum-pinned official Godot 4.7.2
         run: |
           set -euo pipefail
@@ -60,6 +68,7 @@ jobs:
         with:
           name: everbloom-qa-multiyear
           path: |
+            qa_package.log
             qa_import.log
             qa_multiyear.log
           if-no-files-found: ignore
