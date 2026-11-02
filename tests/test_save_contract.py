@@ -191,5 +191,24 @@ class SaveIntegrationContract(unittest.TestCase):
         self.assertIn("XDG_DATA_HOME: /tmp/everbloom-principal-recovery-resume", workflow)
         self.assertNotIn("codex", workflow.lower())
 
+    def test_local_save_writer_lock_is_fail_closed_and_native_exercised(self):
+        service = (ROOT / "scripts/save_service.gd").read_text(encoding="utf-8")
+        recovery = (ROOT / "scripts/principal_recovery_acceptance.gd").read_text(
+            encoding="utf-8")
+        self.assertIn("const WRITE_LOCK_PATH:", service)
+        self.assertIn("DirAccess.make_dir_absolute(lock_path)", service)
+        self.assertIn("DirAccess.remove_absolute(lock_path)", service)
+        self.assertIn("_write_payload_under_lock(payload)", service)
+        self.assertLess(service.index("DirAccess.make_dir_absolute(lock_path)"),
+                        service.index("_write_payload_under_lock(payload)"))
+        for case in ("second writer rejected while lock held before first save",
+                     "locked first write created no save artifacts",
+                     "competing writer rejected without currency or inventory mutation",
+                     "competing writer preserved authoritative primary and backup bytes",
+                     "competing writer never created temporary save",
+                     "all successful and failed writes released writer lock"):
+            self.assertIn(case, recovery)
+
+
 if __name__ == "__main__":
     unittest.main()
