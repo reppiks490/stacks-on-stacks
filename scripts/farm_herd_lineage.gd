@@ -129,10 +129,10 @@ func _child(mother: Dictionary, father: Dictionary, epoch: int) -> Dictionary:
     var serial: int = int(state["next_serial"])
     var traits: Dictionary = {}
     for i in range(TRAITS.size()):
-        var trait: String = TRAITS[i]
+        var trait_name: String = TRAITS[i]
         var drift: int = (serial * 7 + epoch * 3 + i * 11) % 5 - 2
-        traits[trait] = clampi(int(round((int(mother["traits"][trait]) +
-            int(father["traits"][trait])) / 2.0)) + drift, 0, 100)
+        traits[trait_name] = clampi(int(round((int(mother["traits"][trait_name]) +
+            int(father["traits"][trait_name])) / 2.0)) + drift, 0, 100)
     var child: Dictionary = _record(str(mother["species"]), serial,
         "male" if serial % 2 == 0 else "female", str(mother["id"]),
         str(father["id"]), epoch, maxi(int(mother["generation"]), int(father["generation"])) + 1,
@@ -224,10 +224,10 @@ func _decode(raw: Variant) -> Dictionary:
         if not (original["traits"] is Dictionary) or original["traits"].size() != 3:
             return {}
         var traits: Dictionary = {}
-        for trait in TRAITS:
-            if not original["traits"].has(trait) or not _integer(original["traits"][trait], 0, 100):
+        for trait_name in TRAITS:
+            if not original["traits"].has(trait_name) or not _integer(original["traits"][trait_name], 0, 100):
                 return {}
-            traits[trait] = int(original["traits"][trait])
+            traits[trait_name] = int(original["traits"][trait_name])
         if not (original["pregnancy"] is Dictionary):
             return {}
         var pregnancy: Dictionary = original["pregnancy"]
