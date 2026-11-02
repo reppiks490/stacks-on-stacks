@@ -33,11 +33,11 @@
       "save_namespace": "emergence.eb_e_61",
       "player_scenario": "Train a willing companion to distinguish distinct harmless scent samples with humane rest",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "train_scent_mosaic_tracker",
+        "preview_scent_mosaic_tracker",
+        "confirm_scent_mosaic_tracker",
+        "review_scent_mosaic_tracker",
+        "cancel_scent_mosaic_tracker"
       ],
       "fields": {
         "companion_id": {
@@ -194,7 +194,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Scent Mosaic Tracker; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -203,7 +206,41 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "training_receipts"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Scent confidence grows through distinct samples and humane rest periods. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Train a willing animal companion to distinguish multiple harmless environmental scent trails; verify rule: Scent confidence grows through distinct samples and humane rest periods.",
+        "adversarial": "One sample cannot be replayed to max skill",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "One sample cannot be replayed to max skill"
     },
     {
       "id": "EB-E-062",
@@ -217,15 +254,20 @@
       "owner": "Emergence",
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
-      "source_fields": [],
+      "source_fields": [
+        "alert_ids",
+        "search_area",
+        "rescue_target",
+        "completion"
+      ],
       "save_namespace": "emergence.eb_e_62",
       "player_scenario": "Use accessible companion alerts to locate a stranded animal, requiring reachable path and stamina",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "follow_rescue_bark_triangulation",
+        "preview_rescue_bark_triangulation",
+        "confirm_rescue_bark_triangulation",
+        "review_rescue_bark_triangulation",
+        "cancel_rescue_bark_triangulation"
       ],
       "fields": {
         "alert_ids": {
@@ -353,7 +395,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Rescue Bark Triangulation; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -362,7 +407,44 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "reachable",
+        "stamina_cost",
+        "safe_clue_mode",
+        "target_epoch"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Rescue requires reachable location and stamina; companion cannot teleport target. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Follow a companion's alerts to locate a stranded noncombat animal with safe alternate clues; verify rule: Rescue requires reachable location and stamina; companion cannot teleport target.",
+        "adversarial": "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "Reload cannot rescue same target twice; the same rescue event must have one unique completion receipt"
     },
     {
       "id": "EB-E-063",
@@ -377,16 +459,19 @@
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
       "source_fields": [
-        "companion_id"
+        "companion_id",
+        "waypoints",
+        "herd_consent",
+        "route_receipt"
       ],
       "save_namespace": "emergence.eb_e_63",
       "player_scenario": "Suggest consented grazing waypoints without overriding Farming's livestock authority",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "guide_herd_whisper_formation",
+        "preview_herd_whisper_formation",
+        "confirm_herd_whisper_formation",
+        "review_herd_whisper_formation",
+        "cancel_herd_whisper_formation"
       ],
       "fields": {
         "companion_id": {
@@ -542,7 +627,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Herd Whisper Formation; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -551,7 +639,42 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "assigned_elsewhere",
+        "day_epoch"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Farming owns livestock movement; companion emits approved waypoint suggestions only. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Guide farm animals through safe grazing routes with gentle companion positioning; verify rule: Farming owns livestock movement; companion emits approved waypoint suggestions only.",
+        "adversarial": "One dog cannot move animals already assigned elsewhere",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "One dog cannot move animals already assigned elsewhere"
     },
     {
       "id": "EB-E-064",
@@ -567,16 +690,18 @@
       "state_version": 1,
       "source_fields": [
         "companion_id",
-        "rest_epoch"
+        "stress_level",
+        "care_receipts",
+        "training_pause"
       ],
       "save_namespace": "emergence.eb_e_64",
       "player_scenario": "Offer bounded stress relief and let an animal decline training",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "recognize_comfort_companion_signals",
+        "preview_comfort_companion_signals",
+        "confirm_comfort_companion_signals",
+        "review_comfort_companion_signals",
+        "cancel_comfort_companion_signals"
       ],
       "fields": {
         "companion_id": {
@@ -714,7 +839,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Comfort Companion Signals; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -723,7 +851,42 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "rest_epoch",
+        "stress_before_care"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Animal welfare and consent gate optional tasks; ignoring training has no permanent penalty. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Recognize companion stress and offer quiet care instead of forced training; verify rule: Animal welfare and consent gate optional tasks; ignoring training has no permanent penalty.; the animal may decline training and recover through humane rest",
+        "adversarial": "Repeated petting cannot instantly erase severe stress",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "Repeated petting cannot instantly erase severe stress"
     },
     {
       "id": "EB-E-065",
@@ -738,16 +901,19 @@
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
       "source_fields": [
-        "companion_id"
+        "search_cells",
+        "protected_dens",
+        "find_receipts",
+        "companion_fatigue"
       ],
       "save_namespace": "emergence.eb_e_65",
       "player_scenario": "Search only safe ground for authored keepsakes while preserving protected dens",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "use_burrow_safe_treasure_sniff",
+        "preview_burrow_safe_treasure_sniff",
+        "confirm_burrow_safe_treasure_sniff",
+        "review_burrow_safe_treasure_sniff",
+        "cancel_burrow_safe_treasure_sniff"
       ],
       "fields": {
         "companion_id": {
@@ -920,7 +1086,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Burrow-Safe Treasure Sniff; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -929,7 +1098,42 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "companion_id",
+        "day_epoch"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Only marked safe search cells may yield one authored keepsake each. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Use a companion to find buried nonliving keepsakes without disturbing protected dens; verify rule: Only marked safe search cells may yield one authored keepsake each.",
+        "adversarial": "Search spam cannot create duplicate keepsakes",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "Search spam cannot create duplicate keepsakes"
     },
     {
       "id": "EB-E-066",
@@ -944,16 +1148,19 @@
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
       "source_fields": [
-        "companion_id"
+        "companion_id",
+        "forecast_epoch",
+        "shelter_choice",
+        "care_status"
       ],
       "save_namespace": "emergence.eb_e_66",
       "player_scenario": "Choose optional humane refuge from advisory companion weather warnings",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "let_weather_savvy_companion_shelter",
+        "preview_weather_savvy_companion_shelter",
+        "confirm_weather_savvy_companion_shelter",
+        "review_weather_savvy_companion_shelter",
+        "cancel_weather_savvy_companion_shelter"
       ],
       "fields": {
         "companion_id": {
@@ -1070,7 +1277,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Weather-Savvy Companion Shelter; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -1079,7 +1289,43 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "shelter_available",
+        "warning_receipt",
+        "day_epoch"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Warnings are advisory; safe shelter is always optional and available. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Let an animal signal approaching harsh weather and choose a humane resting place; verify rule: Warnings are advisory; safe shelter is always optional and available.",
+        "adversarial": "Companion cannot be permanently lost because player missed warning",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "Companion cannot be permanently lost because player missed warning"
     },
     {
       "id": "EB-E-067",
@@ -1093,15 +1339,20 @@
       "owner": "Emergence",
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
-      "source_fields": [],
+      "source_fields": [
+        "active_id",
+        "rotation_epoch",
+        "energy_ledger",
+        "trail_segments"
+      ],
       "save_namespace": "emergence.eb_e_67",
       "player_scenario": "Rotate two rested companions between route segments without overlapping rewards",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "alternate_trail_partnership_rotation",
+        "preview_trail_partnership_rotation",
+        "confirm_trail_partnership_rotation",
+        "review_trail_partnership_rotation",
+        "cancel_trail_partnership_rotation"
       ],
       "fields": {
         "active_id": {
@@ -1275,7 +1526,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Trail Partnership Rotation; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -1284,7 +1538,43 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "standby_id",
+        "pending_action",
+        "swap_receipt"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Only one active companion has authority per route segment; rested companions recover. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Alternate two companions on long hikes according to energy, skills and comfort; verify rule: Only one active companion has authority per route segment; rested companions recover.",
+        "adversarial": "Swap during action cannot duplicate both companions' reward",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "Swap during action cannot duplicate both companions' reward"
     },
     {
       "id": "EB-E-068",
@@ -1299,16 +1589,19 @@
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
       "source_fields": [
-        "companion_id"
+        "gesture_map",
+        "learned_cues",
+        "request_history",
+        "consent"
       ],
       "save_namespace": "emergence.eb_e_68",
       "player_scenario": "Teach accessible non-audio gestures and reject unlearned cues",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "create_companion_gesture_lexicon",
+        "preview_companion_gesture_lexicon",
+        "confirm_companion_gesture_lexicon",
+        "review_companion_gesture_lexicon",
+        "cancel_companion_gesture_lexicon"
       ],
       "fields": {
         "companion_id": {
@@ -1469,7 +1762,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Companion Gesture Lexicon; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -1478,7 +1774,42 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "companion_id",
+        "visual_fallback"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Commands require learned cues; voice or audio is never mandatory. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Create an accessible gesture-and-icon vocabulary for companion requests; verify rule: Commands require learned cues; voice or audio is never mandatory.; test each cue through visual icons without requiring voice input",
+        "adversarial": "Unlearned gesture cannot bypass skill prerequisite",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "Unlearned gesture cannot bypass skill prerequisite"
     },
     {
       "id": "EB-E-069",
@@ -1493,16 +1824,19 @@
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
       "source_fields": [
-        "companion_id"
+        "species_id",
+        "safety_radius",
+        "companion_position",
+        "observations"
       ],
       "save_namespace": "emergence.eb_e_69",
       "player_scenario": "Observe nesting wildlife outside a protected radius for knowledge-only progress",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "teach_wildlife_distance_etiquette",
+        "preview_wildlife_distance_etiquette",
+        "confirm_wildlife_distance_etiquette",
+        "review_wildlife_distance_etiquette",
+        "cancel_wildlife_distance_etiquette"
       ],
       "fields": {
         "species_id": {
@@ -1644,7 +1978,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Wildlife Distance Etiquette; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -1653,7 +1990,46 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "companion_id",
+        "safety_radius_cm",
+        "companion_distance_cm",
+        "protected_nest",
+        "reward_kind",
+        "day_epoch"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Habitat safety radius blocks chasing; observations award knowledge only. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Teach companions to observe nesting wildlife from safe distances; verify rule: Habitat safety radius blocks chasing; observations award knowledge only.; verify the animal stays outside the protected nest perimeter",
+        "adversarial": "Repeated approach cannot override protected nesting boundary",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "Repeated approach cannot override protected nesting boundary"
     },
     {
       "id": "EB-E-070",
@@ -1667,15 +2043,20 @@
       "owner": "Emergence",
       "phase": "design_only_no_runtime_implementation",
       "state_version": 1,
-      "source_fields": [],
+      "source_fields": [
+        "mentor_id",
+        "learner_id",
+        "session_receipts",
+        "skill_progress"
+      ],
       "save_namespace": "emergence.eb_e_70",
       "player_scenario": "Progress finite, consented skill lessons without forced labor or canceled awards",
       "player_verbs": [
-        "inspect",
-        "preview",
-        "choose",
-        "confirm",
-        "cancel"
+        "have_senior_companion_mentorship",
+        "preview_senior_companion_mentorship",
+        "confirm_senior_companion_mentorship",
+        "review_senior_companion_mentorship",
+        "cancel_senior_companion_mentorship"
       ],
       "fields": {
         "mentor_id": {
@@ -1817,7 +2198,10 @@
         "day_epoch": "(year-1)*56+season_index*14+day",
         "effect_digest": "no inventory reward, animal movement or skill grant from preview"
       },
-      "original_asset_plan": "Original companion animation, simple readable icons and optional authored sounds; provenance manifest, no third-party game extraction",
+      "original_asset_plan": [
+        "Original stylized-realistic companion_intelligence cues, legible iconography and optional original ambient audio for Senior Companion Mentorship; provenance manifest and low-spec fallback required.",
+        "Original or rights-verified asset provenance with no proprietary extraction, desktop/mobile LOD and reduced-motion/audio alternatives."
+      ],
       "performance_budget": {
         "status": "proposed_not_measured",
         "active_instances_cap": 8,
@@ -1826,7 +2210,43 @@
         "extra_draw_calls_mobile_cap": 4
       },
       "native_gate": "NOT PLAYABLE: requires Principal joint 220 ledger approval, Farming animal authority, native Godot assembled-game save/replay, device input and measured performance",
-      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization."
+      "migration": "Optional absent namespace defaults to inactive; malformed present namespace rejects atomically; no live save schema changes without Principal authorization.",
+      "additions": [
+        "welfare_ok",
+        "canceled",
+        "day_epoch"
+      ],
+      "novelty_audit": "Distinct proposed player decision from existing static quests/fishing/festivals, Phase-A Emergence ideas and Builder's construction designs: Learning requires finite shared sessions and welfare checks, not instant inheritance. Source recheck required before integration.",
+      "dependencies": [
+        "Principal stable command IDs, calendar, assembled save and authoritative inventory",
+        "Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+        "Original authored asset/provenance and UX localization pass"
+      ],
+      "resource_accounting": {
+        "cost": "Bounded time/energy or owned inventory only; actual cost and acquisition path must be authored and balanced at implementation.",
+        "invariant": "Preview cannot debit; Principal economy applies a single transaction; cancellation refunds only unconsumed reservations.",
+        "proposed_time_minutes": 30,
+        "proposed_energy_units": 2,
+        "inventory_requirement": "Only explicit authored item instances where relevant; no new free material and no hidden charges.",
+        "refund": "Before confirmation no debit; cancellation of a reserved but unused action restores only its original owned resources; completed effects cannot be refunded and rewarded twice."
+      },
+      "acceptance": {
+        "positive": "In real Godot scene, Have an older companion demonstrate gentle tasks to a younger animal without compulsory labor; verify rule: Learning requires finite shared sessions and welfare checks, not instant inheritance.",
+        "adversarial": "A canceled mentorship cannot award a completed skill",
+        "integrated": "Native assembled-game conservation, invalid-state, duplicate-command and keyboard/controller/touch parity tests before claiming playable."
+      },
+      "save_replay": "Deterministic seed, exact command receipts and two-year assembled save/load with day_epoch rollover; no duplicate effects, malformed state fails closed.",
+      "engine_portability": "Godot 4.x only until playable baseline is independently verified; engine-neutral domain state and command receipts. Later Unreal/Unity port requires owner approval and real parity tests.",
+      "effort_estimate": {
+        "size": "L",
+        "estimated_engineering_days": "8-16",
+        "risk_factors": [
+          "Domain authority integration with Farming owns animal welfare/livestock; Village owns schedules; Emergence owns companion proposals",
+          "Two-year save/replay, accessible controller/touch parity and original art production"
+        ],
+        "status": "unmeasured_planning_estimate_not_a_commitment"
+      },
+      "negative": "A canceled mentorship cannot award a completed skill"
     }
   ]
 }
