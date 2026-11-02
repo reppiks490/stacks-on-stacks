@@ -3,12 +3,19 @@ extends Node3D
 ## Public contract unchanged: setup, act(position), next_day, save_state, load_state.
 const MAX_BOND := 100
 const FEED_PRICE := 6
+const PADDOCK_CAPACITY := 7
+const COMPOST_CARE_INTERVAL := 3
+var paddocks: Array = []
 var game
 var creatures: Array = []
 var material_cache: Dictionary = {}
 
 func setup(host) -> void:
     game = host
+    creatures.clear()
+    paddocks.clear()
+    for i in range(3):
+        paddocks.append({"forage":PADDOCK_CAPACITY})
     var payload = JSON.parse_string(FileAccess.get_file_as_string("res://data/animals.json"))
     if not payload is Dictionary:
         return
@@ -61,6 +68,7 @@ func setup(host) -> void:
         profile["last_care"] = -1
         profile["production_counter"] = 0
         profile["neglect_days"] = 0
+        profile["compost_counter"] = 0
         creatures.append(profile)
         index += 1
 
@@ -74,7 +82,17 @@ func _mat(tint: Color) -> StandardMaterial3D:
     material_cache[key] = mat
     return mat
 
+func _active_paddock_index() -> int:
+    # One shared grazing field per week; other fields regenerate while resting.
+    return int((game.day_epoch() - 1) / 7) % paddocks.size()
+
 func _feed_one() -> String:
+    # Grazing is finite, requires daylight-safe weather, and costs no inventory.
+    if game.season() != "Winter" and game.weather != "Rain":
+        var paddock: Dictionary = paddocks[_active_paddock_index()]
+        if int(paddock["forage"]) > 0:
+            paddock["forage"] = int(paddock["forage"]) - 1
+            return "fresh pasture grass"
     if game.consume_item("fodder", 1):
         return "fodder"
     if game.consume_item("wild_herb", 1):
@@ -107,20 +125,34 @@ func act(position: Vector3) -> String:
     selected["health"] = mini(100, int(selected["health"]) + 4)
     selected["neglect_days"] = 0
     selected["bond"] = mini(MAX_BOND, int(selected["bond"]) + int(selected["care_reward"]))
+    selected["compost_counter"] = int(selected["compost_counter"]) + 1
+    var compost_note: String = ""
+    if int(selected["compost_counter"]) >= COMPOST_CARE_INTERVAL:
+        selected["compost_counter"] = 0
+        game.grant_item("compost", 1)
+        compost_note = " The barn bedding yielded compost for the fields."
     game.care_actions += 1
     game.add_restoration(1)
     if int(selected["health"]) < 45 or int(selected["happiness"]) < 35:
-        return "%s ate %s and needs gentle recovery before producing." % [selected["name"], feed]
+        return "%s ate %s and needs gentle recovery before producing." % [selected["name"], feed] + compost_note
     selected["production_counter"] = int(selected["production_counter"]) + 1
     if int(selected["production_counter"]) >= int(selected["production_days"]):
         selected["production_counter"] = 0
         game.grant_item(str(selected["product"]), 1)
         return "%s enjoyed %s and offered fresh %s. Bond %d/100." % [
-            selected["name"], feed, selected["product"], int(selected["bond"])]
+            selected["name"], feed, selected["product"], int(selected["bond"])] + compost_note
     return "%s enjoyed %s. Happiness %d/100, bond %d/100." % [
-        selected["name"], feed, int(selected["happiness"]), int(selected["bond"])]
+        selected["name"], feed, int(selected["happiness"]), int(selected["bond"])] + compost_note
 
 func next_day() -> void:
+    for i in range(paddocks.size()):
+        var paddock: Dictionary = paddocks[i]
+        var recovery: int = 2 if i != _active_paddock_index() else 1
+        if game.season() == "Winter":
+            recovery = 0
+        elif game.weather == "Rain":
+            recovery += 1
+        paddock["forage"] = mini(PADDOCK_CAPACITY, int(paddock["forage"]) + recovery)
     var previous_day: int = game.day_epoch() - 1
     for i in range(creatures.size()):
         var animal: Dictionary = creatures[i]
@@ -142,17 +174,28 @@ func next_day() -> void:
 
 func save_state() -> Dictionary:
     var output: Dictionary = {}
+    var forage_records: Array = []
+    for paddock in paddocks:
+        forage_records.append({"forage":paddock["forage"]})
+    output["__paddocks__"] = forage_records
     for creature in creatures:
         output[str(creature["id"])] = {
             "bond":creature["bond"], "happiness":creature["happiness"],
             "health":creature["health"], "hunger":creature["hunger"],
             "cleanliness":creature["cleanliness"], "last_care":creature["last_care"],
             "production_counter":creature["production_counter"],
-            "neglect_days":creature["neglect_days"]
+            "neglect_days":creature["neglect_days"],
+            "compost_counter":creature["compost_counter"]
         }
     return output
 
 func load_state(saved: Dictionary) -> void:
+    var forage_records: Variant = saved.get("__paddocks__", [])
+    if forage_records is Array and forage_records.size() == paddocks.size():
+        for i in range(paddocks.size()):
+            if forage_records[i] is Dictionary:
+                paddocks[i]["forage"] = clampi(
+                    int(forage_records[i].get("forage", PADDOCK_CAPACITY)), 0, PADDOCK_CAPACITY)
     for creature in creatures:
         var rid: String = str(creature["id"])
         if not saved.has(rid) or not saved[rid] is Dictionary:
@@ -164,3 +207,4 @@ func load_state(saved: Dictionary) -> void:
         creature["production_counter"] = clampi(int(record.get("production_counter", 0)),
             0, int(creature["production_days"]) - 1)
         creature["neglect_days"] = clampi(int(record.get("neglect_days", 0)), 0, 365)
+        creature["compost_counter"] = clampi(int(record.get("compost_counter", 0)), 0, COMPOST_CARE_INTERVAL - 1)
