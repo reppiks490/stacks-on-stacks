@@ -1,0 +1,26 @@
+name: Everbloom Construction B13 namespace policy dry-run
+on:
+  push:
+    paths:
+      - 'docs/innovation/construction/namespace_policy/**'
+      - '.github/workflows/everbloom-construction-namespace-policy.yml'
+permissions:
+  contents: read
+jobs:
+  construction-namespace-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checkout immutable Construction crossaudit source
+        uses: actions/checkout@v4
+        with:
+          ref: d73fc5641552ab192e57ed7327e815c3370d0181
+          path: .pinned_construction_audit
+          persist-credentials: false
+      - name: Validate pinned source and migration-policy adversarial cases
+        run: |
+          python docs/innovation/construction/namespace_policy/validate_policy.py --source .pinned_construction_audit/docs/innovation/construction/typed100_crossaudit/SOURCE_EVIDENCE.json --self-test
