@@ -194,6 +194,8 @@ func _run() -> void:
     _near(game)
     village.social_journal.open_journal()
     _check(paused, "social journal holds modal pause")
+    ui._input(_pad(JOY_BUTTON_DPAD_RIGHT))
+    _check(not ui.panel.visible, "controller gift shortcut cannot hijack journal navigation")
     ui.open_gifts()
     _check(not ui.panel.visible, "gift picker cannot open over social journal")
     village.social_journal.close_journal()
