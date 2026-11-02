@@ -64,3 +64,12 @@ The serializer must reject malformed or non-finite JSON state *before* either ov
 **Evidence separation:** [principal-native acceptance at `8b4cea2`](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41399615671) proves 19 negative/legacy schema tests in real Godot. Existing [filesystem save test](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41398474611) proves two writes/backup and corrupted-primary fallback. Neither proves Windows locking, interrupted rename, power-loss durability, or preservation of full domain state after a hostile nested save. QA must add fault-injection and full-state fixtures before release.
 
 **Pending expanded check:** the same principal branch now includes five additional hostile nested-state cases (24 total) covering malformed village contact maps, fractional soil age, animal health/epoch and social flags; this expansion must pass at final source SHA before integration.
+
+
+## Cross-lane ecology save and paid-shift input integration
+
+**Discovered at canonical merge `ddb081d8`:** Farming Ecology's `animals.save_state()` includes a reserved `__paddocks__` array, but the previous Principal validator required every animal key to be a dictionary. That mismatch made full-game saves fail even though earlier synthetic save fixtures passed. The corrective isolated branch `game/everbloom-principal-live-save-job-20261102` validates `__paddocks__` as an array of nonnegative integral forage records, and validates the new Village `worked`, `festivals` and `memories` fields. Unknown schema remains rejected.
+
+The principal also binds `K` to `village.act("job", hero.global_position)` and documents the shortcut in the HUD, exposing the existing Village shift to keyboard players. The Village subsystem owns payment logic, schedule rules, and daily job idempotence; no changes were made to Village-owned source. Touch/controller UI remains pending.
+
+**Evidence requirement:** the expanded `scripts/principal_save_acceptance.gd` creates the real assembled `scripts/game.gd`, populates live soil/village/livestock state, writes `user://` on an isolated native CI runner, reads it back, mutates in-memory values, reloads, and checks currency, inventory, date, village memory and paddock counts. Earlier 24-case native fixtures did *not* cover the ecology array. Native combined-HEAD validation must pass before closing this regression; it is not proof of power-loss durability or a consumer device playthrough.
