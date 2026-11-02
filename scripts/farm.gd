@@ -2,12 +2,15 @@ extends Node3D
 ## EVERBLOOM's original, deterministic soil/season farming system.
 ## Public contract: setup(game), act(tool, position), next_day(weather),
 ## save_state(), load_state(records). No shared game.gd modifications required.
+const HYDROLOGY = preload("res://scripts/farm_hydrology.gd")
 const BED_COUNT := 30
 const STATE_KEYS := ["tilled","crop","age","watered","watered_days","moisture",
     "fertility","weeds","stress","last_family","rotation_bonus",
     "seed_vigor","last_harvest_epoch"]
 const QUALITY_NAMES := ["", "rustic", "fresh", "fine", "excellent", "heirloom"]
 var game
+## Optional, opt-in finite source. Principal owns attaching/persisting it in Game.
+var water_network: Variant = null
 var beds: Array = []
 var field_origin := Vector3(-20.0, 0.0, -1.0)
 var materials: Dictionary = {}
@@ -64,6 +67,16 @@ func setup(host) -> void:
             }
             beds.append(plot)
             _paint(plot)
+
+func attach_water_network(network: Variant) -> bool:
+    # Opt-in only. Reject stale/invalid network snapshots before any player action.
+    if network == null or not network.has_method("status") or not network.has_method("irrigate") or not network.has_method("save_state") or not network.has_method("load_state"):
+        return false
+    var info: Dictionary = network.status()
+    if int(info.get("day_epoch", -2)) != game.day_epoch() or int(info.get("balance_error", 1)) != 0:
+        return false
+    water_network = network
+    return true
 
 func _mat(tint: Color) -> StandardMaterial3D:
     var key: String = tint.to_html()
@@ -157,6 +170,22 @@ func act(tool: String, origin: Vector3) -> String:
             return "There is no seedling to water."
         if bool(plot["watered"]) or int(plot["moisture"]) >= 95:
             return "The soil is already moist today."
+        if water_network != null:
+            # Finite source and stamina must commit together. On energy failure,
+            # restore the exact conserved source snapshot; no water is minted.
+            var water_before: Dictionary = water_network.save_state()
+            var tx: Dictionary = water_network.irrigate(index, 20, game.day_epoch())
+            if not bool(tx.get("ok", false)):
+                return str(tx.get("message", "No irrigation water available."))
+            if not game.spend_energy(1.0):
+                if not water_network.load_state(water_before):
+                    push_error("F02: finite-water transaction rollback failed")
+                return "Rest to refill your watering can."
+            plot["watered"] = true
+            plot["moisture"] = mini(100, int(plot["moisture"]) + int(tx["delivered"]))
+            _paint(plot)
+            return "Irrigated bed %d: %d water units delivered (%d lost)." % [
+                index, int(tx["delivered"]), int(tx["channel_loss"])]
         if not game.spend_energy(1.0):
             return "Rest to refill your watering can."
         plot["watered"] = true
@@ -204,10 +233,10 @@ func next_day(new_weather: String) -> void:
     var summer: bool = game.season() == "Summer"
     for i in range(beds.size()):
         var plot: Dictionary = beds[i]
-        var moisture: int = int(plot["moisture"])
-        if rainy:
-            moisture = mini(100, moisture + 68)
-        var can_grow: bool = (bool(plot["watered"]) or rainy or moisture >= 45) and int(plot["weeds"]) < 4
+        var water: Dictionary = HYDROLOGY.advance_day(
+            int(plot["moisture"]), 68 if rainy else 0, summer, int(plot["weeds"]))
+        var can_grow: bool = (bool(plot["watered"]) or rainy or
+            int(water["available_for_growth"]) >= 45) and int(plot["weeds"]) < 4
         var crop_id: String = str(plot["crop"])
         if crop_id != "":
             var crop_data: Dictionary = game.crop_definitions.get(crop_id, {})
@@ -228,8 +257,7 @@ func next_day(new_weather: String) -> void:
             plot["fertility"] = mini(100, int(plot["fertility"]) + 2)
         if bool(plot["tilled"]) and (game.day_epoch() + i * 7) % 9 == 0:
             plot["weeds"] = mini(5, int(plot["weeds"]) + 1)
-        moisture -= (22 if rainy else (35 if summer else 29)) + int(plot["weeds"]) * 2
-        plot["moisture"] = clampi(moisture, 0, 100)
+        plot["moisture"] = int(water["moisture"])
         plot["watered"] = false
         _paint(plot)
 

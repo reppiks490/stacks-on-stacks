@@ -1,4 +1,5 @@
 extends SceneTree
+const HYDROLOGY = preload("res://scripts/farm_hydrology.gd")
 ## Native engine acceptance, not a mock of the farm/animal scripts.
 ## Run: godot --headless --path . --script res://scripts/farming_acceptance.gd
 var failures: int = 0
@@ -233,6 +234,106 @@ func _run() -> void:
     _check(int(first_bed["age"]) == 0, "heavy weeds block crop growth even after rain")
     _check("cleared the weeds" in farm.act("till", first), "existing tool clears weed pressure")
     _check(int(first_bed["weeds"]) == 0, "clearing weeds fixes crop competition")
+
+
+    # F02: real farm integration plus a 112-day conserved water ledger.
+    # The model is deliberately pure: repeated inputs must yield identical outputs.
+    var dry_day: Dictionary = HYDROLOGY.advance_day(35, 0, true, 0)
+    var wet_day: Dictionary = HYDROLOGY.advance_day(35, 68, true, 0)
+    _check(int(wet_day["moisture"]) > int(dry_day["moisture"]),
+        "rain materially improves retained moisture")
+    var saturated_day: Dictionary = HYDROLOGY.advance_day(95, 68, false, 0)
+    _check(int(saturated_day["runoff"]) > 0 and int(saturated_day["drainage"]) > 0,
+        "saturated soil accounts for runoff and deep drainage")
+    var water_a: int = 35
+    var water_b: int = 35
+    for step in range(112):
+        var rain_units: int = 68 if step % 7 == 0 else 0
+        var seasonal_day: int = step % 56
+        var summer_day: bool = seasonal_day >= 14 and seasonal_day < 28
+        var ledger_a: Dictionary = HYDROLOGY.advance_day(
+            water_a, rain_units, summer_day, step % 6)
+        var ledger_b: Dictionary = HYDROLOGY.advance_day(
+            water_b, rain_units, summer_day, step % 6)
+        _check(int(ledger_a["balance_error"]) == 0, "water conserved on day %d" % step)
+        _check(int(ledger_a["before"]) + int(ledger_a["rain"]) ==
+            int(ledger_a["runoff"]) + int(ledger_a["drainage"]) +
+            int(ledger_a["evaporation"]) + int(ledger_a["moisture"]),
+            "complete daily water balance %d" % step)
+        _check(int(ledger_a["moisture"]) == int(ledger_b["moisture"]),
+            "two-year hydrology replay deterministic %d" % step)
+        _check(int(ledger_a["moisture"]) >= 0 and int(ledger_a["moisture"]) <= 100,
+            "two-year hydrology remains bounded %d" % step)
+        water_a = int(ledger_a["moisture"])
+        water_b = int(ledger_b["moisture"])
+    var audit_bed: Dictionary = farm.beds[29]
+    audit_bed["moisture"] = 95
+    audit_bed["weeds"] = 0
+    var expected_rain: Dictionary = HYDROLOGY.advance_day(95, 68, false, 0)
+    host.season_index = 0
+    host.advance_day()
+    farm.next_day("Rain")
+    _check(int(audit_bed["moisture"]) == int(expected_rain["moisture"]),
+        "actual thirty-bed farm uses conserved hydrology")
+    var saved_hydrology: Array = farm.save_state()
+    _check(int(saved_hydrology[29]["moisture"]) == int(expected_rain["moisture"]),
+        "water state is persisted through the existing save contract")
+    audit_bed["moisture"] = 0
+    farm.load_state(saved_hydrology)
+    _check(int(audit_bed["moisture"]) == int(expected_rain["moisture"]),
+        "farm reload restores exact conserved water state")
+
+
+    # F02 mainline reconciliation: verify every real bed on 112 consecutive days.
+    # The independently computed model must match Farm.next_day, including
+    # variable weeds, summer heat and rainfall; no inventory/currency minting.
+    var pre_replay_gold: int = host.gold
+    var pre_replay_inventory: Dictionary = host.inventory.duplicate(true)
+    for replay_day in range(112):
+        host.advance_day()
+        var replay_weather: String = "Rain" if replay_day % 9 == 0 else "Clear"
+        var replay_summer: bool = host.season() == "Summer"
+        var expected_bed_water: Array = []
+        for bed_index in range(farm.beds.size()):
+            var bed_before: Dictionary = farm.beds[bed_index]
+            var expected_ledger: Dictionary = HYDROLOGY.advance_day(
+                int(bed_before["moisture"]), 68 if replay_weather == "Rain" else 0,
+                replay_summer, int(bed_before["weeds"]))
+            expected_bed_water.append(int(expected_ledger["moisture"]))
+            _check(int(expected_ledger["balance_error"]) == 0,
+                "real-bed input ledger conserved %d:%d" % [replay_day, bed_index])
+        farm.next_day(replay_weather)
+        for bed_index in range(farm.beds.size()):
+            _check(int(farm.beds[bed_index]["moisture"]) == int(expected_bed_water[bed_index]),
+                "30-bed hydrology transition %d:%d" % [replay_day, bed_index])
+        if replay_day % 14 == 13:
+            var checkpoint: Array = farm.save_state()
+            farm.load_state(checkpoint)
+            for bed_index in range(farm.beds.size()):
+                _check(int(farm.beds[bed_index]["moisture"]) ==
+                    int(checkpoint[bed_index]["moisture"]),
+                    "two-year water save/reload %d:%d" % [replay_day, bed_index])
+    _check(host.gold == pre_replay_gold,
+        "hydrology-only replay does not mint or spend petals")
+    _check(host.inventory == pre_replay_inventory,
+        "hydrology-only replay does not duplicate inventory")
+
+    # Adversarial boundary inputs are normalized before water accounting.
+    for moisture_input in [-10, 0, 1, 90, 100, 130]:
+        for rain_input in [-12, 0, 68, 240]:
+            for weed_input in [-3, 0, 5, 30]:
+                for summer_input in [false, true]:
+                    var bounded: Dictionary = HYDROLOGY.advance_day(
+                        moisture_input, rain_input, summer_input, weed_input)
+                    _check(int(bounded["balance_error"]) == 0,
+                        "normalized boundary inputs conserve water")
+                    _check(int(bounded["moisture"]) >= 0 and
+                        int(bounded["moisture"]) <= 100,
+                        "boundary inputs never overfill or underflow soil")
+                    _check(int(bounded["runoff"]) >= 0 and
+                        int(bounded["drainage"]) >= 0 and
+                        int(bounded["evaporation"]) >= 0,
+                        "boundary outflows remain nonnegative")
 
     print("EVERBLOOM FARM NATIVE ACCEPTANCE: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
