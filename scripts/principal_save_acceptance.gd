@@ -124,6 +124,54 @@ func _run() -> void:
     bad["village"]["memories"]["mira"]["jobs"] = "unbounded"
     _check(not SaveService.validate_payload(bad), "malformed employment memory accepted")
 
+    # P04/P05: festival rewards are a separate nested domain snapshot.
+    # Old schema-1 saves may omit it; present snapshots must be lossless.
+    var festival_state: Dictionary = integrated.duplicate(true)
+    festival_state["festivals"] = {"schema": 1, "awarded": [
+        "1:spring_seed_exchange", "2:summer_lantern_making"]}
+    _check(SaveService.validate_payload(festival_state),
+           "valid multi-year festival awards rejected")
+    bad = festival_state.duplicate(true)
+    bad["festivals"] = []
+    _check(not SaveService.validate_payload(bad), "festival array accepted as domain")
+    bad = festival_state.duplicate(true)
+    bad["festivals"].erase("schema")
+    _check(not SaveService.validate_payload(bad), "missing festival schema accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["schema"] = 2
+    _check(not SaveService.validate_payload(bad), "future festival schema accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = "not an award list"
+    _check(not SaveService.validate_payload(bad), "string festival awards accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = [17]
+    _check(not SaveService.validate_payload(bad), "numeric festival award accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"].append("1:spring_seed_exchange")
+    _check(not SaveService.validate_payload(bad), "duplicate festival award accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = ["3:spring_seed_exchange"]
+    _check(not SaveService.validate_payload(bad), "future-year festival award accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = ["0:spring_seed_exchange"]
+    _check(not SaveService.validate_payload(bad), "year-zero festival award accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = ["01:spring_seed_exchange"]
+    _check(not SaveService.validate_payload(bad), "noncanonical festival year accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = ["2:"]
+    _check(not SaveService.validate_payload(bad), "empty festival event ID accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = ["2:summer:lantern"]
+    _check(not SaveService.validate_payload(bad), "extra festival key separator accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = ["2:../unsafe"]
+    _check(not SaveService.validate_payload(bad), "unsafe festival event ID accepted")
+    bad = festival_state.duplicate(true)
+    bad["festivals"]["awarded"] = []
+    bad["festivals"]["awarded"].resize(5001)
+    _check(not SaveService.validate_payload(bad), "unbounded festival awards accepted")
+
     # New optional Village recollection fields must reject tampering rather
     # than being silently converted/clamped by Village.load_state().
     bad = integrated.duplicate(true)
@@ -195,6 +243,7 @@ func _run() -> void:
     session.village.memories["mira"]["recalled_gift_epoch"] = 130
     session.village.memories["mira"]["gift_recollections"] = 2
     session.animals.paddocks[0]["forage"] = 5
+    session.festivals.awarded["3:spring_seed_exchange"] = true
     session.save_game(false)
     _check(FileAccess.file_exists(SaveService.SAVE_PATH),
            "assembled gameplay failed to create a valid save")
@@ -204,6 +253,8 @@ func _run() -> void:
            "assembled grazing state did not persist")
     _check(saved.get("village", {}).get("memories", {}).has("mira"),
            "assembled village memory did not persist")
+    _check(saved.get("festivals", {}).get("awarded", []).has("3:spring_seed_exchange"),
+           "assembled festival award missing from saved snapshot")
     # Invalid in-memory payload must not replace the last valid on-disk
     # snapshot or mutate the assembled player's state.
     var saved_bytes: String = FileAccess.get_file_as_string(SaveService.SAVE_PATH)
@@ -213,12 +264,18 @@ func _run() -> void:
     _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == saved_bytes,
            "invalid gift memory modified authoritative save bytes")
     _check(session.gold == 901, "rejected save mutated active game currency")
+    bad = saved.duplicate(true)
+    bad["festivals"]["awarded"] = ["4:spring_seed_exchange"]
+    _check(not SaveService.write_payload(bad), "future-year assembled festival award written")
+    _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == saved_bytes,
+           "invalid festival awards modified authoritative save bytes")
     session.gold = 0
     session.inventory["turnip"] = 0
     session.year = 1
     session.day = 1
     session.animals.paddocks[0]["forage"] = 0
     session.village.memories["mira"]["talks"] = 0
+    session.festivals.awarded.clear()
     session.village.memories["mira"]["last_gift_favorite"] = false
     session.village.memories["mira"]["recalled_gift_epoch"] = -1
     session.village.memories["mira"]["gift_recollections"] = 0
@@ -236,6 +293,10 @@ func _run() -> void:
            and int(session.village.memories["mira"]["recalled_gift_epoch"]) == 130
            and int(session.village.memories["mira"]["gift_recollections"]) == 2,
            "assembled gift recollection failed to roundtrip exactly")
+    _check(session.festivals.awarded.has("3:spring_seed_exchange"),
+           "assembled festival award failed to roundtrip without duplication")
+    _check(session.festivals.awarded.size() == 1,
+           "assembled festival award count changed after reload")
     _check(SaveService.validate_payload(base), "mutating deep duplicates corrupted valid fixture")
     print("PRINCIPAL SAVE VALIDATION: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)
