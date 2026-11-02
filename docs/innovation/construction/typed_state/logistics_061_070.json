@@ -13,7 +13,7 @@
       "id": "EB-B-061",
       "title": "Cratewheel Manual Lift",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_61",
+      "save_namespace": "construction.eb_b_061",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -363,7 +363,7 @@
       "id": "EB-B-062",
       "title": "Barrowbalance Transport Trial",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_62",
+      "save_namespace": "construction.eb_b_062",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -733,7 +733,7 @@
       "id": "EB-B-063",
       "title": "Drydock Supply Shed",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_63",
+      "save_namespace": "construction.eb_b_063",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -1042,7 +1042,7 @@
       "id": "EB-B-064",
       "title": "Village Build Permit Hearing",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_64",
+      "save_namespace": "construction.eb_b_064",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -1349,7 +1349,7 @@
       "id": "EB-B-065",
       "title": "Site Staging Planner",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_65",
+      "save_namespace": "construction.eb_b_065",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -1630,7 +1630,7 @@
       "id": "EB-B-066",
       "title": "Courier Window Scheduler",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_66",
+      "save_namespace": "construction.eb_b_066",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -1976,7 +1976,7 @@
       "id": "EB-B-067",
       "title": "Reversible Scaffold Builder",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_67",
+      "save_namespace": "construction.eb_b_067",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -2301,7 +2301,7 @@
       "id": "EB-B-068",
       "title": "Workshop Safety Drill",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_68",
+      "save_namespace": "construction.eb_b_068",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -2682,7 +2682,7 @@
       "id": "EB-B-069",
       "title": "Counterweight Crane Assembly",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_69",
+      "save_namespace": "construction.eb_b_069",
       "source_fields": [
         "site_id:string",
         "revision:int",
@@ -2986,7 +2986,7 @@
       "id": "EB-B-070",
       "title": "Weatherproof Material Tarps",
       "state_version": 1,
-      "save_namespace": "construction.eb_b_70",
+      "save_namespace": "construction.eb_b_070",
       "source_fields": [
         "site_id:string",
         "revision:int",
