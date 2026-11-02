@@ -56,6 +56,7 @@ func _run() -> void:
     _check(ui.report_scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_AUTO,
            "touch and wheel can scroll report")
     _check(ui.report_scroll.follow_focus, "focus navigation follows scroll")
+    _check(ui.report_scroll.focus_mode == Control.FOCUS_ALL, "scroll report keyboard/gamepad focusable")
     _check(ui.opener.custom_minimum_size.y >= 44.0, "touch opener 44px")
     _check(ui.refresh_button.custom_minimum_size.y >= 44.0, "touch refresh 44px")
     _check(ui.close_button.custom_minimum_size.y >= 44.0, "touch close 44px")
@@ -96,8 +97,28 @@ func _run() -> void:
     _check("No valid save" in ui.report_label.text, "player sees missing-save warning")
     _check("not present" in ui.report_label.text and "none" in ui.report_label.text,
            "empty slots use readable labels")
+    # Force genuine report overflow in the assembled scene, rather than
+    # mistaking a no-op scroll on a short report for controller coverage.
+    var original_report: String = ui.report_label.text
+    ui.report_label.text = ("Long recovery diagnostic line.\n").repeat(80)
+    await process_frame
+    await process_frame
+    var scroll_bar: VScrollBar = ui.report_scroll.get_v_scroll_bar()
+    _check(scroll_bar.max_value > scroll_bar.page, "long report genuinely overflows")
+    ui._input(_key(KEY_PAGEDOWN))
+    _check(ui.report_scroll.scroll_vertical > 0, "PageDown scrolls open report")
+    var first_scroll: int = ui.report_scroll.scroll_vertical
+    ui._input(_joy(JOY_BUTTON_RIGHT_SHOULDER))
+    _check(ui.report_scroll.scroll_vertical > first_scroll, "controller RB scrolls farther")
+    var second_scroll: int = ui.report_scroll.scroll_vertical
+    ui._input(_key(KEY_PAGEUP))
+    _check(ui.report_scroll.scroll_vertical < second_scroll, "PageUp scrolls backward")
+    ui._input(_joy(JOY_BUTTON_LEFT_SHOULDER))
+    _check(ui.report_scroll.scroll_vertical == 0, "controller LB returns to report start")
     ui.refresh_button.pressed.emit()
     _check(ui.last_report.get("selected_source") == "none", "touch refresh read-only")
+    _check(ui.report_label.text == original_report, "refresh restores authoritative report after overflow")
+    _check(ui.report_scroll.scroll_vertical == 0, "refresh resets scroll position")
     ui._input(_joy(JOY_BUTTON_B))
     _check(not ui.is_open and not paused, "controller B restores pause")
     game.save_game(false)
@@ -163,6 +184,7 @@ func _run() -> void:
            "Spanish corruption warning has no raw code")
     _check("Bloqueo de escritura: ausente" in ui.report_label.text,
            "Spanish absent lock label")
+    _check("Desplazar informe" in ui.report_label.text, "Spanish controller/keyboard scroll guidance")
     ui.close_button.pressed.emit()
     _check(game.gold == initial_gold + 7 and game.inventory == initial_items and
            game.day_epoch() == initial_epoch, "UI conserves economy, inventory and epoch")
