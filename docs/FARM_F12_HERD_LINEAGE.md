@@ -1,6 +1,6 @@
 # F12 — Herd lineage and reproduction (isolated native candidate)
 
-**Mission:** F12 of the pinned EVERBLOOM charter `b8a1e635792b08b0a3d87b987e593a539ac5c123`. **Owner:** Farming. **Engine:** Godot 4.x. **Status:** implementing; native CI receipt required before marking native-tested. **Source:** `scripts/farm_herd_lineage.gd`. **Acceptance:** `scripts/farm_lineage_acceptance.gd`.
+**Mission:** F12 of the pinned EVERBLOOM charter `b8a1e635792b08b0a3d87b987e593a539ac5c123`. **Owner:** Farming. **Engine:** Godot 4.x. **Status:** native-tested optional domain candidate; **not integrated** into normal gameplay. **Source:** `scripts/farm_herd_lineage.gd`. **Acceptance:** `scripts/farm_lineage_acceptance.gd`.
 
 ## Player experience and boundary
 
@@ -30,3 +30,7 @@ A future in-game animal ledger will let the player inspect a named animal's age,
 Run `godot --headless --editor --path . --import --quit`, then `godot --headless --path . --script res://scripts/farm_lineage_acceptance.gd`. Tests exercise 112-day repeated replay, annual 56-day rollover, two-generation hen ancestry, parent/sibling restrictions, maternal recovery, three species' gestation timing, capacity, welfare, duplicate epoch, 14-day nested JSON checkpoints, malformed/corrupt snapshot rejection and immutable failure state. CI is push-only `.github/workflows/everbloom-f12-lineage.yml` using checksum-pinned official Godot 4.7.2; general validation is independently push-triggered. A green domain test **does not** establish playable integration, hardware controls, real animal spawn, financial conservation across the assembled game or mobile performance.
 
 **Release gate:** obtain exact-HEAD native log and general CI receipts; coordinate issue #2; Principal approval and full assembled-game save/restore are mandatory before changing mission status to integrated. The shared 220-feature invention ledger is separate and Phase C remains closed.
+
+## Native evidence (2026-11-02)
+
+At source commit `81e4c23e04a4236653a69d736bd73d43bb4bd574`, [F12 native workflow 41527447947](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41527447947) completed successfully with **12,566 Godot assertions, zero failures**; [general validation 41527447803](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41527447803) completed successfully with **64 Python tests** plus native import, scene smoke and save-recovery. Raw job logs inspected, including exact checkout SHA. An earlier source commit failed because `trait` was parsed as a reserved GDScript identifier; fixed to `trait_name` before successful native proof. This documentation update does not change domain or test code; final documentation HEAD must still pass its own CI. No claims of physical controller/touch or assembled-game F12 integration.
