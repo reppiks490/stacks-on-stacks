@@ -20,6 +20,12 @@ or tested mobile performance. Do not use proprietary Harvest Moon assets.
   (cross-catalog ID/day collisions, fractional/out-of-range dates, malformed
   hours, missing rain plan) and conservative workflow-source checks for Codex,
   privileged triggers and write permissions.
+- `tools/package_source.py` creates a deterministic first-party **source-only**
+  ZIP from tracked files, with a SHA256 manifest, source revision and mandatory
+  asset provenance. `tests/test_source_package.py` verifies byte-identical
+  builds, detects manifest tampering and rejects undocumented/unverified asset
+  rights. CI verifies the archive locally in the runner temp directory but
+  deliberately **does not publish or upload the ZIP**.
 - `.github/workflows/everbloom-qa-multiyear.yml` runs those Python tests,
   downloads the checksum-verified official Godot 4.7.2 Linux binary,
   performs a native import and executes the real 112-day scene harness.
