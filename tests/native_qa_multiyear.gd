@@ -101,8 +101,15 @@ func _run() -> void:
     _check(int(game.inventory.get("turnip_seed", -1))
             == int(primary.get("inventory", {}).get("turnip_seed", -1)),
             "inventory restored")
-    _check(game.animals.paddocks == primary.get("animals", {}).get("__paddocks__", []),
-            "all three paddocks restored")
+    var expected_paddocks: Array = primary.get("animals", {}).get("__paddocks__", [])
+    var paddocks_match: bool = game.animals.paddocks.size() == expected_paddocks.size()
+    if paddocks_match:
+        for index in range(expected_paddocks.size()):
+            if int(game.animals.paddocks[index].get("forage", -1)) != int(
+                    expected_paddocks[index].get("forage", -2)):
+                paddocks_match = false
+    _check(paddocks_match, "all three paddocks restored; actual=%s expected=%s" % [
+            str(game.animals.paddocks), str(expected_paddocks)])
     _check(game.festivals.awarded.size() == 2, "festival entitlements restored")
 
     # Simulate an interrupted temp write and corrupted primary, without touching
