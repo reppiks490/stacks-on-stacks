@@ -61,6 +61,14 @@ func _run() -> void:
     _check(ui.refresh_button.custom_minimum_size.y >= 44.0, "touch refresh 44px")
     _check(ui.close_button.custom_minimum_size.y >= 44.0, "touch close 44px")
     _check(ui.opener.focus_mode == Control.FOCUS_ALL, "keyboard focusable")
+    _check(ui.text_scale_index == 1 and ui.report_label.get_theme_font_size("font_size") == 16,
+           "readable default report scale")
+    _check(ui.decrease_text_button.custom_minimum_size.y >= 44.0 and
+           ui.increase_text_button.custom_minimum_size.y >= 44.0,
+           "both text size controls have touch targets")
+    _check(ui.decrease_text_button.focus_mode == Control.FOCUS_ALL and
+           ui.increase_text_button.focus_mode == Control.FOCUS_ALL,
+           "text size buttons keyboard/controller focusable")
     _check(not ui.is_open and not paused, "initially closed")
     # Exercise actual assembled Village overlay references, not a mock UI.
     # An overlapping modal can steal focus and restore an incorrect pause state.
@@ -74,6 +82,16 @@ func _run() -> void:
         ui.opener.pressed.emit()
         _check(not ui.is_open and not paused, "touch cannot stack over topics")
         topics.panel.hide()
+    var gifts = game.village.gift_panel
+    _check(gifts != null and gifts.panel != null, "Village gift modal exists")
+    if gifts != null and gifts.panel != null:
+        gifts.panel.show()
+        _check(ui._blocked(), "visible gift chooser blocks Save Health even without pause")
+        ui._input(_key(KEY_Y))
+        _check(not ui.is_open and not paused, "keyboard cannot stack over gift chooser")
+        ui.opener.pressed.emit()
+        _check(not ui.is_open and not paused, "touch cannot stack over gift chooser")
+        gifts.panel.hide()
     var journal = game.village.social_journal
     _check(journal != null and journal.panel != null, "Village journal modal exists")
     if journal != null and journal.panel != null:
@@ -99,6 +117,30 @@ func _run() -> void:
            "English keyboard/controller scrolling instructions visible")
     _check("not present" in ui.report_label.text and "none" in ui.report_label.text,
            "empty slots use readable labels")
+    _check("Text size: F9/F10" in ui.report_label.text,
+           "English text size shortcuts explained")
+    ui._input(_key(KEY_F10))
+    _check(ui.text_scale_index == 2 and ui.report_label.get_theme_font_size("font_size") > 16,
+           "F10 increases actual report font size")
+    ui._input(_joy(JOY_BUTTON_DPAD_UP))
+    _check(ui.text_scale_index == 3, "controller D-pad up increases text")
+    for i in range(8):
+        ui.increase_text_button.pressed.emit()
+    _check(ui.text_scale_index == 4 and ui.increase_text_button.disabled,
+           "touch increase clamps to maximum and disables")
+    _check(ui.report_label.get_theme_font_size("font_size") == 26,
+           "maximum font size uses bounded 1.6x scale")
+    for i in range(8):
+        ui._input(_key(KEY_F9))
+    _check(ui.text_scale_index == 0 and ui.decrease_text_button.disabled,
+           "keyboard decrease clamps to minimum and disables")
+    _check(ui.report_label.get_theme_font_size("font_size") == 14,
+           "minimum font size uses bounded 0.85x scale")
+    ui._input(_joy(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.text_scale_index == 0, "controller decrease cannot underflow")
+    ui.increase_text_button.pressed.emit()
+    _check(ui.text_scale_index == 1 and ui.report_label.get_theme_font_size("font_size") == 16,
+           "touch increase restores default font without altering diagnostic state")
     # Force genuine report overflow in the assembled scene, rather than
     # mistaking a no-op scroll on a short report for controller coverage.
     var original_report: String = ui.report_label.text
@@ -187,6 +229,8 @@ func _run() -> void:
     _check("Bloqueo de escritura: ausente" in ui.report_label.text,
            "Spanish absent lock label")
     _check("Desplazar informe" in ui.report_label.text, "Spanish controller/keyboard scroll guidance")
+    _check("Tamaño de texto" in ui.report_label.text and "Texto mayor" in ui.increase_text_button.text,
+           "Spanish text scaling instructions and controls")
     ui.close_button.pressed.emit()
     _check(game.gold == initial_gold + 7 and game.inventory == initial_items and
            game.day_epoch() == initial_epoch, "UI conserves economy, inventory and epoch")
