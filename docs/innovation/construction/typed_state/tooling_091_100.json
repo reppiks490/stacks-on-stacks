@@ -1,0 +1,2591 @@
+{
+  "schema_version": 1,
+  "project": "EVERBLOOM: The Living Valley",
+  "owner": "Construction Inventor",
+  "phase": "B",
+  "status": "typed_design_only_not_playable",
+  "engine": "Godot 4.x",
+  "base_main": "e63bee33176259a295ff0118c15ca1bd46d69be7",
+  "source_catalog": "game/everbloom-construction-phaseB-100-20261102@f6b61bd73dede5703dcf8ef45ea24d47e28b8065",
+  "source_blob": "d94bee3a56fa18dc6fdb15ed6b3a1a6fe070b79b",
+  "phaseC": "CLOSED until independent semantic audit of all 220 and Principal approval",
+  "rules": "Design-only typed fixtures. Synthetic receipts are not authoritative transactions. No new Godot gameplay, inventory, save integration or measured performance.",
+  "state_contracts": [
+    {
+      "id": "EB-B-091",
+      "title": "Anchorgraph Constraint Lens",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: inspect structural dependencies before removing walls. Existing Godot baseline has no verified anchorgraph constraint lens gameplay; unlike Phase-A umbrella systems, its separate state transition is revisioned graph returns safe removal options.",
+      "player_scenario": "Inspect structural dependencies before removing walls. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_anchorgraph",
+        "adjust_anchorgraph",
+        "commit_anchorgraph",
+        "cancel_anchorgraph",
+        "undo_anchorgraph"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to inspect structural dependencies before removing walls; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic anchorgraph constraint lens modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "wood": 3,
+        "fiber": 3
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "graph_revision": "graph_revision",
+        "dependent_ids": "nodes[*].depends_on"
+      },
+      "source_invariant": "Revisioned graph returns safe removal options.",
+      "save_contract": {
+        "namespace": "construction.eb_b_091",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "graph_revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "nodes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "depends_on": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "min_length": 1,
+                      "max_length": 128
+                    },
+                    "max_items": 64
+                  },
+                  "installed": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "depends_on",
+                  "installed"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "dependent_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "safe_removals": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "graph_revision",
+            "nodes",
+            "dependent_ids",
+            "safe_removals"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-91",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-91"
+          ],
+          "graph_revision": 2,
+          "nodes": [
+            {
+              "id": "anchor",
+              "depends_on": [],
+              "installed": true
+            },
+            {
+              "id": "beam",
+              "depends_on": [
+                "anchor"
+              ],
+              "installed": true
+            },
+            {
+              "id": "roof",
+              "depends_on": [
+                "beam"
+              ],
+              "installed": true
+            }
+          ],
+          "dependent_ids": [
+            "roof"
+          ],
+          "safe_removals": [
+            "roof"
+          ]
+        },
+        {
+          "site_id": "site-91-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-91-variant"
+          ],
+          "graph_revision": 2,
+          "nodes": [
+            {
+              "id": "anchor",
+              "depends_on": [],
+              "installed": true
+            },
+            {
+              "id": "beam",
+              "depends_on": [
+                "anchor"
+              ],
+              "installed": true
+            },
+            {
+              "id": "roof",
+              "depends_on": [
+                "beam"
+              ],
+              "installed": true
+            }
+          ],
+          "dependent_ids": [
+            "roof"
+          ],
+          "safe_removals": [
+            "roof"
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "stale_graph_revision",
+          "path": [
+            "graph_revision"
+          ],
+          "value": 1
+        },
+        {
+          "name": "orphan_dependency",
+          "path": [
+            "nodes",
+            2,
+            "depends_on"
+          ],
+          "value": [
+            "ghost"
+          ]
+        },
+        {
+          "name": "unsafe_removal",
+          "path": [
+            "safe_removals"
+          ],
+          "value": [
+            "anchor"
+          ]
+        },
+        {
+          "name": "cyclic_graph",
+          "path": [
+            "nodes",
+            0,
+            "depends_on"
+          ],
+          "value": [
+            "roof"
+          ]
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Inspect structural dependencies before removing walls; graph_revision and dependent_ids must affect the visible outcome under revisioned graph returns safe removal options.",
+        "Confirm once with {\"wood\":3,\"fiber\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-092",
+      "title": "Meshfold Self-Intersection Inspector",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: scan custom roofs and repair intersecting faces. Existing Godot baseline has no verified meshfold self-intersection inspector gameplay; unlike Phase-A umbrella systems, its separate state transition is deterministic face ids reveal watertight repairs.",
+      "player_scenario": "Scan custom roofs and repair intersecting faces. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_meshfold",
+        "adjust_meshfold",
+        "commit_meshfold",
+        "cancel_meshfold",
+        "undo_meshfold"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to scan custom roofs and repair intersecting faces; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic meshfold self-intersection inspector modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "stone": 4,
+        "clay": 1
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "mesh_digest": "mesh_digest",
+        "intersection_pairs": "intersection_pairs"
+      },
+      "source_invariant": "Deterministic face IDs reveal watertight repairs.",
+      "save_contract": {
+        "namespace": "construction.eb_b_092",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "mesh_digest": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "faces": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "manifold": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "manifold"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "intersection_pairs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "a": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "b": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  }
+                },
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64
+            },
+            "repair_face_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "watertight": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "mesh_digest",
+            "faces",
+            "intersection_pairs",
+            "repair_face_ids",
+            "watertight"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-92",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-92"
+          ],
+          "mesh_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "faces": [
+            {
+              "id": "f1",
+              "manifold": false
+            },
+            {
+              "id": "f2",
+              "manifold": false
+            }
+          ],
+          "intersection_pairs": [
+            {
+              "a": "f1",
+              "b": "f2"
+            }
+          ],
+          "repair_face_ids": [
+            "f1",
+            "f2"
+          ],
+          "watertight": false
+        },
+        {
+          "site_id": "site-92-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-92-variant"
+          ],
+          "mesh_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "faces": [
+            {
+              "id": "f1",
+              "manifold": false
+            },
+            {
+              "id": "f2",
+              "manifold": false
+            }
+          ],
+          "intersection_pairs": [
+            {
+              "a": "f1",
+              "b": "f2"
+            }
+          ],
+          "repair_face_ids": [
+            "f1",
+            "f2"
+          ],
+          "watertight": false
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "invalid_mesh_digest",
+          "path": [
+            "mesh_digest"
+          ],
+          "value": "broken"
+        },
+        {
+          "name": "orphan_intersection",
+          "path": [
+            "intersection_pairs",
+            0,
+            "b"
+          ],
+          "value": "ghost"
+        },
+        {
+          "name": "false_watertight",
+          "path": [
+            "watertight"
+          ],
+          "value": true
+        },
+        {
+          "name": "incomplete_repair",
+          "path": [
+            "repair_face_ids"
+          ],
+          "value": [
+            "f1"
+          ]
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Scan custom roofs and repair intersecting faces; mesh_digest and intersection_pairs must affect the visible outcome under deterministic face ids reveal watertight repairs.",
+        "Confirm once with {\"stone\":4,\"clay\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-093",
+      "title": "Material Passport Registry",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: inspect provenance grade and repairs of each part. Existing Godot baseline has no verified material passport registry gameplay; unlike Phase-A umbrella systems, its separate state transition is immutable source lots gate paid quality upgrades.",
+      "player_scenario": "Inspect provenance grade and repairs of each part. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_material",
+        "adjust_material",
+        "commit_material",
+        "cancel_material",
+        "undo_material"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to inspect provenance grade and repairs of each part; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic material passport registry modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "iron": 5,
+        "glass": 2
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "part_passports": "part_passports",
+        "source_lot": "source_lot"
+      },
+      "source_invariant": "Immutable source lots gate paid quality upgrades.",
+      "save_contract": {
+        "namespace": "construction.eb_b_093",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "source_lot": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "lots": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "grade": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "verified": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "grade",
+                  "verified"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "part_passports": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "lot_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "grade": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "repairs": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "receipt_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  }
+                },
+                "required": [
+                  "id",
+                  "lot_id",
+                  "grade",
+                  "repairs",
+                  "receipt_id"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "source_lot",
+            "lots",
+            "part_passports"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-93",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-93"
+          ],
+          "source_lot": "lot-a",
+          "lots": [
+            {
+              "id": "lot-a",
+              "grade": 2,
+              "verified": true
+            }
+          ],
+          "part_passports": [
+            {
+              "id": "part-a",
+              "lot_id": "lot-a",
+              "grade": 2,
+              "repairs": 1,
+              "receipt_id": "source-r1"
+            }
+          ]
+        },
+        {
+          "site_id": "site-93-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-93-variant"
+          ],
+          "source_lot": "lot-a",
+          "lots": [
+            {
+              "id": "lot-a",
+              "grade": 2,
+              "verified": true
+            }
+          ],
+          "part_passports": [
+            {
+              "id": "part-a",
+              "lot_id": "lot-a",
+              "grade": 2,
+              "repairs": 1,
+              "receipt_id": "source-r1"
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "unverified_lot",
+          "path": [
+            "lots",
+            0,
+            "verified"
+          ],
+          "value": false
+        },
+        {
+          "name": "fabricated_grade",
+          "path": [
+            "part_passports",
+            0,
+            "grade"
+          ],
+          "value": 3
+        },
+        {
+          "name": "orphan_source_lot",
+          "path": [
+            "source_lot"
+          ],
+          "value": "missing"
+        },
+        {
+          "name": "orphan_part_lot",
+          "path": [
+            "part_passports",
+            0,
+            "lot_id"
+          ],
+          "value": "missing"
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Inspect provenance grade and repairs of each part; part_passports and source_lot must affect the visible outcome under immutable source lots gate paid quality upgrades.",
+        "Confirm once with {\"iron\":5,\"glass\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-094",
+      "title": "Parametric Lattice Pattern Lab",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: author reusable lattice spacing patterns. Existing Godot baseline has no verified parametric lattice pattern lab gameplay; unlike Phase-A umbrella systems, its separate state transition is immutable definitions and paid instances stay separate.",
+      "player_scenario": "Author reusable lattice spacing patterns. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_parametric",
+        "adjust_parametric",
+        "commit_parametric",
+        "cancel_parametric",
+        "undo_parametric"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to author reusable lattice spacing patterns; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic parametric lattice pattern lab modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "fiber": 6,
+        "dye": 3
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "pattern_def": "pattern_def",
+        "instance_transforms": "instance_transforms"
+      },
+      "source_invariant": "Immutable definitions and paid instances stay separate.",
+      "save_contract": {
+        "namespace": "construction.eb_b_094",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "pattern_def": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                },
+                "revision": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "spacing_mm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "span_mm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "immutable": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "revision",
+                "spacing_mm",
+                "span_mm",
+                "immutable"
+              ],
+              "additional_properties": false
+            },
+            "instance_transforms": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "x_mm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "rotation_deg": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "paid": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "x_mm",
+                  "rotation_deg",
+                  "paid"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "instance_count": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "pattern_def",
+            "instance_transforms",
+            "instance_count"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-94",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-94"
+          ],
+          "pattern_def": {
+            "id": "lattice-a",
+            "revision": 1,
+            "spacing_mm": 100,
+            "span_mm": 300,
+            "immutable": true
+          },
+          "instance_transforms": [
+            {
+              "id": "i1",
+              "x_mm": 0,
+              "rotation_deg": 0,
+              "paid": true
+            },
+            {
+              "id": "i2",
+              "x_mm": 100,
+              "rotation_deg": 90,
+              "paid": true
+            }
+          ],
+          "instance_count": 2
+        },
+        {
+          "site_id": "site-94-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-94-variant"
+          ],
+          "pattern_def": {
+            "id": "lattice-a",
+            "revision": 1,
+            "spacing_mm": 100,
+            "span_mm": 300,
+            "immutable": true
+          },
+          "instance_transforms": [
+            {
+              "id": "i1",
+              "x_mm": 0,
+              "rotation_deg": 0,
+              "paid": true
+            },
+            {
+              "id": "i2",
+              "x_mm": 100,
+              "rotation_deg": 90,
+              "paid": true
+            }
+          ],
+          "instance_count": 2
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "zero_spacing",
+          "path": [
+            "pattern_def",
+            "spacing_mm"
+          ],
+          "value": 0
+        },
+        {
+          "name": "unquantized_position",
+          "path": [
+            "instance_transforms",
+            1,
+            "x_mm"
+          ],
+          "value": 55
+        },
+        {
+          "name": "phantom_instance",
+          "path": [
+            "instance_count"
+          ],
+          "value": 3
+        },
+        {
+          "name": "unpaid_instance",
+          "path": [
+            "instance_transforms",
+            0,
+            "paid"
+          ],
+          "value": false
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Author reusable lattice spacing patterns; pattern_def and instance_transforms must affect the visible outcome under immutable definitions and paid instances stay separate.",
+        "Confirm once with {\"fiber\":6,\"dye\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-095",
+      "title": "Measuredline Dimension Tool",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: measure exact room clearances in centimeters. Existing Godot baseline has no verified measuredline dimension tool gameplay; unlike Phase-A umbrella systems, its separate state transition is integer quantization prevents transform drift.",
+      "player_scenario": "Measure exact room clearances in centimeters. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_measuredline",
+        "adjust_measuredline",
+        "commit_measuredline",
+        "cancel_measuredline",
+        "undo_measuredline"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to measure exact room clearances in centimeters; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic measuredline dimension tool modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "clay": 7,
+        "seed": 1
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "dimension_cm": "dimension_cm",
+        "tolerance_mm": "tolerance_mm"
+      },
+      "source_invariant": "Integer quantization prevents transform drift.",
+      "save_contract": {
+        "namespace": "construction.eb_b_095",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "dimension_cm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "tolerance_mm": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "measurement": {
+              "type": "object",
+              "properties": {
+                "x1_cm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "y1_cm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "x2_cm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "y2_cm": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                }
+              },
+              "required": [
+                "x1_cm",
+                "y1_cm",
+                "x2_cm",
+                "y2_cm"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "dimension_cm",
+            "tolerance_mm",
+            "measurement"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-95",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-95"
+          ],
+          "dimension_cm": 240,
+          "tolerance_mm": 5,
+          "measurement": {
+            "x1_cm": 0,
+            "y1_cm": 0,
+            "x2_cm": 240,
+            "y2_cm": 0
+          }
+        },
+        {
+          "site_id": "site-95-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-95-variant"
+          ],
+          "dimension_cm": 240,
+          "tolerance_mm": 5,
+          "measurement": {
+            "x1_cm": 0,
+            "y1_cm": 0,
+            "x2_cm": 240,
+            "y2_cm": 0
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "incorrect_distance",
+          "path": [
+            "dimension_cm"
+          ],
+          "value": 241
+        },
+        {
+          "name": "invalid_tolerance",
+          "path": [
+            "tolerance_mm"
+          ],
+          "value": 20
+        },
+        {
+          "name": "diagonal_measurement",
+          "path": [
+            "measurement",
+            "y2_cm"
+          ],
+          "value": 10
+        },
+        {
+          "name": "drift",
+          "path": [
+            "measurement",
+            "x2_cm"
+          ],
+          "value": 239
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Measure exact room clearances in centimeters; dimension_cm and tolerance_mm must affect the visible outcome under integer quantization prevents transform drift.",
+        "Confirm once with {\"clay\":7,\"seed\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-096",
+      "title": "Habitable Room Inspection",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: request ventilation egress and weatherproof checks. Existing Godot baseline has no verified habitable room inspection gameplay; unlike Phase-A umbrella systems, its separate state transition is certification derives from built state and can expire.",
+      "player_scenario": "Request ventilation egress and weatherproof checks. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_habitable",
+        "adjust_habitable",
+        "commit_habitable",
+        "cancel_habitable",
+        "undo_habitable"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to request ventilation egress and weatherproof checks; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic habitable room inspection modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "glass": 3,
+        "wood": 2
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "criteria_results": "criteria_results",
+        "certificate_id": "certificate_id"
+      },
+      "source_invariant": "Certification derives from built state and can expire.",
+      "save_contract": {
+        "namespace": "construction.eb_b_096",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "criteria_results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "passed": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "passed"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "certificate_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "certificate": {
+              "type": "object",
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "source_revision": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "expiry_epoch": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                }
+              },
+              "required": [
+                "active",
+                "source_revision",
+                "expiry_epoch"
+              ],
+              "additional_properties": false
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "criteria_results",
+            "certificate_id",
+            "certificate"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-96",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-96"
+          ],
+          "criteria_results": [
+            {
+              "id": "ventilation",
+              "passed": true
+            },
+            {
+              "id": "egress",
+              "passed": true
+            },
+            {
+              "id": "weatherproof",
+              "passed": true
+            }
+          ],
+          "certificate_id": "cert-96",
+          "certificate": {
+            "active": true,
+            "source_revision": 2,
+            "expiry_epoch": 120
+          }
+        },
+        {
+          "site_id": "site-96-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-96-variant"
+          ],
+          "criteria_results": [
+            {
+              "id": "ventilation",
+              "passed": true
+            },
+            {
+              "id": "egress",
+              "passed": true
+            },
+            {
+              "id": "weatherproof",
+              "passed": true
+            }
+          ],
+          "certificate_id": "cert-96",
+          "certificate": {
+            "active": true,
+            "source_revision": 2,
+            "expiry_epoch": 120
+          }
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "failed_egress",
+          "path": [
+            "criteria_results",
+            1,
+            "passed"
+          ],
+          "value": false
+        },
+        {
+          "name": "stale_cert",
+          "path": [
+            "certificate",
+            "source_revision"
+          ],
+          "value": 1
+        },
+        {
+          "name": "expired_cert",
+          "path": [
+            "certificate",
+            "expiry_epoch"
+          ],
+          "value": 50
+        },
+        {
+          "name": "missing_criterion",
+          "path": [
+            "criteria_results",
+            2,
+            "id"
+          ],
+          "value": "decoration"
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Request ventilation egress and weatherproof checks; criteria_results and certificate_id must affect the visible outcome under certification derives from built state and can expire.",
+        "Confirm once with {\"glass\":3,\"wood\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-097",
+      "title": "Loadtrial Structural Test Rig",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: apply virtual weights to planned bridges. Existing Godot baseline has no verified loadtrial structural test rig gameplay; unlike Phase-A umbrella systems, its separate state transition is bounded stress solver cannot alter real structures.",
+      "player_scenario": "Apply virtual weights to planned bridges. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_loadtrial",
+        "adjust_loadtrial",
+        "commit_loadtrial",
+        "cancel_loadtrial",
+        "undo_loadtrial"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to apply virtual weights to planned bridges; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic loadtrial structural test rig modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "dye": 4,
+        "stone": 3
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "load_cases": "load_cases",
+        "stress_margin": "stress_margin"
+      },
+      "source_invariant": "Bounded stress solver cannot alter real structures.",
+      "save_contract": {
+        "namespace": "construction.eb_b_097",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "load_cases": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "virtual_load": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  }
+                },
+                "required": [
+                  "id",
+                  "virtual_load",
+                  "capacity"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "stress_margin": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "safe": {
+              "type": "boolean"
+            },
+            "structure_mutation_count": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "load_cases",
+            "stress_margin",
+            "safe",
+            "structure_mutation_count"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-97",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-97"
+          ],
+          "load_cases": [
+            {
+              "id": "bridge-a",
+              "virtual_load": 20,
+              "capacity": 35
+            }
+          ],
+          "stress_margin": 15,
+          "safe": true,
+          "structure_mutation_count": 0
+        },
+        {
+          "site_id": "site-97-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-97-variant"
+          ],
+          "load_cases": [
+            {
+              "id": "bridge-a",
+              "virtual_load": 20,
+              "capacity": 35
+            }
+          ],
+          "stress_margin": 15,
+          "safe": true,
+          "structure_mutation_count": 0
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "overloaded",
+          "path": [
+            "load_cases",
+            0,
+            "virtual_load"
+          ],
+          "value": 40
+        },
+        {
+          "name": "false_margin",
+          "path": [
+            "stress_margin"
+          ],
+          "value": 14
+        },
+        {
+          "name": "false_safe",
+          "path": [
+            "safe"
+          ],
+          "value": false
+        },
+        {
+          "name": "mutated_real_structure",
+          "path": [
+            "structure_mutation_count"
+          ],
+          "value": 1
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Apply virtual weights to planned bridges; load_cases and stress_margin must affect the visible outcome under bounded stress solver cannot alter real structures.",
+        "Confirm once with {\"dye\":4,\"stone\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-098",
+      "title": "Deconstruction Cost Forecaster",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: preview demolition salvage and labor costs. Existing Godot baseline has no verified deconstruction cost forecaster gameplay; unlike Phase-A umbrella systems, its separate state transition is only confirmed removal may refund resources.",
+      "player_scenario": "Preview demolition salvage and labor costs. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_deconstruction",
+        "adjust_deconstruction",
+        "commit_deconstruction",
+        "cancel_deconstruction",
+        "undo_deconstruction"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to preview demolition salvage and labor costs; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic deconstruction cost forecaster modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "seed": 5,
+        "iron": 1
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "demolition_quote": "demolition_quote",
+        "salvage_grade": "salvage_grade"
+      },
+      "source_invariant": "Only confirmed removal may refund resources.",
+      "save_contract": {
+        "namespace": "construction.eb_b_098",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "demolition_quote": {
+              "type": "object",
+              "properties": {
+                "labor_cost": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "salvage_wood": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "source_wood": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "confirmed_removed": {
+                  "type": "boolean"
+                },
+                "credited_salvage": {
+                  "type": "integer",
+                  "min": 0,
+                  "max": 9007199254740991
+                },
+                "refund_receipt": {
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 128
+                }
+              },
+              "required": [
+                "labor_cost",
+                "salvage_wood",
+                "source_wood",
+                "confirmed_removed",
+                "credited_salvage",
+                "refund_receipt"
+              ],
+              "additional_properties": false
+            },
+            "salvage_grade": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "quote_revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "demolition_quote",
+            "salvage_grade",
+            "quote_revision"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-98",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-98"
+          ],
+          "demolition_quote": {
+            "labor_cost": 5,
+            "salvage_wood": 4,
+            "source_wood": 6,
+            "confirmed_removed": false,
+            "credited_salvage": 0,
+            "refund_receipt": "none"
+          },
+          "salvage_grade": 80,
+          "quote_revision": 2
+        },
+        {
+          "site_id": "site-98-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-98-variant"
+          ],
+          "demolition_quote": {
+            "labor_cost": 5,
+            "salvage_wood": 4,
+            "source_wood": 6,
+            "confirmed_removed": false,
+            "credited_salvage": 0,
+            "refund_receipt": "none"
+          },
+          "salvage_grade": 80,
+          "quote_revision": 2
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "preview_refund",
+          "path": [
+            "demolition_quote",
+            "credited_salvage"
+          ],
+          "value": 4
+        },
+        {
+          "name": "over_salvage",
+          "path": [
+            "demolition_quote",
+            "salvage_wood"
+          ],
+          "value": 7
+        },
+        {
+          "name": "stale_quote",
+          "path": [
+            "quote_revision"
+          ],
+          "value": 1
+        },
+        {
+          "name": "invalid_grade",
+          "path": [
+            "salvage_grade"
+          ],
+          "value": 101
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Preview demolition salvage and labor costs; demolition_quote and salvage_grade must affect the visible outcome under only confirmed removal may refund resources.",
+        "Confirm once with {\"seed\":5,\"iron\":1} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-099",
+      "title": "Build Chronicle Time-Lapse",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: review construction history from real action receipts. Existing Godot baseline has no verified build chronicle time-lapse gameplay; unlike Phase-A umbrella systems, its separate state transition is chronicle cannot invent missing milestones.",
+      "player_scenario": "Review construction history from real action receipts. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_build",
+        "adjust_build",
+        "commit_build",
+        "cancel_build",
+        "undo_build"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to review construction history from real action receipts; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic build chronicle time-lapse modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "wood": 6,
+        "fiber": 2
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "event_receipts": "event_receipts",
+        "revision_index": "revision_index"
+      },
+      "source_invariant": "Chronicle cannot invent missing milestones.",
+      "save_contract": {
+        "namespace": "construction.eb_b_099",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "event_receipts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "revision": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "epoch": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "kind": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  }
+                },
+                "required": [
+                  "id",
+                  "revision",
+                  "epoch",
+                  "kind"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "revision_index": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "milestone_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "event_receipts",
+            "revision_index",
+            "milestone_ids"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-99",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-99"
+          ],
+          "event_receipts": [
+            {
+              "id": "ev1",
+              "revision": 1,
+              "epoch": 10,
+              "kind": "foundation"
+            },
+            {
+              "id": "ev2",
+              "revision": 2,
+              "epoch": 56,
+              "kind": "wall"
+            }
+          ],
+          "revision_index": 2,
+          "milestone_ids": [
+            "ev1",
+            "ev2"
+          ]
+        },
+        {
+          "site_id": "site-99-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-99-variant"
+          ],
+          "event_receipts": [
+            {
+              "id": "ev1",
+              "revision": 1,
+              "epoch": 10,
+              "kind": "foundation"
+            },
+            {
+              "id": "ev2",
+              "revision": 2,
+              "epoch": 56,
+              "kind": "wall"
+            }
+          ],
+          "revision_index": 2,
+          "milestone_ids": [
+            "ev1",
+            "ev2"
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "invented_index",
+          "path": [
+            "revision_index"
+          ],
+          "value": 3
+        },
+        {
+          "name": "future_event",
+          "path": [
+            "event_receipts",
+            1,
+            "epoch"
+          ],
+          "value": 57
+        },
+        {
+          "name": "invented_milestone",
+          "path": [
+            "milestone_ids",
+            1
+          ],
+          "value": "ev999"
+        },
+        {
+          "name": "out_of_order_revision",
+          "path": [
+            "event_receipts",
+            1,
+            "revision"
+          ],
+          "value": 1
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Review construction history from real action receipts; event_receipts and revision_index must affect the visible outcome under chronicle cannot invent missing milestones.",
+        "Confirm once with {\"wood\":6,\"fiber\":2} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    },
+    {
+      "id": "EB-B-100",
+      "title": "Universal Build Accessibility Audit",
+      "domain": "engineering_tooling",
+      "status": "typed_design_only_not_playable",
+      "novelty_audit": "Distinct proposed player decision: test routes for wheelchair child and companion profiles. Existing Godot baseline has no verified universal build accessibility audit gameplay; unlike Phase-A umbrella systems, its separate state transition is actor-specific clearances produce explainable failures.",
+      "player_scenario": "Test routes for wheelchair child and companion profiles. Player previews consequences, adjusts the design, commits a finite-cost change and sees the result in-world.",
+      "player_verbs": [
+        "preview_universal",
+        "adjust_universal",
+        "commit_universal",
+        "cancel_universal",
+        "undo_universal"
+      ],
+      "feedback": [
+        "Read-only preview; never charge inventory",
+        "Textual explanation and color-independent geometry overlay",
+        "Commit and undo require Principal-authorized receipts after Phase C"
+      ],
+      "dependencies": [
+        "B02",
+        "B11",
+        "B13"
+      ],
+      "authority": {
+        "construction": "Proposed engineering tool UI, bounded state and preview contract",
+        "principal": "Canonical world revision, save migration, day_epoch and authoritative ledger",
+        "village": "Permissions and consent where residents affected",
+        "farming": "Finite material source and protected land",
+        "valley": "World geometry, collision, navigation and mesh authority"
+      },
+      "controls": {
+        "mouse_keyboard": "Toolbar select; drag to test routes for wheelchair child and companion profiles; mouse wheel adjusts; Enter confirm, Esc cancel.",
+        "gamepad": "Radial menu, left stick ghost position, right stick adjust, shoulders cycle, A confirm, B cancel.",
+        "touch": "Tap tool, drag handles, visible precision steppers and large Confirm/Cancel; no mandatory long press."
+      },
+      "original_asset_plan": [
+        "Original stylized-realistic universal build accessibility audit modular models, status icons and self-authored sounds with provenance.",
+        "Cached simplified mobile LOD and color-independent validity feedback."
+      ],
+      "performance_budget": {
+        "desktop": "Design target <=2ms preview, 60fps, max 64 nearby anchors; unmeasured.",
+        "mobile": "Design target <=4ms preview, 30fps, max 24 anchors and cached meshes; physical device test pending."
+      },
+      "material_quote": {
+        "stone": 7,
+        "clay": 3
+      },
+      "material_quote_status": "provisional; never debit and unknown material IDs require approval",
+      "source_field_mapping": {
+        "actor_profiles": "actor_profiles",
+        "route_failures": "route_failures"
+      },
+      "source_invariant": "Actor-specific clearances produce explainable failures.",
+      "save_contract": {
+        "namespace": "construction.eb_b_100",
+        "version": 1,
+        "owner": "Design-only; not registered with SaveService",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "site_id": {
+              "type": "string",
+              "min_length": 1,
+              "max_length": 128
+            },
+            "revision": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "day_epoch": {
+              "type": "integer",
+              "min": 0,
+              "max": 9007199254740991
+            },
+            "receipts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "min_length": 1,
+                "max_length": 128
+              },
+              "max_items": 64,
+              "unique_items": true
+            },
+            "actor_profiles": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "width_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "max_step_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  }
+                },
+                "required": [
+                  "id",
+                  "width_cm",
+                  "max_step_cm"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "routes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "width_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  },
+                  "step_cm": {
+                    "type": "integer",
+                    "min": 0,
+                    "max": 9007199254740991
+                  }
+                },
+                "required": [
+                  "id",
+                  "width_cm",
+                  "step_cm"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64,
+              "unique_by": "id"
+            },
+            "route_failures": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "actor_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "route_id": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  },
+                  "reason": {
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 128
+                  }
+                },
+                "required": [
+                  "actor_id",
+                  "route_id",
+                  "reason"
+                ],
+                "additional_properties": false
+              },
+              "max_items": 64
+            }
+          },
+          "required": [
+            "site_id",
+            "revision",
+            "day_epoch",
+            "receipts",
+            "actor_profiles",
+            "routes",
+            "route_failures"
+          ],
+          "additional_properties": false
+        }
+      },
+      "valid_fixtures": [
+        {
+          "site_id": "site-100",
+          "revision": 2,
+          "day_epoch": 56,
+          "receipts": [
+            "synthetic-receipt-100"
+          ],
+          "actor_profiles": [
+            {
+              "id": "wheelchair",
+              "width_cm": 90,
+              "max_step_cm": 2
+            },
+            {
+              "id": "child",
+              "width_cm": 45,
+              "max_step_cm": 15
+            },
+            {
+              "id": "companion",
+              "width_cm": 60,
+              "max_step_cm": 10
+            }
+          ],
+          "routes": [
+            {
+              "id": "r1",
+              "width_cm": 70,
+              "step_cm": 5
+            },
+            {
+              "id": "r2",
+              "width_cm": 110,
+              "step_cm": 0
+            }
+          ],
+          "route_failures": [
+            {
+              "actor_id": "wheelchair",
+              "route_id": "r1",
+              "reason": "width"
+            }
+          ]
+        },
+        {
+          "site_id": "site-100-variant",
+          "revision": 2,
+          "day_epoch": 112,
+          "receipts": [
+            "synthetic-receipt-100-variant"
+          ],
+          "actor_profiles": [
+            {
+              "id": "wheelchair",
+              "width_cm": 90,
+              "max_step_cm": 2
+            },
+            {
+              "id": "child",
+              "width_cm": 45,
+              "max_step_cm": 15
+            },
+            {
+              "id": "companion",
+              "width_cm": 60,
+              "max_step_cm": 10
+            }
+          ],
+          "routes": [
+            {
+              "id": "r1",
+              "width_cm": 70,
+              "step_cm": 5
+            },
+            {
+              "id": "r2",
+              "width_cm": 110,
+              "step_cm": 0
+            }
+          ],
+          "route_failures": [
+            {
+              "actor_id": "wheelchair",
+              "route_id": "r1",
+              "reason": "width"
+            }
+          ]
+        }
+      ],
+      "hostile_mutations": [
+        {
+          "name": "missing_failures",
+          "path": [
+            "route_failures"
+          ],
+          "value": []
+        },
+        {
+          "name": "no_safe_route",
+          "path": [
+            "routes",
+            1,
+            "width_cm"
+          ],
+          "value": 30
+        },
+        {
+          "name": "incorrect_failure_reason",
+          "path": [
+            "route_failures",
+            0,
+            "reason"
+          ],
+          "value": "step"
+        },
+        {
+          "name": "zero_profile_width",
+          "path": [
+            "actor_profiles",
+            0,
+            "width_cm"
+          ],
+          "value": 0
+        }
+      ],
+      "acceptance": [
+        "Native Godot scenario: Test routes for wheelchair child and companion profiles; actor_profiles and route_failures must affect the visible outcome under actor-specific clearances produce explainable failures.",
+        "Confirm once with {\"stone\":7,\"clay\":3} cost, save/reload assembled Game, compare state and receipt IDs; repeated command must not double debit."
+      ],
+      "phaseC_gate": "CLOSED: static design only, no playable feature"
+    }
+  ]
+}
