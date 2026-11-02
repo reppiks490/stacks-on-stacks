@@ -1,6 +1,7 @@
 extends Node3D
 ## The original EVERBLOOM session orchestrator. Offline/single-player source.
 const SAVE_PATH := "user://everbloom_save_v1.json"
+const SaveService = preload("res://scripts/save_service.gd")
 const SEASONS := ["Spring", "Summer", "Autumn", "Winter"]
 const TOOLS := ["till", "plant", "water", "harvest", "care", "talk", "forage"]
 var day: int = 1
@@ -271,21 +272,16 @@ func save_game(with_feedback: bool = true) -> void:
         "animals":animals.save_state(),
         "hero_position":[hero.global_position.x,hero.global_position.y,hero.global_position.z]
     }
-    var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-    if file == null:
-        _show("Save failed: file could not be opened.")
+    if not SaveService.write_payload(payload):
+        _show("Save failed; previous valid data preserved if available.")
         return
-    file.store_string(JSON.stringify(payload, "\t"))
     if with_feedback:
         _show("Your valley progress was saved locally.")
 
 func load_game() -> void:
-    if not FileAccess.file_exists(SAVE_PATH):
-        _show("No previous valley save exists.")
-        return
-    var content = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
-    if not (content is Dictionary) or int(content.get("schema", 0)) != 1:
-        _show("Save incompatible; preserving current session.")
+    var content: Dictionary = SaveService.read_payload()
+    if content.is_empty():
+        _show("No valid primary or backup save; current session preserved.")
         return
     year = maxi(1, int(content.get("year", 1)))
     day = clampi(int(content.get("day", 1)), 1, 14)

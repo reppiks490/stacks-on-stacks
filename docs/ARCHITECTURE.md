@@ -25,7 +25,7 @@ Game orchestrator is the sole calendar authority: `year >= 1`, `season_index = 0
 ## Contract B: persistence
 Current `game.gd` writes `user://everbloom_save_v1.json` with `schema=1`. Retain compatibility for existing schema-1 saves. Required persisted fields: `year` (optional in pre-upgrade v1; default 1), `day`, `season`, `minute`, `gold`, `energy`, `weather`, `restoration`, `crops_harvested`, `social_contacts`, `care_actions`, `inventory`, `farm`, `village`, `animals`, `hero_position`. Domain save structures are delegated to their owners.
 
-**Acceptance:** Save/load round trip across a seasonal rollover, no item duplication, no negative balances, corrupted/unknown-schema rejection, preservation of the current session on invalid saves, backup and migration fixtures. The first implementation has basic load/clamp, not all these guarantees. Never silently overwrite incompatible saves. Any future v2 must use an explicit migration and preserve a backup.
+**Acceptance:** Save/load round trip across a seasonal rollover, no item duplication, no negative balances, corrupted/unknown-schema rejection, preservation of the current session on invalid saves, backup and migration fixtures. Principal candidate adds `scripts/save_service.gd` with schema-1 validation, temporary-file readback, previous-primary backup and backup fallback. **Native parsing and real file-fault tests must pass before accepting this change.** Future v2 requires explicit migration and preserved backups. No silent overwrite of corrupt primary data.
 
 ## Contract C: domain ownership and integration
 - **Principal:** `scripts/game.gd`, `project.godot`, architecture, shared API contracts, time/save orchestration, merge decisions.
