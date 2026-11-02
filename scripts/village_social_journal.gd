@@ -1,29 +1,34 @@
 extends CanvasLayer
 ## V19: first-party read-only social recap, derived from authoritative Village state.
 ## Focusable cards, keyboard/gamepad navigation and bilingual presentation have no save effects.
+const HISTORY_PAGE_SIZE := 3
 const LABELS := {
     "en": {
         "open": "Neighbors [L]", "title": "Larkspur • Neighbors & Memories",
-        "close": "Close", "hint": "Choose a neighbor • Up/Down, D-pad, wheel or swipe",
+        "close": "Close", "hint": "Choose a neighbor • Up/Down or D-pad • Left/Right or shoulders: history",
         "footer": "Memories are earned through conversations, gifts, shifts and celebrations.",
         "selected": "Selected: %s", "friendship": "Friendship",
         "talks": "Conversations", "gifts": "Gifts", "jobs": "Work shifts",
         "festivals": "Festival visits", "last_gift": "Last gift",
         "recollections": "Recollections", "none": "none yet",
         "history": "Conversations remembered", "day": "Day %d",
+        "page": "Page %d of %d", "empty_page": "Page 0 of 0",
+        "earlier": "Earlier", "later": "Later",
         "open_tip": "Open journal: L, controller Back, or tap",
         "close_tip": "Return to the valley: Escape, L or controller Back",
         "locale_tip": "Change journal and conditional dialogue language"
     },
     "es": {
         "open": "Vecinos [L]", "title": "Larkspur • Vecinos y recuerdos",
-        "close": "Cerrar", "hint": "Elige un vecino • Arriba/abajo, mando, rueda o deslizar",
+        "close": "Cerrar", "hint": "Elige vecino • Arriba/abajo o mando • Izquierda/derecha: historial",
         "footer": "Los recuerdos nacen de charlas, regalos, trabajos y celebraciones.",
         "selected": "Seleccionado: %s", "friendship": "Amistad",
         "talks": "Conversaciones", "gifts": "Regalos", "jobs": "Turnos",
         "festivals": "Visitas a festivales", "last_gift": "Último regalo",
         "recollections": "Recuerdos", "none": "ninguno",
         "history": "Conversaciones recordadas", "day": "Día %d",
+        "page": "Página %d de %d", "empty_page": "Página 0 de 0",
+        "earlier": "Anteriores", "later": "Siguientes",
         "open_tip": "Abrir diario: L, botón Atrás del mando o tocar",
         "close_tip": "Volver al valle: Escape, L o botón Atrás",
         "locale_tip": "Cambiar el idioma del diario y del diálogo condicional"
@@ -40,6 +45,10 @@ var hint_label: Label
 var footer_label: Label
 var selected_label: Label
 var history_title: Label
+var history_page_label: Label
+var history_earlier_button: Button
+var history_later_button: Button
+var history_page: int = 0
 var history_text: RichTextLabel
 var scroll_area: ScrollContainer
 var cards: Array[Button] = []
@@ -133,6 +142,24 @@ func setup(owner) -> void:
     history_title = Label.new()
     history_title.name = "ConversationHistoryTitle"
     layout.add_child(history_title)
+    var history_controls := HBoxContainer.new()
+    history_controls.name = "ConversationPageControls"
+    layout.add_child(history_controls)
+    history_earlier_button = Button.new()
+    history_earlier_button.name = "EarlierConversations"
+    history_earlier_button.focus_mode = Control.FOCUS_ALL
+    history_earlier_button.pressed.connect(_change_history_page.bind(-1))
+    history_controls.add_child(history_earlier_button)
+    history_page_label = Label.new()
+    history_page_label.name = "ConversationPageStatus"
+    history_page_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    history_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    history_controls.add_child(history_page_label)
+    history_later_button = Button.new()
+    history_later_button.name = "LaterConversations"
+    history_later_button.focus_mode = Control.FOCUS_ALL
+    history_later_button.pressed.connect(_change_history_page.bind(1))
+    history_controls.add_child(history_later_button)
     history_text = RichTextLabel.new()
     history_text.name = "EarnedConversationHistory"
     history_text.custom_minimum_size.y = 125.0
@@ -159,6 +186,8 @@ func _update_labels() -> void:
     hint_label.text = _t("hint")
     footer_label.text = _t("footer")
     history_title.text = _t("history")
+    history_earlier_button.text = _t("earlier")
+    history_later_button.text = _t("later")
 
 func _card_text(record: Dictionary) -> String:
     var last_gift: String = str(record["last_gift_item"])
@@ -200,25 +229,49 @@ func refresh() -> void:
     selected_index = clampi(selected_index, 0, maxi(0, cards.size() - 1))
     _update_selection_label()
 
+func _latest_history_page(index: int) -> int:
+    var records: Array = village.social_recap()
+    if index < 0 or index >= records.size():
+        return 0
+    var log: Array = records[index].get("dialogue_log", [])
+    return maxi(0, int((log.size() - 1) / HISTORY_PAGE_SIZE))
+
 func _update_selection_label() -> void:
     if village == null:
         return
     var records: Array = village.social_recap()
+    var log: Array = []
     if selected_index >= 0 and selected_index < records.size():
         var selected: Dictionary = records[selected_index]
         selected_label.text = _t("selected") % str(selected["name"])
-        var lines: Array[String] = []
-        for entry in selected.get("dialogue_log", []):
-            lines.append("%s [%s] — %s" % [
-                _t("day") % int(entry["epoch"]), str(entry["locale"]), str(entry["text"])])
-        history_text.text = "\n\n".join(lines) if not lines.is_empty() else _t("none")
+        log = selected.get("dialogue_log", [])
     else:
         selected_label.text = ""
-        history_text.text = _t("none")
+    var last_page: int = maxi(0, int((log.size() - 1) / HISTORY_PAGE_SIZE))
+    history_page = clampi(history_page, 0, last_page)
+    var lines: Array[String] = []
+    var first: int = history_page * HISTORY_PAGE_SIZE
+    for index in range(first, mini(log.size(), first + HISTORY_PAGE_SIZE)):
+        var entry: Dictionary = log[index]
+        lines.append("%s [%s] — %s" % [
+            _t("day") % int(entry["epoch"]), str(entry["locale"]), str(entry["text"])])
+    history_text.text = "\n\n".join(lines) if not lines.is_empty() else _t("none")
+    history_page_label.text = (_t("page") % [history_page + 1, last_page + 1]
+            if not log.is_empty() else _t("empty_page"))
+    history_earlier_button.disabled = log.is_empty() or history_page == 0
+    history_later_button.disabled = log.is_empty() or history_page >= last_page
+
+func _change_history_page(direction: int) -> void:
+    if panel == null or not panel.visible or direction == 0:
+        return
+    history_page = clampi(history_page + direction, 0, _latest_history_page(selected_index))
+    _update_selection_label()
 
 func _on_card_focus(index: int) -> void:
     if index < 0 or index >= cards.size():
         return
+    if index != selected_index:
+        history_page = _latest_history_page(index)
     selected_index = index
     _update_selection_label()
     scroll_area.ensure_control_visible(cards[index])
@@ -226,6 +279,7 @@ func _on_card_focus(index: int) -> void:
 func _select_neighbor(index: int) -> void:
     if panel == null or not panel.visible or index < 0 or index >= cards.size():
         return
+    history_page = _latest_history_page(index)
     selected_index = index
     cards[index].grab_focus()
     _on_card_focus(index)
@@ -234,9 +288,12 @@ func _toggle_locale() -> void:
     if village == null:
         return
     var previous: int = selected_index
+    var previous_page: int = history_page
     village.set_dialogue_locale("es" if _locale() == "en" else "en")
     refresh()
     _select_neighbor(previous)
+    history_page = previous_page
+    _update_selection_label()
 
 func open_journal() -> void:
     if panel == null or panel.visible:
@@ -289,6 +346,10 @@ func _input(event: InputEvent) -> void:
                 _select_neighbor(0)
             elif key == KEY_END:
                 _select_neighbor(cards.size() - 1)
+            elif key == KEY_LEFT:
+                _change_history_page(-1)
+            elif key == KEY_RIGHT:
+                _change_history_page(1)
             else:
                 return
             get_viewport().set_input_as_handled()
@@ -303,6 +364,10 @@ func _input(event: InputEvent) -> void:
                 _navigate(1)
             elif event.button_index == JOY_BUTTON_DPAD_UP:
                 _navigate(-1)
+            elif event.button_index == JOY_BUTTON_LEFT_SHOULDER:
+                _change_history_page(-1)
+            elif event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+                _change_history_page(1)
             else:
                 return
             get_viewport().set_input_as_handled()
