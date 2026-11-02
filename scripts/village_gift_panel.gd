@@ -299,8 +299,10 @@ func _input(event: InputEvent) -> void:
             get_viewport().set_input_as_handled()
     elif event is InputEventJoypadButton and event.pressed:
         if event.button_index == JOY_BUTTON_DPAD_RIGHT and (panel == null or not panel.visible):
-            open_gifts()
-            get_viewport().set_input_as_handled()
+            # Leave other open modals' D-pad navigation untouched.
+            if not _blocked():
+                open_gifts()
+                get_viewport().set_input_as_handled()
         elif panel != null and panel.visible:
             if event.button_index == JOY_BUTTON_B:
                 close_gifts()
