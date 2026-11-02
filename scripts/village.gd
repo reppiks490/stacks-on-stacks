@@ -287,6 +287,8 @@ func _record_memory(rid: String, field: String) -> void:
     record[field] = maxi(0, int(record.get(field, 0))) + 1
     memories[rid] = record
 
+## V06: explicit choice and legacy automatic gifts share one authoritative
+## monotonic-day gate, inventory debit, reward and persisted memory path.
 func _gift(resident: Dictionary, rid: String, epoch: int, requested_item: String = "") -> String:
     if int(last_gift.get(rid, -1)) == epoch:
         return "%s smiles. One gift each day is enough." % resident["name"]
