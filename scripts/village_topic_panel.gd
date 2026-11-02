@@ -6,11 +6,11 @@ const LABELS := {
     "en":{"open":"Ask a neighbor [U]","title":"Choose a conversation","cancel":"Not now",
         "missing":"Walk near a neighbor before asking a question.",
         "changed":"The neighbor is no longer close enough to talk.",
-        "hint":"Choose a topic • 1/2 or D-pad + A • Esc/B to leave"},
+        "hint":"Choose a topic • 1–4 or D-pad + A • Esc/B to leave"},
     "es":{"open":"Preguntar [U]","title":"Elige una conversación","cancel":"Ahora no",
         "missing":"Acércate a un vecino antes de hacer una pregunta.",
         "changed":"El vecino ya no está lo bastante cerca para hablar.",
-        "hint":"Elige tema • 1/2 o mando + A • Esc/B para salir"}
+        "hint":"Elige tema • 1–4 o mando + A • Esc/B para salir"}
 }
 var village
 var opener: Button
@@ -70,8 +70,8 @@ func setup(owner) -> void:
     panel.name = "VillageTopicChoices"
     panel.anchor_left = 0.18
     panel.anchor_right = 0.82
-    panel.anchor_top = 0.23
-    panel.anchor_bottom = 0.77
+    panel.anchor_top = 0.13
+    panel.anchor_bottom = 0.87
     var style := StyleBoxFlat.new()
     style.bg_color = Color(0.08, 0.15, 0.16, 0.98)
     style.border_color = Color(0.68, 0.83, 0.68)
@@ -89,7 +89,7 @@ func setup(owner) -> void:
     hint_label = Label.new()
     hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     layout.add_child(hint_label)
-    for index in range(2):
+    for index in range(4):
         var button := Button.new()
         button.name = "ConversationChoice%d" % (index + 1)
         button.custom_minimum_size.y = 56.0
@@ -163,15 +163,18 @@ func open_topics() -> void:
         return
     active_resident_id = str(selected["id"])
     var options: Array = village.available_topics(active_resident_id)
-    if options.size() != 2:
+    if options.size() < 2 or options.size() > topic_buttons.size():
         _show_result(_t("missing"))
         return
     topic_ids.clear()
     _refresh_locale()
     title_label.text = "%s: %s" % [_t("title"), str(selected["name"])]
-    for index in range(2):
-        topic_ids.append(str(options[index]["id"]))
-        topic_buttons[index].text = "%d. %s" % [index + 1, str(options[index]["label"])]
+    for index in range(topic_buttons.size()):
+        var available: bool = index < options.size()
+        topic_buttons[index].visible = available
+        if available:
+            topic_ids.append(str(options[index]["id"]))
+            topic_buttons[index].text = "%d. %s" % [index + 1, str(options[index]["label"])]
     selected_index = 0
     paused_before_open = get_tree().paused
     get_tree().paused = true
@@ -206,7 +209,7 @@ func _choose_index(index: int) -> String:
     return _show_result(response)
 
 func _navigate(direction: int) -> void:
-    selected_index = clampi(selected_index + direction, 0, topic_buttons.size() - 1)
+    selected_index = clampi(selected_index + direction, 0, maxi(0, topic_ids.size() - 1))
     topic_buttons[selected_index].grab_focus()
 
 func _input(event: InputEvent) -> void:
@@ -223,7 +226,7 @@ func _input(event: InputEvent) -> void:
         elif panel != null and panel.visible:
             if key == KEY_ESCAPE:
                 close_topics()
-            elif key == KEY_1 or key == KEY_2:
+            elif key >= KEY_1 and key <= KEY_4:
                 _choose_index(key - KEY_1)
             elif key == KEY_UP:
                 _navigate(-1)
