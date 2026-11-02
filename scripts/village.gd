@@ -387,6 +387,28 @@ func available_topics(rid: String) -> Array:
                 result.append({"id":str(key), "label":label})
     return result
 
+## V05/V19: read-only, data-driven progress toward existing earned chapters.
+## Never expose a locked reply or mutate relationship/economy/save state.
+## Recomputed from the same persisted job and friendship prerequisites as
+## _topic_unlocked(), so save/load and 56-day year rollover need no new keys.
+func chapter_progress(rid: String) -> Array:
+    var catalog: Dictionary = life_data.get("conversation_topics", {})
+    var options: Dictionary = catalog.get(rid, {})
+    var keys: Array = options.keys()
+    keys.sort()
+    var result: Array = []
+    var memory: Dictionary = memories.get(rid, _fresh_memory())
+    for key in keys:
+        var entry: Dictionary = options[key]
+        if not entry.has("requires"):
+            continue
+        var requirements: Dictionary = entry.get("requires", {})
+        var jobs_remaining: int = maxi(0, int(requirements.get("min_jobs", 0)) - int(memory.get("jobs", 0)))
+        var friendship_remaining: int = maxi(0, int(requirements.get("min_affection", 0)) - int(affection.get(rid, 0)))
+        result.append({"id":str(key), "unlocked":_topic_unlocked(rid, entry),
+            "jobs_remaining":jobs_remaining, "friendship_remaining":friendship_remaining})
+    return result
+
 func act(action: String, position: Vector3, topic: String = "") -> String:
     var selected: Dictionary = {}
     var best_distance: float = 4.2
