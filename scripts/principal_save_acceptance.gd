@@ -392,6 +392,24 @@ func _run() -> void:
                "invalid schema-1 minute written: %s" % str(invalid_minute))
         _check(FileAccess.get_file_as_string(SaveService.SAVE_PATH) == clock_bytes,
                "invalid clock write mutated authoritative save bytes")
+    # A loaded late-night clock advances exactly one day on its next tick;
+    # the rollover persists as an ordinary assembled game save.
+    var before_bedtime_epoch: int = session.day_epoch()
+    session.minute_of_day = 1440.0
+    session._process(0.0)
+    _check(session.day_epoch() == before_bedtime_epoch + 1,
+           "late-night loaded clock did not advance exactly one day")
+    _check(session.minute_of_day == 360.0,
+           "late-night rollover did not reset clock to 06:00")
+    var slept_payload: Dictionary = SaveService.read_payload()
+    _check(int(slept_payload.get("year", -1)) == session.year
+           and int(slept_payload.get("season", -1)) == session.season_index
+           and int(slept_payload.get("day", -1)) == session.day
+           and slept_payload.get("minute", -1.0) == 360.0,
+           "late-night rollover did not persist authoritative calendar")
+    session._process(0.0)
+    _check(session.day_epoch() == before_bedtime_epoch + 1,
+           "late-night rollover applied twice")
     _check(SaveService.validate_payload(base), "mutating deep duplicates corrupted valid fixture")
     print("PRINCIPAL SAVE VALIDATION: %d assertions, %d failures" % [assertions, failures])
     quit(0 if failures == 0 else 1)

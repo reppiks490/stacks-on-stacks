@@ -4,6 +4,7 @@ const SAVE_PATH := "user://everbloom_save_v1.json"
 const SaveService = preload("res://scripts/save_service.gd")
 const SEASONS := ["Spring", "Summer", "Autumn", "Winter"]
 const TOOLS := ["till", "plant", "water", "harvest", "care", "talk", "forage"]
+const BEDTIME_MINUTE: float = 1320.0
 var day: int = 1
 var year: int = 1
 var season_index: int = 0
@@ -132,7 +133,9 @@ func _process(delta: float) -> void:
     if hero == null:
         return
     minute_of_day += delta * 1.0
-    if minute_of_day >= 1320.0:
+    # Legacy schema-1 saves may resume at or after bedtime; advance only on
+    # the next simulation tick, never during the lossless load operation.
+    if minute_of_day >= BEDTIME_MINUTE:
         next_day()
     var hour_ratio: float = clampf((minute_of_day - 360.0) / 960.0, 0.0, 1.0)
     if sunlight != null:
