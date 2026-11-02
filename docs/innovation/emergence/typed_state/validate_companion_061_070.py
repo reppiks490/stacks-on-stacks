@@ -192,6 +192,10 @@ def audit(data):
         assert f["phase"] == "design_only_no_runtime_implementation"
         assert f["mission_ids"] == ["E03", "E10", "E18"]
         assert f["save_namespace"] == f"emergence.eb_e_{n}"
+        assert set(f["source_field_mapping"]) == set(f["source_fields"])
+        assert set(f["source_field_mapping"].values()).issubset(set(f["fields"]))
+        assert len(f["player_verbs"]) >= 4 and all(str(n) in verb for verb in f["player_verbs"])
+        assert f["source_projection_blocker"] if n == 69 else f["source_projection_blocker"] is None
         assert f["performance_budget"]["status"] == "proposed_not_measured"
         assert set(f["controls"]) == {"keyboard_mouse", "controller", "touch", "accessibility"}
         assert len(f["positive_fixtures"]) == 2 and len(f["negative_cases"]) >= 4
