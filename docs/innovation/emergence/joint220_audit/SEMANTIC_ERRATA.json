@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "scope": "Non-destructive proposed erratum; frozen source catalogs remain unchanged",
+  "phase_c": "CLOSED",
+  "entries": [
+    {
+      "id": "EB-E-102",
+      "source_key": "emergence_B_051_110",
+      "source_blob_sha": "eb7c590f43c92ded0e328ecfdf7003fa7c06ceac",
+      "source_negative_acceptance": "One find cannot be claimed by two teams; missing eclipse window must have a permanent accessible puzzle route",
+      "proposed_negative_acceptance": "One find cannot be claimed by two teams; a volunteer cannot be assigned to overlapping search cells or conflicting shifts; absent NPC consent and stale schedules reject without movement, inventory changes, or rewards.",
+      "rationale": "The frozen Community Search Grid acceptance mistakenly references an eclipse puzzle belonging to the separate sky-mystery domain. Preserve the original as evidence and require catalog-owner review before canonical correction.",
+      "owner_handoff": [
+        "Emergence: correct source catalog acceptance and matching godot_acceptance/adversarial_tests in a reviewed future revision.",
+        "Village: authoritative NPC consent and schedule conflict resolution.",
+        "Principal: command idempotence, inventory receipt, save migration, and replay gates."
+      ],
+      "status": "PROPOSED_NOT_APPLIED"
+    }
+  ]
+}
