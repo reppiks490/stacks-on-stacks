@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "regions": [
+    {
+      "id": "orchard_homestead",
+      "name": "Orchard Homestead",
+      "center": [
+        -15,
+        0,
+        0
+      ],
+      "focus": [
+        "farm",
+        "barn",
+        "orchard"
+      ]
+    },
+    {
+      "id": "larkspur_village",
+      "name": "Larkspur Village",
+      "center": [
+        31,
+        0,
+        4
+      ],
+      "focus": [
+        "shops",
+        "social",
+        "festivals"
+      ]
+    },
+    {
+      "id": "saffron_woods",
+      "name": "Saffron Woods",
+      "center": [
+        -30,
+        0,
+        -25
+      ],
+      "focus": [
+        "foraging",
+        "forest",
+        "wildlife"
+      ]
+    },
+    {
+      "id": "glimmer_lake",
+      "name": "Glimmer Lake",
+      "center": [
+        27,
+        0,
+        -28
+      ],
+      "focus": [
+        "fishing",
+        "animal_companions"
+      ]
+    },
+    {
+      "id": "moonrise_highlands",
+      "name": "Moonrise Highlands",
+      "center": [
+        0,
+        0,
+        35
+      ],
+      "focus": [
+        "exploration",
+        "rare_herbs"
+      ]
+    }
+  ],
+  "seasons": [
+    "Spring",
+    "Summer",
+    "Autumn",
+    "Winter"
+  ],
+  "days_per_season": 14,
+  "minutes_per_day": 1080,
+  "day_seconds": 1200,
+  "restoration_goal": 100,
+  "weather": [
+    "Clear",
+    "Rain",
+    "Mist"
+  ]
+}

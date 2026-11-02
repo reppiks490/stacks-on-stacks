@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "villagers": [
+    {
+      "id": "mira",
+      "name": "Mira",
+      "role": "Herbalist",
+      "gift": "bluebell",
+      "palette": "#cb76b0",
+      "home": [
+        27,
+        0,
+        9
+      ],
+      "preferences": [
+        "wild_herb",
+        "bluebell"
+      ],
+      "dialogue": [
+        "The hills are fragrant before the first rain.",
+        "Every remedy begins with listening."
+      ]
+    },
+    {
+      "id": "rowan",
+      "name": "Rowan",
+      "role": "Carpenter",
+      "gift": "wood",
+      "palette": "#c58b5b",
+      "home": [
+        33,
+        0,
+        9
+      ],
+      "preferences": [
+        "wood",
+        "pumpkin"
+      ],
+      "dialogue": [
+        "A good beam will survive a hundred storms.",
+        "Let's build something that'll outlast us."
+      ]
+    },
+    {
+      "id": "celia",
+      "name": "Celia",
+      "role": "Baker",
+      "gift": "strawberry",
+      "palette": "#e6b976",
+      "home": [
+        40,
+        0,
+        5
+      ],
+      "preferences": [
+        "strawberry",
+        "flour"
+      ],
+      "dialogue": [
+        "Take home warm bread, not an empty promise.",
+        "Festivals are better when everybody brings food."
+      ]
+    },
+    {
+      "id": "orion",
+      "name": "Orion",
+      "role": "Fisher",
+      "gift": "fish",
+      "palette": "#78a5ce",
+      "home": [
+        30,
+        0,
+        -4
+      ],
+      "preferences": [
+        "fish",
+        "shell"
+      ],
+      "dialogue": [
+        "The lake teaches patience.",
+        "Have you seen the lanterns reflected on the water?"
+      ]
+    },
+    {
+      "id": "alba",
+      "name": "Alba",
+      "role": "Caretaker",
+      "gift": "milk",
+      "palette": "#a3c89a",
+      "home": [
+        23,
+        0,
+        0
+      ],
+      "preferences": [
+        "milk",
+        "egg"
+      ],
+      "dialogue": [
+        "The animals remember kindness.",
+        "You can make a home out of any little place."
+      ]
+    },
+    {
+      "id": "soren",
+      "name": "Soren",
+      "role": "Librarian",
+      "gift": "wild_herb",
+      "palette": "#b2a2d7",
+      "home": [
+        38,
+        0,
+        -4
+      ],
+      "preferences": [
+        "wild_herb",
+        "bluebell"
+      ],
+      "dialogue": [
+        "Every valley keeps its own quiet history.",
+        "I've found an old chart of the northern ridge."
+      ]
+    }
+  ]
+}

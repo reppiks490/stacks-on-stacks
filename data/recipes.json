@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "recipes": [
+    {
+      "id": "herbal_tea",
+      "inputs": {
+        "wild_herb": 2
+      },
+      "output": {
+        "herbal_tea": 1
+      },
+      "energy": 15
+    },
+    {
+      "id": "garden_soup",
+      "inputs": {
+        "turnip": 1,
+        "carrot": 1
+      },
+      "output": {
+        "garden_soup": 1
+      },
+      "energy": 30
+    },
+    {
+      "id": "flower_bouquet",
+      "inputs": {
+        "bluebell": 2
+      },
+      "output": {
+        "flower_bouquet": 1
+      },
+      "energy": 0
+    },
+    {
+      "id": "hay_bundle",
+      "inputs": {
+        "wild_herb": 3
+      },
+      "output": {
+        "fodder": 2
+      },
+      "energy": 0
+    }
+  ]
+}

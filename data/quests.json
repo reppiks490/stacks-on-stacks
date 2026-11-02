@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "quests": [
+    {
+      "id": "first_seeds",
+      "kind": "farm",
+      "objective": "Grow and harvest three crops.",
+      "target": 3,
+      "reward_restoration": 5
+    },
+    {
+      "id": "good_neighbors",
+      "kind": "social",
+      "objective": "Become acquainted with the six villagers.",
+      "target": 6,
+      "reward_restoration": 8
+    },
+    {
+      "id": "gentle_hands",
+      "kind": "animal",
+      "objective": "Care for animals five times.",
+      "target": 5,
+      "reward_restoration": 7
+    },
+    {
+      "id": "renew_the_valley",
+      "kind": "restoration",
+      "objective": "Restore the valley's heart through everyday kindness.",
+      "target": 100,
+      "reward_restoration": 0
+    }
+  ]
+}

@@ -1,12 +1,6 @@
 .godot/
 .import/
-*.tmp
+dist/
+artifacts/
 *.log
-__pycache__/
-*.pyc
-.DS_Store
-/build/
-/dist/
-/.venv/
-/.idea/
-.vscode/
+*.tmp

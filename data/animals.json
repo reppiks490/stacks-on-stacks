@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "animals": [
+    {
+      "id": "hen",
+      "name": "Hazel Hen",
+      "product": "egg",
+      "production_days": 2,
+      "care_reward": 4,
+      "palette": "#fff1d4"
+    },
+    {
+      "id": "cow",
+      "name": "Meadow Cow",
+      "product": "milk",
+      "production_days": 3,
+      "care_reward": 6,
+      "palette": "#e6d4c3"
+    },
+    {
+      "id": "sheep",
+      "name": "Cloud Sheep",
+      "product": "wool",
+      "production_days": 4,
+      "care_reward": 5,
+      "palette": "#e4eaf2"
+    }
+  ]
+}

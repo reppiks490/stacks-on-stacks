@@ -1,73 +1,25 @@
-# SABLESTAR: The Sundered Expanse
+# EVERBLOOM: The Living Valley 🌿
 
-An **original**, standalone 3D action-RPG project. Working title, not a final trademark-cleared commercial name.
+**Original cozy 3D farming, community and exploration game — work in progress.**
 
-**Engine:** Godot 4.7.2 stable (open source; GDScript; no paid dependencies).  
-**Status:** foundation/graybox gameplay source, **not** a finished AA game.  
-**Repository:** intentionally separate from AEONFALL, ICARUS, and their automations.  
-**Codex:** none; do not introduce Codex to project automation.
+We are starting again: SABLESTAR was retired from the active branch, with prior commits and historic branches retained for recovery. EVERBLOOM is an original new game inspired by the *gameplay qualities* of classic island farming/life sims (especially Harvest Moon: Tree of Tranquility) and the newer open-world farming/adventure category (including Harvest Moon: Echoes of Teradea).
 
-## Unique premise
+**No original Harvest Moon copyrighted code, music, characters, names, textures, maps, meshes, voice or extracted proprietary assets are included or authorized for publication here.** Only use original or independently licensed/rights-verified materials. Reference titles are comparative research, not source asset libraries.
 
-Long after the world's night-side sun shattered, nomad Wardens harvest *Resonance* from a lattice of floating ruins. The same energy can heal ecosystems or accelerate their collapse. The protagonist, a defected cartographer called an **Unbound**, must decide who controls the last navigable passages across the Glass Meridian. Its core tension: powerful combat techniques damage the environment and alter which routes, allies and resources remain available.
+## Play / source verification
+- Install Godot 4.7.2 (or version proven compatible by the CI).
+- Clone repo, open `project.godot` in Godot, run the main scene.
+- Move: WASD / arrows; interact: E; 1-7 select tool; Q change seed; R craft; F end day; P save; O load.
+- See `docs/MASTER_PLAN.md`, `docs/CROSS_LOOP_COORDINATION.md`, and `docs/ART_DIRECTION.md`.
 
-## Working source currently included
+## Core start
+- Original procedural painterly 3D valley shell and homestead.
+- Farming: soil tilling, sowing, moisture, weather, seasonal growth, harvest.
+- Social/NPC and animal care interfaces with saveable state.
+- Four seasons and a day/night clock, inventory, crafting, shipping and restoration.
+- Source-level tests and native Godot validation in non-Codex GitHub Actions.
 
-- 3D over-the-shoulder movement, jumping, sprinting, dodge, lock-free camera and gamepad movement support.
-- Stamina-limited melee and a charged area ability, enemy windups, stagger and pursuit AI.
-- Deterministically assembled graybox ruins, destructible resonance crystals, fragments, collectible drops and a companion orb.
-- Two original faction-gate interactions affecting world-state affinity.
-- Combat HUD, objective tracking and versioned local save/load (`user://`, no remote server).
-- Authored implementation contract, REA evidence taxonomy and offline Python source/contract tests.
+This is a work-in-progress buildable **foundation**, not a completed premium/AA game. Significant native, content, mobile, UX and accessibility work remains.
 
-No copyrighted game source, franchise characters, maps, 3D models, audio or ripped assets are shipped.
-
-## Run (Godot 4.7.2)
-
-1. Install Godot 4.7.2 from the official Godot website.
-2. Import/open this directory as a project using `project.godot`.
-3. Press **F6** with `scenes/main.tscn` open, or **F5** to start the project.
-
-**Controls**: WASD move, mouse look, Space jump, Shift sprint, Ctrl dodge, left-click strike, F pulse, E interact, F5 save, F9 load, Esc release/re-capture pointer. Arrow keys and gamepad left stick also move; gamepad buttons are planned beyond analog input. These are graybox keyboard/mouse controls, **not** a verified mobile UI.
-
-Run contract tests: `python -m unittest discover -s tests -v` and `python tools/validate_project.py`.
-
-## Current limitations / no false evidence
-
-Scene syntax and Python design contracts can be checked without Godot, but **native Godot editor compilation and live rendering have not been verified** unless a run log is attached. No device export, multiplayer, finished art, final narrative, destructive voxel terrain, AAA quality, or native mobile touch UI is claimed. Read `docs/STATUS.md` and `docs/ARCHITECTURE.md`.
-
-## Do not conflate source inspiration and extraction
-
-Public games are references for design research. Use REA only on software you are entitled to examine and within applicable rules. The repository contains independently authored implementations, not source/assets from third-party games. See `research/ANALYSIS_PROTOCOL.md`.
-
-## Original art and audio assets
-
-The source tree now includes six independent vector illustrations, one faceted
-low-poly Sableblade mesh with source materials, and two synthesized WAV cues.
-`assets/provenance.json` records a SHA-256 for every asset. Run
-`python tools/generate_original_assets.py --verify` to check the shipped bytes.
-These are authored SABLESTAR assets, not extracted third-party game files.
-
-## Install Godot for Windows (no administrator required)
-
-Open PowerShell in the repository folder and run:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\tools\install_godot_windows.ps1 -Launch
-```
-
-This script downloads the official Godot 4.7.2 Windows editor, verifies its
-fixed SHA-256 and extracts it under your own LocalAppData folder. It makes no
-system PATH changes. The project then opens from `project.godot`.
-
-The GitHub Actions workflow runs ordinary Python source tests, downloads the
-verified official Godot Linux binary (SHA-256 pinned), parses/imports the
-project and performs a headless runtime smoke. Do not interpret static tests
-as proof of a playable game; check exact-head Actions results first.
-
-## Latest native CI milestone
-
-Official Godot 4.7.2 successfully parsed, imported and ran the baseline scene
-headlessly for 120 frames at `62ef38c` (branch CI `41379257781`, main CI
-`41379347129`). The current code and any future asset wiring changes require
-their own exact-head verification. See `docs/STATUS.md` for evidence scope.
+## Rules
+**Zero Codex** (including CLI/agents/review bots/Actions), no paid tools, no false testing claims, no destructive history rewriting, no copied proprietary game assets. Five narrowly scoped engineering loops collaborate through GitHub. No publishing or private asset redistribution without approval.
