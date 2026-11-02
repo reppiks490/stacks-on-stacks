@@ -61,6 +61,32 @@ func _run() -> void:
     _check(ui.close_button.custom_minimum_size.y >= 44.0, "touch close 44px")
     _check(ui.opener.focus_mode == Control.FOCUS_ALL, "keyboard focusable")
     _check(not ui.is_open and not paused, "initially closed")
+    # Exercise actual assembled Village overlay references, not a mock UI.
+    # An overlapping modal can steal focus and restore an incorrect pause state.
+    var topics = game.village.topic_panel
+    _check(topics != null and topics.panel != null, "Village topic modal exists")
+    if topics != null and topics.panel != null:
+        topics.panel.show()
+        _check(ui._blocked(), "visible topic modal blocks Save Health")
+        ui._input(_key(KEY_Y))
+        _check(not ui.is_open and not paused, "keyboard cannot stack over topics")
+        ui.opener.pressed.emit()
+        _check(not ui.is_open and not paused, "touch cannot stack over topics")
+        topics.panel.hide()
+    var journal = game.village.social_journal
+    _check(journal != null and journal.panel != null, "Village journal modal exists")
+    if journal != null and journal.panel != null:
+        journal.panel.show()
+        _check(ui._blocked(), "visible social journal blocks Save Health")
+        ui._input(_joy(JOY_BUTTON_START))
+        _check(not ui.is_open and not paused, "controller cannot stack over journal")
+        journal.panel.hide()
+    paused = true
+    _check(ui._blocked(), "independent paused session blocks modal stacking")
+    ui._input(_joy(JOY_BUTTON_START))
+    _check(not ui.is_open and paused, "blocked controller does not unpause session")
+    paused = false
+    _check(not ui._blocked(), "normal unpaused valley permits inspection")
     var initial_gold: int = game.gold
     var initial_items: Dictionary = game.inventory.duplicate(true)
     var initial_epoch: int = game.day_epoch()
