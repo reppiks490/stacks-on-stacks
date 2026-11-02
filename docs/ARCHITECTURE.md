@@ -1,6 +1,6 @@
 # EVERBLOOM — Integration architecture and persistence contract (principal lane)
 
-**Status:** Source implementation in progress. The current integration candidate is not accepted as native verified until exact-head Godot CI passes. Never infer a completed game from file counts or tests.
+**Status:** Source implementation in progress. Exact-head Godot 4.7.2 native import and 120-frame scene smoke **passed** for merge commit `63370c98b852ca87b904aec8ba62a33ef01eecea` ([evidence](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41397716313)). This does not prove completed gameplay, polish, long-run stability, save correctness or mobile performance.
 
 ## Runtime topology (observed from current integration branch)
 ```
@@ -20,7 +20,7 @@ These are actual tracked source components, not proof of full gameplay, polish o
 ## Contract A: deterministic calendar
 Game orchestrator is the sole calendar authority: `year >= 1`, `season_index = 0..3`, `day = 1..14`, `minute_of_day`, `weather`. 4 seasons × 14 days = 56 days/year. A monotonic `day_epoch() = (year-1)*56 + season_index*14 + day` is required for once-per-day talk, gift, animal care and festival triggers. Using `season_index*14+day` alone repeats epochs every year and incorrectly blocks annual interactions. All domain modules must accept calendar snapshots, not mutate global date. Weather must be reproducible for a given calendar and save state.
 
-**Current known issue:** Original `game.gd` lacks a persisted year counter and domain modules use repeating day indices. The principal lane will add a year counter; village/animal lanes must switch their daily gating to `game.day_epoch()` after coordination.
+**Current state:** `game.gd` now persists `year`, increments it at Winter rollover and exposes `day_epoch()`. **Remaining defect:** village and animal modules still use repeating day indices. Their owners must switch daily gating to `game.day_epoch()` and add real runtime regression tests.
 
 ## Contract B: persistence
 Current `game.gd` writes `user://everbloom_save_v1.json` with `schema=1`. Retain compatibility for existing schema-1 saves. Required persisted fields: `year` (optional in pre-upgrade v1; default 1), `day`, `season`, `minute`, `gold`, `energy`, `weather`, `restoration`, `crops_harvested`, `social_contacts`, `care_actions`, `inventory`, `farm`, `village`, `animals`, `hero_position`. Domain save structures are delegated to their owners.
@@ -50,7 +50,7 @@ Target 60 FPS on desktop and measured 30/60 FPS mobile modes; these are goals, n
 7. Integrate isolated branch non-destructively only after checks; never force-push/delete history.
 
 ## Open technical risks
-- Existing CI fails before native tests because `tools/validate_project.py` was missing.
+- Prior CI failed before native tests because `tools/validate_project.py` was missing. QA supplied a stronger validator and tests; this blocker is **resolved** at merge commit `63370c98`.
 - No independent gameplay tests for crop progression, inventory conservation or save recovery.
 - Daily social/animal gating repeats annually without monotonic epoch.
 - Unverified engine parsing and unknown mobile performance.
