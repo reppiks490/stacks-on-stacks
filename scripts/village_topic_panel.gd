@@ -239,8 +239,30 @@ func _choose_index(index: int) -> String:
     return _show_result(response)
 
 func _navigate(direction: int) -> void:
-    selected_index = clampi(selected_index + direction, 0, maxi(0, topic_ids.size() - 1))
+    if topic_ids.is_empty():
+        return
+    selected_index = clampi(selected_index + direction, 0, topic_ids.size() - 1)
     topic_buttons[selected_index].grab_focus()
+
+## V19: Tab, Shift-Tab and pointer focus can select a different control than
+## the last D-pad index. Activate that real focused control, never silently
+## turn a language/cancel request into a paid or rewarded conversation.
+func _activate_focused() -> void:
+    if panel == null or not panel.visible:
+        return
+    var focused: Control = get_viewport().gui_get_focus_owner()
+    if focused == language_button:
+        _toggle_locale()
+        return
+    if focused == cancel_button:
+        close_topics()
+        return
+    for index in range(topic_ids.size()):
+        if focused == topic_buttons[index]:
+            selected_index = index
+            _choose_index(index)
+            return
+    _choose_index(selected_index)
 
 func _input(event: InputEvent) -> void:
     if event is InputEventKey:
@@ -265,7 +287,7 @@ func _input(event: InputEvent) -> void:
             elif key == KEY_DOWN:
                 _navigate(1)
             elif key == KEY_ENTER or key == KEY_KP_ENTER:
-                _choose_index(selected_index)
+                _activate_focused()
             else:
                 return
             get_viewport().set_input_as_handled()
@@ -286,7 +308,7 @@ func _input(event: InputEvent) -> void:
             elif event.button_index == JOY_BUTTON_DPAD_DOWN:
                 _navigate(1)
             elif event.button_index == JOY_BUTTON_A:
-                _choose_index(selected_index)
+                _activate_focused()
             else:
                 return
             get_viewport().set_input_as_handled()
