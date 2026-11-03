@@ -12,17 +12,18 @@ uniform float roughness_floor : hint_range(0.0, 1.0) = 0.38;
 uniform float roughness_ceiling : hint_range(0.0, 1.0) = 0.94;
 uniform float macro_variation : hint_range(0.0, 0.16) = 0.045;
 uniform float macro_scale : hint_range(0.002, 0.3) = 0.035;
-varying vec3 object_position;
+// World-space sampling prevents macro-pigment discontinuities between streamed chunks.
+varying vec3 macro_world_position;
 
 void vertex() {
-    object_position = VERTEX;
+    macro_world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
 void fragment() {
     vec2 uv = UV * uv_scale;
     vec3 base = texture(albedo_map, uv).rgb * pigment.rgb;
     // Gentle, deterministic low-frequency tint; never replaces authored detail.
-    float macro = sin(object_position.x * macro_scale) * cos(object_position.z * macro_scale);
+    float macro = sin(macro_world_position.x * macro_scale) * cos(macro_world_position.z * macro_scale);
     ALBEDO = clamp(base * (1.0 + macro * macro_variation), vec3(0.0), vec3(1.0));
     NORMAL_MAP = texture(normal_map, uv).rgb;
     NORMAL_MAP_DEPTH = normal_strength;
