@@ -27,3 +27,6 @@ jobs:
         run: python3 docs/innovation/construction/quality/verify_stone_maps.py
       - name: Run multiresolution stone texture regression
         run: python3 docs/innovation/construction/quality/verify_stone_multires.py
+
+      - name: Verify stone PBR seam and relief coherence
+        run: python3 docs/innovation/construction/quality/verify_stone_seams.py
