@@ -78,10 +78,12 @@ func setup(owner) -> void:
     surface.add_child(feedback_label)
     panel = PanelContainer.new()
     panel.name = "VillageTopicChoices"
-    panel.anchor_left = 0.18
-    panel.anchor_right = 0.82
-    panel.anchor_top = 0.13
-    panel.anchor_bottom = 0.87
+    # Keep the dialogue readable on narrow mobile viewports without turning
+    # desktop paragraphs into excessively long lines. Resize is presentation-only.
+    panel.anchor_left = 0.08
+    panel.anchor_right = 0.92
+    panel.anchor_top = 0.08
+    panel.anchor_bottom = 0.92
     var style := StyleBoxFlat.new()
     style.bg_color = Color(0.08, 0.15, 0.16, 0.98)
     style.border_color = Color(0.68, 0.83, 0.68)
@@ -89,6 +91,8 @@ func setup(owner) -> void:
     style.set_content_margin_all(14)
     panel.add_theme_stylebox_override("panel", style)
     surface.add_child(panel)
+    surface.resized.connect(_fit_dialogue_panel.bind(surface))
+    _fit_dialogue_panel(surface)
     # Village-only presentation treatment: high-contrast authored civic palette,
     # distinct focus ring and generous touch targets; no reward/state changes.
     var focus_style := StyleBoxFlat.new()
@@ -119,14 +123,17 @@ func setup(owner) -> void:
     title_label = Label.new()
     title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     title_label.add_theme_font_size_override("font_size", 21)
+    title_label.add_theme_color_override("font_color", Color(1.0, 0.93, 0.75))
     layout.add_child(title_label)
     hint_label = Label.new()
+    hint_label.add_theme_color_override("font_color", Color(0.84, 0.91, 0.86))
     hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     layout.add_child(hint_label)
     progress_label = Label.new()
     progress_label.name = "EarnedChapterProgress"
     progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     progress_label.add_theme_font_size_override("font_size", 15)
+    progress_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.75))
     progress_label.custom_minimum_size.y = 48.0
     layout.add_child(progress_label)
     for index in range(4):
@@ -162,6 +169,20 @@ func setup(owner) -> void:
     layout.add_child(cancel_button)
     panel.visible = false
     _refresh_locale()
+
+## Constrain the reading column to 760 logical pixels on desktop; preserve
+## generous lateral margins and vertical room on phones. No game-state edits.
+func _fit_dialogue_panel(surface: Control) -> void:
+    if panel == null:
+        return
+    var width: float = surface.size.x
+    if width <= 0.0:
+        return
+    var inset: float = maxf(12.0, (width - minf(760.0, width * 0.92)) * 0.5)
+    panel.anchor_left = 0.0
+    panel.anchor_right = 1.0
+    panel.offset_left = inset
+    panel.offset_right = -inset
 
 ## Rebuild labels by stable topic IDs, never by translated sort order.
 ## This is presentation-only: no extra talk, rewards or save writes.
