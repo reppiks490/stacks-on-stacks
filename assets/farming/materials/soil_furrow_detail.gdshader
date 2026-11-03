@@ -16,6 +16,8 @@ uniform float grain_scale : hint_range(8.0, 180.0) = 75.0;
 // Bed margins taper naturally into the unchanged gameplay/collision footprint.
 uniform float edge_fade : hint_range(0.01, 0.25) = 0.095;
 uniform float micro_relief : hint_range(0.0, 0.012) = 0.004;
+// Physical dimensions of the existing bed top, used for tangent-space slopes.
+uniform vec2 bed_size = vec2(1.48, 1.48);
 
 varying vec2 bed_uv;
 
@@ -62,8 +64,15 @@ void fragment() {
     ROUGHNESS = clamp(mix(0.96, 0.54, damp) + (fine - 0.5) * 0.11, 0.45, 1.0);
     SPECULAR = mix(0.19, 0.37, damp);
     // Fragment normal perturbation complements geometry; it does not alter collision.
-    float nx = value_noise((uv + vec2(0.003, 0.0)) * grain_scale) - fine;
-    float ny = value_noise((uv + vec2(0.0, 0.003)) * grain_scale) - fine;
-    NORMAL_MAP = normalize(vec3(-nx * 4.0, -ny * 4.0, 1.0)) * 0.5 + 0.5;
-    NORMAL_MAP_DEPTH = 0.28;
+    // Match displaced furrow geometry with a finite-difference tangent normal.
+    // A small grain component provides sub-vertex detail without replacing the
+    // large-scale slope. Geometry/collision remain independently authored.
+    float eps = 0.002;
+    float dh_du = (relief(uv + vec2(eps, 0.0)) - relief(uv - vec2(eps, 0.0))) / (2.0 * eps * max(bed_size.x, 0.01));
+    float dh_dv = (relief(uv + vec2(0.0, eps)) - relief(uv - vec2(0.0, eps))) / (2.0 * eps * max(bed_size.y, 0.01));
+    float grain_du = value_noise((uv + vec2(eps, 0.0)) * grain_scale) - value_noise((uv - vec2(eps, 0.0)) * grain_scale);
+    float grain_dv = value_noise((uv + vec2(0.0, eps)) * grain_scale) - value_noise((uv - vec2(0.0, eps)) * grain_scale);
+    vec3 soil_normal = normalize(vec3(-dh_du - grain_du * 0.06, -dh_dv - grain_dv * 0.06, 1.0));
+    NORMAL_MAP = soil_normal * 0.5 + 0.5;
+    NORMAL_MAP_DEPTH = 1.0;
 }
