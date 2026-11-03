@@ -10,6 +10,7 @@ func _initialize() -> void:
     var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
     var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
     var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+    var pigments: PackedColorArray = arrays[Mesh.ARRAY_COLOR]
     assert(vertices.size() == 13 * 8 * 12, "Front and back triangles must be explicit")
     assert(normals.size() == vertices.size(), "Normals required per vertex")
     # Triangles at the petiole and distal tip must not collapse into zero-area geometry.
@@ -26,6 +27,14 @@ func _initialize() -> void:
         assert(vertices[back_idx].z < vertices[tri + 2].z + 0.01, "Underside must stay near upper lamina")
 
     assert(uvs.size() == vertices.size(), "UVs required per vertex")
+    assert(pigments.size() == vertices.size(), "Vertex pigment required per vertex")
+    var pigment_range := 0.0
+    for pigment in pigments:
+        assert(pigment.is_finite(), "Pigments must remain finite")
+        assert(pigment.r >= 0.0 and pigment.g >= 0.0 and pigment.b >= 0.0, "Pigments cannot be negative")
+        pigment_range = max(pigment_range, abs(pigment.g - pigments[0].g))
+    assert(pigment_range > 0.01, "Anatomical vein/margin coloration must vary")
+    assert(Leaf.leaf_material().vertex_color_use_as_albedo, "Material must consume mesh vertex pigments")
     var front_count := int(vertices.size() / 2)
     assert(vertices[front_count].z < vertices[2].z, "Underside must be offset from upper surface to avoid z-fighting")
     var low := Vector3(INF, INF, INF)
@@ -38,6 +47,7 @@ func _initialize() -> void:
     assert(high.x - low.x > 0.1, "Leaf must have a broad lamina")
     var duplicate := Leaf.make_leaf(0.65, 0.12, 0.08, 11)
     assert(duplicate.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] == vertices, "Mesh generation must be deterministic")
+    assert(duplicate.surface_get_arrays(0)[Mesh.ARRAY_COLOR] == pigments, "Pigment generation must be deterministic")
     assert(Leaf.make_leaf(-1.0, 0.12, 0.08).get_surface_count() == 0, "Invalid dimensions must fail closed")
     assert(Leaf.make_leaf(0.65, INF, 0.08).get_surface_count() == 0, "Nonfinite dimensions must fail closed")
     print("PASS native farming leaf geometry: winding, UV, finite bounds, deterministic seed, invalid inputs")
