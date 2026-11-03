@@ -26,6 +26,13 @@ func _run() -> void:
         check(code.contains("MODEL_MATRIX * vec4(VERTEX, 1.0)"), "macro coordinates derive from world-space vertices")
         check(code.contains("NORMAL_MAP_DEPTH"), "normal intensity is configurable")
         check(code.contains("ROUGHNESS"), "authored roughness feeds PBR surface")
+        check(code.contains("fwidth(macro_phase)"), "macro pigment uses fragment footprint to avoid distant shimmer")
+        check(code.contains("smoothstep(0.5, 1.5"), "macro pigment fades under subpixel sampling")
+        for footprint in [0.0, 0.5, 1.0, 1.5, 2.0]:
+            var fade := 1.0 - smoothstep(0.5, 1.5, footprint)
+            check(fade >= 0.0 and fade <= 1.0, "pigment attenuation remains bounded")
+            if footprint >= 1.5:
+                check(is_zero_approx(fade), "subpixel pigment fades to zero")
         check(code.contains("texture(albedo_map"), "authored albedo is sampled")
         # Independent 150-unit chunks meet at the same WORLD coordinate even
         # though their local vertices and MODEL_MATRIX translations differ.
