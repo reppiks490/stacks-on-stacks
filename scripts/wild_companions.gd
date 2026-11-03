@@ -196,12 +196,12 @@ func _process(delta: float) -> void:
             node.rotation.y=game.hero.rotation.y
             continue
         if str(id)==active_pet and tamed_pets.has(id):
-            var target:=game.hero.global_position+Vector3(-1.2,0,1.4)
+            var target: Vector3 = game.hero.global_position + Vector3(-1.2,0,1.4)
             node.global_position=node.global_position.lerp(target,minf(1.0,delta*3.2))
             node.rotation.y=lerp_angle(node.rotation.y,game.hero.rotation.y,minf(1.0,delta*4.0))
             continue
         if str(id)==active_mount and tamed_mounts.has(id):
-            var spot:=game.hero.global_position+Vector3(2.2,0,2.3)
+            var spot: Vector3 = game.hero.global_position + Vector3(2.2,0,2.3)
             if node.global_position.distance_to(spot)>6.0:
                 node.global_position=node.global_position.lerp(spot,minf(1.0,delta*2.0))
             continue
