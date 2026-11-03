@@ -76,7 +76,8 @@ if ($ResetSaves) {
             $_.Name -like 'everbloom_save_v1.json*' -or
             $_.Name -like 'everbloom_avatar.cfg*' -or
             $_.Name -like 'everbloom_frontier_social.cfg*' -or
-            $_.Name -like 'everbloom_companions.cfg*'
+            $_.Name -like 'everbloom_companions.cfg*' -or
+            $_.Name -like 'everbloom_exploration.cfg*'
         })
     foreach ($file in $files) {
         Remove-Item -LiteralPath $file.FullName -Force
