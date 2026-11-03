@@ -6,7 +6,7 @@ const LABELS := {
     "en":{"open":"Ask a neighbor [U]","title":"Choose a conversation","cancel":"Not now",
         "missing":"Walk near a neighbor before asking a question.",
         "changed":"The neighbor is no longer close enough to talk.",
-        "hint":"Choose a topic • 1–4 or D-pad + A • C/X: language • Esc/B to leave",
+        "hint":"D-pad/↑↓: topics, language, cancel • A/Enter: select • 1–4: topic • C/X: language • Esc/B: leave",
         "work_chapter":"Work memory", "trust_chapter":"Trust memory",
         "chapter_ready":"Ready to discuss", "shift_left":"shift(s) to complete",
         "friendship_left":"friendship points to earn",
@@ -14,7 +14,7 @@ const LABELS := {
     "es":{"open":"Preguntar [U]","title":"Elige una conversación","cancel":"Ahora no",
         "missing":"Acércate a un vecino antes de hacer una pregunta.",
         "changed":"El vecino ya no está lo bastante cerca para hablar.",
-        "hint":"Elige tema • 1–4 o mando + A • C/X: idioma • Esc/B para salir",
+        "hint":"Cruceta/↑↓: temas, idioma, cancelar • A/Intro: elegir • 1–4: tema • C/X: idioma • Esc/B: salir",
         "work_chapter":"Recuerdo del trabajo", "trust_chapter":"Recuerdo de confianza",
         "chapter_ready":"Listo para conversar", "shift_left":"turno(s) por completar",
         "friendship_left":"puntos de amistad por ganar",
@@ -279,11 +279,34 @@ func _choose_index(index: int) -> String:
     close_topics()
     return _show_result(response)
 
+## Navigate every visible, enabled modal action, not only conversation topics.
+## This keeps Language and Cancel reachable without Tab or a pointer. Hidden
+## locked chapters and disabled controls cannot trap controller focus.
 func _navigate(direction: int) -> void:
-    if topic_ids.is_empty():
+    if panel == null or not panel.visible:
         return
-    selected_index = clampi(selected_index + direction, 0, topic_ids.size() - 1)
-    topic_buttons[selected_index].grab_focus()
+    var controls: Array[Button] = []
+    for index in range(topic_ids.size()):
+        if topic_buttons[index].visible and not topic_buttons[index].disabled:
+            controls.append(topic_buttons[index])
+    if language_button.visible and not language_button.disabled:
+        controls.append(language_button)
+    if cancel_button.visible and not cancel_button.disabled:
+        controls.append(cancel_button)
+    if controls.is_empty():
+        return
+    var focused: Control = get_viewport().gui_get_focus_owner()
+    var current_index: int = controls.find(focused)
+    if current_index < 0:
+        current_index = 0 if direction >= 0 else controls.size() - 1
+    else:
+        current_index = clampi(current_index + direction, 0, controls.size() - 1)
+    var target: Button = controls[current_index]
+    target.grab_focus()
+    for index in range(topic_ids.size()):
+        if topic_buttons[index] == target:
+            selected_index = index
+            break
 
 ## V19: Tab, Shift-Tab and pointer focus can select a different control than
 ## the last D-pad index. Activate that real focused control, never silently
@@ -303,7 +326,9 @@ func _activate_focused() -> void:
             selected_index = index
             _choose_index(index)
             return
-    _choose_index(selected_index)
+    # Never interpret absent/foreign focus as consent to a rewarded talk.
+    # The player must focus an actual modal action before confirming.
+    return
 
 func _input(event: InputEvent) -> void:
     if event is InputEventKey:
