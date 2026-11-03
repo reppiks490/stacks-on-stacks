@@ -82,6 +82,15 @@ func _run() -> void:
         check(normal_texture.get_width() == 2 and roughness_texture.get_height() == 2, "normal and roughness fixtures have expected dimensions")
         check(code.contains("texture(normal_map") and code.contains("texture(roughness_map"), "normal and roughness textures are sampled")
         check(code.contains("texture(albedo_map"), "authored albedo is sampled")
+        # Inverted artist-controlled roughness endpoints must not invert the
+        # material response; the shader normalizes endpoints before blending.
+        check(code.contains("min(roughness_floor, roughness_ceiling)") and code.contains("max(roughness_floor, roughness_ceiling)"), "roughness interval is normalized before blending")
+        check(code.contains("clamp(mix(roughness_min, roughness_max, r), 0.0, 1.0)"), "roughness result is physically bounded")
+        for roughness_sample in [0.0, 0.25, 0.5, 0.75, 1.0]:
+            var normal_order := lerpf(0.38, 0.94, roughness_sample)
+            var inverted_order := lerpf(minf(0.94, 0.38), maxf(0.94, 0.38), roughness_sample)
+            check(is_equal_approx(normal_order, inverted_order), "reversed roughness controls preserve material response")
+
         # Independent 150-unit chunks meet at the same WORLD coordinate even
         # though their local vertices and MODEL_MATRIX translations differ.
         # Compare both x and z borders, including a negative-coordinate origin.
