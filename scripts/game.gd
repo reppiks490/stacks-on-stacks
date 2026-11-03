@@ -25,6 +25,7 @@ var selected_tool: int = 0
 var latest_message: String = "Welcome to Larkspur Valley. Make it your own."
 var camera: Camera3D
 var sunlight: DirectionalLight3D
+var sky_material: ProceduralSkyMaterial
 var farm
 var valley
 var village
@@ -122,7 +123,7 @@ func _make_sky() -> void:
     var env := Environment.new()
     env.background_mode = Environment.BG_SKY
     var sky := Sky.new()
-    var sky_material := ProceduralSkyMaterial.new()
+    sky_material = ProceduralSkyMaterial.new()
     sky_material.sky_top_color = Color("#639bd1")
     sky_material.sky_horizon_color = Color("#f6d3ad")
     sky_material.ground_bottom_color = Color("#587562")
@@ -151,8 +152,32 @@ func _process(delta: float) -> void:
         next_day()
     var hour_ratio: float = clampf((minute_of_day - 360.0) / 960.0, 0.0, 1.0)
     if sunlight != null:
-        sunlight.rotation_degrees.x = -14.0 - 77.0 * sin(hour_ratio * PI)
-        sunlight.light_energy = 0.32 + 1.15 * sin(hour_ratio * PI)
+        var daylight: float = sin(hour_ratio * PI)
+        sunlight.rotation_degrees.x = -14.0 - 77.0 * daylight
+        sunlight.light_energy = 0.32 + 1.15 * daylight
+        var warm_light := Color("#f3ad78").lerp(Color("#fff0c8"), daylight)
+        if weather == "Rain":
+            warm_light = warm_light.lerp(Color("#b6c4cf"), 0.45)
+        elif weather == "Mist":
+            warm_light = warm_light.lerp(Color("#d7d8cf"), 0.32)
+        sunlight.light_color = sunlight.light_color.lerp(warm_light, minf(1.0, delta * 0.7))
+    if sky_material != null:
+        var arc: float = sin(hour_ratio * PI)
+        var target_top := Color("#263b65").lerp(Color("#5ba6dd"), arc)
+        var target_horizon := Color("#e58e71").lerp(Color("#d7edf1"), arc)
+        var target_ground := Color("#3f554e").lerp(Color("#78926a"), arc)
+        if weather == "Rain":
+            target_top = target_top.lerp(Color("#637383"), 0.68)
+            target_horizon = target_horizon.lerp(Color("#aeb7bc"), 0.62)
+            target_ground = target_ground.darkened(0.14)
+        elif weather == "Mist":
+            target_top = target_top.lerp(Color("#9ca8ac"), 0.58)
+            target_horizon = target_horizon.lerp(Color("#d6d3c6"), 0.70)
+            target_ground = target_ground.lerp(Color("#8c9786"), 0.40)
+        sky_material.sky_top_color = sky_material.sky_top_color.lerp(target_top, minf(1.0, delta * 0.45))
+        sky_material.sky_horizon_color = sky_material.sky_horizon_color.lerp(target_horizon, minf(1.0, delta * 0.45))
+        sky_material.ground_bottom_color = sky_material.ground_bottom_color.lerp(target_ground, minf(1.0, delta * 0.45))
+        sky_material.ground_horizon_color = sky_material.ground_horizon_color.lerp(target_horizon.darkened(0.08), minf(1.0, delta * 0.45))
     if camera != null:
         var target: Vector3 = hero.global_position + Vector3(12.0, 15.0, 18.0)
         camera.global_position = camera.global_position.lerp(target, minf(1.0, delta * 5.0))
