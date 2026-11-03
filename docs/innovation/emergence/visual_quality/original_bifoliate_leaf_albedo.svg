@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<!-- EVERBLOOM original authored leaf-card albedo; transparent perimeter; stem rooted at UV bottom. No external assets. -->
+<defs>
+ <linearGradient id="lamina" x1="0" y1="1" x2="0.82" y2="0.08"><stop stop-color="#294b2c"/><stop offset=".24" stop-color="#547c3a"/><stop offset=".52" stop-color="#78994c"/><stop offset=".79" stop-color="#648b43"/><stop offset="1" stop-color="#b1b967"/></linearGradient>
+ <linearGradient id="fold" x1="0" y1=".6" x2="1" y2=".4"><stop stop-color="#294b2c" stop-opacity=".8"/><stop offset=".47" stop-color="#789c4c" stop-opacity=".1"/><stop offset="1" stop-color="#d1c77a" stop-opacity=".36"/></linearGradient>
+</defs>
+<path d="M255 491 C253 447 251 409 252 372" stroke="#526f36" stroke-width="12" fill="none" stroke-linecap="round"/>
+<path d="M254 393 C190 367 105 314 73 221 C55 165 73 97 126 58 C157 105 203 111 236 153 C275 198 282 252 254 393Z" fill="url(#lamina)"/>
+<path d="M254 393 C307 358 410 294 433 200 C445 147 416 84 363 52 C334 98 301 117 274 162 C247 209 236 290 254 393Z" fill="url(#lamina)"/>
+<path d="M254 393 C190 367 105 314 73 221 C55 165 73 97 126 58 C157 105 203 111 236 153 C275 198 282 252 254 393Z" fill="url(#fold)" opacity=".55"/>
+<path d="M254 393 C307 358 410 294 433 200 C445 147 416 84 363 52 C334 98 301 117 274 162 C247 209 236 290 254 393Z" fill="url(#fold)" opacity=".4"/>
+<g fill="none" stroke="#d0c781" stroke-linecap="round" opacity=".53">
+<path d="M255 385 Q222 230 126 58" stroke-width="5"/><path d="M255 385 Q277 217 363 52" stroke-width="5"/>
+<path d="M242 321 Q176 286 102 269 M232 276 Q164 244 82 200 M214 225 Q164 185 88 140 M188 172 Q161 151 118 112" stroke-width="2.6"/>
+<path d="M269 326 Q339 287 418 254 M273 278 Q354 242 432 193 M287 224 Q355 182 412 126 M313 170 Q357 141 377 99" stroke-width="2.6"/>
+</g>
+<g fill="none" stroke="#284c2e" stroke-width="2" opacity=".34"><path d="M120 298 Q153 282 191 311 M86 224 Q127 210 168 239 M344 303 Q376 277 409 282 M332 221 Q371 208 414 214"/></g>
+</svg>
