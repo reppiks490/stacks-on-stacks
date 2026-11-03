@@ -45,15 +45,18 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             for idx in [a, b, a + 1, a + 1, b, b + 1]:
                 surface.set_uv(uvs[idx])
                 surface.add_vertex(verts[idx])
-    # Both faces are explicit geometry, rather than relying on a disabled cull mode.
-    # This gives a valid winding for backlighting and future per-side materials.
+    # Separate the underside by a small physical lamina thickness. Coincident
+    # front/back surfaces cause depth fighting and unstable shadow sampling.
+    # This remains a thin botanical sheet, not a solid collision mesh.
+    var underside_offset := min(0.0015, width * 0.012)
+    # Both faces use opposite winding for backface-culling and backlighting.
     for i in range(RINGS):
         for j in range(SIDES):
             var a := i * (SIDES + 1) + j
             var b := a + SIDES + 1
             for idx in [a + 1, b, a, b + 1, b, a + 1]:
                 surface.set_uv(uvs[idx])
-                surface.add_vertex(verts[idx])
+                surface.add_vertex(verts[idx] - Vector3(0.0, 0.0, underside_offset))
     surface.generate_normals()
     surface.generate_tangents()
     surface.commit(mesh)
