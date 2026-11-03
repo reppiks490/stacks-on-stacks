@@ -26,7 +26,20 @@ func _run() -> void:
         check(code.contains("MODEL_MATRIX * vec4(VERTEX, 1.0)"), "macro coordinates derive from world-space vertices")
         check(code.contains("NORMAL_MAP_DEPTH"), "normal intensity is configurable")
         check(code.contains("ROUGHNESS"), "authored roughness feeds PBR surface")
-        check(code.contains("fwidth(macro_phase)"), "macro pigment uses fragment footprint to avoid distant shimmer")
+        check(code.contains("fwidth(phase_a)") and code.contains("fwidth(phase_b)"), "both rotated harmonic phases are derivative-filtered")
+        check(code.contains("max_footprint"), "maximum rotated harmonic footprint drives attenuation")
+        check(not code.contains("fwidth(macro_phase)"), "unrotated footprint cannot silently replace harmonic filtering")
+        # A diagonal projected footprint can make a rotated harmonic vary faster
+        # than either unrotated axis; the old filter would under-attenuate it.
+        var pixel_dx := Vector2(0.7, -0.7)
+        var pixel_dy := Vector2.ZERO
+        var old_footprint: float = maxf(absf(pixel_dx.x) + absf(pixel_dy.x), absf(pixel_dx.y) + absf(pixel_dy.y))
+        var rotated_axis := Vector2(0.8660254, -0.5)
+        var rotated_footprint: float = absf(pixel_dx.dot(rotated_axis)) + absf(pixel_dy.dot(rotated_axis))
+        check(rotated_footprint > old_footprint + 0.2, "negative control: rotated harmonic can exceed unrotated footprint")
+        var old_fade := 1.0 - smoothstep(0.5, 1.5, old_footprint)
+        var corrected_fade := 1.0 - smoothstep(0.5, 1.5, rotated_footprint)
+        check(corrected_fade < old_fade, "rotated filtering suppresses the diagonal aliasing case")
         check(code.contains("smoothstep(0.5, 1.5"), "macro pigment fades under subpixel sampling")
         check(code.contains("vec2 phase_a") and code.contains("vec2 phase_b"), "rotated world-anchored pigment harmonics are present")
         for footprint in [0.0, 0.5, 1.0, 1.5, 2.0]:
