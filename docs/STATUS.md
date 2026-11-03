@@ -46,3 +46,10 @@ The isolated `game/everbloom-principal-live-save-job-20261102` candidate now acc
 - Implemented source now includes real soil moisture/fertility/compost/grazing logic, deterministic villager schedules, four recurring festivals, paid village work and year-monotonic farm/animal/social action caps, along with the earlier graybox valley.
 
 **Still open:** No power-failure atomic-save proof, actual Windows file-lock tests, cross-domain transaction journal, full migration/fuzz corpus, end-to-end manual controls, controller/touch/mobile measurements, full family/marriage/child arcs, finished visual/audio assets, interiors, or game release packaging. A successful native test does not establish these outcomes.
+
+
+## Isolated 4.8 km premium-world candidate — 2026-11-02
+
+Branch `feature/everbloom-continental-expansion-20261102` is an unmerged development candidate. It currently includes the 4,800 × 4,800 streamed continent, 28 destinations, sculpted terrain/trimesh collision, mounts/pets, frontier NPC/market systems, character atelier, persistent exploration journal, authored procedural scenery/material framework, expanded HUD controls, safe PowerShell launcher and an on-device F9 performance recorder. Exact-head native CI passed at `5835cb6f1683437baff813a2a929d1c47267fe20` before the subsequent day/sky polish commit; re-run exact-head CI after any new commit.
+
+The performance recorder is instrumentation only until run on the owner's Windows hardware. Headless CI does not prove desktop FPS, mobile FPS or premium visual quality. No proprietary Harvest Moon resources, paid assets, Codex processes or destructive save resets were introduced.
