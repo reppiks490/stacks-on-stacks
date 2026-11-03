@@ -64,6 +64,17 @@ class SolidWorldCharacterContracts(unittest.TestCase):
         self.assertIn("res://scripts/sculpted_architecture.gd",source("scripts/valley.gd"))
         self.assertIn("res://scripts/sculpted_architecture.gd",source("scripts/continental_world.gd"))
 
+    def test_original_sculpted_foliage_replaces_spheres(self):
+        foliage=source("scripts/sculpted_foliage.gd")
+        for feature in ("SurfaceTool.new()","static func make_canopy_mesh(", "static func make_trunk_mesh(", "static func make_rock_mesh("):
+            self.assertIn(feature,foliage)
+        for path in ("scripts/valley.gd","scripts/visual_environment.gd","scripts/continental_world.gd"):
+            self.assertIn("res://scripts/sculpted_foliage.gd",source(path))
+        valley=source("scripts/valley.gd")
+        a=valley.index("func _hills(")
+        b=valley.index("func _wayfinding(",a)
+        self.assertNotIn("sphere(",valley[a:b])
+
     def test_native_acceptance_is_routed_in_non_codex_workflow(self):
         s=source(".github/workflows/everbloom-solid-world-acceptance.yml")
         self.assertIn("native_solidity_acceptance.gd",s)
