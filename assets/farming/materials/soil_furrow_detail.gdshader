@@ -47,7 +47,11 @@ void vertex() {
 void fragment() {
     vec2 uv = bed_uv;
     float coarse = value_noise(uv * 18.0);
-    float fine = value_noise(uv * grain_scale);
+    // Filter high-frequency mineral grains to prevent subpixel sparkle as the camera recedes.
+    // fwidth is evaluated in fragment space; no extra texture or asset dependency.
+    float grain_footprint = max(fwidth(uv.x), fwidth(uv.y)) * grain_scale;
+    float grain_visibility = 1.0 - smoothstep(0.32, 1.2, grain_footprint);
+    float fine = mix(0.5, value_noise(uv * grain_scale), grain_visibility);
     float mineral = smoothstep(0.72, 0.94, fine);
     // Localized capillary dampness follows troughs and low-frequency soil pockets.
     // This is a visual approximation; authoritative soil water remains in farm.gd.
@@ -70,8 +74,10 @@ void fragment() {
     float eps = 0.002;
     float dh_du = (relief(uv + vec2(eps, 0.0)) - relief(uv - vec2(eps, 0.0))) / (2.0 * eps * max(bed_size.x, 0.01));
     float dh_dv = (relief(uv + vec2(0.0, eps)) - relief(uv - vec2(0.0, eps))) / (2.0 * eps * max(bed_size.y, 0.01));
-    float grain_du = value_noise((uv + vec2(eps, 0.0)) * grain_scale) - value_noise((uv - vec2(eps, 0.0)) * grain_scale);
-    float grain_dv = value_noise((uv + vec2(0.0, eps)) * grain_scale) - value_noise((uv - vec2(0.0, eps)) * grain_scale);
+    // Fade micro-normal detail at distance as well; unfiltered high-frequency normals
+    // shimmer even when the corresponding albedo grains have been filtered.
+    float grain_du = (value_noise((uv + vec2(eps, 0.0)) * grain_scale) - value_noise((uv - vec2(eps, 0.0)) * grain_scale)) * grain_visibility;
+    float grain_dv = (value_noise((uv + vec2(0.0, eps)) * grain_scale) - value_noise((uv - vec2(0.0, eps)) * grain_scale)) * grain_visibility;
     vec3 soil_normal = normalize(vec3(-dh_du - grain_du * 0.06, -dh_dv - grain_dv * 0.06, 1.0));
     NORMAL_MAP = soil_normal * 0.5 + 0.5;
     NORMAL_MAP_DEPTH = 1.0;
