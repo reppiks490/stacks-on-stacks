@@ -23,6 +23,7 @@ const LABELS := {
 var village
 var opener: Button
 var panel: PanelContainer
+var conversation_scroll: ScrollContainer
 var title_label: Label
 var hint_label: Label
 var progress_label: Label
@@ -113,6 +114,7 @@ func setup(owner) -> void:
     # Focusable buttons inside ScrollContainer remain keyboard/gamepad reachable.
     var scroll := ScrollContainer.new()
     scroll.name = "ConversationScroll"
+    conversation_scroll = scroll
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     panel.add_child(scroll)
@@ -299,6 +301,7 @@ func open_topics() -> void:
     opener.visible = false
     _refresh_locale()
     topic_buttons[0].grab_focus()
+    _reveal_focused_choice(topic_buttons[0])
 
 func close_topics() -> void:
     if panel == null or not panel.visible:
@@ -350,10 +353,19 @@ func _navigate(direction: int) -> void:
         current_index = clampi(current_index + direction, 0, controls.size() - 1)
     var target: Button = controls[current_index]
     target.grab_focus()
+    _reveal_focused_choice(target)
     for index in range(topic_ids.size()):
         if topic_buttons[index] == target:
             selected_index = index
             break
+
+## A focused action can be below the visible fold on a narrow phone screen.
+## Keep the actual action in view for D-pad/keyboard users without changing
+## selection, rewards or state. Defer until layout has computed control rects.
+func _reveal_focused_choice(control: Control) -> void:
+    if conversation_scroll == null or not is_instance_valid(control):
+        return
+    conversation_scroll.call_deferred("ensure_control_visible", control)
 
 ## V19: Tab, Shift-Tab and pointer focus can select a different control than
 ## the last D-pad index. Activate that real focused control, never silently
