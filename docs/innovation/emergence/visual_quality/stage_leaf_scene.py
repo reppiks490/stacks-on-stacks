@@ -57,19 +57,10 @@ shader_parameter/reduced_motion = false
     # The output is intended to be copied to res://everbloom_leaf_candidate.
     prefix = "everbloom_leaf_candidate"
     (destination / "leaf_material.tres").write_text(material % (prefix, prefix, prefix, prefix), encoding="utf-8")
+    # Godot imports OBJ as a Mesh resource; do not instantiate it as PackedScene.
     scene = '''[gd_scene load_steps=3 format=3]
 
-[ext_resource type="PackedScene" path="res://everbloom_leaf_candidate/original_curved_leaf_blade.obj" id="1"]
-[ext_resource type="Material" path="res://everbloom_leaf_candidate/leaf_material.tres" id="2"]
-
-[node name="LeafCandidate" type="Node3D"]
-[node name="Blade" parent="." instance=ExtResource("1")]
-material_override = ExtResource("2")
-'''
-    # OBJ imports as Mesh rather than PackedScene in Godot. Use MeshInstance3D.
-    scene = '''[gd_scene load_steps=3 format=3]
-
-[ext_resource type="ArrayMesh" path="res://everbloom_leaf_candidate/original_curved_leaf_blade.obj" id="1"]
+[ext_resource type="Mesh" path="res://everbloom_leaf_candidate/original_curved_leaf_blade.obj" id="1"]
 [ext_resource type="Material" path="res://everbloom_leaf_candidate/leaf_material.tres" id="2"]
 
 [node name="LeafCandidate" type="Node3D"]
