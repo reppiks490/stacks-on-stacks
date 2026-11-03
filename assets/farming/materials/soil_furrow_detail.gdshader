@@ -13,6 +13,9 @@ uniform float tilled : hint_range(0.0, 1.0) = 1.0;
 uniform float furrow_count : hint_range(2.0, 24.0) = 9.0;
 uniform float furrow_height : hint_range(0.0, 0.075) = 0.028;
 uniform float grain_scale : hint_range(8.0, 180.0) = 75.0;
+// Bed margins taper naturally into the unchanged gameplay/collision footprint.
+uniform float edge_fade : hint_range(0.01, 0.25) = 0.095;
+uniform float micro_relief : hint_range(0.0, 0.012) = 0.004;
 
 varying vec2 bed_uv;
 
@@ -31,7 +34,9 @@ float value_noise(vec2 p) {
 float relief(vec2 uv) {
     float irregularity = (value_noise(uv * 13.0) - 0.5) * 0.21;
     float ridge = pow(0.5 + 0.5 * cos((uv.x + irregularity) * furrow_count * 6.2831853), 2.0);
-    return ridge * furrow_height * tilled;
+    float edge = smoothstep(0.0, edge_fade, min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y)));
+    float clods = (value_noise(uv * 43.0) - 0.5) * micro_relief;
+    return (ridge * furrow_height + clods) * tilled * edge;
 }
 void vertex() {
     bed_uv = UV;
@@ -42,7 +47,11 @@ void fragment() {
     float coarse = value_noise(uv * 18.0);
     float fine = value_noise(uv * grain_scale);
     float mineral = smoothstep(0.72, 0.94, fine);
-    float damp = clamp(moisture, 0.0, 1.0);
+    // Localized capillary dampness follows troughs and low-frequency soil pockets.
+    // This is a visual approximation; authoritative soil water remains in farm.gd.
+    float trough = 1.0 - clamp(relief(uv) / max(furrow_height, 0.0001), 0.0, 1.0);
+    float pockets = value_noise(uv * 7.0 + vec2(13.0, 5.0));
+    float damp = clamp(moisture + (trough * 0.10 + (pockets - 0.5) * 0.16) * moisture, 0.0, 1.0);
     vec3 base = mix(dry_loam.rgb, wet_loam.rgb, damp * 0.83);
     base *= mix(0.87, 1.12, coarse);
     base = mix(base, mineral_tint.rgb, mineral * (0.09 + 0.13 * (1.0 - damp)));
@@ -50,7 +59,7 @@ void fragment() {
     float ridge = relief(uv) / max(furrow_height, 0.0001);
     base *= 0.91 + 0.13 * ridge;
     ALBEDO = base;
-    ROUGHNESS = mix(0.96, 0.54, damp) + (fine - 0.5) * 0.11;
+    ROUGHNESS = clamp(mix(0.96, 0.54, damp) + (fine - 0.5) * 0.11, 0.45, 1.0);
     SPECULAR = mix(0.19, 0.37, damp);
     // Fragment normal perturbation complements geometry; it does not alter collision.
     float nx = value_noise((uv + vec2(0.003, 0.0)) * grain_scale) - fine;
