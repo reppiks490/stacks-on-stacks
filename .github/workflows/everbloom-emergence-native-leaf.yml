@@ -1,0 +1,67 @@
+name: Everbloom Emergence E19 native leaf import and 120-frame acceptance
+
+on:
+  push:
+    branches:
+      - game/everbloom-emergence-leaf-pbr-binding-20261103
+    paths:
+      - 'docs/innovation/emergence/visual_quality/**'
+      - '.github/workflows/everbloom-emergence-native-leaf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-leaf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact triggering revision
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert exact source revision
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Stage original candidate and validate hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 docs/innovation/emergence/visual_quality/verify_leaf_staging.py
+          python3 docs/innovation/emergence/visual_quality/stage_leaf_scene.py everbloom_leaf_candidate
+          (cd everbloom_leaf_candidate && sha256sum -c SHA256SUMS.txt)
+      - name: Download checksum-verified official Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Native project import and shader resource parse
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee leaf_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' leaf_import.log; then exit 1; fi
+      - name: Native leaf 120-frame and PBR binding acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://docs/innovation/emergence/visual_quality/native_leaf_smoke.gd 2>&1 | tee leaf_native.log
+          grep -q 'PASS E19 native import' leaf_native.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|FAIL E19' leaf_native.log; then exit 1; fi
+      - name: Record scope limits
+        run: echo "Native import and 120-frame checks do not establish desktop screenshots, GPU appearance, collision, save integration or FPS."
+      - name: Preserve native logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-e19-native-leaf-${{ github.sha }}
+          path: |
+            leaf_import.log
+            leaf_native.log
+          if-no-files-found: ignore
+          retention-days: 14
