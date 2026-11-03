@@ -25,6 +25,8 @@ func _initialize() -> void:
         var back_idx := tri + int(vertices.size() / 2)
         var back: Vector3 = (vertices[back_idx + 1] - vertices[back_idx]).cross(vertices[back_idx + 2] - vertices[back_idx])
         assert(front.dot(back) < 0.0, "Backface winding must oppose frontface")
+        assert(front.z > 0.0, "Upper lamina must face +Z for backface-culling and daylight")
+        assert(back.z < 0.0, "Underside must face -Z")
         assert(vertices[back_idx].z < vertices[tri + 2].z + 0.01, "Underside must stay near upper lamina")
 
     assert(uvs.size() == vertices.size(), "UVs required per vertex")
@@ -53,8 +55,8 @@ func _initialize() -> void:
     assert(Leaf.make_leaf(0.65, INF, 0.08).get_surface_count() == 0, "Nonfinite dimensions must fail closed")
     assert(Leaf.make_leaf(0.65, 0.12, 1.0).get_surface_count() == 0, "Excessive curl must fail closed")
     # Compare the same authored vertex on each face, rather than unrelated
-    # triangle corners. Front triangles emit [a,b,a+1] and underside emits
-    # [a+1,b,a], so front slot 0 corresponds to underside slot 2.
+    # triangle corners. Front triangles emit [a,a+1,b] and underside emits
+    # [b,a+1,a], so front slot 0 corresponds to underside slot 2.
     # Choose a ring with nonzero width and a central vs marginal blade point.
     var center_ring := 6
     var center_column := 4
