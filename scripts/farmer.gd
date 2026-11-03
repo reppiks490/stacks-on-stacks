@@ -22,6 +22,7 @@ var right_arm: Node3D
 var left_leg: Node3D
 var right_leg: Node3D
 var anim_clock: float = 0.0
+var preview_yaw: float = 0.0
 var profile: Dictionary = {
     "skin": 3, "face": 1, "hair": 2, "hair_color": 2, "eyes": 1,
     "outfit": 0, "pants": 0, "build": 1, "headwear": 0, "accessory": 0
@@ -278,7 +279,7 @@ func _create_studio() -> void:
     atelier_swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
     column.add_child(atelier_swatch)
     atelier_hint = Label.new()
-    atelier_hint.text = "TAB: next category     LEFT / RIGHT: change\nC or ESC: return to the valley"
+    atelier_hint.text = "TAB: category    LEFT / RIGHT: change\nA / D: rotate preview    C or ESC: close"
     atelier_hint.add_theme_font_size_override("font_size",13)
     atelier_hint.add_theme_color_override("font_color",Color("#c9d5c3"))
     column.add_child(atelier_hint)
@@ -323,6 +324,9 @@ func _unhandled_input(event: InputEvent) -> void:
     elif event.keycode == KEY_TAB:
         selected_category = (selected_category+1) % CATEGORIES.size()
         _refresh_studio()
+    elif event.keycode == KEY_A or event.keycode == KEY_D:
+        preview_yaw += 0.25 if event.keycode == KEY_D else -0.25
+        visual_root.rotation.y = preview_yaw
     elif event.keycode == KEY_LEFT or event.keycode == KEY_RIGHT:
         var key: String = CATEGORIES[selected_category]
         var step: int = 1 if event.keycode == KEY_RIGHT else -1
@@ -333,6 +337,19 @@ func _unhandled_input(event: InputEvent) -> void:
     else:
         return
     get_viewport().set_input_as_handled()
+
+func _process(delta: float) -> void:
+    if game == null or game.camera == null:
+        return
+    if studio_open:
+        var focus := global_position + Vector3(2.6,2.8,4.2)
+        game.camera.global_position = game.camera.global_position.lerp(focus,minf(1.0,delta*4.0))
+        game.camera.look_at(global_position+Vector3(0,1.35,0),Vector3.UP)
+        game.camera.fov = lerpf(game.camera.fov,43.0,minf(1.0,delta*4.0))
+    else:
+        game.camera.fov = lerpf(game.camera.fov,56.0,minf(1.0,delta*3.0))
+        if visual_root != null:
+            visual_root.rotation.y = lerp_angle(visual_root.rotation.y,0.0,minf(1.0,delta*5.0))
 
 func _physics_process(delta: float) -> void:
     var axis := Vector2.ZERO
