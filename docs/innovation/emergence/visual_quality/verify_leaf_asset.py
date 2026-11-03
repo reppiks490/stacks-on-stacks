@@ -99,6 +99,24 @@ def verify():
             y = min(size-1, max(0, int((1-v)*size)))
             covered += albedo[(y*size+x)*4+3] > 0
     require(covered >= len(faces), "mesh UVs do not cover enough painted leaf")
+    # Dense barycentric sampling prevents large transparent UV wedges from
+    # passing the sparse four-point test. Measure actual generated alpha.
+    dense_hits = 0
+    dense_samples = 0
+    for face in faces:
+        points = [uvs[ti] for _, ti in face]
+        for i in range(13):
+            for j in range(13 - i):
+                weights = (i / 12.0, j / 12.0, 1.0 - (i + j) / 12.0)
+                u = sum(p[0] * w for p, w in zip(points, weights))
+                v = sum(p[1] * w for p, w in zip(points, weights))
+                x = min(size - 1, max(0, int(u * size)))
+                y = min(size - 1, max(0, int((1.0 - v) * size)))
+                dense_hits += int(albedo[(y * size + x) * 4 + 3] > 0)
+                dense_samples += 1
+    require(dense_hits / dense_samples >= 0.75,
+            f"leaf mesh/painted silhouette mismatch: {dense_hits}/{dense_samples}")
+    print(f"Leaf UV alpha overlap: {dense_hits}/{dense_samples} = {dense_hits / dense_samples:.1%}")
     for i in range(0, len(normal), 3):
         x, y, z = ((normal[i+j]/255.0)*2-1 for j in range(3))
         require(z > 0.35, "normal map points away from leaf surface")
