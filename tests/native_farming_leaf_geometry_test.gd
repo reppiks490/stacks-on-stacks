@@ -12,6 +12,18 @@ func _initialize() -> void:
     var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
     assert(vertices.size() == 13 * 8 * 12, "Front and back triangles must be explicit")
     assert(normals.size() == vertices.size(), "Normals required per vertex")
+    # Triangles at the petiole and distal tip must not collapse into zero-area geometry.
+    # Explicit backfaces should have opposite winding and nonzero surface normals.
+    for tri in range(0, vertices.size(), 3):
+        var edge_a: Vector3 = vertices[tri + 1] - vertices[tri]
+        var edge_b: Vector3 = vertices[tri + 2] - vertices[tri]
+        assert(edge_a.cross(edge_b).length_squared() > 0.000000000001, "Degenerate leaf triangle")
+    for tri in range(0, vertices.size() / 2, 3):
+        var front: Vector3 = (vertices[tri + 1] - vertices[tri]).cross(vertices[tri + 2] - vertices[tri])
+        var back_idx := tri + vertices.size() / 2
+        var back: Vector3 = (vertices[back_idx + 1] - vertices[back_idx]).cross(vertices[back_idx + 2] - vertices[back_idx])
+        assert(front.dot(back) < 0.0, "Backface winding must oppose frontface")
+
     assert(uvs.size() == vertices.size(), "UVs required per vertex")
     var low := Vector3(INF, INF, INF)
     var high := Vector3(-INF, -INF, -INF)
