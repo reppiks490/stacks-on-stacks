@@ -66,7 +66,7 @@ func setup(host) -> void:
     help_title.text = "VALLEY FIELD GUIDE"
     guide.add_child(help_title)
     controls = _label(14,Color("#f1eedd"))
-    controls.text = "WASD  Walk     E  Interact     1–7  Tools     Q  Seeds\nG  Gift     K  Job     H  Ship     J  Fish     T  Festival\nR  Craft     F  Rest     P / O  Save / Load\nC  Character Atelier     Y  Save Health     F1  Help"
+    controls.text = "WASD  Walk     E  Interact     1–7  Tools     Q  Seeds\nG  Gift     K Job     H  Ship     J  Fish     T  Festival\nR  Craft     F  Rest     P / O  Save / Load\nC  Character Atelier     Y  Save Health     F1  Help"
     guide.add_child(controls)
     help_panel.hide()
     set_process(true)
