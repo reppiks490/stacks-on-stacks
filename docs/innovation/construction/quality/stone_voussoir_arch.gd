@@ -39,17 +39,33 @@ static func _wedge(ri: float, ro: float, a0: float, a1: float, depth: float) -> 
                 p.append(Vector3(cos(a) * r, sin(a) * r, z))
     var surface := SurfaceTool.new()
     surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-    # Six outward-oriented quadrilateral faces; winding is corrected per centroid.
-    for q in [[0, 1, 3, 2], [4, 6, 7, 5], [0, 4, 5, 1], [2, 3, 7, 6], [0, 2, 6, 4], [1, 5, 7, 3]]:
-        _face(surface, p, q)
+    # Face normals must point away from the stone volume. The previous implementation
+    # never corrected winding despite its comment, leaving faces potentially inverted.
+    var mid := (a0 + a1) * 0.5
+    var radial := Vector3(cos(mid), sin(mid), 0.0)
+    var tangent := Vector3(-sin(mid), cos(mid), 0.0)
+    var quads := [[0, 1, 3, 2], [4, 6, 7, 5], [0, 4, 5, 1], [2, 3, 7, 6], [0, 2, 6, 4], [1, 5, 7, 3]]
+    var outward := [Vector3.FORWARD, Vector3.BACK, -radial, radial, tangent, -tangent]
+    for i in range(quads.size()):
+        _face(surface, p, quads[i], outward[i])
     surface.generate_normals()
     surface.generate_tangents()
     return surface.commit()
 
-static func _face(surface: SurfaceTool, p: PackedVector3Array, q: Array) -> void:
-    for tri in [[0, 1, 2], [0, 2, 3]]:
+static func _face(surface: SurfaceTool, p: PackedVector3Array, q: Array, expected: Vector3) -> void:
+    var a: Vector3 = p[q[0]]
+    var b: Vector3 = p[q[1]]
+    var c: Vector3 = p[q[2]]
+    var flip := (b - a).cross(c - a).dot(expected) < 0.0
+    # Planar local UVs avoid zero-area UV triangles on radial end caps.
+    var u_axis := (b - a).normalized()
+    var v_axis := expected.cross(u_axis).normalized()
+    var order := [[0, 1, 2], [0, 2, 3]]
+    if flip:
+        order = [[0, 2, 1], [0, 3, 2]]
+    for tri in order:
         for index in tri:
-            var corner: int = q[index]
-            var v: Vector3 = p[corner]
-            surface.set_uv(Vector2(v.x * 0.45 + v.z * 0.1, v.y * 0.45 + v.z * 0.1))
+            var v: Vector3 = p[q[index]]
+            var delta := v - a
+            surface.set_uv(Vector2(delta.dot(u_axis), delta.dot(v_axis)))
             surface.add_vertex(v)
