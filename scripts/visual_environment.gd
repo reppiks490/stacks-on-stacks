@@ -1,4 +1,5 @@
 extends Node3D
+const WorldCollision = preload("res://scripts/world_collision.gd")
 ## EVERBLOOM original procedural scenic art pass.
 ## No imported or extracted game assets. Deterministic placements; no gameplay state changes.
 const SIZE: float = 145.0
@@ -51,6 +52,8 @@ func _box(at: Vector3, size: Vector3, color: Color, parent: Node3D = self) -> Me
     instance.position = at
     instance.material_override = _material(color)
     parent.add_child(instance)
+    if size.y>=0.65 and size.x>=0.13 and size.z>=0.13:
+        WorldCollision.solid_box(instance,size)
     return instance
 
 func _ellipsoid(at: Vector3, scale: Vector3, color: Color, parent: Node3D = self) -> MeshInstance3D:
@@ -78,6 +81,8 @@ func _pole(at: Vector3, height: float, radius: float, color: Color) -> MeshInsta
     instance.position = at + Vector3(0, height * 0.5, 0)
     instance.material_override = _material(color)
     add_child(instance)
+    if height>=1.0 and radius>=0.15:
+        WorldCollision.solid_box(instance,Vector3(radius*1.5,height,radius*1.5),"tree_or_post")
     return instance
 
 func _meadow() -> void:
