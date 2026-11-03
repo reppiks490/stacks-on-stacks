@@ -1,0 +1,55 @@
+name: EVERBLOOM Solid World and Character Native Acceptance
+on:
+  push:
+    branches:
+      - fix/everbloom-solid-world-character-rebuild-20261102
+permissions:
+  contents: read
+jobs:
+  physical-world:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check source and cross-domain contracts
+        run: |
+          python -m unittest discover -s tests -v
+          python tools/validate_project.py
+      - name: Download official pinned Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+      - name: Native Godot import and parse
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee solid_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load' solid_import.log; then exit 1; fi
+      - name: Native physical collision and terrain acceptance
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://tests/native_solidity_acceptance.gd 2>&1 | tee solidity.log
+          grep -q 'NATIVE SOLIDITY PASS' solidity.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|NATIVE SOLIDITY FAIL' solidity.log; then exit 1; fi
+      - name: Native character mesh and customization acceptance
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://tests/native_avatar_acceptance.gd 2>&1 | tee avatar.log
+          grep -q 'NATIVE AVATAR PASS' avatar.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|NATIVE AVATAR FAIL' avatar.log; then exit 1; fi
+      - name: Preserve output diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-solid-world-${{ github.sha }}
+          path: |
+            solid_import.log
+            solidity.log
+            avatar.log
+          if-no-files-found: ignore
+          retention-days: 14
