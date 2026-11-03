@@ -552,28 +552,15 @@ func _make_settlement(chunk: Node3D,hub: Dictionary,rng: RandomNumberGenerator) 
     district.add_child(scenic_dressing)
     scenic_dressing.dress_settlement(hub)
 
-func _settlement_house(root: Node3D,at: Vector3,width: float,height: float,walls: Color,roof_color: Color) -> void:
-    _box(root,at+Vector3(0,height*0.5,0),Vector3(width,height,width*0.74),walls)
-    var roof:=CylinderMesh.new()
-    roof.top_radius=0.0
-    roof.bottom_radius=width*0.72
-    roof.height=2.5
-    roof.radial_segments=4
-    var r:=MeshInstance3D.new()
-    r.mesh=roof
-    r.position=at+Vector3(0,height+0.78,0)
-    r.rotation.y=PI*0.25
-    r.material_override=_mat(roof_color)
-    root.add_child(r)
-    for dx in [-1,1]:
-        var x:=float(dx)*width*0.27
-        _box(root,at+Vector3(x,height*0.65,width*0.39),Vector3(1.0,1.1,0.13),Color("#a6d0d5"))
-        _box(root,at+Vector3(x,height*0.65,width*0.47),Vector3(0.07,1.1,0.05),Color("#f8e6cb"))
-        _box(root,at+Vector3(x,height*0.65,width*0.47),Vector3(1.0,0.07,0.05),Color("#f8e6cb"))
-        _box(root,at+Vector3(x,height*0.35,width*0.39),Vector3(1.4,0.25,0.5),Color("#96775c"))
-        _ball(root,at+Vector3(x,height*0.40,width*0.53),Vector3(1.0,0.35,0.4),Color("#dcb4bf"))
-    _box(root,at+Vector3(0,1.18,width*0.4),Vector3(1.3,2.3,0.16),Color("#a2785f"))
-    _box(root,at+Vector3(0,0.12,width*0.70),Vector3(1.9,0.20,1.8),Color("#cbb69c"))
+func _settlement_house(root: Node3D,at: Vector3,width: float,height: float,
+        walls: Color,roof_color: Color) -> void:
+    var cottage:=Node3D.new()
+    cottage.name="AuthoredRegionalBuilding"
+    cottage.position=at
+    cottage.set_script(load("res://scripts/sculpted_architecture.gd"))
+    root.add_child(cottage)
+    var variant: int=posmod(int(round(at.x*2.0+at.z*5.0)),5)
+    cottage.build_house(width,height,walls,roof_color,variant)
 
 func _market_stalls(root: Node3D,theme: Color) -> void:
     for side in [-1,1]:
