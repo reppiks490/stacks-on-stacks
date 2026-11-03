@@ -195,7 +195,7 @@ func _quest() -> void:
     if person.is_empty():
         return
     var entry:=_record(selected_id)
-    var epoch:=game.day_epoch()
+    var epoch: int=game.day_epoch()
     if int(entry.get("last_help",-1))==epoch:
         body.text="You already helped %s today. Visit again tomorrow!" % str(person["name"])
         return
@@ -219,7 +219,7 @@ func _gift() -> void:
     if person.is_empty():
         return
     var entry:=_record(selected_id)
-    var epoch:=game.day_epoch()
+    var epoch: int=game.day_epoch()
     if int(entry.get("last_gift",-1))==epoch:
         body.text="You already shared a gift with %s today." % str(person["name"])
         return
