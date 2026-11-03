@@ -94,7 +94,7 @@ def validate(glb_path, manifest_path):
             errors.append("invalid or truncated GLB BIN chunk")
             binary_length = 0
     buffers = doc.get("buffers", [])
-    if len(buffers) != 1 or not isinstance(buffers[0].get("byteLength"), int) or buffers[0]["byteLength"] > binary_length or buffers[0]["byteLength"] < 1 or "uri" in buffers[0]:
+    if len(buffers) != 1 or not isinstance(buffers[0], dict) or type(buffers[0].get("byteLength")) is not int or buffers[0]["byteLength"] > binary_length or buffers[0]["byteLength"] < 1 or "uri" in buffers[0]:
         errors.append("invalid embedded buffer declaration")
     views = doc.get("bufferViews", [])
     for view in views:
