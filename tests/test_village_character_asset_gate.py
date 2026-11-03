@@ -11,13 +11,13 @@ from tools.validate_village_character import validate
 def glb(doc):
     payload = json.dumps(doc).encode()
     payload += b" " * ((-len(payload)) % 4)
-    return struct.pack("<4sII", b"glTF", 2, 20 + len(payload)) + struct.pack("<I4s", len(payload), b"JSON") + payload
+    binary = bytes(16384)\n    return struct.pack("<4sII", b"glTF", 2, 28 + len(payload) + len(binary)) + struct.pack("<I4s", len(payload), b"JSON") + payload + struct.pack("<I4s", len(binary), b"BIN\\x00") + binary
 
 
 def valid_doc():
     return {
         "asset": {"version": "2.0"},
-        "accessors": [{"count": 1200}],
+        "buffers": [{"byteLength": 16384}],\n        "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": 16384}],\n        "accessors": [{"count": 1200, "bufferView": 0}],
         "meshes": [{"primitives": [{"attributes": {"POSITION": 0, "NORMAL": 0, "JOINTS_0": 0, "WEIGHTS_0": 0}, "material": 0}]}],
         "nodes": [{"mesh": 0, "skin": 0}, {}],
         "skins": [{"joints": [1]}],
@@ -44,6 +44,21 @@ class VillageAssetGateTests(unittest.TestCase):
 
     def test_valid_structural_fixture(self):
         self.assertEqual(self.check(valid_doc()), [])
+
+    def test_reject_missing_binary_backing(self):
+        doc = valid_doc()
+        doc["buffers"] = []
+        self.assertIn("invalid embedded buffer declaration", self.check(doc))
+
+    def test_reject_out_of_range_buffer_view(self):
+        doc = valid_doc()
+        doc["bufferViews"][0]["byteLength"] = 999999
+        self.assertIn("buffer view exceeds embedded binary data", self.check(doc))
+
+    def test_reject_dangling_accessor_view(self):
+        doc = valid_doc()
+        doc["accessors"][0]["bufferView"] = 9
+        self.assertIn("invalid accessor backing view", self.check(doc))
 
     def test_reject_unlicensed(self):
         self.assertIn("unapproved license", self.check(valid_doc(), {"license": "unknown"}))
