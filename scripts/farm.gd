@@ -27,6 +27,21 @@ func setup(host) -> void:
             bed.mesh = bed_mesh
             bed.position.y = 0.1
             holder.add_child(bed)
+            # Separate subdivided topsoil from the legacy bed body. The underlying
+            # geometry and gameplay coordinates remain unchanged for old saves.
+            var topsoil := MeshInstance3D.new()
+            topsoil.name = "MoistureReactiveTopsoil"
+            var surface := PlaneMesh.new()
+            surface.size = Vector2(1.48, 1.48)
+            surface.subdivide_width = 32
+            surface.subdivide_depth = 32
+            topsoil.mesh = surface
+            topsoil.position.y = 0.195
+            var soil_shader := load("res://assets/farming/materials/soil_furrow_detail.gdshader") as Shader
+            var soil_material := ShaderMaterial.new()
+            soil_material.shader = soil_shader
+            topsoil.material_override = soil_material
+            holder.add_child(topsoil)
             var growth := Node3D.new()
             growth.position.y = 0.21
             holder.add_child(growth)
@@ -55,7 +70,7 @@ func setup(host) -> void:
             weed.material_override = _mat(Color("#47673b"))
             growth.add_child(weed)
             var plot := {
-                "holder":holder, "bed":bed, "growth":growth, "stem":stem,
+                "holder":holder, "bed":bed, "topsoil":topsoil, "growth":growth, "stem":stem,
                 "fruit":fruit, "weed":weed, "tilled":false, "crop":"",
                 "age":0, "watered":false, "watered_days":0,
                 "moisture":35, "fertility":80, "weeds":0, "stress":0,
@@ -247,6 +262,12 @@ func _paint(plot: Dictionary) -> void:
     if int(plot["fertility"]) < 25:
         soil = soil.lerp(Color("#aa9a80"), 0.36)
     plot["bed"].material_override = _mat(soil)
+    var topsoil: MeshInstance3D = plot["topsoil"]
+    var soil_material: ShaderMaterial = topsoil.material_override as ShaderMaterial
+    soil_material.set_shader_parameter("moisture", float(plot["moisture"]) / 100.0)
+    soil_material.set_shader_parameter("fertility", float(plot["fertility"]) / 100.0)
+    soil_material.set_shader_parameter("tilled", 1.0 if bool(plot["tilled"]) else 0.0)
+    topsoil.visible = bool(plot["tilled"])
     var weed: MeshInstance3D = plot["weed"]
     weed.visible = int(plot["weeds"]) > 0
     weed.scale = Vector3.ONE * (0.6 + float(plot["weeds"]) * 0.18)
