@@ -16,6 +16,7 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
     surface.begin(Mesh.PRIMITIVE_TRIANGLES)
     var verts: Array[Vector3] = []
     var uvs: Array[Vector2] = []
+    var pigments: Array[Color] = []
     var phase := float(posmod(seed, 97)) * 0.061
     var lateral_bend := sin(phase * 1.7) * 0.085 * width
     for i in range(RINGS + 1):
@@ -38,12 +39,23 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             z += sin(t * PI) * 0.025 * length * s
             verts.append(Vector3(x, y, z))
             uvs.append(Vector2((s + 1.0) * 0.5, t))
+            # Authored vertex pigments follow vein anatomy and leaf exposure,
+            # rather than uncorrelated random per-triangle colors.
+            var vein := pow(max(0.0, 1.0 - abs(s) * 7.0), 2.0)
+            var edge_fade := smoothstep(0.65, 1.0, abs(s))
+            var longitudinal := sin(PI * t)
+            var exposure := 0.96 + 0.04 * sin(phase + t * 8.0 + s * 2.0)
+            var tint := Color(0.78, 0.92, 0.70).lerp(Color(1.02, 1.05, 0.83), vein * 0.55)
+            tint = tint.lerp(Color(0.82, 0.84, 0.64), edge_fade * 0.18)
+            tint *= exposure * (0.96 + 0.04 * longitudinal)
+            pigments.append(tint)
     for i in range(RINGS):
         for j in range(SIDES):
             var a := i * (SIDES + 1) + j
             var b := a + SIDES + 1
             for idx in [a, b, a + 1, a + 1, b, b + 1]:
                 surface.set_uv(uvs[idx])
+                surface.set_color(pigments[idx])
                 surface.add_vertex(verts[idx])
     # Separate the underside by a small physical lamina thickness. Coincident
     # front/back surfaces cause depth fighting and unstable shadow sampling.
@@ -56,6 +68,7 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             var b := a + SIDES + 1
             for idx in [a + 1, b, a, b + 1, b, a + 1]:
                 surface.set_uv(uvs[idx])
+                surface.set_color(pigments[idx] * Color(0.83, 0.91, 0.77))
                 surface.add_vertex(verts[idx] - Vector3(0.0, 0.0, underside_offset))
     surface.generate_normals()
     surface.generate_tangents()
@@ -67,6 +80,7 @@ static func leaf_material() -> StandardMaterial3D:
     mat.albedo_color = Color(0.24, 0.42, 0.19)
     mat.roughness = 0.82
     mat.metallic = 0.0
+    mat.vertex_color_use_as_albedo = true
     mat.cull_mode = BaseMaterial3D.CULL_BACK
     mat.subsurf_scatter_enabled = true
     mat.subsurf_scatter_strength = 0.16
