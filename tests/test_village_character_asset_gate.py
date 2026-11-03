@@ -63,6 +63,21 @@ class VillageAssetGateTests(unittest.TestCase):
         doc["accessors"][0]["bufferView"] = 9
         self.assertIn("invalid accessor backing view", self.check(doc))
 
+    def test_reject_dangling_mesh_binding(self):
+        doc = valid_doc()
+        doc["nodes"][0]["mesh"] = 999
+        self.assertIn("no node binds a mesh to a skeleton", self.check(doc))
+
+    def test_reject_dangling_skin_binding(self):
+        doc = valid_doc()
+        doc["nodes"][0]["skin"] = 999
+        self.assertIn("no node binds a mesh to a skeleton", self.check(doc))
+
+    def test_reject_boolean_mesh_binding(self):
+        doc = valid_doc()
+        doc["nodes"][0]["mesh"] = True
+        self.assertIn("no node binds a mesh to a skeleton", self.check(doc))
+
     def test_reject_unlicensed(self):
         self.assertIn("unapproved license", self.check(valid_doc(), {"license": "unknown"}))
 
