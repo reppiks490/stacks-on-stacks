@@ -1,0 +1,29 @@
+name: EVERBLOOM construction stone PBR acceptance
+on:
+  push:
+    branches:
+      - game/everbloom-construction-arched-stone-detail-20261102
+    paths:
+      - 'docs/innovation/construction/quality/**'
+      - '.github/workflows/everbloom-construction-stone-pbr.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stone-material-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact workflow commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record source identity
+        run: |
+          echo "Exact tested SHA: $GITHUB_SHA"
+          git rev-parse HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Run original stone texture regression
+        run: python3 docs/innovation/construction/quality/verify_stone_maps.py
+      - name: Run multiresolution stone texture regression
+        run: python3 docs/innovation/construction/quality/verify_stone_multires.py
