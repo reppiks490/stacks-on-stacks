@@ -14,6 +14,29 @@ func _check(condition: bool, label: String) -> void:
         failures += 1
         push_error("PRINCIPAL GOLDEN ROUTE FAIL: " + label)
 
+## Godot JSON decoding can change numeric Variant types; compare saved domain
+## structures by keys and scalar values, not by nested container identity/type.
+func _json_equivalent(left: Variant, right: Variant) -> bool:
+    if left is Dictionary and right is Dictionary:
+        if left.size() != right.size():
+            return false
+        for key in left:
+            if not right.has(key) or not _json_equivalent(left[key], right[key]):
+                return false
+        return true
+    if left is Array and right is Array:
+        if left.size() != right.size():
+            return false
+        for index in range(left.size()):
+            if not _json_equivalent(left[index], right[index]):
+                return false
+        return true
+    var left_type: int = typeof(left)
+    var right_type: int = typeof(right)
+    if left_type in [TYPE_INT, TYPE_FLOAT] and right_type in [TYPE_INT, TYPE_FLOAT]:
+        return float(left) == float(right)
+    return left == right
+
 func _run() -> void:
     # Never destroy existing player saves or assume a stranded lock is stale.
     var protected_paths: Array[String] = [
@@ -187,15 +210,15 @@ func _run() -> void:
            and int(checkpoint.get("day", 0)) == 4, "checkpoint calendar exact")
     _check(int(checkpoint.get("gold", -1)) == paid_gold,
            "checkpoint money exact")
-    _check(checkpoint.get("inventory", {}) == game.inventory,
+    _check(_json_equivalent(checkpoint.get("inventory", {}), game.inventory),
            "checkpoint inventory exact")
-    _check(checkpoint.get("farm", []) == game.farm.save_state(),
+    _check(_json_equivalent(checkpoint.get("farm", []), game.farm.save_state()),
            "checkpoint all 30 beds exact")
-    _check(checkpoint.get("animals", {}) == game.animals.save_state(),
+    _check(_json_equivalent(checkpoint.get("animals", {}), game.animals.save_state()),
            "checkpoint animal and paddock fields exact")
-    _check(checkpoint.get("village", {}) == game.village.save_state(),
+    _check(_json_equivalent(checkpoint.get("village", {}), game.village.save_state()),
            "checkpoint social and paid-work memory exact")
-    _check(checkpoint.get("festivals", {}) == game.festivals.save_state(),
+    _check(_json_equivalent(checkpoint.get("festivals", {}), game.festivals.save_state()),
            "checkpoint festival receipts exact")
     game.queue_free()
     await process_frame
@@ -204,15 +227,15 @@ func _run() -> void:
     resumed.load_game()
     _check(resumed.day_epoch() == 4 and resumed.gold == paid_gold,
            "fresh scene restores calendar and money")
-    _check(resumed.inventory == checkpoint["inventory"],
+    _check(_json_equivalent(resumed.inventory, checkpoint["inventory"]),
            "fresh scene restores inventory without duplication")
-    _check(resumed.farm.save_state() == checkpoint["farm"],
+    _check(_json_equivalent(resumed.farm.save_state(), checkpoint["farm"]),
            "fresh scene restores all nested crop fields")
-    _check(resumed.animals.save_state() == checkpoint["animals"],
+    _check(_json_equivalent(resumed.animals.save_state(), checkpoint["animals"]),
            "fresh scene restores livestock and pasture")
-    _check(resumed.village.save_state() == checkpoint["village"],
+    _check(_json_equivalent(resumed.village.save_state(), checkpoint["village"]),
            "fresh scene restores relationship, dialogue and shift receipts")
-    _check(resumed.festivals.save_state() == checkpoint["festivals"],
+    _check(_json_equivalent(resumed.festivals.save_state(), checkpoint["festivals"]),
            "fresh scene restores festival award ledger")
     _check(is_equal_approx(resumed.energy, float(checkpoint["energy"])),
            "fresh scene restores exact energy")
@@ -222,16 +245,16 @@ func _run() -> void:
     var restored_mira_pos: Vector3 = resumed.village.residents[0]["node"].global_position
     _check("already helped here today" in resumed.village.act("job", restored_mira_pos),
            "restarted game cannot pay same shift twice")
-    _check(resumed.gold == paid_gold and resumed.inventory == checkpoint["inventory"],
+    _check(resumed.gold == paid_gold and _json_equivalent(resumed.inventory, checkpoint["inventory"]),
            "restarted duplicate denial conserves money and items")
     resumed.save_game(false)
     var resaved: Dictionary = SaveService.read_payload()
-    _check(resaved.get("farm", []) == checkpoint["farm"]
-           and resaved.get("animals", {}) == checkpoint["animals"]
-           and resaved.get("village", {}) == checkpoint["village"]
-           and resaved.get("festivals", {}) == checkpoint["festivals"],
+    _check(_json_equivalent(resaved.get("farm", []), checkpoint["farm"])
+           and _json_equivalent(resaved.get("animals", {}), checkpoint["animals"])
+           and _json_equivalent(resaved.get("village", {}), checkpoint["village"])
+           and _json_equivalent(resaved.get("festivals", {}), checkpoint["festivals"]),
            "repeat save is idempotent for all nested domains")
-    _check(resaved.get("inventory", {}) == checkpoint["inventory"]
+    _check(_json_equivalent(resaved.get("inventory", {}), checkpoint["inventory"])
            and int(resaved.get("gold", -1)) == paid_gold,
            "repeat save never duplicates inventory or currency")
     resumed.queue_free()
