@@ -67,7 +67,21 @@ func _capture() -> void:
         push_error("VISUAL CAPTURE: screenshot write failed")
         quit(5)
         return
-    # A successful PNG write is not evidence of a rendered world. Reject blank\n    # captures and frames with no geometry draw calls before publishing evidence.\n    var occupied_pixels := 0\n    var first_pixel := shot.get_pixel(0, 0)\n    for y in range(0, shot.get_height(), maxi(1, shot.get_height() / 32)):\n        for x in range(0, shot.get_width(), maxi(1, shot.get_width() / 32)):\n            var pixel := shot.get_pixel(x, y)\n            if absf(pixel.r - first_pixel.r) + absf(pixel.g - first_pixel.g) + absf(pixel.b - first_pixel.b) > 0.025:\n                occupied_pixels += 1\n    if occupied_pixels == 0 or draw_calls.max() <= 0:\n        DirAccess.remove_absolute(ProjectSettings.globalize_path(image_path))\n        push_error("VISUAL CAPTURE: uniform/empty image or zero draw calls; evidence rejected")\n        quit(8)\n        return\n    var total_ms := 0.0
+    # A successful PNG write is not evidence of a rendered world. Reject blank
+    # captures and frames with no geometry draw calls before publishing evidence.
+    var occupied_pixels := 0
+    var first_pixel := shot.get_pixel(0, 0)
+    for y in range(0, shot.get_height(), maxi(1, shot.get_height() / 32)):
+        for x in range(0, shot.get_width(), maxi(1, shot.get_width() / 32)):
+            var pixel := shot.get_pixel(x, y)
+            if absf(pixel.r - first_pixel.r) + absf(pixel.g - first_pixel.g) + absf(pixel.b - first_pixel.b) > 0.025:
+                occupied_pixels += 1
+    if occupied_pixels == 0 or draw_calls.max() <= 0:
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(image_path))
+        push_error("VISUAL CAPTURE: uniform/empty image or zero draw calls; evidence rejected")
+        quit(8)
+        return
+    var total_ms := 0.0
     var max_ms := 0.0
     var total_calls := 0
     for i in range(frame_times.size()):
@@ -86,7 +100,8 @@ func _capture() -> void:
         "sample_frames": SAMPLE_FRAMES,
         "mean_process_ms": total_ms / SAMPLE_FRAMES,
         "max_process_ms": max_ms,
-        "mean_draw_calls": float(total_calls) / SAMPLE_FRAMES,\n        "nonuniform_sample_pixels": occupied_pixels,
+        "mean_draw_calls": float(total_calls) / SAMPLE_FRAMES,
+        "nonuniform_sample_pixels": occupied_pixels,
         "limitations": "Not GPU timing, FPS, visual acceptance, collision, save, or mobile evidence"
     }
     var file := FileAccess.open("user://" + METADATA_NAME, FileAccess.WRITE)
