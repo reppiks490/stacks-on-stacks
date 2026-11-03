@@ -23,6 +23,10 @@ MAP_NAMES = ("leaf_albedo_rgba.png", "leaf_normal_rgb.png", "leaf_roughness_gray
 
 def stage(destination: Path) -> None:
     destination = destination.resolve()
+    # Godot resource paths below are fixed to this import directory.
+    # Reject a misleading successful staging into an incompatible directory.
+    if destination.name != "everbloom_leaf_candidate":
+        raise ValueError("Destination directory must be named everbloom_leaf_candidate")
     # Never overwrite source art or an existing output directory.
     if destination.exists():
         raise FileExistsError(f"Refusing to overwrite existing destination: {destination}")
