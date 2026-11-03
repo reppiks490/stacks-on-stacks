@@ -88,6 +88,39 @@ def validate(glb_path, manifest_path):
         errors.append("no node binds a mesh to a skeleton")
     if not any(animation.get("channels") for animation in animations):
         errors.append("animation has no channels")
+    # Reject dangling texture and animation references; structural admission only.
+    for material in materials:
+        pbr = material.get("pbrMetallicRoughness", {})
+        for ref in (pbr.get("baseColorTexture"), pbr.get("metallicRoughnessTexture"), material.get("normalTexture")):
+            if isinstance(ref, dict):
+                idx = ref.get("index")
+                if not isinstance(idx, int) or not 0 <= idx < len(doc.get("textures", [])):
+                    errors.append("material references missing texture")
+    for texture in doc.get("textures", []):
+        idx = texture.get("source")
+        if not isinstance(idx, int) or not 0 <= idx < len(doc.get("images", [])):
+            errors.append("texture references missing image")
+    for image in doc.get("images", []):
+        uri = image.get("uri")
+        if isinstance(uri, str) and not uri.startswith("data:"):
+            errors.append("external image URI forbidden in self-contained GLB")
+    for animation in animations:
+        samplers = animation.get("samplers", [])
+        for channel in animation.get("channels", []):
+            idx = channel.get("sampler")
+            if not isinstance(idx, int) or not 0 <= idx < len(samplers):
+                errors.append("animation channel references missing sampler")
+            target = channel.get("target", {})
+            node = target.get("node")
+            if not isinstance(node, int) or not 0 <= node < len(nodes):
+                errors.append("animation channel targets missing node")
+            if target.get("path") not in ("translation", "rotation", "scale", "weights"):
+                errors.append("animation channel has invalid target path")
+        for sampler in samplers:
+            for key in ("input", "output"):
+                idx = sampler.get(key)
+                if not isinstance(idx, int) or not 0 <= idx < len(accessors):
+                    errors.append("animation sampler has invalid " + key + " accessor")
     return sorted(set(errors))
 
 
