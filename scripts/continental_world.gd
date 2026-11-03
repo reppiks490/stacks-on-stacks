@@ -70,6 +70,11 @@ func setup(host) -> void:
     companions.set_script(load("res://scripts/wild_companions.gd"))
     add_child(companions)
     companions.setup(game,self)
+    var exploration := Node3D.new()
+    exploration.name = "ContinentalExploration"
+    exploration.set_script(load("res://scripts/exploration_system.gd"))
+    add_child(exploration)
+    exploration.setup(game,self)
     _create_atlas()
     set_process(true)
 
