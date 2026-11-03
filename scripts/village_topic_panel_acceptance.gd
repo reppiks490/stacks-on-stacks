@@ -105,6 +105,58 @@ func _run() -> void:
             and ui.topic_ids == stable_topic_ids and paused,
             "keyboard C restores English in place without losing selected topic")
     _check(village.save_state() == initial and game.gold == gold_before, "opening dialogue menu has no economy/social effects")
+    # V19: D-pad and arrow navigation must reach every modal action without
+    # relying on Tab, a mouse or a touch screen. These are real focused buttons.
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.topic_buttons[1].has_focus() and ui.selected_index == 1,
+            "D-pad moves to second conversation topic")
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.language_button.has_focus(),
+            "D-pad reaches language control after final unlocked topic")
+    ui._input(_pad(JOY_BUTTON_A))
+    _check(ui.panel.visible and paused and village.dialogue_locale == "es",
+            "D-pad and controller A translate without initiating conversation")
+    ui._input(_key(KEY_DOWN))
+    _check(ui.cancel_button.has_focus(),
+            "keyboard Down reaches Cancel after language")
+    ui._input(_pad(JOY_BUTTON_A))
+    _check(not ui.panel.visible and not paused,
+            "controller A on D-pad-reached Cancel exits without a conversation")
+    _check(village.save_state() == initial and game.gold == gold_before
+            and game.inventory == inventory_before and game.restoration == restoration_before,
+            "full D-pad language/cancel route conserves social and economic state")
+    ui.open_topics()
+    _check(ui.panel.visible and paused and ui.topic_buttons[0].has_focus(),
+            "reopened topic menu starts at first available action")
+    ui._input(_key(KEY_UP))
+    _check(ui.topic_buttons[0].has_focus(),
+            "keyboard Up clamps at first action instead of escaping modal")
+    ui._input(_key(KEY_DOWN))
+    ui._input(_key(KEY_DOWN))
+    ui._input(_key(KEY_DOWN))
+    _check(ui.cancel_button.has_focus(),
+            "keyboard arrows traverse topics, language and Cancel")
+    ui._input(_pad(JOY_BUTTON_DPAD_UP))
+    _check(ui.language_button.has_focus(),
+            "D-pad Up returns from Cancel to language")
+    ui._input(_pad(JOY_BUTTON_DPAD_UP))
+    _check(ui.topic_buttons[1].has_focus() and ui.selected_index == 1,
+            "D-pad Up returns to the final topic with stable selection index")
+    ui.topic_buttons[1].disabled = true
+    ui.topic_buttons[0].grab_focus()
+    ui._input(_pad(JOY_BUTTON_DPAD_DOWN))
+    _check(ui.language_button.has_focus(),
+            "disabled topic is skipped rather than trapping controller navigation")
+    ui.topic_buttons[1].disabled = false
+    ui._input(_key(KEY_C))
+    _check(village.dialogue_locale == "en" and ui.panel.visible and paused,
+            "language shortcut restores English after D-pad navigation")
+    get_root().get_viewport().gui_release_focus()
+    ui._input(_pad(JOY_BUTTON_A))
+    _check(ui.panel.visible and village.save_state() == initial
+            and game.gold == gold_before and game.restoration == restoration_before,
+            "confirm with no focused modal action cannot silently award friendship")
+    ui.topic_buttons[0].grab_focus()
     # V19: a keyboard/controller confirm must activate the *focused* widget,
     # not the last selected topic index. This is essential for Tab navigation.
     ui.language_button.grab_focus()
