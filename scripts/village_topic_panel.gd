@@ -89,6 +89,22 @@ func setup(owner) -> void:
     style.set_content_margin_all(14)
     panel.add_theme_stylebox_override("panel", style)
     surface.add_child(panel)
+    # Village-only presentation treatment: high-contrast authored civic palette,
+    # distinct focus ring and generous touch targets; no reward/state changes.
+    var focus_style := StyleBoxFlat.new()
+    focus_style.bg_color = Color(0.19, 0.30, 0.29, 1.0)
+    focus_style.border_color = Color(1.0, 0.85, 0.48, 1.0)
+    focus_style.set_border_width_all(3)
+    focus_style.set_corner_radius_all(9)
+    focus_style.set_content_margin_all(9)
+    var button_style := StyleBoxFlat.new()
+    button_style.bg_color = Color(0.13, 0.23, 0.24, 1.0)
+    button_style.border_color = Color(0.48, 0.67, 0.62, 1.0)
+    button_style.set_border_width_all(1)
+    button_style.set_corner_radius_all(9)
+    button_style.set_content_margin_all(9)
+    panel.set_meta("village_focus_style", focus_style)
+    panel.set_meta("village_button_style", button_style)
     # The chapter tracker must never push choices off a short mobile viewport.
     # Focusable buttons inside ScrollContainer remain keyboard/gamepad reachable.
     var scroll := ScrollContainer.new()
@@ -118,6 +134,10 @@ func setup(owner) -> void:
         button.name = "ConversationChoice%d" % (index + 1)
         button.custom_minimum_size.y = 56.0
         button.focus_mode = Control.FOCUS_ALL
+        button.add_theme_stylebox_override("normal", button_style)
+        button.add_theme_stylebox_override("focus", focus_style)
+        button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
+        button.add_theme_color_override("font_focus_color", Color(1, 1, 1))
         button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         button.pressed.connect(_choose_index.bind(index))
         layout.add_child(button)
@@ -126,12 +146,18 @@ func setup(owner) -> void:
     language_button.name = "ConversationLanguage"
     language_button.custom_minimum_size.y = MIN_TOUCH_TARGET
     language_button.focus_mode = Control.FOCUS_ALL
+    language_button.add_theme_stylebox_override("normal", button_style)
+    language_button.add_theme_stylebox_override("focus", focus_style)
+    language_button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
     language_button.pressed.connect(_toggle_locale)
     layout.add_child(language_button)
     cancel_button = Button.new()
     cancel_button.name = "CancelConversation"
     cancel_button.custom_minimum_size.y = MIN_TOUCH_TARGET
     cancel_button.focus_mode = Control.FOCUS_ALL
+    cancel_button.add_theme_stylebox_override("normal", button_style)
+    cancel_button.add_theme_stylebox_override("focus", focus_style)
+    cancel_button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
     cancel_button.pressed.connect(close_topics)
     layout.add_child(cancel_button)
     panel.visible = false
