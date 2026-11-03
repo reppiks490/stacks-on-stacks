@@ -9,8 +9,10 @@ We are starting again: SABLESTAR was retired from the active branch, with prior 
 ## Play / source verification
 - Install Godot 4.7.2 (or version proven compatible by the CI).
 - Clone repo, open `project.godot` in Godot, run the main scene.
-- Move: WASD / arrows; interact: E; 1-7 select tool; Q change seed; R craft; F end day; P save; O load.
-- See `docs/MASTER_PLAN.md`, `docs/CROSS_LOOP_COORDINATION.md`, and `docs/ART_DIRECTION.md`.
+- Core: WASD/arrows move, Shift sprint, Space jump, E interact, 1-7 tools, Q seed, R craft, F rest, P/O save/load.
+- World: M atlas, V panorama, L explorer journal, U frontier NPC/market, N mount, B pet.
+- Presentation: C character atelier, F1 field guide, F9 30-second real-device benchmark, F10 profiler overlay.
+- See `docs/MASTER_PLAN.md`, `docs/CROSS_LOOP_COORDINATION.md`, `docs/ART_DIRECTION.md`, and `docs/PREMIUM_WORLD_FRAMEWORK.md`.
 
 ## Core start
 - Original procedural painterly 3D valley shell and homestead.
