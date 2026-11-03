@@ -188,6 +188,16 @@ func _fit_dialogue_panel(surface: Control) -> void:
     panel.anchor_right = 1.0
     panel.offset_left = inset
     panel.offset_right = -inset
+    # The launcher and feedback were previously fixed-width right-anchored.
+    # On a 320px portrait viewport the 360px feedback extended offscreen.
+    # Keep both within the visible safe horizontal margin without changing
+    # dialogue selection, reward authority, or the existing desktop layout.
+    if opener != null:
+        opener.offset_left = -minf(200.0, maxf(0.0, width - 24.0))
+        opener.offset_right = -12.0
+    if feedback_label != null:
+        feedback_label.offset_left = -minf(360.0, maxf(0.0, width - 24.0))
+        feedback_label.offset_right = -12.0
 
 ## Rebuild labels by stable topic IDs, never by translated sort order.
 ## This is presentation-only: no extra talk, rewards or save writes.
