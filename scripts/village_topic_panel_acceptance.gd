@@ -155,7 +155,11 @@ func _run() -> void:
     ui._input(_pad(JOY_BUTTON_A))
     _check(ui.panel.visible and village.save_state() == initial
             and game.gold == gold_before and game.restoration == restoration_before,
-            "confirm with no focused modal action cannot silently award friendship")
+            "controller confirm with no focused modal action cannot silently award friendship")
+    ui._input(_key(KEY_ENTER))
+    _check(ui.panel.visible and village.save_state() == initial
+            and game.gold == gold_before and game.inventory == inventory_before,
+            "keyboard confirm with no focused modal action cannot initiate talk")
     ui.topic_buttons[0].grab_focus()
     # V19: a keyboard/controller confirm must activate the *focused* widget,
     # not the last selected topic index. This is essential for Tab navigation.
