@@ -1,5 +1,6 @@
 extends Node3D
 const WorldCollision = preload("res://scripts/world_collision.gd")
+const SculptedFoliage = preload("res://scripts/sculpted_foliage.gd")
 ## First-party 4.8 km x 4.8 km continental world: 32x32 cells, 3x3 active at a time.
 ## Non-destructive to homestead, farming, save schema and existing village.
 const CONTINENT_SIDE: float = 4800.0
@@ -49,6 +50,9 @@ var companions: Node3D
 var grass_material: StandardMaterial3D
 var bloom_material: StandardMaterial3D
 var stone_material: StandardMaterial3D
+var trunk_mesh: ArrayMesh
+var canopy_mesh: ArrayMesh
+var rock_mesh: ArrayMesh
 var terrain_shader: Shader
 var last_season: int = -1
 var panorama: bool = false
@@ -82,6 +86,9 @@ func setup(host) -> void:
     set_process(true)
 
 func _make_materials() -> void:
+    trunk_mesh=SculptedFoliage.make_trunk_mesh()
+    canopy_mesh=SculptedFoliage.make_canopy_mesh()
+    rock_mesh=SculptedFoliage.make_rock_mesh()
     grass_material = StandardMaterial3D.new()
     grass_material.albedo_color = Color.WHITE
     grass_material.vertex_color_use_as_albedo = true
@@ -394,16 +401,8 @@ func _multimesh_node(parent: Node3D,label: String,mesh: MultiMesh,material: Mate
     parent.add_child(instance)
 
 func _tree_grove(chunk: Node3D,origin: Vector3,biome: int,rng: RandomNumberGenerator) -> void:
-    var stem_mesh:=CylinderMesh.new()
-    stem_mesh.top_radius=0.18
-    stem_mesh.bottom_radius=0.38
-    stem_mesh.height=3.2
-    stem_mesh.radial_segments=7
-    var crown_mesh:=SphereMesh.new()
-    crown_mesh.radius=0.5
-    crown_mesh.height=1.0
-    crown_mesh.radial_segments=10
-    crown_mesh.rings=6
+    var stem_mesh: ArrayMesh=trunk_mesh
+    var crown_mesh: ArrayMesh=canopy_mesh
     var count:=62 if biome in [0,1,2] else 26
     var stems:=MultiMesh.new()
     stems.transform_format=MultiMesh.TRANSFORM_3D
@@ -419,7 +418,7 @@ func _tree_grove(chunk: Node3D,origin: Vector3,biome: int,rng: RandomNumberGener
         var at:=_sample_chunk(rng,origin)-origin
         var size_factor:=rng.randf_range(0.85,1.75)
         var yaw:=rng.randf_range(0,TAU)
-        stems.set_instance_transform(i,Transform3D(Basis(Vector3.UP,yaw).scaled(Vector3.ONE*size_factor),
+        stems.set_instance_transform(i,Transform3D(Basis(Vector3.UP,yaw).scaled(Vector3(0.75,3.2,0.75)*size_factor),
             at+Vector3(0,1.5*size_factor,0)))
         stems.set_instance_color(i,Color("#75614a"))
         var leaf_color:=Color("#54885a")
@@ -441,11 +440,7 @@ func _tree_grove(chunk: Node3D,origin: Vector3,biome: int,rng: RandomNumberGener
 
 func _rocks(chunk: Node3D,origin: Vector3,biome: int,rng: RandomNumberGenerator) -> void:
     var stones:=MultiMesh.new()
-    var rock:=SphereMesh.new()
-    rock.radius=0.5
-    rock.height=1.0
-    rock.radial_segments=7
-    rock.rings=4
+    var rock: ArrayMesh=rock_mesh
     stones.transform_format=MultiMesh.TRANSFORM_3D
     stones.use_colors=true
     stones.mesh=rock
