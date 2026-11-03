@@ -1,4 +1,5 @@
 extends Node3D
+const WorldCollision = preload("res://scripts/world_collision.gd")
 ## Original high-density stylized scenic meshes for EVERBLOOM.
 ## All geometry and materials are authored in GDScript; no borrowed game assets.
 ## Each settlement gets its own small bounded dressing pass (no offscreen terrain load).
@@ -192,6 +193,8 @@ func _box(at: Vector3,dimensions: Vector3,tint: Color,wood: bool=false) -> MeshI
     model.position=at
     model.material_override=_material(tint,wood)
     add_child(model)
+    if dimensions.y>=0.55 and dimensions.x>=0.12 and dimensions.z>=0.12:
+        WorldCollision.solid_box(model,dimensions)
     return model
 
 func _cylinder(at: Vector3,dimensions: Vector3,tint: Color) -> MeshInstance3D:
@@ -206,6 +209,8 @@ func _cylinder(at: Vector3,dimensions: Vector3,tint: Color) -> MeshInstance3D:
     model.scale=dimensions
     model.material_override=_material(tint,true)
     add_child(model)
+    if dimensions.y>=0.85:
+        WorldCollision.solid_box(model,Vector3.ONE,"landmark_column")
     return model
 
 func _make_bridge(at: Vector3,angle: float) -> void:
@@ -224,6 +229,7 @@ func _make_bridge(at: Vector3,angle: float) -> void:
         deck.position=Vector3(0,rise,z)
         deck.material_override=_material(Color("#b99774"),true)
         bridge.add_child(deck)
+        WorldCollision.solid_box(deck,Vector3(3.15,0.15,0.52),"walkable_bridge_plank")
     for side in [-1,1]:
         for i in range(7):
             var z: float=float(i)*1.75-5.25
@@ -236,6 +242,7 @@ func _make_bridge(at: Vector3,angle: float) -> void:
             post.position=Vector3(float(side)*1.44,1.12,z)
             post.material_override=_material(Color("#78604b"),true)
             bridge.add_child(post)
+            WorldCollision.solid_box(post,Vector3(0.25,1.9,0.25),"bridge_railing")
             var cap:=MeshInstance3D.new()
             var capmesh:=SphereMesh.new()
             capmesh.radius=0.17
@@ -262,6 +269,7 @@ func _make_rose_arch(at: Vector3,rotation: float) -> void:
         post.position=Vector3(float(side)*1.7,1.9,0)
         post.material_override=wood
         arch.add_child(post)
+        WorldCollision.solid_box(post,Vector3(0.24,3.8,0.24),"garden_arch")
     var beam:=MeshInstance3D.new()
     var box:=BoxMesh.new()
     box.size=Vector3(4.1,0.24,0.49)
