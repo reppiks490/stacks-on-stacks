@@ -184,6 +184,57 @@ func _biome(x: float,z: float) -> int:
         return 1
     return 0
 
+func _terrain_height(x: float,z: float) -> float:
+    # Continuous world-space height function: adjacent chunks share edge vertices.
+    # Gentle home and settlement plateaus preserve interactive flat foundations.
+    if absf(x)<76.0 and absf(z)<76.0:
+        return 0.0
+    var waves: float = sin(x*0.0065+0.4)*cos(z*0.0084)*6.5
+    waves += sin(x*0.016+z*0.004)*2.4 + cos(z*0.0142)*1.6
+    var biome: int=_biome(x,z)
+    var relief: float=1.45 if biome==3 else (1.25 if biome in [2,4] else 1.0)
+    var plateau: float=1.0
+    for hub in HUBS:
+        var distance: float=Vector2(x-float(hub["x"]),z-float(hub["z"])).length()
+        var fade: float=clampf((distance-51.0)/44.0,0.0,1.0)
+        plateau=minf(plateau,fade*fade*(3.0-2.0*fade))
+    var home_dist: float=maxf(absf(x),absf(z))
+    var home_fade: float=clampf((home_dist-75.0)/32.0,0.0,1.0)
+    plateau=minf(plateau,home_fade*home_fade*(3.0-2.0*home_fade))
+    return waves*relief*plateau
+
+func _terrain_mesh(origin: Vector3) -> ArrayMesh:
+    # Sculpt 150m chunks with 24 subdivisions; generate normals and a matching
+    # StaticBody trimesh. 3x3 nearby chunks bound runtime memory and collision.
+    const STEPS: int=24
+    var surface:=SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    surface.set_smooth_group(0)
+    var step: float=CHUNK_SIDE/float(STEPS)
+    for iz in range(STEPS):
+        for ix in range(STEPS):
+            var x0: float=-CHUNK_SIDE*0.5+float(ix)*step
+            var z0: float=-CHUNK_SIDE*0.5+float(iz)*step
+            var x1: float=x0+step
+            var z1: float=z0+step
+            var a:=Vector3(x0,_terrain_height(origin.x+x0,origin.z+z0),z0)
+            var b:=Vector3(x0,_terrain_height(origin.x+x0,origin.z+z1),z1)
+            var d:=Vector3(x1,_terrain_height(origin.x+x1,origin.z+z0),z0)
+            var e:=Vector3(x1,_terrain_height(origin.x+x1,origin.z+z1),z1)
+            _terrain_vertex(surface,a,Vector2(float(ix)/STEPS,float(iz)/STEPS))
+            _terrain_vertex(surface,b,Vector2(float(ix)/STEPS,float(iz+1)/STEPS))
+            _terrain_vertex(surface,d,Vector2(float(ix+1)/STEPS,float(iz)/STEPS))
+            _terrain_vertex(surface,d,Vector2(float(ix+1)/STEPS,float(iz)/STEPS))
+            _terrain_vertex(surface,b,Vector2(float(ix)/STEPS,float(iz+1)/STEPS))
+            _terrain_vertex(surface,e,Vector2(float(ix+1)/STEPS,float(iz+1)/STEPS))
+    surface.index()
+    surface.generate_normals()
+    return surface.commit()
+
+func _terrain_vertex(surface: SurfaceTool,at: Vector3,uv: Vector2) -> void:
+    surface.set_uv(uv)
+    surface.add_vertex(at)
+
 func _make_chunk(key: Vector2i) -> Node3D:
     var origin := Vector3(-HALF+(float(key.x)+0.5)*CHUNK_SIDE,0.0,
         -HALF+(float(key.y)+0.5)*CHUNK_SIDE)
@@ -194,10 +245,9 @@ func _make_chunk(key: Vector2i) -> Node3D:
     var biome: int=_biome(origin.x,origin.z)
     var ground := MeshInstance3D.new()
     ground.name="BiomeTerrain"
-    var mesh := PlaneMesh.new()
-    mesh.size=Vector2(CHUNK_SIDE,CHUNK_SIDE)
+    var mesh: ArrayMesh = _terrain_mesh(origin)
     ground.mesh=mesh
-    ground.position.y=-0.035
+    ground.position.y=0.0
     var mat := ShaderMaterial.new()
     mat.shader=terrain_shader
     mat.set_shader_parameter("base_a",Color(BIOME_COLORS[biome][0]))
@@ -209,10 +259,8 @@ func _make_chunk(key: Vector2i) -> Node3D:
     var body := StaticBody3D.new()
     chunk.add_child(body)
     var collision := CollisionShape3D.new()
-    var shape := BoxShape3D.new()
-    shape.size=Vector3(CHUNK_SIDE,1.0,CHUNK_SIDE)
-    collision.shape=shape
-    collision.position.y=-0.5
+    collision.shape=mesh.create_trimesh_shape()
+    collision.position.y=0.0
     body.add_child(collision)
     var rng:=RandomNumberGenerator.new()
     rng.seed=abs(key.x*16777619+key.y*1234567+20261103)
@@ -234,8 +282,11 @@ func _sample_chunk(rng: RandomNumberGenerator, origin: Vector3) -> Vector3:
     for attempt in range(18):
         var pos:=origin+Vector3(rng.randf_range(-70.5,70.5),0,rng.randf_range(-70.5,70.5))
         if _safe_scatter(pos.x,pos.z):
+            pos.y=_terrain_height(pos.x,pos.z)
             return pos
-    return origin+Vector3(-70,0,-70)
+    var fallback: Vector3=origin+Vector3(-70,0,-70)
+    fallback.y=_terrain_height(fallback.x,fallback.z)
+    return fallback
 
 func _flora(chunk: Node3D,origin: Vector3,biome: int,rng: RandomNumberGenerator) -> void:
     var count:=660 if biome!=3 else 330
