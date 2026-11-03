@@ -53,6 +53,14 @@ class SolidWorldCharacterContracts(unittest.TestCase):
         self.assertIn("ConfigFile",s)
         self.assertIn("KEY_C",s)
 
+    def test_modular_architecture_replaces_box_house_shells(self):
+        architecture=source("scripts/sculpted_architecture.gd")
+        for token in ("SurfaceTool.new()", "ShaderMaterial.new()", "func build_house(", "func _wall_shell(", "func _roof_mesh(", "func _facade_details(", "WorldCollision.solid_box("):
+            self.assertIn(token,architecture)
+        self.assertNotIn("BoxMesh.new()",architecture)
+        self.assertIn("res://scripts/sculpted_architecture.gd",source("scripts/valley.gd"))
+        self.assertIn("res://scripts/sculpted_architecture.gd",source("scripts/continental_world.gd"))
+
     def test_native_acceptance_is_routed_in_non_codex_workflow(self):
         s=source(".github/workflows/everbloom-solid-world-acceptance.yml")
         self.assertIn("native_solidity_acceptance.gd",s)
