@@ -35,8 +35,8 @@ func _setup() -> void:
     camera.position = Vector3(0.0, 0.4, 3.5)
     camera.look_at_from_position(camera.position, Vector3(0.0, 0.15, 0.0))
     camera.fov = 42.0
-    camera.current = true
     world.add_child(camera)
+    camera.current = true
     for i in range(3):
         var leaf := MeshInstance3D.new()
         leaf.mesh = Leaf.make_leaf(0.75, 0.17, 0.08 * float(i - 1), 11 + i * 9)
@@ -56,6 +56,25 @@ func _on_frame() -> void:
         push_error("No rendered image: renderer acceptance remains unverified")
         quit(2)
         return
+    # A saved PNG is not evidence of rendered foliage: reject a blank capture.
+    var foreground := 0
+    var occupied_columns := 0
+    for gx in range(32):
+        var column_has_leaf := false
+        for gy in range(18):
+            var px := int((float(gx) + 0.5) * float(image.get_width()) / 32.0)
+            var py := int((float(gy) + 0.5) * float(image.get_height()) / 18.0)
+            var sample := image.get_pixel(px, py)
+            if sample.g > sample.r * 1.12 and sample.g > sample.b * 1.06:
+                foreground += 1
+                column_has_leaf = true
+        if column_has_leaf:
+            occupied_columns += 1
+    if foreground < 8 or occupied_columns < 3:
+        push_error("Leaf visibility gate failed: %d samples across %d columns" % [foreground, occupied_columns])
+        quit(4)
+        return
+    print("Leaf visibility samples: ", foreground, " columns: ", occupied_columns)
     var error := image.save_png(OUTPUT)
     if error != OK:
         push_error("Could not save leaf capture: %s" % error_string(error))
