@@ -1,5 +1,6 @@
 extends Node3D
 const WorldCollision = preload("res://scripts/world_collision.gd")
+const SculptedFoliage = preload("res://scripts/sculpted_foliage.gd")
 ## EVERBLOOM original procedural scenic art pass.
 ## No imported or extracted game assets. Deterministic placements; no gameplay state changes.
 const SIZE: float = 145.0
@@ -11,6 +12,9 @@ var rng := RandomNumberGenerator.new()
 var material_cache: Dictionary = {}
 var ground_material: ShaderMaterial
 var last_season: int = -1
+var canopy_mesh: ArrayMesh
+var trunk_mesh: ArrayMesh
+var rock_mesh: ArrayMesh
 
 func setup(parent_world) -> void:
     world = parent_world
@@ -19,7 +23,8 @@ func setup(parent_world) -> void:
     _wildflower()
     _orchard()
     _village_details()
-    _cottage_facades()
+    # Architectural overlays retired: the original houses now use the shared
+    # authored mesh kit rather than layering two overlapping roof meshes.
     _pond_garden()
     _water_shimmer()
     _edge_woodlands()
@@ -248,16 +253,25 @@ func _flower_cluster(center: Vector3, spread: float, count: int) -> void:
         _ellipsoid(at+Vector3(0,0.23,0),Vector3(0.25,0.20,0.25),shades[i%shades.size()])
 
 func _tree(at: Vector3, scale_factor: float, blossom: bool = false) -> void:
-    var base := Color("#72513d")
-    _pole(at,2.2*scale_factor,0.29*scale_factor,base)
-    _ellipsoid(at+Vector3(0,2.8,0)*scale_factor,Vector3(3.0,2.7,2.8)*scale_factor,
-        Color("#eeb2c4") if blossom else Color("#416f4f"))
-    _ellipsoid(at+Vector3(-0.9,2.5,0.2)*scale_factor,Vector3(2.3,2.0,2.6)*scale_factor,
-        Color("#f4c3d2") if blossom else Color("#72975c"))
-    _ellipsoid(at+Vector3(0.85,3.05,-0.25)*scale_factor,Vector3(2.0,2.4,2.2)*scale_factor,
-        Color("#e8aac4") if blossom else Color("#58834d"))
-    _ellipsoid(at+Vector3(0.2,3.85,0.1)*scale_factor,Vector3(1.8,1.5,1.9)*scale_factor,
-        Color("#f9d3dc") if blossom else Color("#82a569"))
+    if canopy_mesh==null:
+        canopy_mesh=SculptedFoliage.make_canopy_mesh()
+        trunk_mesh=SculptedFoliage.make_trunk_mesh()
+        rock_mesh=SculptedFoliage.make_rock_mesh()
+    var trunk:=MeshInstance3D.new()
+    trunk.name="SculptedOrchardTimber"
+    trunk.mesh=trunk_mesh
+    trunk.position=at+Vector3(0,1.15*scale_factor,0)
+    trunk.scale=Vector3(0.6,2.3,0.6)*scale_factor
+    trunk.material_override=_material(Color("#72513d"))
+    add_child(trunk)
+    WorldCollision.solid_box(trunk,Vector3.ONE,"orchard_trunk")
+    var crown:=MeshInstance3D.new()
+    crown.name="BotanicalBlossomAndLeafCanopy"
+    crown.mesh=canopy_mesh
+    crown.position=at+Vector3(0,3.03*scale_factor,0)
+    crown.scale=Vector3(3.7,3.9,3.5)*scale_factor
+    crown.material_override=_material(Color("#e8aec5") if blossom else Color("#608653"))
+    add_child(crown)
 
 func _orchard() -> void:
     var origin := Vector3(-47,0,15)
@@ -339,12 +353,28 @@ func _edge_woodlands() -> void:
         if i%3==0:
             _tree(Vector3(x,0,z),rng.randf_range(0.65,1.2),i%7==0)
         else:
-            _ellipsoid(Vector3(x,0.7,z),Vector3(1.9,1.3,1.7),Color("#59814b") if i%2==0 else Color("#8b9d61"))
+            if canopy_mesh==null:
+                canopy_mesh=SculptedFoliage.make_canopy_mesh()
+            var shrub:=MeshInstance3D.new()
+            shrub.name="HandShapedWoodlandShrub"
+            shrub.mesh=canopy_mesh
+            shrub.position=Vector3(x,0.7,z)
+            shrub.scale=Vector3(1.9,1.3,1.7)
+            shrub.material_override=_material(Color("#59814b") if i%2==0 else Color("#8b9d61"))
+            add_child(shrub)
     for i in range(90):
         var x := rng.randf_range(-67.0,67.0)
         var z := rng.randf_range(-67.0,67.0)
         if _is_open(x,z):
-            _ellipsoid(Vector3(x,0.12,z),Vector3(rng.randf_range(0.35,0.9),0.28,rng.randf_range(0.35,0.8)),Color("#b4aa94"))
+            if rock_mesh==null:
+                rock_mesh=SculptedFoliage.make_rock_mesh()
+            var stone:=MeshInstance3D.new()
+            stone.name="IrregularWoodlandStone"
+            stone.mesh=rock_mesh
+            stone.position=Vector3(x,0.12,z)
+            stone.scale=Vector3(rng.randf_range(0.35,0.9),0.28,rng.randf_range(0.35,0.8))
+            stone.material_override=_material(Color("#b4aa94"))
+            add_child(stone)
 
 
 func _cottage_facades() -> void:
