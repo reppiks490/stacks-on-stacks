@@ -22,6 +22,11 @@ func setup(host) -> void:
     art.set_script(load("res://scripts/visual_environment.gd"))
     add_child(art)
     art.setup(self)
+    var scenery := Node3D.new()
+    scenery.name = "OriginalHomesteadArt"
+    scenery.set_script(load("res://scripts/premium_scenery.gd"))
+    add_child(scenery)
+    scenery.build_homestead(game)
     var continent := Node3D.new()
     continent.name = "EverbloomContinentalFrontier"
     continent.set_script(load("res://scripts/continental_world.gd"))
