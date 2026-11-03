@@ -46,16 +46,22 @@ def generate(destination, size=256):
     destination = pathlib.Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     field = [[_height(x, y, size) for x in range(size)] for y in range(size)]
+    # Derive normal gradients from the SAME composite relief that drives the
+    # albedo grain. Previously normals ignored fine relief, flattening detail.
+    grain_field = [[_height((x * 11) % size, (y * 11) % size, size) - .5
+                    for x in range(size)] for y in range(size)]
+    relief = [[field[y][x] + grain_field[y][x] * (13.0 / 64.0)
+               for x in range(size)] for y in range(size)]
     albedo, normal, roughness = [], [], []
     for y in range(size):
         ar, nr, rr = bytearray(), bytearray(), bytearray()
         for x in range(size):
             h = field[y][x]
-            grain = _height((x * 11) % size, (y * 11) % size, size) - .5
+            grain = grain_field[y][x]
             tint = (h - .5) * 64 + grain * 13
             ar.extend(max(0, min(255, round(base + tint))) for base in (159, 148, 132))
-            dx = (field[y][(x + 1) % size] - field[y][(x - 1) % size]) * 4
-            dy = (field[(y + 1) % size][x] - field[(y - 1) % size][x]) * 4
+            dx = (relief[y][(x + 1) % size] - relief[y][(x - 1) % size]) * 4
+            dy = (relief[(y + 1) % size][x] - relief[(y - 1) % size][x]) * 4
             length = math.sqrt(dx * dx + dy * dy + 1)
             nr.extend(round(127.5 * (v / length + 1)) for v in (-dx, -dy, 1))
             r = max(0, min(255, round(192 + (h - .5) * 45 + grain * 17)))
