@@ -74,7 +74,13 @@ static func active_residents(entries: Array, center: Vector2i) -> Array:
     return result
 
 static func can_interact(last_epoch: Dictionary, resident_id: String, day_epoch: int) -> bool:
-    return day_epoch >= 1 and not resident_id.is_empty() and int(last_epoch.get(resident_id, -1)) != day_epoch
+    if day_epoch < 1 or resident_id.is_empty():
+        return false
+    # Reject time regression: stale commands must never re-award interactions.
+    var previous: Variant = last_epoch.get(resident_id, 0)
+    if not (previous is int) or int(previous) < 0:
+        return false
+    return day_epoch > int(previous)
 
 static func mark_interaction(last_epoch: Dictionary, resident_id: String, day_epoch: int) -> bool:
     if not can_interact(last_epoch, resident_id, day_epoch):
