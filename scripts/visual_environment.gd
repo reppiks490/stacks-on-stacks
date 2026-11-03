@@ -18,7 +18,9 @@ func setup(parent_world) -> void:
     _wildflower()
     _orchard()
     _village_details()
+    _cottage_facades()
     _pond_garden()
+    _water_shimmer()
     _edge_woodlands()
     _lanterns()
     set_process(true)
@@ -338,6 +340,117 @@ func _edge_woodlands() -> void:
         var z := rng.randf_range(-67.0,67.0)
         if _is_open(x,z):
             _ellipsoid(Vector3(x,0.12,z),Vector3(rng.randf_range(0.35,0.9),0.28,rng.randf_range(0.35,0.8)),Color("#b4aa94"))
+
+
+func _cottage_facades() -> void:
+    # Handmade shingled facades and gabled roofs over the former simple block homes.
+    var homes := [
+        [Vector3(-23,0,-14),7.0,Color("#ab6b66"),Color("#f6dfb5")],
+        [Vector3(-4,0,-15),8.0,Color("#776b63"),Color("#dfd7ac")],
+        [Vector3(22,0,10),6.0,Color("#9b6978"),Color("#e7bda5")],
+        [Vector3(34,0,12),6.0,Color("#578480"),Color("#c9d9b3")],
+        [Vector3(44,0,5),6.0,Color("#9e7463"),Color("#e0cea7")],
+        [Vector3(35,0,-7),6.0,Color("#696e91"),Color("#c8c3da")]
+    ]
+    for item in homes:
+        _finish_cottage(item[0],float(item[1]),item[2],item[3])
+
+func _finish_cottage(at: Vector3, width: float, roof_tint: Color, trim: Color) -> void:
+    var timber := Color("#705544")
+    var eave: float = width*0.69
+    var rise: float = 2.05
+    var roof_mesh := SurfaceTool.new()
+    roof_mesh.begin(Mesh.PRIMITIVE_TRIANGLES)
+    var a := at+Vector3(-eave,4.08,-3.18)
+    var b := at+Vector3(-eave,4.08,3.18)
+    var c := at+Vector3(0,4.08+rise,-3.18)
+    var d := at+Vector3(0,4.08+rise,3.18)
+    var e := at+Vector3(eave,4.08,-3.18)
+    var g := at+Vector3(eave,4.08,3.18)
+    _roof_quad(roof_mesh,a,b,c,d)
+    _roof_quad(roof_mesh,c,d,e,g)
+    roof_mesh.generate_normals()
+    var roof := MeshInstance3D.new()
+    roof.name = "HandShingledGableRoof"
+    roof.mesh = roof_mesh.commit()
+    var finish := _material(roof_tint)
+    finish.cull_mode = BaseMaterial3D.CULL_DISABLED
+    roof.material_override = finish
+    add_child(roof)
+    _box(at+Vector3(0,6.16,0),Vector3(0.23,0.23,6.6),roof_tint.darkened(0.22))
+    for side in [-1,1]:
+        var side_x: float = float(side)*width*0.5
+        for z in [-2.4,2.4]:
+            _box(at+Vector3(side_x,2.05,z),Vector3(0.16,4.1,0.18),timber)
+        for x_factor in [0.16,0.31,0.46,0.60]:
+            var dx: float = float(side)*width*x_factor
+            var local_y := 6.13-(absf(dx)/eave)*rise
+            for iz in range(7):
+                var tile := _box(at+Vector3(dx,local_y+0.055,-2.6+float(iz)*0.84),
+                    Vector3(width*0.17,0.06,0.72),
+                    roof_tint.lightened(0.12) if (iz+int(x_factor*10))%2==0 else roof_tint.darkened(0.12))
+                tile.rotation.z = atan2(-float(side)*rise,eave)
+    # Windows, mullions, shutters and front flower boxes.
+    for side in [-1,1]:
+        var wx: float = float(side)*width*0.29
+        _box(at+Vector3(wx,2.45,2.73),Vector3(1.25,1.46,0.16),timber)
+        _box(at+Vector3(wx,2.47,2.83),Vector3(0.96,1.15,0.11),Color("#f4d9a7"))
+        _box(at+Vector3(wx,2.47,2.9),Vector3(0.09,1.2,0.08),trim)
+        _box(at+Vector3(wx,2.47,2.9),Vector3(1.02,0.09,0.08),trim)
+        for shutter_side in [-1,1]:
+            _box(at+Vector3(wx+float(shutter_side)*0.69,2.45,2.77),Vector3(0.25,1.44,0.13),roof_tint.darkened(0.22))
+        _box(at+Vector3(wx,1.68,2.85),Vector3(1.45,0.23,0.42),timber)
+        for flower in range(4):
+            _ellipsoid(at+Vector3(wx-0.5+float(flower)*0.33,1.92,2.93),Vector3(0.3,0.35,0.31),
+                Color("#e7afba") if flower%2==0 else Color("#e9d88d"))
+    _box(at+Vector3(0,1.56,2.77),Vector3(1.35,3.1,0.20),Color("#835d48"))
+    _box(at+Vector3(0,3.18,2.8),Vector3(1.76,0.18,0.38),trim)
+    _ellipsoid(at+Vector3(0.43,1.49,2.91),Vector3(0.09,0.09,0.1),Color("#e4c888"))
+    _box(at+Vector3(0,0.11,3.34),Vector3(2.15,0.16,1.08),Color("#cfbd9d"))
+    # Chimney: chimney pot plus two decorative brick courses.
+    _box(at+Vector3(width*0.26,5.95,-1.0),Vector3(0.76,2.0,0.7),Color("#b97e68"))
+    _box(at+Vector3(width*0.26,7.0,-1.0),Vector3(1.02,0.20,0.94),Color("#79605d"))
+    for y in [5.4,5.8,6.2,6.6]:
+        _box(at+Vector3(width*0.26,float(y),-0.63),Vector3(0.8,0.06,0.03),Color("#e2b296"))
+
+func _roof_quad(surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> void:
+    # Two triangles per roof slope with UVs reserved for a future licensed texture atlas.
+    surface.set_uv(Vector2(0,0))
+    surface.add_vertex(a)
+    surface.set_uv(Vector2(0,1))
+    surface.add_vertex(b)
+    surface.set_uv(Vector2(1,0))
+    surface.add_vertex(c)
+    surface.set_uv(Vector2(1,0))
+    surface.add_vertex(c)
+    surface.set_uv(Vector2(0,1))
+    surface.add_vertex(b)
+    surface.set_uv(Vector2(1,1))
+    surface.add_vertex(d)
+
+func _water_shimmer() -> void:
+    # Recolor only the existing lake disk. No alteration to fishing collisions or game state.
+    var lake := Vector3(27,0.075,-28)
+    for child in world.get_children():
+        if child is MeshInstance3D and child.position.distance_to(lake)<0.12 and child.mesh is CylinderMesh:
+            var mat := ShaderMaterial.new()
+            var shader := Shader.new()
+            shader.code = """
+shader_type spatial;
+render_mode cull_back, diffuse_burley;
+void fragment() {
+    float ripple = sin(UV.x * 52.0 + TIME * 1.6) * sin(UV.y * 39.0 - TIME * 0.9);
+    float soft = sin(UV.x*18.0 + UV.y*20.0 + TIME*0.5);
+    vec3 shallow = vec3(0.24, 0.58, 0.62);
+    vec3 deep = vec3(0.10, 0.36, 0.48);
+    ALBEDO = mix(deep,shallow,clamp(0.45 + ripple*0.13 + soft*0.18,0.0,1.0));
+    ROUGHNESS = 0.26;
+    METALLIC = 0.06;
+}
+"""
+            mat.shader = shader
+            child.material_override = mat
+            break
 
 func _lanterns() -> void:
     for at in [Vector3(-21,0,-3),Vector3(-3,0,3),Vector3(12,0,3),Vector3(21,0,-7),Vector3(35,0,19),Vector3(17,0,-20)]:
