@@ -6,7 +6,6 @@ extends SceneTree
 const Leaf = preload("res://scripts/farming_visuals/leaf_blade_mesh.gd")
 const OUTPUT := "user://farming_leaf_quality.png"
 var viewport: SubViewport
-var frame_count := 0
 
 func _initialize() -> void:
     call_deferred("_setup")
@@ -44,13 +43,16 @@ func _setup() -> void:
         leaf.position = Vector3(float(i - 1) * 0.7, -0.3, 0.0)
         leaf.rotation_degrees = Vector3(0.0, float(i - 1) * 25.0, float(i - 1) * 8.0)
         world.add_child(leaf)
-    process_frame.connect(_on_frame)
+    # GPU readback must follow a completed draw, not merely a SceneTree tick.
+    # Wait several completed draws for first-frame viewport/camera initialization.
+    _capture_after_draws.call_deferred()
 
-func _on_frame() -> void:
-    frame_count += 1
-    if frame_count < 8:
-        return
-    process_frame.disconnect(_on_frame)
+func _capture_after_draws() -> void:
+    for i in range(8):
+        await RenderingServer.frame_post_draw
+    _capture()
+
+func _capture() -> void:
     var image := viewport.get_texture().get_image()
     if image == null or image.is_empty():
         push_error("No rendered image: renderer acceptance remains unverified")
