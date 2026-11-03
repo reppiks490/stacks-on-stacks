@@ -41,7 +41,10 @@ func _setup() -> void:
         leaf.mesh = Leaf.make_leaf(0.75, 0.17, 0.08 * float(i - 1), 11 + i * 9)
         leaf.material_override = Leaf.leaf_material()
         leaf.position = Vector3(float(i - 1) * 0.7, -0.3, 0.0)
-        leaf.rotation_degrees = Vector3(0.0, float(i - 1) * 25.0, float(i - 1) * 8.0)
+        # Front, grazing-angle and underside views expose different culling defects.
+        # The previous three near-frontal views could not validate the backface.
+        var yaw := [-12.0, 65.0, 168.0][i]
+        leaf.rotation_degrees = Vector3(0.0, yaw, float(i - 1) * 8.0)
         world.add_child(leaf)
     # GPU readback must follow a completed draw, not merely a SceneTree tick.
     # Wait several completed draws for first-frame viewport/camera initialization.
