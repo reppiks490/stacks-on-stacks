@@ -298,7 +298,7 @@ func _save() -> void:
     if cfg.save(PROFILE_PATH)!=OK:
         push_warning("EVERBLOOM frontier social data could not be saved.")
 
-func _panel_button(parent: VBoxContainer,text_value: String,callback: Callable) -> void:
+func _panel_button(parent: BoxContainer,text_value: String,callback: Callable) -> void:
     var button:=Button.new()
     button.text=text_value
     button.custom_minimum_size=Vector2(120,32)
