@@ -1,4 +1,5 @@
 extends Node3D
+const SculptedHumanoid = preload("res://scripts/sculpted_humanoid.gd")
 ## Runtime frontier society. Existing Larkspur villagers and core save stay authoritative.
 ## Distinct settlement NPCs use their own optional profile: no schema-1 save migration.
 const PROFILE_PATH := "user://everbloom_frontier_social.cfg"
@@ -65,17 +66,55 @@ func _make_resident(parent: Node3D,key: Vector2i,origin: Vector3,world_at: Vecto
     var resident_id: String=home.replace(" ","_")+"_"+str(index)
     var actor:=Node3D.new()
     actor.name="Resident_"+resident_id
-    actor.position=world_at-origin
+    var stationed_at: Vector3=world_at
+    if home=="Wayfaring Trails":
+        stationed_at.y=continent._terrain_height(stationed_at.x,stationed_at.z)
+    actor.position=stationed_at-origin
     parent.add_child(actor)
     var coat:=Color.from_hsv(float(posmod(index*37+home.length()*13,360))/360.0,0.42,0.70)
     var skin:=Color("#e3ac89") if index%3==0 else (Color("#a57159") if index%3==1 else Color("#efd0b4"))
-    _body(actor,Vector3(0,1.02,0),Vector3(0.74,1.15,0.56),coat)
-    _body(actor,Vector3(0,1.91,0),Vector3(0.57,0.62,0.56),skin)
-    _body(actor,Vector3(0,2.24,-0.12),Vector3(0.64,0.23,0.55),Color("#60443d") if index%2==0 else Color("#b17e54"))
-    for side in [-1,1]:
-        _body(actor,Vector3(float(side)*0.42,1.20,0),Vector3(0.24,0.91,0.30),coat.darkened(0.11))
-        _body(actor,Vector3(float(side)*0.2,0.45,0),Vector3(0.26,0.78,0.34),Color("#4d5960"))
-        _body(actor,Vector3(float(side)*0.13,1.97,0.279),Vector3(0.085,0.08,0.04),Color("#243b39"))
+    var role_name: String=ROLES[role_index]
+    var outfit_profile: Dictionary={
+        "skin_tint":skin,
+        "coat_tint":coat,
+        "trousers_tint":Color("#4d5960").lightened(float(index%5)*0.032),
+        "hair_tint":Color("#60443d") if index%2==0 else Color("#b17e54"),
+        "iris_tint":Color("#597a72") if index%2==0 else Color("#765b49"),
+        "boot_tint":Color("#60483c"),
+        "build":posmod(index+home.length(),5),
+        "height":posmod(index*3+home.length(),9),
+        "face":posmod(index+2,6),
+        "jaw":posmod(index*3,9),
+        "brow":posmod(index*5,10),
+        "nose":posmod(index*7,10),
+        "mouth":posmod(index*2,10),
+        "eye_size":posmod(index+4,9),
+        "hair":posmod(index*7+role_index,12),
+        "hair_length":posmod(index+role_index,10),
+        "outfit":posmod(role_index,12),
+        "headwear":1 if role_name in ["Gardener","Ranger","Fisher","Stablekeeper"] else (3 if role_name=="Seamstress" else 0),
+        "accessory":4 if role_name in ["Librarian","Storyteller"] else (5 if role_name in ["Cartographer","Ranger"] else 0),
+        "footwear":posmod(index+role_index,10)
+    }
+    var sculpt:=Node3D.new()
+    sculpt.name="DistinctiveScaffoldFreeResident"
+    sculpt.set_script(SculptedHumanoid)
+    actor.add_child(sculpt)
+    sculpt.configure(outfit_profile)
+    # Moving NPC collision is an AnimatableBody3D rather than a nonphysical
+    # label/mesh; it blocks the player and respects the world physics layer.
+    var physical:=AnimatableBody3D.new()
+    physical.name="ResidentPhysicalPresence"
+    physical.collision_layer=1
+    physical.collision_mask=1
+    actor.add_child(physical)
+    var collider:=CollisionShape3D.new()
+    var shape:=CapsuleShape3D.new()
+    shape.radius=0.31
+    shape.height=1.75
+    collider.shape=shape
+    collider.position.y=0.92
+    physical.add_child(collider)
     var badge:=Label3D.new()
     badge.text=GIVEN[name_index]+" "+FAMILY[family_index]+"\n"+ROLES[role_index]
     badge.position=Vector3(0,2.75,0)
@@ -88,22 +127,6 @@ func _make_resident(parent: Node3D,key: Vector2i,origin: Vector3,world_at: Vecto
         "role":ROLES[role_index],"home":home,"node":actor,"base":actor.position,
         "sway":float(index)*0.37,"key":key
     }
-
-func _body(parent: Node3D,at: Vector3,dimensions: Vector3,tint: Color) -> void:
-    var obj:=MeshInstance3D.new()
-    var mesh:=SphereMesh.new()
-    mesh.radius=0.5
-    mesh.height=1.0
-    mesh.radial_segments=12
-    mesh.rings=8
-    obj.mesh=mesh
-    obj.position=at
-    obj.scale=dimensions
-    var material:=StandardMaterial3D.new()
-    material.albedo_color=tint
-    material.roughness=0.88
-    obj.material_override=material
-    parent.add_child(obj)
 
 func release_chunk(key: Vector2i) -> void:
     if not active.has(key):
