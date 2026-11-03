@@ -1,0 +1,63 @@
+"""First-class contracts for solid-world and non-primitive avatar rebuild.
+
+Source contracts run before native Godot acceptance. Real physics rays and
+movement are validated separately by tests/native_solidity_acceptance.gd.
+"""
+import unittest
+from pathlib import Path
+ROOT = Path(__file__).resolve().parents[1]
+
+def source(path):
+    return (ROOT/path).read_text(encoding="utf-8")
+
+class SolidWorldCharacterContracts(unittest.TestCase):
+    def test_reusable_physical_collision_layer(self):
+        s=source("scripts/world_collision.gd")
+        for token in ["static func solid_box(", "StaticBody3D.new()", "CollisionShape3D.new()", "BoxShape3D.new()", "collision_layer", "static func perimeter_barrier("]:
+            self.assertIn(token,s)
+
+    def test_homestead_buildings_are_physical(self):
+        s=source("scripts/valley.gd")
+        self.assertIn('res://scripts/world_collision.gd',s)
+        self.assertIn("WorldCollision.solid_box(",s)
+        self.assertIn("func _house(",s)
+
+    def test_all_continental_buildings_are_physical(self):
+        s=source("scripts/continental_world.gd")
+        self.assertIn('res://scripts/world_collision.gd',s)
+        self.assertIn("WorldCollision.solid_box(",s)
+        self.assertIn("func _perimeter_chunk(",s)
+        self.assertIn("func _recover_fall(",s)
+        self.assertIn("last_safe_position",s)
+
+    def test_authored_sculpted_avatar_is_not_shape_stack(self):
+        s=source("scripts/sculpted_humanoid.gd")
+        self.assertIn("SurfaceTool.new()",s)
+        self.assertIn("func configure(",s)
+        self.assertIn("func _ring_mesh(",s)
+        self.assertIn("func _face(",s)
+        self.assertIn("func _hair(",s)
+        self.assertNotIn("SphereMesh.new()",s)
+        self.assertNotIn("CapsuleMesh.new()",s)
+        self.assertNotIn("BoxMesh.new()",s)
+        f=source("scripts/farmer.gd")
+        n=source("scripts/frontier_society.gd")
+        self.assertIn("res://scripts/sculpted_humanoid.gd",f)
+        self.assertIn("res://scripts/sculpted_humanoid.gd",n)
+
+    def test_avatar_more_control_and_legacy_save_compatibility(self):
+        s=source("scripts/farmer.gd")
+        for key in ['"jaw"','"brow"','"nose"','"mouth"','"height"','"footwear"','"hair_length"','"eye_size"']:
+            self.assertIn(key,s)
+        self.assertIn("user://everbloom_avatar.cfg",s)
+        self.assertIn("ConfigFile",s)
+        self.assertIn("KEY_C",s)
+
+    def test_native_acceptance_is_routed_in_non_codex_workflow(self):
+        s=source(".github/workflows/everbloom-solid-world-acceptance.yml")
+        self.assertIn("native_solidity_acceptance.gd",s)
+        self.assertIn("native_avatar_acceptance.gd",s)
+        self.assertNotIn("codex",s.lower())
+
+if __name__=="__main__":
+    unittest.main()
