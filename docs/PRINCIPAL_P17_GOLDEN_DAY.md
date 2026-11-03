@@ -1,6 +1,6 @@
 # P17 — Assembled-game golden route (Principal)
 
-**Status:** implementing / awaiting exact-HEAD native CI. This document is a test contract, not a gameplay completion claim.
+**Status:** native-tested and integrated into `main` at `c98f1ca8c53940cfea3ad0a04766556706703352`; P17 remains **partially complete** (no physical device or full player traversal proof).
 
 ## Ownership and scope
 - Principal-owned NEW files only: `scripts/principal_golden_day_acceptance.gd`, `.github/workflows/everbloom-principal-golden-day.yml`, this document. No existing domain logic or other lanes modified.
@@ -24,3 +24,9 @@
 **Reproducibility:** use the dedicated push-only workflow, checksum-verified official Godot 4.7.2, exact `GITHUB_SHA` checkout, native import and script run, fail on script errors, archive logs. General native validation runs independently. No Codex, PR, force, spend, publication or engine port.
 
 **Limitations:** this verifies service-level player actions across an actual scene, not physical player traversal, pathfinding, real-device controls, audiovisual polish, Windows file-lock durability, or full P17 mission closure. A failure is a real regression signal requiring repair before integration.
+
+## Verified receipts and limitations (2026-11-02)
+- Initial isolated candidate `861514dda1a8346f0a6ddedf824cf006a68332ce`: native test **FAILED** 9/69 comparisons because decoded JSON numeric/container representations differed from live Godot Variants. The test's semantic recursive comparison was corrected; no production save code was changed.
+- Isolated corrected SHA `c98f1ca8c53940cfea3ad0a04766556706703352`: [P17 native run 41550065758](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41550065758) **SUCCESS: 69 assertions, 0 failures**; [general native/Python 41550065775](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41550065775) **SUCCESS: 64 Python tests**, import, scene smoke and save recovery.
+- Same exact SHA integrated by expected-SHA non-force fast-forwards to both `main` and `game/everbloom-harvest-sim-rebuild-20261101`: [main P17 run 41550166467](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41550166467) and [main general run 41550166671](https://github.com/reppiks490/stacks-on-stacks/actions/runs/41550166671) both **SUCCESS**.
+- These are real native service-level interactions in the actual scene; **not** proof of manual PC gameplay, physical touch/controller, pathfinding, or device FPS. No Codex, PR, force, spending, publication, unlicensed assets or engine port.
