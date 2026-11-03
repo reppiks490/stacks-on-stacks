@@ -1,0 +1,66 @@
+"""Offline negative/positive fixtures for Village character import admission."""
+import hashlib
+import json
+import pathlib
+import struct
+import tempfile
+import unittest
+from tools.validate_village_character import validate
+
+
+def glb(doc):
+    payload = json.dumps(doc).encode()
+    payload += b" " * ((-len(payload)) % 4)
+    return struct.pack("<4sII", b"glTF", 2, 20 + len(payload)) + struct.pack("<I4s", len(payload), b"JSON") + payload
+
+
+def valid_doc():
+    return {
+        "asset": {"version": "2.0"},
+        "accessors": [{"count": 1200}],
+        "meshes": [{"primitives": [{"attributes": {"POSITION": 0, "NORMAL": 0, "JOINTS_0": 0, "WEIGHTS_0": 0}, "material": 0}]}],
+        "nodes": [{"mesh": 0, "skin": 0}, {}],
+        "skins": [{"joints": [1]}],
+        "animations": [{"channels": [{"sampler": 0, "target": {"node": 1, "path": "rotation"}}]}],
+        "materials": [{"pbrMetallicRoughness": {"baseColorTexture": {"index": 0}, "metallicRoughnessTexture": {"index": 0}}, "normalTexture": {"index": 0}}],
+        "images": [{"uri": "data:image/png;base64,AA=="}],
+        "textures": [{"source": 0}],
+    }
+
+
+class VillageAssetGateTests(unittest.TestCase):
+    def check(self, doc, override=None):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            raw = glb(doc)
+            asset = root / "resident.glb"
+            asset.write_bytes(raw)
+            manifest = {"creator": "Everbloom original art", "source": "in-house", "permission": "owned", "license": "ORIGINAL-OWNED", "sha256": hashlib.sha256(raw).hexdigest()}
+            if override:
+                manifest.update(override)
+            info = root / "provenance.json"
+            info.write_text(json.dumps(manifest))
+            return validate(asset, info)
+
+    def test_valid_structural_fixture(self):
+        self.assertEqual(self.check(valid_doc()), [])
+
+    def test_reject_unlicensed(self):
+        self.assertIn("unapproved license", self.check(valid_doc(), {"license": "unknown"}))
+
+    def test_reject_wrong_hash(self):
+        self.assertIn("asset SHA-256 mismatch", self.check(valid_doc(), {"sha256": "0" * 64}))
+
+    def test_reject_primitive_unrigged(self):
+        doc = valid_doc()
+        doc["skins"] = []
+        self.assertTrue(any("skinned mesh" in e for e in self.check(doc)))
+
+    def test_reject_missing_normal_map(self):
+        doc = valid_doc()
+        del doc["materials"][0]["normalTexture"]
+        self.assertIn("normal map required", self.check(doc))
+
+
+if __name__ == "__main__":
+    unittest.main()
