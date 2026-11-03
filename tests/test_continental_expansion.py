@@ -16,9 +16,9 @@ def source(name):
 class ContinentalExpansionContracts(unittest.TestCase):
     def test_world_surface_is_one_hundred_times_original(self):
         s = source("scripts/continental_world.gd")
-        self.assertIn("const CONTINENT_SIDE: float = 1450.0", s)
-        self.assertIn("const CHUNK_SIDE: float = 145.0", s)
-        self.assertIn("const GRID_WIDTH: int = 10", s)
+        self.assertIn("const CONTINENT_SIDE: float = 4800.0", s)
+        self.assertIn("const CHUNK_SIDE: float = 150.0", s)
+        self.assertIn("const GRID_WIDTH: int = 32", s)
         self.assertIn("func _stream_neighborhood", s)
         self.assertIn("func _unload_chunk", s)
         self.assertIn("MultiMesh", s)
@@ -31,6 +31,8 @@ class ContinentalExpansionContracts(unittest.TestCase):
         self.assertIn("func _make_settlement", s)
         self.assertIn("func _make_panorama", s)
         self.assertIn("func _create_atlas", s)
+        self.assertGreaterEqual(s.count('"kind":"City"'), 2)
+        self.assertGreaterEqual(s.count('"kind":"Kingdom"'), 2)
 
     def test_live_npcs_and_market(self):
         s = source("scripts/frontier_society.gd")
@@ -46,6 +48,16 @@ class ContinentalExpansionContracts(unittest.TestCase):
         self.assertIn("KEY_N", s)
         self.assertIn("KEY_B", s)
         self.assertIn("walking_speed", s)
+
+    def test_physics_progression(self):
+        s = source("scripts/movement_physics.gd")
+        for feature in ("func planar_acceleration(", "func braking_drag(", "func jump_impulse(", "func max_slope_angle(", "func mount_turn_limit("):
+            self.assertIn(feature, s)
+        farmer = source("scripts/farmer.gd")
+        self.assertIn("res://scripts/movement_physics.gd", farmer)
+        self.assertIn("floor_snap_length", farmer)
+        self.assertIn("KEY_SPACE", farmer)
+        self.assertIn("KEY_SHIFT", farmer)
 
     def test_existing_valley_and_character_compatibility(self):
         valley = source("scripts/valley.gd")
