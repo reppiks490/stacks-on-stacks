@@ -1,4 +1,5 @@
 extends Node3D
+const WorldCollision = preload("res://scripts/world_collision.gd")
 ## First-party 4.8 km x 4.8 km continental world: 32x32 cells, 3x3 active at a time.
 ## Non-destructive to homestead, farming, save schema and existing village.
 const CONTINENT_SIDE: float = 4800.0
@@ -56,6 +57,8 @@ var atlas: PanelContainer
 var location_line: Label
 var hud_hint: Label
 var last_label_update: float = 0.0
+var last_safe_position: Vector3 = Vector3(-15.0,1.2,-7.0)
+var recover_cooldown: float = 0.0
 
 func setup(host) -> void:
     game = host
@@ -122,10 +125,19 @@ func _process(delta: float) -> void:
     if game == null or game.hero == null:
         return
     var pos: Vector3 = game.hero.global_position
-    if absf(pos.x)>HALF-3.0 or absf(pos.z)>HALF-3.0:
-        game.hero.global_position.x=clampf(pos.x,-HALF+3.0,HALF-3.0)
-        game.hero.global_position.z=clampf(pos.z,-HALF+3.0,HALF-3.0)
+    recover_cooldown=maxf(0.0,recover_cooldown-delta)
+    # Safe perimeter protects the last loaded continent cells even when a
+    # player holds a movement key against the rim.
+    if absf(pos.x)>HALF-15.0 or absf(pos.z)>HALF-15.0:
+        var guarded_x: float=clampf(pos.x,-HALF+15.0,HALF-15.0)
+        var guarded_z: float=clampf(pos.z,-HALF+15.0,HALF-15.0)
+        game.hero.global_position=Vector3(guarded_x,
+            maxf(pos.y,_terrain_height(guarded_x,guarded_z)+1.8),guarded_z)
         game.hero.velocity=Vector3.ZERO
+        if recover_cooldown<=0.0:
+            game._show("You have reached the protected highland frontier. Explore other regions using M.")
+            recover_cooldown=4.0
+    _recover_fall()
     var cell := _cell_of(Vector2(game.hero.global_position.x,game.hero.global_position.z))
     if cell!=last_cell:
         last_cell=cell
@@ -147,6 +159,25 @@ func _process(delta: float) -> void:
         last_label_update=0.0
         var nearest := _closest_hub(game.hero.global_position)
         hud_hint.text="%s  •  M ATLAS  •  V PANORAMA  •  U TALK/TRADE  •  N MOUNT  •  B PET" % str(nearest.get("name","Wilds"))
+
+func _recover_fall() -> void:
+    if game==null or game.hero==null:
+        return
+    var position: Vector3=game.hero.global_position
+    var ground_height: float=_terrain_height(position.x,position.z)
+    if game.hero.is_on_floor() and position.y>ground_height-2.0:
+        last_safe_position=position
+        return
+    if position.y<ground_height-10.0:
+        # Recover to the last valid grounded position, never leave players in
+        # freefall while a boundary or collision cell is loading.
+        var safe: Vector3=last_safe_position
+        var safe_y: float=_terrain_height(safe.x,safe.z)
+        game.hero.global_position=Vector3(safe.x,maxf(safe.y+2.2,safe.y),safe.z)
+        game.hero.velocity=Vector3.ZERO
+        if recover_cooldown<=0.0:
+            game._show("Returned safely to solid ground after a terrain gap.")
+            recover_cooldown=3.0
 
 func _cell_of(point: Vector2) -> Vector2i:
     return Vector2i(clampi(int(floor((point.x+HALF)/CHUNK_SIDE)),0,GRID_WIDTH-1),
@@ -206,7 +237,9 @@ func _terrain_height(x: float,z: float) -> float:
     var home_dist: float=maxf(absf(x),absf(z))
     var home_fade: float=clampf((home_dist-75.0)/32.0,0.0,1.0)
     plateau=minf(plateau,home_fade*home_fade*(3.0-2.0*home_fade))
-    return waves*relief*plateau
+    var distance_to_edge: float=HALF-maxf(absf(x),absf(z))
+    var rim: float=1.0-clampf(distance_to_edge/210.0,0.0,1.0)
+    return waves*relief*plateau + pow(rim,2.4)*110.0
 
 func _terrain_mesh(origin: Vector3) -> ArrayMesh:
     # Sculpt 150m chunks with 24 subdivisions; generate normals and a matching
@@ -267,6 +300,7 @@ func _make_chunk(key: Vector2i) -> Node3D:
     collision.shape=mesh.create_trimesh_shape()
     collision.position.y=0.0
     body.add_child(collision)
+    _perimeter_chunk(chunk,key)
     var rng:=RandomNumberGenerator.new()
     rng.seed=abs(key.x*16777619+key.y*1234567+20261103)
     _flora(chunk,origin,biome,rng)
@@ -279,6 +313,23 @@ func _make_chunk(key: Vector2i) -> Node3D:
             _make_settlement(chunk,hub,rng)
     society.spawn_for_chunk(chunk,key,origin)
     return chunk
+
+func _perimeter_chunk(chunk: Node3D,key: Vector2i) -> void:
+    # Only border tiles get protective physical walls. Their massive natural
+    # hillside rise (part of the terrain mesh) makes the boundary intentional.
+    var boundary: float=CHUNK_SIDE*0.5-2.0
+    if key.x==0:
+        WorldCollision.perimeter_barrier(chunk,Vector3(-boundary,45.0,0),
+            Vector3(7.0,180.0,CHUNK_SIDE+8.0),"West")
+    if key.x==GRID_WIDTH-1:
+        WorldCollision.perimeter_barrier(chunk,Vector3(boundary,45.0,0),
+            Vector3(7.0,180.0,CHUNK_SIDE+8.0),"East")
+    if key.y==0:
+        WorldCollision.perimeter_barrier(chunk,Vector3(0,45.0,-boundary),
+            Vector3(CHUNK_SIDE+8.0,180.0,7.0),"North")
+    if key.y==GRID_WIDTH-1:
+        WorldCollision.perimeter_barrier(chunk,Vector3(0,45.0,boundary),
+            Vector3(CHUNK_SIDE+8.0,180.0,7.0),"South")
 
 func _safe_scatter(x: float,z: float) -> bool:
     return not (absf(x)<76.0 and absf(z)<76.0)
@@ -421,6 +472,8 @@ func _box(root: Node3D,position: Vector3,size: Vector3,tint: Color) -> MeshInsta
     obj.position=position
     obj.material_override=_mat(tint)
     root.add_child(obj)
+    if size.y>=0.55 and size.x>=0.12 and size.z>=0.12:
+        WorldCollision.solid_box(obj,size)
     return obj
 
 func _ball(root: Node3D,position: Vector3,size: Vector3,tint: Color) -> MeshInstance3D:
