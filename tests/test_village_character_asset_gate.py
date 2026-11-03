@@ -21,7 +21,7 @@ def valid_doc():
         "meshes": [{"primitives": [{"attributes": {"POSITION": 0, "NORMAL": 0, "JOINTS_0": 0, "WEIGHTS_0": 0}, "material": 0}]}],
         "nodes": [{"mesh": 0, "skin": 0}, {}],
         "skins": [{"joints": [1]}],
-        "animations": [{"channels": [{"sampler": 0, "target": {"node": 1, "path": "rotation"}}]}],
+        "animations": [{"samplers": [{"input": 0, "output": 0}], "channels": [{"sampler": 0, "target": {"node": 1, "path": "rotation"}}]}],
         "materials": [{"pbrMetallicRoughness": {"baseColorTexture": {"index": 0}, "metallicRoughnessTexture": {"index": 0}}, "normalTexture": {"index": 0}}],
         "images": [{"uri": "data:image/png;base64,AA=="}],
         "textures": [{"source": 0}],
@@ -60,6 +60,27 @@ class VillageAssetGateTests(unittest.TestCase):
         doc = valid_doc()
         del doc["materials"][0]["normalTexture"]
         self.assertIn("normal map required", self.check(doc))
+
+
+    def test_reject_dangling_texture_reference(self):
+        doc = valid_doc()
+        doc["materials"][0]["normalTexture"]["index"] = 9
+        self.assertIn("material references missing texture", self.check(doc))
+
+    def test_reject_dangling_image_reference(self):
+        doc = valid_doc()
+        doc["textures"][0]["source"] = 9
+        self.assertIn("texture references missing image", self.check(doc))
+
+    def test_reject_missing_animation_sampler(self):
+        doc = valid_doc()
+        doc["animations"][0]["samplers"] = []
+        self.assertIn("animation channel references missing sampler", self.check(doc))
+
+    def test_reject_external_image_uri(self):
+        doc = valid_doc()
+        doc["images"][0]["uri"] = "https://example.invalid/skin.png"
+        self.assertIn("external image URI forbidden in self-contained GLB", self.check(doc))
 
 
 if __name__ == "__main__":
