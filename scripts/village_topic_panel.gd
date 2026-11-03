@@ -108,8 +108,22 @@ func setup(owner) -> void:
     button_style.set_border_width_all(1)
     button_style.set_corner_radius_all(9)
     button_style.set_content_margin_all(9)
+    # Explicit states prevent the engine's generic hover/pressed theme from
+    # flashing unrelated colors over the authored civic palette.
+    var hover_style := button_style.duplicate() as StyleBoxFlat
+    hover_style.bg_color = Color(0.20, 0.34, 0.33, 1.0)
+    hover_style.border_color = Color(0.78, 0.88, 0.72, 1.0)
+    var pressed_style := button_style.duplicate() as StyleBoxFlat
+    pressed_style.bg_color = Color(0.10, 0.20, 0.20, 1.0)
+    pressed_style.border_color = Color(1.0, 0.85, 0.48, 1.0)
+    var disabled_style := button_style.duplicate() as StyleBoxFlat
+    disabled_style.bg_color = Color(0.12, 0.17, 0.18, 1.0)
+    disabled_style.border_color = Color(0.35, 0.42, 0.40, 1.0)
     panel.set_meta("village_focus_style", focus_style)
     panel.set_meta("village_button_style", button_style)
+    panel.set_meta("village_hover_style", hover_style)
+    panel.set_meta("village_pressed_style", pressed_style)
+    panel.set_meta("village_disabled_style", disabled_style)
     # The chapter tracker must never push choices off a short mobile viewport.
     # Focusable buttons inside ScrollContainer remain keyboard/gamepad reachable.
     var scroll := ScrollContainer.new()
@@ -144,6 +158,10 @@ func setup(owner) -> void:
         button.custom_minimum_size.y = 56.0
         button.focus_mode = Control.FOCUS_ALL
         button.add_theme_stylebox_override("normal", button_style)
+        button.add_theme_stylebox_override("hover", hover_style)
+        button.add_theme_stylebox_override("pressed", pressed_style)
+        button.add_theme_stylebox_override("disabled", disabled_style)
+        button.add_theme_color_override("font_disabled_color", Color(0.69, 0.74, 0.71))
         button.add_theme_stylebox_override("focus", focus_style)
         button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
         button.add_theme_color_override("font_focus_color", Color(1, 1, 1))
@@ -157,6 +175,10 @@ func setup(owner) -> void:
     language_button.custom_minimum_size.y = MIN_TOUCH_TARGET
     language_button.focus_mode = Control.FOCUS_ALL
     language_button.add_theme_stylebox_override("normal", button_style)
+    language_button.add_theme_stylebox_override("hover", hover_style)
+    language_button.add_theme_stylebox_override("pressed", pressed_style)
+    language_button.add_theme_stylebox_override("disabled", disabled_style)
+    language_button.add_theme_color_override("font_disabled_color", Color(0.69, 0.74, 0.71))
     language_button.add_theme_stylebox_override("focus", focus_style)
     language_button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
     language_button.pressed.connect(_toggle_locale)
@@ -167,6 +189,10 @@ func setup(owner) -> void:
     cancel_button.custom_minimum_size.y = MIN_TOUCH_TARGET
     cancel_button.focus_mode = Control.FOCUS_ALL
     cancel_button.add_theme_stylebox_override("normal", button_style)
+    cancel_button.add_theme_stylebox_override("hover", hover_style)
+    cancel_button.add_theme_stylebox_override("pressed", pressed_style)
+    cancel_button.add_theme_stylebox_override("disabled", disabled_style)
+    cancel_button.add_theme_color_override("font_disabled_color", Color(0.69, 0.74, 0.71))
     cancel_button.add_theme_stylebox_override("focus", focus_style)
     cancel_button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
     cancel_button.pressed.connect(close_topics)
