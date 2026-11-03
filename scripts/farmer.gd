@@ -23,6 +23,7 @@ var left_leg: Node3D
 var right_leg: Node3D
 var anim_clock: float = 0.0
 var preview_yaw: float = 0.0
+var ride_offset: float = 0.0
 var profile: Dictionary = {
     "skin": 3, "face": 1, "hair": 2, "hair_color": 2, "eyes": 1,
     "outfit": 0, "pants": 0, "build": 1, "headwear": 0, "accessory": 0
@@ -374,4 +375,4 @@ func _physics_process(delta: float) -> void:
         left_leg.rotation.x = stride*0.7
         right_leg.rotation.x = -stride*0.7
     if visual_root != null:
-        visual_root.position.y = sin(anim_clock*0.5)*0.025
+        visual_root.position.y = sin(anim_clock*0.5)*0.025 + ride_offset
