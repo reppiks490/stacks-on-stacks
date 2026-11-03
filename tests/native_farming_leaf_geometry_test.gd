@@ -1,6 +1,7 @@
 extends SceneTree
 # Run: godot --headless --path . --script res://tests/native_farming_leaf_geometry_test.gd
 # Isolated asset test; does not modify save files or game state.
+const SIDES_FOR_TEST := 8
 const Leaf = preload("res://scripts/farming_visuals/leaf_blade_mesh.gd")
 
 func _initialize() -> void:
@@ -21,7 +22,7 @@ func _initialize() -> void:
         assert(edge_a.cross(edge_b).length_squared() > 0.000000000001, "Degenerate leaf triangle")
     for tri in range(0, int(vertices.size() / 2), 3):
         var front: Vector3 = (vertices[tri + 1] - vertices[tri]).cross(vertices[tri + 2] - vertices[tri])
-        var back_idx := tri + vertices.size() / 2
+        var back_idx := tri + int(vertices.size() / 2)
         var back: Vector3 = (vertices[back_idx + 1] - vertices[back_idx]).cross(vertices[back_idx + 2] - vertices[back_idx])
         assert(front.dot(back) < 0.0, "Backface winding must oppose frontface")
         assert(vertices[back_idx].z < vertices[tri + 2].z + 0.01, "Underside must stay near upper lamina")
@@ -51,13 +52,17 @@ func _initialize() -> void:
     assert(Leaf.make_leaf(-1.0, 0.12, 0.08).get_surface_count() == 0, "Invalid dimensions must fail closed")
     assert(Leaf.make_leaf(0.65, INF, 0.08).get_surface_count() == 0, "Nonfinite dimensions must fail closed")
     assert(Leaf.make_leaf(0.65, 0.12, 1.0).get_surface_count() == 0, "Excessive curl must fail closed")
-    # Check anatomical taper: center thickness exceeds the margin thickness.
-    # Front and underside triangles share the same tessellation and index order.
-    var half := int(vertices.size() / 2)
-    var mid_center := (6 * 8 + 4) * 6
-    var mid_margin := (6 * 8) * 6
-    var center_gap := abs(vertices[mid_center].z - vertices[half + mid_center + 2].z)
-    var margin_gap := abs(vertices[mid_margin].z - vertices[half + mid_margin + 2].z)
+    # Compare the same authored vertex on each face, rather than unrelated
+    # triangle corners. Front triangles emit [a,b,a+1] and underside emits
+    # [a+1,b,a], so front slot 0 corresponds to underside slot 2.
+    # Choose a ring with nonzero width and a central vs marginal blade point.
+    var center_ring := 6
+    var center_column := 4
+    var margin_column := 0
+    var center_front := (center_ring * SIDES_FOR_TEST + center_column) * 6
+    var margin_front := (center_ring * SIDES_FOR_TEST + margin_column) * 6
+    var center_gap := vertices[center_front].distance_to(vertices[half + center_front + 2])
+    var margin_gap := vertices[margin_front].distance_to(vertices[half + margin_front + 2])
     assert(center_gap > margin_gap, "Lamina should taper toward its margin")
     print("PASS native farming leaf geometry: winding, UV, finite bounds, deterministic seed, invalid inputs")
     quit(0)
