@@ -39,15 +39,34 @@ static func _wedge(ri: float, ro: float, a0: float, a1: float, depth: float) -> 
                 p.append(Vector3(cos(a) * r, sin(a) * r, z))
     var surface := SurfaceTool.new()
     surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-    # Six outward-oriented quadrilateral faces; winding is corrected per centroid.
-    for q in [[0, 1, 3, 2], [4, 6, 7, 5], [0, 4, 5, 1], [2, 3, 7, 6], [0, 2, 6, 4], [1, 5, 7, 3]]:
-        _face(surface, p, q)
+    # Explicit outward normals for front, back, inner, outer, and radial ends.
+    # A mesh is not safe for collision merely because triangles exist: their winding matters.
+    var mid := (a0 + a1) * 0.5
+    var radial := Vector3(cos(mid), sin(mid), 0.0)
+    var tangent0 := Vector3(-sin(a0), cos(a0), 0.0)
+    var tangent1 := Vector3(-sin(a1), cos(a1), 0.0)
+    var faces := [
+        [[0, 1, 3, 2], Vector3(0, 0, -1)],
+        [[4, 6, 7, 5], Vector3(0, 0, 1)],
+        [[0, 4, 5, 1], -radial],
+        [[2, 3, 7, 6], radial],
+        [[0, 2, 6, 4], tangent0],
+        [[1, 5, 7, 3], -tangent1],
+    ]
+    for face in faces:
+        _face(surface, p, face[0], face[1])
     surface.generate_normals()
     surface.generate_tangents()
     return surface.commit()
 
-static func _face(surface: SurfaceTool, p: PackedVector3Array, q: Array) -> void:
+static func _face(surface: SurfaceTool, p: PackedVector3Array, q: Array, outward: Vector3) -> void:
+    var a: Vector3 = p[q[0]]
+    var b: Vector3 = p[q[1]]
+    var c: Vector3 = p[q[2]]
+    var reverse := (b - a).cross(c - a).dot(outward) < 0.0
     for tri in [[0, 1, 2], [0, 2, 3]]:
+        if reverse:
+            tri.reverse()
         for index in tri:
             var corner: int = q[index]
             var v: Vector3 = p[corner]
