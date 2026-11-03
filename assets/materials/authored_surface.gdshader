@@ -40,7 +40,11 @@ void fragment() {
     NORMAL_MAP = texture(normal_map, uv).rgb;
     NORMAL_MAP_DEPTH = normal_strength;
     float r = texture(roughness_map, uv).r;
-    ROUGHNESS = mix(roughness_floor, roughness_ceiling, r);
+    // Artists may invert floor/ceiling while tuning an instance. Keep the
+    // physically meaningful roughness interval ordered in either case.
+    float roughness_min = min(roughness_floor, roughness_ceiling);
+    float roughness_max = max(roughness_floor, roughness_ceiling);
+    ROUGHNESS = clamp(mix(roughness_min, roughness_max, r), 0.0, 1.0);
     METALLIC = 0.0;
     SPECULAR = 0.42;
 }
