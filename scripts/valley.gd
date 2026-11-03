@@ -1,4 +1,5 @@
 extends Node3D
+const WorldCollision = preload("res://scripts/world_collision.gd")
 ## Procedural valley shell of exclusively original primitive shapes.
 var game
 var material_cache: Dictionary = {}
@@ -51,6 +52,9 @@ func box(at: Vector3, extent: Vector3, tint: Color, parent: Node3D = self) -> Me
     mesh_instance.position = at
     mesh_instance.material_override = material(tint)
     parent.add_child(mesh_instance)
+    # All substantial structural boxes get the same physical volume as the visible model.
+    if extent.y >= 0.55 and extent.x >= 0.12 and extent.z >= 0.12:
+        WorldCollision.solid_box(mesh_instance,extent)
     return mesh_instance
 
 func sphere(at: Vector3, radius: float, tint: Color, parent: Node3D = self) -> MeshInstance3D:
