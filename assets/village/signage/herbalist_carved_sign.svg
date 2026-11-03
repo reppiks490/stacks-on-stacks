@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="512" viewBox="0 0 1024 512" role="img" aria-label="Original hand-crafted herbalist shop sign, carved wood with botanical copper inlay">
+<defs>
+ <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#6e4931"/><stop offset=".44" stop-color="#442d24"/><stop offset="1" stop-color="#281e1b"/></linearGradient>
+ <linearGradient id="brass" x2=".2" y2="1"><stop stop-color="#f5dc98"/><stop offset=".45" stop-color="#bb8d48"/><stop offset="1" stop-color="#74502f"/></linearGradient>
+ <pattern id="grain" width="128" height="72" patternUnits="userSpaceOnUse"><path d="M-5 16 Q32 1 76 19 T138 10 M-4 42 Q48 60 89 41 T140 52 M-6 65 Q35 54 67 67 T135 60" fill="none" stroke="#b38a64" stroke-opacity=".17" stroke-width="2"/></pattern>
+ <filter id="shadow" x="-15%" y="-25%" width="130%" height="150%"><feGaussianBlur stdDeviation="7"/></filter>
+</defs>
+<path d="M84 74 Q512 20 940 74 L976 118 976 392 940 438 Q512 490 84 438 L48 392 48 118Z" fill="#130e0d" opacity=".6" filter="url(#shadow)" transform="translate(7 12)"/>
+<path d="M84 74 Q512 20 940 74 L976 118 976 392 940 438 Q512 490 84 438 L48 392 48 118Z" fill="url(#wood)" stroke="#1c1614" stroke-width="12"/>
+<path d="M84 74 Q512 20 940 74 L976 118 976 392 940 438 Q512 490 84 438 L48 392 48 118Z" fill="url(#grain)"/>
+<path d="M102 91 Q512 42 922 91 L951 129 951 381 922 414 Q512 459 102 414 L73 381 73 129Z" fill="none" stroke="url(#brass)" stroke-width="5"/>
+<path d="M113 112 Q512 68 911 112 M113 398 Q512 440 911 398" fill="none" stroke="#d3aa70" stroke-opacity=".65" stroke-width="2"/>
+<g fill="url(#brass)" stroke="#432d1c" stroke-width="3"><circle cx="101" cy="132" r="11"/><circle cx="923" cy="132" r="11"/><circle cx="101" cy="377" r="11"/><circle cx="923" cy="377" r="11"/></g>
+<g fill="none" stroke="#a8ba85" stroke-width="5" stroke-linecap="round">
+ <path d="M181 352 Q115 284 162 175 M843 352 Q909 284 862 175"/>
+ <path d="M166 306 Q125 297 122 265 M161 277 Q203 271 212 238 M159 240 Q122 223 132 192 M858 306 Q899 297 902 265 M863 277 Q821 271 812 238 M865 240 Q902 223 892 192"/>
+</g>
+<g fill="#8eaa76" stroke="#c5c995" stroke-width="2">
+ <path d="M122 265 Q99 228 117 218 Q143 233 122 265Z M212 238 Q216 200 237 204 Q236 229 212 238Z M132 192 Q104 179 111 157 Q135 161 132 192Z"/>
+ <path d="M902 265 Q925 228 907 218 Q881 233 902 265Z M812 238 Q808 200 787 204 Q788 229 812 238Z M892 192 Q920 179 913 157 Q889 161 892 192Z"/>
+</g>
+<g fill="#e9d9ad" text-anchor="middle">
+ <text x="512" y="197" font-family="Georgia,serif" font-size="28" letter-spacing="11">THE LIVING VALLEY</text>
+ <text x="512" y="290" font-family="Georgia,serif" font-weight="bold" font-size="81" letter-spacing="3">HERBALIST</text>
+ <text x="512" y="344" font-family="Georgia,serif" font-size="25" letter-spacing="7">ROOT · BLOOM · REMEDY</text>
+</g>
+<path d="M348 367 Q512 393 676 367" fill="none" stroke="#d4ad72" stroke-width="3"/>
+<g fill="#dfb77b"><path d="M512 365 l12 -14 -12 -14 -12 14Z"/><circle cx="344" cy="368" r="4"/><circle cx="680" cy="368" r="4"/></g>
+</svg>
