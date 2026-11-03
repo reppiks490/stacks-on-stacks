@@ -61,6 +61,11 @@ func _initialize() -> void:
     var margin_column := 0
     var center_front := (center_ring * SIDES_FOR_TEST + center_column) * 6
     var margin_front := (center_ring * SIDES_FOR_TEST + margin_column) * 6
+    # The first half of the triangle stream is the upper lamina; the second
+    # half contains matching underside triangles with reversed winding.
+    # Keep the offset derived from the actual emitted mesh, not an undefined
+    # local variable, so the native regression can execute.
+    var half := int(vertices.size() / 2)
     var center_gap := vertices[center_front].distance_to(vertices[half + center_front + 2])
     var margin_gap := vertices[margin_front].distance_to(vertices[half + margin_front + 2])
     assert(center_gap > margin_gap, "Lamina should taper toward its margin")
