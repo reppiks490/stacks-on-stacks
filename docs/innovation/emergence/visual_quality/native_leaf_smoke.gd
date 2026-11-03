@@ -1,7 +1,7 @@
 extends SceneTree
 ## E19 native acceptance for the original, staged foliage candidate.
-## Run after staging to PROJECT_ROOT/everbloom_leaf_candidate:
-## Copy the candidate directory to the repository's Godot project root, then run:\n## godot --headless --path PROJECT_ROOT --script res://docs/innovation/emergence/visual_quality/native_leaf_smoke.gd
+## Run after staging into PROJECT_ROOT/everbloom_leaf_candidate:
+## godot --headless --path PROJECT_ROOT --script res://docs/innovation/emergence/visual_quality/native_leaf_smoke.gd
 ## A headless pass does NOT establish visual fidelity or desktop/mobile FPS.
 
 const SCENE_PATH := "res://everbloom_leaf_candidate/leaf_candidate.tscn"
@@ -31,6 +31,21 @@ func _run() -> void:
     if blade == null or blade.mesh == null or blade.mesh.get_surface_count() < 1:
         _fail("staged leaf mesh failed to import")
         return
+    # Reject a resource that imports but has no usable authored surface or UVs.
+    var mesh_arrays := blade.mesh.surface_get_arrays(0)
+    var vertices: PackedVector3Array = mesh_arrays[Mesh.ARRAY_VERTEX]
+    var uvs: PackedVector2Array = mesh_arrays[Mesh.ARRAY_TEX_UV]
+    if vertices.size() < 15 or uvs.size() != vertices.size():
+        _fail("leaf geometry has missing vertices or UV coordinates")
+        return
+    var bounds := blade.mesh.get_aabb()
+    if bounds.size.x < 0.4 or bounds.size.y < 0.3 or bounds.size.z < 0.02:
+        _fail("leaf geometry collapsed or lost authored curvature")
+        return
+    for uv in uvs:
+        if not is_finite(uv.x) or not is_finite(uv.y) or uv.x < 0.0 or uv.x > 1.0 or uv.y < 0.0 or uv.y > 1.0:
+            _fail("leaf has invalid or out-of-atlas UVs")
+            return
     if blade.material_override != material:
         _fail("staged leaf material binding mismatch")
         return
@@ -49,7 +64,7 @@ func _run() -> void:
         _fail("reduced motion toggle did not persist")
         return
     material.set_shader_parameter("reduced_motion", false)
-    print("PASS E19 native import, mesh, three PBR maps, 120 frames, reduced-motion toggle")
+    print("PASS E19 native import, curved mesh bounds, UVs, three PBR maps, 120 frames, reduced-motion toggle")
     print("UNVERIFIED: GPU shader compilation, screenshots, actual wind appearance, FPS, collision")
     instance.queue_free()
     quit(0)
