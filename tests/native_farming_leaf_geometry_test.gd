@@ -50,5 +50,14 @@ func _initialize() -> void:
     assert(duplicate.surface_get_arrays(0)[Mesh.ARRAY_COLOR] == pigments, "Pigment generation must be deterministic")
     assert(Leaf.make_leaf(-1.0, 0.12, 0.08).get_surface_count() == 0, "Invalid dimensions must fail closed")
     assert(Leaf.make_leaf(0.65, INF, 0.08).get_surface_count() == 0, "Nonfinite dimensions must fail closed")
+    assert(Leaf.make_leaf(0.65, 0.12, 1.0).get_surface_count() == 0, "Excessive curl must fail closed")
+    # Check anatomical taper: center thickness exceeds the margin thickness.
+    # Front and underside triangles share the same tessellation and index order.
+    var half := int(vertices.size() / 2)
+    var mid_center := (6 * 8 + 4) * 6
+    var mid_margin := (6 * 8) * 6
+    var center_gap := abs(vertices[mid_center].z - vertices[half + mid_center + 2].z)
+    var margin_gap := abs(vertices[mid_margin].z - vertices[half + mid_margin + 2].z)
+    assert(center_gap > margin_gap, "Lamina should taper toward its margin")
     print("PASS native farming leaf geometry: winding, UV, finite bounds, deterministic seed, invalid inputs")
     quit(0)
