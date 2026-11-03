@@ -304,7 +304,12 @@ func _make_chunk(key: Vector2i) -> Node3D:
     var body := StaticBody3D.new()
     chunk.add_child(body)
     var collision := CollisionShape3D.new()
-    collision.shape=mesh.create_trimesh_shape()
+    var terrain_shape: ConcavePolygonShape3D=mesh.create_trimesh_shape()
+    # A two-sided static collider is necessary for generated terrain whose
+    # render-side winding can otherwise reject upward-facing physics rays.
+    # Test both sides of the old 145-unit homestead boundary in native CI.
+    terrain_shape.backface_collision=true
+    collision.shape=terrain_shape
     collision.position.y=0.0
     body.add_child(collision)
     _perimeter_chunk(chunk,key)
