@@ -1,8 +1,11 @@
 extends Node3D
 const WorldCollision = preload("res://scripts/world_collision.gd")
+const SculptedFoliage = preload("res://scripts/sculpted_foliage.gd")
 ## Procedural valley shell of exclusively original primitive shapes.
 var game
 var material_cache: Dictionary = {}
+var tree_canopy_mesh: ArrayMesh
+var tree_trunk_mesh: ArrayMesh
 var forage_locations: Array[Vector3] = []
 var forage_day: int = -1
 var fishing_day: int = -1
@@ -149,18 +152,31 @@ func _woods() -> void:
         sphere(Vector3(x,0.2,z), rng.randf_range(0.11,0.25), Color("#f0c8d5") if i%3==0 else Color("#f5e6a8"))
 
 func _tree(at: Vector3, scale: float, index: int) -> void:
-    box(at+Vector3(0,1.2*scale,0),Vector3(0.55*scale,2.6*scale,0.55*scale),Color("#785e43"))
-    var leaf := Color("#75a36e") if index%3 else Color("#98b87a")
-    sphere(at+Vector3(0,3.0*scale,0),1.55*scale,leaf)
-    sphere(at+Vector3(-0.8*scale,2.7*scale,0),1.1*scale,leaf.lightened(0.1))
+    if tree_canopy_mesh==null:
+        tree_canopy_mesh=SculptedFoliage.make_canopy_mesh()
+        tree_trunk_mesh=SculptedFoliage.make_trunk_mesh()
+    var timber:=MeshInstance3D.new()
+    timber.name="CarvedOriginalTreeTrunk"
+    timber.mesh=tree_trunk_mesh
+    timber.position=at+Vector3(0,1.30*scale,0)
+    timber.scale=Vector3(0.53,2.6,0.53)*scale
+    timber.material_override=material(Color("#785e43"))
+    add_child(timber)
+    WorldCollision.solid_box(timber,Vector3.ONE,"tree")
+    var crown:=MeshInstance3D.new()
+    crown.name="SculptedBotanicalTreeCanopy"
+    crown.mesh=tree_canopy_mesh
+    crown.position=at+Vector3(0,3.15*scale,0)
+    crown.scale=Vector3(3.25,3.65,3.2)*scale
+    var leaves: Color=Color("#75a36e") if index%3 else Color("#a0bf80")
+    crown.material_override=material(leaves)
+    add_child(crown)
 
 func _hills() -> void:
-    for i in range(9):
-        var x = -52 + i * 13
-        sphere(Vector3(float(x),-1.2,67.0),13.0, Color("#83a190"))
-    for i in range(8):
-        var z = -55 + i * 15
-        sphere(Vector3(-68.0,-1.4,float(z)),12.5,Color("#849e80"))
+    # The old rows of giant spherical hills visibly marked a fake end of map.
+    # The 4.8 km streaming terrain now provides actual continued land beyond
+    # the homestead; no spherical boundary sculpture is installed here.
+    pass
 
 func _wayfinding() -> void:
     for data in [
