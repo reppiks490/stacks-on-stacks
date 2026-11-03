@@ -105,7 +105,13 @@ def validate(glb_path, manifest_path):
             errors.append("invalid accessor backing view")
     if not doc.get("images") or not doc.get("textures"):
         errors.append("texture image data missing")
-    if not any(node.get("skin") is not None and node.get("mesh") is not None for node in nodes):
+    # Both references must resolve; merely having mesh/skin keys is insufficient.
+    if not any(
+        isinstance(node, dict)
+        and type(node.get("skin")) is int and 0 <= node["skin"] < len(skins)
+        and type(node.get("mesh")) is int and 0 <= node["mesh"] < len(meshes)
+        for node in nodes
+    ):
         errors.append("no node binds a mesh to a skeleton")
     if not any(animation.get("channels") for animation in animations):
         errors.append("animation has no channels")
