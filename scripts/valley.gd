@@ -22,6 +22,11 @@ func setup(host) -> void:
     art.set_script(load("res://scripts/visual_environment.gd"))
     add_child(art)
     art.setup(self)
+    var continent := Node3D.new()
+    continent.name = "EverbloomContinentalFrontier"
+    continent.set_script(load("res://scripts/continental_world.gd"))
+    add_child(continent)
+    continent.setup(game)
 
 func material(tint: Color) -> StandardMaterial3D:
     var key := tint.to_html()
