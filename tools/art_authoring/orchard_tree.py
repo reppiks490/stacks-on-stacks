@@ -175,6 +175,35 @@ for b in range(11):
              rng.uniform(.32,.56),rng.uniform(.07,.12),v,
              leaf_mats[rng.randrange(len(leaf_mats))])
 
+# Batch the existing authored leaf and petiole meshes by material. Each leaf
+# previously exported as a separate glTF node/mesh, multiplying draw calls
+# across an orchard. This preserves the exact authored vertex positions and
+# material assignments; it does not generate placeholder foliage or LODs.
+# Blender source remains editable at the grouped-mesh level.
+def batch_material_meshes(prefix, materials):
+    for mat in materials:
+        group = [obj for obj in bpy.context.scene.objects
+                 if obj.type == "MESH" and obj.name.startswith(prefix)
+                 and len(obj.data.materials) == 1 and obj.data.materials[0] == mat]
+        if len(group) < 2:
+            continue
+        bpy.ops.object.select_all(action="DESELECT")
+        for obj in group:
+            obj.select_set(True)
+        bpy.context.view_layer.objects.active = group[0]
+        bpy.ops.object.join()
+        merged = bpy.context.view_layer.objects.active
+        merged.name = "orchard_batched_%s_%s" % (prefix.rstrip("_"), mat.name)
+        assert len(merged.data.materials) == 1
+        assert merged.data.materials[0] == mat
+        assert len(merged.data.vertices) > 0
+        merged.select_set(False)
+
+batch_material_meshes("leaf_", leaf_mats)
+batch_material_meshes("petiole_", [twig_mat])
+# Trunk and branch objects remain separate for selective collision and
+# eventual LOD authoring. Mesh batching is not a measured FPS improvement.
+
 # Keep explicit geometry; do not generate collision or claim canopy occlusion tests.
 out = Path(bpy.path.abspath("//art_exports"))
 out.mkdir(parents=True, exist_ok=True)
