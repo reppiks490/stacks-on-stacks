@@ -1,0 +1,58 @@
+name: Everbloom P17 assembled-game golden route
+on:
+  push:
+    paths:
+      - 'scripts/principal_golden_day_acceptance.gd'
+      - 'docs/PRINCIPAL_P17_GOLDEN_DAY.md'
+      - '.github/workflows/everbloom-principal-golden-day.yml'
+      - 'scripts/game.gd'
+      - 'scripts/save_service.gd'
+      - 'scripts/farm.gd'
+      - 'scripts/animals.gd'
+      - 'scripts/village.gd'
+      - 'scripts/festivals.gd'
+permissions:
+  contents: read
+jobs:
+  golden-route:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      XDG_DATA_HOME: /tmp/everbloom-principal-golden-route
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify exact checkout SHA
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          echo "EXACT_HEAD=$GITHUB_SHA"
+      - name: Download checksum-pinned official Godot 4.7.2
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot.zip https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip' | sha256sum --check
+          unzip -q /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --version
+      - name: Native editor import and script parse
+        run: |
+          set -euo pipefail
+          /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee principal_golden_import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR: Failed loading|ERROR: Failed to load|ERROR: Cannot open' principal_golden_import.log; then exit 1; fi
+      - name: Actual assembled-game crop livestock village festival sleep save restart load
+        run: |
+          set -euo pipefail
+          mkdir -p "$XDG_DATA_HOME"
+          timeout 75s /tmp/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --script res://scripts/principal_golden_day_acceptance.gd 2>&1 | tee principal_golden_native.log
+          grep -Eq '^PRINCIPAL GOLDEN ROUTE: [0-9]+ assertions, 0 failures$' principal_golden_native.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|PRINCIPAL GOLDEN ROUTE FAIL:' principal_golden_native.log; then exit 1; fi
+      - name: Archive exact-head native evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: everbloom-principal-golden-route-${{ github.sha }}
+          path: |
+            principal_golden_import.log
+            principal_golden_native.log
+          if-no-files-found: ignore
+          retention-days: 14
