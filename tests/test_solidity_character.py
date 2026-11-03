@@ -44,6 +44,9 @@ class SolidWorldCharacterContracts(unittest.TestCase):
         n=source("scripts/frontier_society.gd")
         self.assertIn("res://scripts/sculpted_humanoid.gd",f)
         self.assertIn("res://scripts/sculpted_humanoid.gd",n)
+        village=source("scripts/village.gd")
+        self.assertIn("res://scripts/sculpted_humanoid.gd",village)
+        self.assertNotIn("CapsuleMesh.new()",village)
 
     def test_avatar_more_control_and_legacy_save_compatibility(self):
         s=source("scripts/farmer.gd")
