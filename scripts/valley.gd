@@ -87,20 +87,14 @@ func _paths() -> void:
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
-    var roof_mesh := CylinderMesh.new()
-    roof_mesh.top_radius = 0.0
-    roof_mesh.bottom_radius = width * 0.67
-    roof_mesh.height = 2.2
-    roof_mesh.radial_segments = 4
-    var roof_node := MeshInstance3D.new()
-    roof_node.mesh = roof_mesh
-    roof_node.position = at + Vector3(0, 5.0, 0)
-    roof_node.rotation.y = PI / 4.0
-    roof_node.material_override = material(roof)
-    add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
-    box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+    # Single original architectural surface-kit replaces box + wedge primitives.
+    var home:=Node3D.new()
+    home.name="AuthoredLarkspurHouse"
+    home.position=at
+    home.set_script(load("res://scripts/sculpted_architecture.gd"))
+    add_child(home)
+    var style: int=posmod(int(round(at.x*3.0+at.z*7.0)),5)
+    home.build_house(width,4.0,walls,roof,style)
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
