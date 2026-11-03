@@ -90,7 +90,7 @@ def validate(glb_path, manifest_path):
         binary_length = 0
     else:
         binary_length, binary_type = struct.unpack_from("<I4s", raw, bin_start)
-        if binary_type != b"BIN\\x00" or bin_start + 8 + binary_length != len(raw):
+        if binary_type != b"BIN\x00" or bin_start + 8 + binary_length != len(raw):
             errors.append("invalid or truncated GLB BIN chunk")
             binary_length = 0
     buffers = doc.get("buffers", [])
