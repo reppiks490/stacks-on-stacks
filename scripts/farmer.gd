@@ -1,4 +1,5 @@
 extends CharacterBody3D
+const MovementPhysics = preload("res://scripts/movement_physics.gd")
 ## Original customizable, animated EVERBLOOM farmer assembled from authored geometry.
 ## Press C to enter the avatar atelier; Tab to choose a category and arrows to vary it.
 const PROFILE_PATH := "user://everbloom_avatar.cfg"
@@ -24,6 +25,9 @@ var right_leg: Node3D
 var anim_clock: float = 0.0
 var preview_yaw: float = 0.0
 var ride_offset: float = 0.0
+var exertion: float = 100.0
+var jump_was_pressed: bool = false
+var footfall_time: float = 0.0
 var profile: Dictionary = {
     "skin": 3, "face": 1, "hair": 2, "hair_color": 2, "eyes": 1,
     "outfit": 0, "pants": 0, "build": 1, "headwear": 0, "accessory": 0
@@ -356,23 +360,46 @@ func _physics_process(delta: float) -> void:
     var axis := Vector2.ZERO
     if not studio_open:
         axis = Input.get_vector("move_left","move_right","move_up","move_down")
-    var direction := Vector3(axis.x,0.0,axis.y)
-    velocity.x = direction.x * walking_speed
-    velocity.z = direction.z * walking_speed
-    if not is_on_floor():
-        velocity.y -= 22.0*delta
+    var mounted: bool = ride_offset > 0.02
+    var ground: bool = is_on_floor()
+    var requested_sprint: bool = Input.is_key_pressed(KEY_SHIFT) and not studio_open
+    var sprint: bool = requested_sprint and exertion > 5.0 and axis.length() > 0.10
+    var target_speed: float = walking_speed * (MovementPhysics.sprint_multiplier(mounted) if sprint else 1.0)
+    var desired: Vector2 = axis.normalized() * target_speed
+    var planar: Vector2 = Vector2(velocity.x, velocity.z)
+    var accel: float = MovementPhysics.planar_acceleration(mounted, ground)
+    var drag: float = MovementPhysics.braking_drag(mounted, ground)
+    planar = planar.move_toward(desired, (drag if axis.length() < 0.05 else accel) * delta)
+    velocity.x = planar.x
+    velocity.z = planar.y
+    if sprint:
+        exertion = maxf(0.0, exertion - MovementPhysics.stamina_drain(mounted) * delta)
     else:
-        velocity.y = 0.0
+        exertion = minf(100.0, exertion + MovementPhysics.stamina_recovery() * delta)
+    var jump_pressed: bool = Input.is_key_pressed(KEY_SPACE) and not studio_open
+    floor_snap_length = 0.24
+    floor_max_angle = MovementPhysics.max_slope_angle(mounted)
+    if ground:
+        if jump_pressed and not jump_was_pressed and not studio_open:
+            velocity.y = MovementPhysics.jump_impulse(mounted)
+        elif velocity.y < 0.0:
+            velocity.y = -0.3
+    else:
+        velocity.y = maxf(velocity.y - MovementPhysics.gravity_force() * delta, -36.0)
+    jump_was_pressed = jump_pressed
     move_and_slide()
-    if direction.length() > 0.05:
-        rotation.y = lerp_angle(rotation.y,atan2(direction.x,direction.z),minf(1.0,delta*9.0))
-    anim_clock += delta * (9.0 if direction.length()>0.05 else 2.0)
-    var stride := sin(anim_clock)*0.42 if direction.length()>0.05 else 0.0
+    var walking: bool = Vector2(velocity.x, velocity.z).length() > 0.12
+    if walking:
+        rotation.y = lerp_angle(rotation.y, atan2(velocity.x, velocity.z),
+            minf(1.0, delta * MovementPhysics.mount_turn_limit(mounted)))
+    footfall_time += delta * (10.5 if sprint else (7.0 if walking else 1.6))
+    anim_clock = footfall_time
+    var stride: float = sin(anim_clock) * (0.45 if walking else 0.0)
     if left_arm != null and right_arm != null:
         left_arm.rotation.x = -stride
         right_arm.rotation.x = stride
     if left_leg != null and right_leg != null:
-        left_leg.rotation.x = stride*0.7
-        right_leg.rotation.x = -stride*0.7
+        left_leg.rotation.x = stride * 0.68
+        right_leg.rotation.x = -stride * 0.68
     if visual_root != null:
-        visual_root.position.y = sin(anim_clock*0.5)*0.025 + ride_offset
+        visual_root.position.y = sin(anim_clock * 0.5) * (0.042 if walking else 0.015) + ride_offset
