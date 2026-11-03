@@ -77,6 +77,22 @@ func _execute() -> void:
         var bridge_body: CollisionObject3D=bridge_hit["collider"]
         _check(bridge_body.is_in_group("everbloom_world_solid"),
             "bridge is a solid structural collider")
+    # Rays over the exact old 145-unit homestead boundary confirm there is
+    # actual collision on the neighboring streamed ground, not just a visual
+    # landscape suspended over empty space.
+    for x in [70.0,73.5,78.0,118.0,146.0]:
+        var ground_query:=PhysicsRayQueryParameters3D.create(
+            Vector3(x,60,0),Vector3(x,-18,0))
+        var ground_hit: Dictionary=game_space.intersect_ray(ground_query)
+        _check(not ground_hit.is_empty(),"streamed playable ground at x=%.1f" % x)
+    gameplay.hero.global_position=Vector3(142.0,5.0,0)
+    await process_frame
+    await physics_frame
+    for x in [155.0,190.0]:
+        var beyond_query:=PhysicsRayQueryParameters3D.create(
+            Vector3(x,60,0),Vector3(x,-18,0))
+        var beyond_hit: Dictionary=game_space.intersect_ray(beyond_query)
+        _check(not beyond_hit.is_empty(),"next chunk has ground at x=%.1f" % x)
     if failures.is_empty():
         print("NATIVE SOLIDITY PASS: %d physics and world assertions" % assertions)
         quit(0)
