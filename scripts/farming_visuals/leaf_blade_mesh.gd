@@ -49,11 +49,13 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             tint = tint.lerp(Color(0.82, 0.84, 0.64), edge_fade * 0.18)
             tint *= exposure * (0.96 + 0.04 * longitudinal)
             pigments.append(tint)
+    # Counterclockwise as viewed from +Z: upper lamina faces sunlight,
+    # not the soil. Backface culling otherwise hides the upper surface.
     for i in range(RINGS):
         for j in range(SIDES):
             var a := i * (SIDES + 1) + j
             var b := a + SIDES + 1
-            for idx in [a, b, a + 1, a + 1, b, b + 1]:
+            for idx in [a, a + 1, b, a + 1, b + 1, b]:
                 surface.set_uv(uvs[idx])
                 surface.set_color(pigments[idx])
                 surface.add_vertex(verts[idx])
@@ -69,7 +71,7 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
         for j in range(SIDES):
             var a := i * (SIDES + 1) + j
             var b := a + SIDES + 1
-            for idx in [a + 1, b, a, b + 1, b, a + 1]:
+            for idx in [b, a + 1, a, b, b + 1, a + 1]:
                 surface.set_uv(uvs[idx])
                 surface.set_color(pigments[idx] * Color(0.83, 0.91, 0.77))
                 var uv := uvs[idx]
