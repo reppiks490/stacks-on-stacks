@@ -1,0 +1,40 @@
+name: Everbloom Emergence E19 foliage staging regression
+
+on:
+  push:
+    branches:
+      - game/everbloom-emergence-leaf-pbr-binding-20261103
+    paths:
+      - 'docs/innovation/emergence/visual_quality/**'
+      - '.github/workflows/everbloom-emergence-foliage-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  foliage-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact triggering commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert exact source revision
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git status --porcelain
+      - name: Execute original foliage asset regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 docs/innovation/emergence/visual_quality/verify_leaf_staging.py
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          python3 docs/innovation/emergence/visual_quality/make_leaf_maps.py "$tmp"
+      - name: Report evidence scope
+        run: |
+          echo "Python source/staging regressions executed on $GITHUB_SHA"
+          echo "Godot import, desktop renders, collision and FPS are NOT verified by this workflow."
