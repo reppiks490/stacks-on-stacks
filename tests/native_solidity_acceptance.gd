@@ -46,6 +46,33 @@ func _execute() -> void:
     _check(continental._terrain_height(2394.0,0.0)>60.0,"boundary rises into a sculpted ridge")
     _check(continental._terrain_height(2240.0,0.0)<continental._terrain_height(2394.0,0.0),
         "terrain approaches ridge rather than dropping to nowhere")
+    # Real-world verification: build the actual gameplay scene and inspect
+    # the farmhouse and mountain bridge collider, not just the factory helper.
+    var game_scene: PackedScene=load("res://scenes/main.tscn")
+    var gameplay: Node3D=game_scene.instantiate()
+    root.add_child(gameplay)
+    await physics_frame
+    await physics_frame
+    var game_space:=gameplay.get_world_3d().direct_space_state
+    var homestead_ray:=PhysicsRayQueryParameters3D.create(
+        Vector3(-23,2.0,-7),Vector3(-23,2.0,-21))
+    var homestead_hit: Dictionary=game_space.intersect_ray(homestead_ray)
+    _check(not homestead_hit.is_empty(),"actual homestead farmhouse walls block a ray")
+    if not homestead_hit.is_empty():
+        var wall: CollisionObject3D=homestead_hit["collider"]
+        _check(wall.is_in_group("everbloom_world_solid"),
+            "actual farmhouse ray strikes intended structural collision group")
+    var walk_probe: KinematicCollision3D=gameplay.hero.move_and_collide(
+        Vector3(0,0,-12),true)
+    _check(walk_probe!=null,"real player capsule cannot tunnel through farmhouse")
+    var bridge_ray:=PhysicsRayQueryParameters3D.create(
+        Vector3(51,4,-19),Vector3(51,-2,-19))
+    var bridge_hit: Dictionary=game_space.intersect_ray(bridge_ray)
+    _check(not bridge_hit.is_empty(),"original walking bridge has physical support")
+    if not bridge_hit.is_empty():
+        var bridge_body: CollisionObject3D=bridge_hit["collider"]
+        _check(bridge_body.is_in_group("everbloom_world_solid"),
+            "bridge is a solid structural collider")
     if failures.is_empty():
         print("NATIVE SOLIDITY PASS: %d physics and world assertions" % assertions)
         quit(0)
