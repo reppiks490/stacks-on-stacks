@@ -488,6 +488,11 @@ func _make_settlement(chunk: Node3D,hub: Dictionary,rng: RandomNumberGenerator) 
     placard.modulate=Color("#fff0d1")
     district.add_child(placard)
     _market_stalls(district,theme)
+    var scenic_dressing := Node3D.new()
+    scenic_dressing.name = "TownArtAndGardens"
+    scenic_dressing.set_script(load("res://scripts/premium_scenery.gd"))
+    district.add_child(scenic_dressing)
+    scenic_dressing.dress_settlement(hub)
 
 func _settlement_house(root: Node3D,at: Vector3,width: float,height: float,walls: Color,roof_color: Color) -> void:
     _box(root,at+Vector3(0,height*0.5,0),Vector3(width,height,width*0.74),walls)
