@@ -71,13 +71,21 @@ void fragment() {
     // Match displaced furrow geometry with a finite-difference tangent normal.
     // A small grain component provides sub-vertex detail without replacing the
     // large-scale slope. Geometry/collision remain independently authored.
+    // Use a pixel-aware derivative step so fine ridge normals do not alias when
+    // furrows approach subpixel width. Keep displacement unchanged.
     float eps = 0.002;
-    float dh_du = (relief(uv + vec2(eps, 0.0)) - relief(uv - vec2(eps, 0.0))) / (2.0 * eps * max(bed_size.x, 0.01));
-    float dh_dv = (relief(uv + vec2(0.0, eps)) - relief(uv - vec2(0.0, eps))) / (2.0 * eps * max(bed_size.y, 0.01));
+    float pixel_uv = max(fwidth(uv.x), fwidth(uv.y));
+    float normal_step = clamp(max(eps, pixel_uv * 0.5), eps, 0.04);
+    vec2 du = vec2(normal_step, 0.0);
+    vec2 dv = vec2(0.0, normal_step);
+    // Clamp to the authored bed footprint; sampling outside [0,1] at its
+    // boundary would otherwise produce false slopes and edge highlights.
+    float dh_du = (relief(clamp(uv + du, vec2(0.0), vec2(1.0))) - relief(clamp(uv - du, vec2(0.0), vec2(1.0)))) / (2.0 * normal_step * max(bed_size.x, 0.01));
+    float dh_dv = (relief(clamp(uv + dv, vec2(0.0), vec2(1.0))) - relief(clamp(uv - dv, vec2(0.0), vec2(1.0)))) / (2.0 * normal_step * max(bed_size.y, 0.01));
     // Fade micro-normal detail at distance as well; unfiltered high-frequency normals
     // shimmer even when the corresponding albedo grains have been filtered.
-    float grain_du = (value_noise((uv + vec2(eps, 0.0)) * grain_scale) - value_noise((uv - vec2(eps, 0.0)) * grain_scale)) * grain_visibility;
-    float grain_dv = (value_noise((uv + vec2(0.0, eps)) * grain_scale) - value_noise((uv - vec2(0.0, eps)) * grain_scale)) * grain_visibility;
+    float grain_du = (value_noise((uv + du) * grain_scale) - value_noise((uv - du) * grain_scale)) * grain_visibility * (eps / normal_step);
+    float grain_dv = (value_noise((uv + dv) * grain_scale) - value_noise((uv - dv) * grain_scale)) * grain_visibility * (eps / normal_step);
     vec3 soil_normal = normalize(vec3(-dh_du - grain_du * 0.06, -dh_dv - grain_dv * 0.06, 1.0));
     NORMAL_MAP = soil_normal * 0.5 + 0.5;
     NORMAL_MAP_DEPTH = 1.0;
