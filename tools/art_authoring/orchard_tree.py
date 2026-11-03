@@ -105,6 +105,10 @@ def leaf(name, origin, length, width, direction, mat):
     for t in stations:
         span = max(0.008, math.sin(math.pi * t)) * width
         mid = base + direction * (length * t)
+        # Original blade camber: a shallow, asymmetric arch that remains
+        # visible in silhouette and exports as real geometry to glTF.
+        mid += normal * (0.18 * length * math.sin(math.pi * t))
+        mid += lateral * (0.09 * length * t * t)
         # The central ridge gives the blade a convincing crease in grazing light.
         for skin in (1.0, -1.0):
             for across in (-1.0, 0.0, 1.0):
@@ -161,7 +165,13 @@ for b in range(11):
         anchor = points[0].lerp(points[3],t)
         az = angle + rng.uniform(-1.5,1.5)
         v = Vector((math.cos(az),math.sin(az),rng.uniform(-.22,.7)))
-        leaf("leaf_%02d_%02d"%(b,k),anchor,
+        # Each leaf is attached by a visible curved petiole instead of
+        # floating directly at a randomly interpolated branch location.
+        petiole_end = anchor + v.normalized() * rng.uniform(.075, .13)
+        tapered_tube("petiole_%02d_%02d"%(b,k),
+                     [anchor, anchor.lerp(petiole_end, .55) + Vector((0,0,.018)), petiole_end],
+                     [.012, .009, .004], 5, twig_mat)
+        leaf("leaf_%02d_%02d"%(b,k),petiole_end,
              rng.uniform(.32,.56),rng.uniform(.07,.12),v,
              leaf_mats[rng.randrange(len(leaf_mats))])
 
