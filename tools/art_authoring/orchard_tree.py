@@ -24,6 +24,27 @@ def material(name, color, roughness):
     return m
 
 bark = material("bark_warm_umber", (0.19, 0.105, 0.061), 0.91)
+# Original fine bark relief: anisotropic procedural height rather than a flat
+# color swap. Bake this node network before mobile glTF delivery; glTF does
+# not preserve arbitrary Blender procedural nodes.
+nodes = bark.node_tree.nodes
+links = bark.node_tree.links
+bark_bsdf = nodes.get("Principled BSDF")
+texcoord = nodes.new("ShaderNodeTexCoord")
+mapping = nodes.new("ShaderNodeVectorMath")
+mapping.operation = "MULTIPLY"
+mapping.inputs[1].default_value = (5.5, 5.5, 0.65)
+links.new(texcoord.outputs["Generated"], mapping.inputs[0])
+grain = nodes.new("ShaderNodeTexNoise")
+grain.inputs["Scale"].default_value = 9.0
+grain.inputs["Detail"].default_value = 3.0
+grain.inputs["Roughness"].default_value = 0.72
+links.new(mapping.outputs["Vector"], grain.inputs["Vector"])
+relief = nodes.new("ShaderNodeBump")
+relief.inputs["Strength"].default_value = 0.22
+relief.inputs["Distance"].default_value = 0.035
+links.new(grain.outputs["Fac"], relief.inputs["Height"])
+links.new(relief.outputs["Normal"], bark_bsdf.inputs["Normal"])
 leaf_mats = [
     material("leaf_sage", (0.19, 0.35, 0.16), 0.82),
     material("leaf_olive", (0.27, 0.39, 0.14), 0.83),
@@ -42,7 +63,10 @@ def tapered_tube(name, points, radii, sides=9, mat=bark):
         axis_b = tangent.cross(axis_a).normalized()
         for j in range(sides):
             theta = 2 * math.pi * j / sides
-            v = Vector(p) + radii[i] * (math.cos(theta)*axis_a + math.sin(theta)*axis_b)
+            # Continuous angular ridges, subtly irregular but never random rings.
+            # Preserve the same ridge phase across sections to avoid flicker.
+            ridge = 1.0 + (0.045 if mat == bark else 0.012) * math.sin(7 * theta + 0.3)
+            v = Vector(p) + radii[i] * ridge * (math.cos(theta)*axis_a + math.sin(theta)*axis_b)
             vertices.append(tuple(v))
     for i in range(len(points)-1):
         for j in range(sides):
