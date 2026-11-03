@@ -149,6 +149,7 @@ func setup(owner) -> void:
         button.add_theme_color_override("font_focus_color", Color(1, 1, 1))
         button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         button.pressed.connect(_choose_index.bind(index))
+        button.focus_entered.connect(_reveal_focused_choice.bind(button))
         layout.add_child(button)
         topic_buttons.append(button)
     language_button = Button.new()
@@ -159,6 +160,7 @@ func setup(owner) -> void:
     language_button.add_theme_stylebox_override("focus", focus_style)
     language_button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
     language_button.pressed.connect(_toggle_locale)
+    language_button.focus_entered.connect(_reveal_focused_choice.bind(language_button))
     layout.add_child(language_button)
     cancel_button = Button.new()
     cancel_button.name = "CancelConversation"
@@ -168,6 +170,7 @@ func setup(owner) -> void:
     cancel_button.add_theme_stylebox_override("focus", focus_style)
     cancel_button.add_theme_color_override("font_color", Color(0.96, 0.96, 0.88))
     cancel_button.pressed.connect(close_topics)
+    cancel_button.focus_entered.connect(_reveal_focused_choice.bind(cancel_button))
     layout.add_child(cancel_button)
     panel.visible = false
     _refresh_locale()
@@ -363,8 +366,10 @@ func _navigate(direction: int) -> void:
 ## Keep the actual action in view for D-pad/keyboard users without changing
 ## selection, rewards or state. Defer until layout has computed control rects.
 func _reveal_focused_choice(control: Control) -> void:
-    if conversation_scroll == null or not is_instance_valid(control):
+    if panel == null or not panel.visible or conversation_scroll == null or not is_instance_valid(control):
         return
+    # Tab, Shift-Tab and pointer focus must reveal the same action as D-pad.
+    # The deferred scroll operation is presentation-only and never grants talk.
     conversation_scroll.call_deferred("ensure_control_visible", control)
 
 ## V19: Tab, Shift-Tab and pointer focus can select a different control than
