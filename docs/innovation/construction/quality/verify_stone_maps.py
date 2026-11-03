@@ -5,7 +5,7 @@ import pathlib
 import struct
 import tempfile
 import zlib
-from make_stone_maps import generate
+from make_stone_maps import generate, _height
 
 
 def decode_png(path):
@@ -42,6 +42,20 @@ def main():
             w, h, rows = decode_png(a)
             assert (w, h) == (64, 64)
             assert len(set(rows[0])) > 1
+        # Verify periodic source height, including high-frequency grain sampling.
+        for y in (0, 1, 7, 31, 63):
+            assert abs(_height(0, y, 64) - _height(64, y, 64)) < 1e-12
+            assert abs(_height(y, 0, 64) - _height(y, 64, 64)) < 1e-12
+            assert abs(_height(0, (y * 11) % 64, 64) - _height(64, (y * 11) % 64, 64)) < 1e-12
+        # Adjacent tiled edges must not exhibit extreme albedo discontinuities.
+        _, _, albedo_rows = decode_png(first[0])
+        for y in range(64):
+            left, right = albedo_rows[y][:3], albedo_rows[y][-3:]
+            assert max(abs(a - b) for a, b in zip(left, right)) < 55
+        for x in range(64):
+            top = albedo_rows[0][x * 3:x * 3 + 3]
+            bottom = albedo_rows[-1][x * 3:x * 3 + 3]
+            assert max(abs(a - b) for a, b in zip(top, bottom)) < 55
         _, _, normals = decode_png(first[1])
         for row in normals:
             for x in range(0, len(row), 3):
