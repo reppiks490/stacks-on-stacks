@@ -179,7 +179,7 @@ func _replay(adversarial: bool) -> String:
         bad["weather"] = "Monsoon"
         attacks.append(bad)
         bad = model.save_state()
-        bad["season"] = "Winter"
+        bad["season"] = "Summer"
         attacks.append(bad)
         bad = model.save_state()
         bad["version"] = 2
