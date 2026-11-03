@@ -80,8 +80,14 @@ void fragment() {
     vec2 dv = vec2(0.0, normal_step);
     // Clamp to the authored bed footprint; sampling outside [0,1] at its
     // boundary would otherwise produce false slopes and edge highlights.
-    float dh_du = (relief(clamp(uv + du, vec2(0.0), vec2(1.0))) - relief(clamp(uv - du, vec2(0.0), vec2(1.0)))) / (2.0 * normal_step * max(bed_size.x, 0.01));
-    float dh_dv = (relief(clamp(uv + dv, vec2(0.0), vec2(1.0))) - relief(clamp(uv - dv, vec2(0.0), vec2(1.0)))) / (2.0 * normal_step * max(bed_size.y, 0.01));
+    // At UV borders the stencil is one-sided: divide by the actual sampled
+    // distance, not 2*h, or normals become artificially flattened at edges.
+    vec2 uv_x0 = clamp(uv - du, vec2(0.0), vec2(1.0));
+    vec2 uv_x1 = clamp(uv + du, vec2(0.0), vec2(1.0));
+    vec2 uv_y0 = clamp(uv - dv, vec2(0.0), vec2(1.0));
+    vec2 uv_y1 = clamp(uv + dv, vec2(0.0), vec2(1.0));
+    float dh_du = (relief(uv_x1) - relief(uv_x0)) / (max(uv_x1.x - uv_x0.x, 0.00001) * max(bed_size.x, 0.01));
+    float dh_dv = (relief(uv_y1) - relief(uv_y0)) / (max(uv_y1.y - uv_y0.y, 0.00001) * max(bed_size.y, 0.01));
     // Fade micro-normal detail at distance as well; unfiltered high-frequency normals
     // shimmer even when the corresponding albedo grains have been filtered.
     float grain_du = (value_noise((uv + du) * grain_scale) - value_noise((uv - du) * grain_scale)) * grain_visibility * (eps / normal_step);
