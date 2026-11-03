@@ -37,6 +37,17 @@ class PremiumPresentationTests(unittest.TestCase):
         self.assertNotIn("target_fps = 60", source)
         self.assertIn("fps_p10", source)
 
+    def test_profiler_and_exploration_are_live_runtime_components(self):
+        game = self.src("scripts/game.gd")
+        world = self.src("scripts/continental_world.gd")
+        self.assertIn('res://scripts/desktop_profiler.gd', game)
+        self.assertIn('profiler.setup(self)', game)
+        self.assertIn('res://scripts/exploration_system.gd', world)
+        self.assertIn('exploration.setup(game,self)', world)
+        exploration = self.src("scripts/exploration_system.gd")
+        for token in ("ConfigFile", "KEY_L", "visited_hubs", "visited_biomes", "func _discover_nearby(", "func _toggle_journal("):
+            self.assertIn(token, exploration)
+
     def test_safe_powershell_launcher_and_reset_backup(self):
         script = self.src("tools/launch_everbloom.ps1")
         self.assertIn("Get-Command", script)
