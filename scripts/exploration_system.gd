@@ -48,10 +48,13 @@ func _discover_nearby() -> void:
         var biome_id:=str(biome)
         if not visited_biomes.has(biome_id):
             visited_biomes[biome_id]=game.day_epoch()
-            game.gold+=8
-            game.add_restoration(1)
-            game._show("Discovered region: %s • +8 petals • +1 restoration" % BIOME_NAMES[biome])
-            _save()
+            if _save():
+                game.gold+=8
+                game.add_restoration(1)
+                game._show("Discovered region: %s • +8 petals • +1 restoration" % BIOME_NAMES[biome])
+            else:
+                visited_biomes.erase(biome_id)
+                game._show("Discovery journal could not be saved; no reward was granted.")
     var nearest_name: String=""
     var nearest_distance: float=INF
     for hub in world.HUBS:
@@ -68,11 +71,14 @@ func _discover_nearby() -> void:
                 "x":float(hub["x"]),
                 "z":float(hub["z"])
             }
-            game.gold+=12
-            game.add_restoration(1)
-            last_hub=str(hub["name"])
-            game._show("First arrival: %s • +12 petals • journal updated" % last_hub)
-            _save()
+            if _save():
+                game.gold+=12
+                game.add_restoration(1)
+                last_hub=str(hub["name"])
+                game._show("First arrival: %s • +12 petals • journal updated" % last_hub)
+            else:
+                visited_hubs.erase(str(hub["name"]))
+                game._show("Settlement journal could not be saved; no reward was granted.")
     if nearest_name!=last_hub and nearest_distance<DISCOVERY_RADIUS*1.8:
         last_hub=nearest_name
 
@@ -87,12 +93,15 @@ func _load() -> void:
     if biomes is Dictionary:
         visited_biomes=biomes
 
-func _save() -> void:
+func _save() -> bool:
     var cfg:=ConfigFile.new()
     cfg.set_value("exploration","visited_hubs",visited_hubs)
     cfg.set_value("exploration","visited_biomes",visited_biomes)
-    if cfg.save(PROFILE_PATH)!=OK:
-        push_warning("EVERBLOOM exploration journal could not be saved.")
+    var result: Error=cfg.save(PROFILE_PATH)
+    if result!=OK:
+        push_warning("EVERBLOOM exploration journal could not be saved: %d" % result)
+        return false
+    return true
 
 func _make_journal() -> void:
     journal_layer=CanvasLayer.new()
