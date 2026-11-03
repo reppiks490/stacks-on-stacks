@@ -62,6 +62,10 @@ func _execute() -> void:
         var wall: CollisionObject3D=homestead_hit["collider"]
         _check(wall.is_in_group("everbloom_world_solid"),
             "actual farmhouse ray strikes intended structural collision group")
+    # Place the player directly in front of the farmhouse: the normal
+    # homestead spawn is eight units to the east and misses this building.
+    gameplay.hero.global_position=Vector3(-23,1.05,-7)
+    await physics_frame
     var walk_probe: KinematicCollision3D=gameplay.hero.move_and_collide(
         Vector3(0,0,-12),true)
     _check(walk_probe!=null,"real player capsule cannot tunnel through farmhouse")
