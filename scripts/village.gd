@@ -64,6 +64,7 @@ func setup(host) -> void:
         affection[rid] = 0
         memories[rid] = _fresh_memory()
     sync_schedule(true)
+    _install_herbalist_sign()
     social_journal = CanvasLayer.new()
     social_journal.name = "SocialJournal"
     social_journal.set_script(load("res://scripts/village_social_journal.gd"))
@@ -85,6 +86,29 @@ func setup(host) -> void:
     gift_panel.set_script(load("res://scripts/village_gift_panel.gd"))
     add_child(gift_panel)
     gift_panel.setup(self)
+
+## Original, rights-clean botanical artwork displayed at the existing herbal garden.
+## This is a presentation-only landmark; no save schema, NPC state or economy changes.
+## Billboard orientation keeps lettering readable from the approach on either side.
+func _install_herbalist_sign() -> void:
+    var artwork: Texture2D = load("res://assets/village/signage/herbalist_carved_sign.svg")
+    if artwork == null:
+        push_warning("EVERBLOOM: herbalist sign artwork unavailable")
+        return
+    var garden: Array = life_data.get("places", {}).get("herbal_garden", [])
+    if garden.size() != 3:
+        push_warning("EVERBLOOM: herbal garden landmark missing")
+        return
+    var sign := Sprite3D.new()
+    sign.name = "HerbalistSign"
+    sign.texture = artwork
+    sign.pixel_size = 0.002
+    sign.position = Vector3(float(garden[0]), float(garden[1]) + 2.25, float(garden[2]))
+    sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+    sign.double_sided = true
+    sign.shaded = true
+    sign.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+    add_child(sign)
 
 func _fresh_memory() -> Dictionary:
     return {"talks":0, "gifts":0, "jobs":0, "festivals":0,
