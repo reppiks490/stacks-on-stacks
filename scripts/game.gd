@@ -33,6 +33,7 @@ var festivals
 var hero
 var hud
 var save_health_panel
+var profiler
 var game_rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
@@ -71,6 +72,11 @@ func _ready() -> void:
     save_health_panel.set_script(load("res://scripts/principal_save_health_panel.gd"))
     add_child(save_health_panel)
     save_health_panel.setup(self)
+    profiler = CanvasLayer.new()
+    profiler.name = "DesktopPerformanceProfiler"
+    profiler.set_script(load("res://scripts/desktop_profiler.gd"))
+    add_child(profiler)
+    profiler.setup(self)
     _show("Welcome home. Tend your garden and befriend the valley.")
 
 func _component(script_path: String, component_name: String):
