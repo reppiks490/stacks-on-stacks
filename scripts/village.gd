@@ -51,6 +51,21 @@ func setup(host) -> void:
         mat.albedo_color = Color.html(str(resident["palette"]))
         body.material_override = mat
         container.add_child(body)
+        # The visible capsule is temporary art, but residents must already be solid.
+        # Keep the collision under the moving resident root so schedules and
+        # world-space interactions remain aligned without changing saved state.
+        var collider := AnimatableBody3D.new()
+        collider.name = "ResidentCollision"
+        collider.position.y = 0.9
+        collider.collision_layer = 1
+        collider.collision_mask = 1
+        var shape := CollisionShape3D.new()
+        var capsule := CapsuleShape3D.new()
+        capsule.radius = 0.38
+        capsule.height = 1.7
+        shape.shape = capsule
+        collider.add_child(shape)
+        container.add_child(collider)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
