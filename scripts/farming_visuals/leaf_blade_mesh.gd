@@ -21,7 +21,9 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
     for i in range(RINGS + 1):
         var t := float(i) / float(RINGS)
         # Narrow petiole, broad middle, and a sharply tapered distal tip.
-        var profile := pow(max(0.0, sin(PI * t)), 0.85) * (0.82 + 0.18 * t)
+        # A finite lamina width at the endpoints prevents zero-area triangles and invalid tangents.
+        # At this scale the 0.6% tip width remains visually pointed.
+        var profile := max(0.006, pow(max(0.0, sin(PI * t)), 0.85) * (0.82 + 0.18 * t))
         for j in range(SIDES + 1):
             var s := float(j) / float(SIDES) * 2.0 - 1.0
             var edge := 1.0 + 0.035 * sin(t * 19.0 * PI + phase) * abs(s)
