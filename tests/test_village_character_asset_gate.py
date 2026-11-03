@@ -53,6 +53,16 @@ class VillageAssetGateTests(unittest.TestCase):
         doc["buffers"] = []
         self.assertIn("invalid embedded buffer declaration", self.check(doc))
 
+    def test_reject_empty_buffer_list_without_crashing(self):
+        doc = valid_doc()
+        doc["buffers"] = []
+        self.assertIn("invalid embedded buffer declaration", self.check(doc))
+
+    def test_reject_non_object_buffer_without_crashing(self):
+        doc = valid_doc()
+        doc["buffers"] = [None]
+        self.assertIn("invalid embedded buffer declaration", self.check(doc))
+
     def test_reject_out_of_range_buffer_view(self):
         doc = valid_doc()
         doc["bufferViews"][0]["byteLength"] = 999999
