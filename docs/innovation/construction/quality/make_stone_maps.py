@@ -51,7 +51,7 @@ def generate(destination, size=256):
         ar, nr, rr = bytearray(), bytearray(), bytearray()
         for x in range(size):
             h = field[y][x]
-            grain = _noise(x, y, 109) - .5
+            grain = _height((x * 11) % size, (y * 11) % size, size) - .5
             tint = (h - .5) * 64 + grain * 13
             ar.extend(max(0, min(255, round(base + tint))) for base in (159, 148, 132))
             dx = (field[y][(x + 1) % size] - field[y][(x - 1) % size]) * 4
