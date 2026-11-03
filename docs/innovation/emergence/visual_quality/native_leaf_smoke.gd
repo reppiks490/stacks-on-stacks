@@ -1,7 +1,7 @@
 extends SceneTree
 ## E19 native acceptance for the original, staged foliage candidate.
 ## Run after staging to PROJECT_ROOT/everbloom_leaf_candidate:
-## godot --headless --path PROJECT_ROOT --script res://everbloom_leaf_candidate/native_leaf_smoke.gd
+## Copy the candidate directory to the repository's Godot project root, then run:\n## godot --headless --path PROJECT_ROOT --script res://docs/innovation/emergence/visual_quality/native_leaf_smoke.gd
 ## A headless pass does NOT establish visual fidelity or desktop/mobile FPS.
 
 const SCENE_PATH := "res://everbloom_leaf_candidate/leaf_candidate.tscn"
@@ -36,9 +36,9 @@ func _run() -> void:
         return
     var camera := Camera3D.new()
     camera.position = Vector3(0, 0.4, 3)
+    instance.add_child(camera)
     camera.look_at(Vector3.ZERO)
     camera.current = true
-    instance.add_child(camera)
     material.set_shader_parameter("reduced_motion", true)
     for frame in range(FRAMES):
         await process_frame
