@@ -82,6 +82,27 @@ def validate(glb_path, manifest_path):
                 errors.append("primitive lacks valid material")
     if vertex_count <= 0 or vertex_count > MAX_VERTICES:
         errors.append("character vertex budget violated")
+    # Reject fake structural fixtures and truncated GLB payloads: a character
+    # cannot be admitted without an actual BIN chunk and valid buffer ranges.
+    bin_start = 20 + chunk_length
+    if bin_start + 8 > len(raw):
+        errors.append("missing GLB BIN chunk")
+        binary_length = 0
+    else:
+        binary_length, binary_type = struct.unpack_from("<I4s", raw, bin_start)
+        if binary_type != b"BIN\\x00" or bin_start + 8 + binary_length != len(raw):
+            errors.append("invalid or truncated GLB BIN chunk")
+            binary_length = 0
+    buffers = doc.get("buffers", [])
+    if len(buffers) != 1 or not isinstance(buffers[0].get("byteLength"), int) or buffers[0]["byteLength"] > binary_length or buffers[0]["byteLength"] < 1 or "uri" in buffers[0]:
+        errors.append("invalid embedded buffer declaration")
+    views = doc.get("bufferViews", [])
+    for view in views:
+        if not isinstance(view, dict) or view.get("buffer") != 0 or not isinstance(view.get("byteOffset", 0), int) or not isinstance(view.get("byteLength"), int) or view.get("byteOffset", 0) < 0 or view["byteLength"] <= 0 or view.get("byteOffset", 0) + view["byteLength"] > binary_length:
+            errors.append("buffer view exceeds embedded binary data")
+    for accessor in accessors:
+        if not isinstance(accessor, dict) or not isinstance(accessor.get("bufferView"), int) or not 0 <= accessor["bufferView"] < len(views) or not isinstance(accessor.get("count"), int) or accessor["count"] <= 0:
+            errors.append("invalid accessor backing view")
     if not doc.get("images") or not doc.get("textures"):
         errors.append("texture image data missing")
     if not any(node.get("skin") is not None and node.get("mesh") is not None for node in nodes):
