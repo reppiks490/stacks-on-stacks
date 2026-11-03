@@ -28,6 +28,7 @@ func _run() -> void:
         check(code.contains("ROUGHNESS"), "authored roughness feeds PBR surface")
         check(code.contains("fwidth(macro_phase)"), "macro pigment uses fragment footprint to avoid distant shimmer")
         check(code.contains("smoothstep(0.5, 1.5"), "macro pigment fades under subpixel sampling")
+        check(code.contains("vec2 phase_a") and code.contains("vec2 phase_b"), "rotated world-anchored pigment harmonics are present")
         for footprint in [0.0, 0.5, 1.0, 1.5, 2.0]:
             var fade := 1.0 - smoothstep(0.5, 1.5, footprint)
             check(fade >= 0.0 and fade <= 1.0, "pigment attenuation remains bounded")
@@ -49,6 +50,7 @@ func _run() -> void:
                 var a := sin(left_world.x * scale) * cos(left_world.z * scale)
                 var b := sin(right_world.x * scale) * cos(right_world.z * scale)
                 check(is_equal_approx(a, b), "x seam pigment agrees at origin %s" % origin_x)
+                check(is_equal_approx(_pigment(left_world), _pigment(right_world)), "x seam rotated pigment agrees at origin %s" % origin_x)
         for origin_z in [-150.0, 0.0, 300.0]:
             for x in samples:
                 var near_local := Vector3(x, 0.0, CHUNK_SIZE)
@@ -59,6 +61,7 @@ func _run() -> void:
                 var a := sin(near_world.x * scale) * cos(near_world.z * scale)
                 var b := sin(far_world.x * scale) * cos(far_world.z * scale)
                 check(is_equal_approx(a, b), "z seam pigment agrees at origin %s" % origin_z)
+                check(is_equal_approx(_pigment(near_world), _pigment(far_world)), "z seam rotated pigment agrees at origin %s" % origin_z)
         # A local-coordinate shader would reset the phase on the neighboring
         # chunk. This fixture must detect that incorrect implementation.
         var bad_x := sin(0.0) * cos(42.75 * scale)
@@ -69,3 +72,10 @@ func _run() -> void:
         check(absf(good_z - bad_z) > 0.01, "negative control detects z-phase reset")
     print("AUTHORED SURFACE ACCEPTANCE: %d checks, %d failures" % [checks, failures])
     quit(0 if failures == 0 else 1)
+
+# Mirrors the shader harmonics for independent seam and bounded-amplitude checks.
+func _pigment(world: Vector3) -> float:
+    var phase := Vector2(world.x, world.z) * 0.035
+    var a := Vector2(phase.dot(Vector2(0.8660254, -0.5)), phase.dot(Vector2(0.5, 0.8660254)))
+    var b := Vector2(phase.dot(Vector2(0.6, 0.8)), phase.dot(Vector2(-0.8, 0.6))) * 0.61
+    return 0.65 * sin(a.x) * cos(a.y) + 0.35 * sin(b.x) * cos(b.y)
