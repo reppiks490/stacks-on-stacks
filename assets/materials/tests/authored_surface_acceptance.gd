@@ -47,6 +47,19 @@ func _run() -> void:
             check(fade >= 0.0 and fade <= 1.0, "pigment attenuation remains bounded")
             if footprint >= 1.5:
                 check(is_zero_approx(fade), "subpixel pigment fades to zero")
+        # Material acceptance must exercise actual uniform bindings rather than
+        # accepting a shader solely because its source contains expected words.
+        var declared_uniforms := {}
+        for entry in shader.get_shader_uniform_list():
+            declared_uniforms[String(entry.get("name", ""))] = int(entry.get("type", -1))
+        for required_name in ["albedo_map", "normal_map", "roughness_map", "pigment", "uv_scale", "normal_strength", "roughness_floor", "roughness_ceiling", "macro_variation", "macro_scale"]:
+            check(declared_uniforms.has(required_name), "shader exposes required uniform: " + required_name)
+        material.set_shader_parameter("macro_variation", 0.045)
+        material.set_shader_parameter("macro_scale", 0.035)
+        material.set_shader_parameter("normal_strength", 0.7)
+        check(is_equal_approx(float(material.get_shader_parameter("macro_variation")), 0.045), "macro variation binds to material")
+        check(is_equal_approx(float(material.get_shader_parameter("macro_scale")), 0.035), "macro scale binds to material")
+        check(is_equal_approx(float(material.get_shader_parameter("normal_strength")), 0.7), "normal strength binds to material")
         check(code.contains("texture(albedo_map"), "authored albedo is sampled")
         # Independent 150-unit chunks meet at the same WORLD coordinate even
         # though their local vertices and MODEL_MATRIX translations differ.
