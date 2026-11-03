@@ -1,9 +1,9 @@
 extends Node3D
-## First-party 100x continental world: 10x10 cells, 3x3 active at a time.
+## First-party 4.8 km x 4.8 km continental world: 32x32 cells, 3x3 active at a time.
 ## Non-destructive to homestead, farming, save schema and existing village.
-const CONTINENT_SIDE: float = 1450.0
-const CHUNK_SIDE: float = 145.0
-const GRID_WIDTH: int = 10
+const CONTINENT_SIDE: float = 4800.0
+const CHUNK_SIDE: float = 150.0
+const GRID_WIDTH: int = 32
 const STREAM_RADIUS: int = 1
 const HALF: float = CONTINENT_SIDE * 0.5
 const HUBS: Array[Dictionary] = [
@@ -14,7 +14,27 @@ const HUBS: Array[Dictionary] = [
     {"name":"Moonharbor Port", "kind":"Port", "x":315.0, "z":-479.0, "color":"#83bdc5"},
     {"name":"Frostpetal Highlands", "kind":"Highland Village", "x":-468.0, "z":-488.0, "color":"#bccde3"},
     {"name":"Sunspire Kingdom", "kind":"Kingdom", "x":513.0, "z":488.0, "color":"#e9c98b"},
-    {"name":"Aurora Crown City", "kind":"Capital", "x":-487.0, "z":451.0, "color":"#c9b3e4"}
+    {"name":"Aurora Crown City", "kind":"Capital", "x":-487.0, "z":451.0, "color":"#c9b3e4"},
+    {"name":"Wildflower Hollow", "kind":"Village", "x":1120.0, "z":340.0, "color":"#b3cc91"},
+    {"name":"Rosedale Orchards", "kind":"Village", "x":-1300.0, "z":510.0, "color":"#ecacc2"},
+    {"name":"Eversong Market Town", "kind":"Town", "x":980.0, "z":-1150.0, "color":"#d9bd9c"},
+    {"name":"Shimmerbrook Hamlet", "kind":"Village", "x":-1180.0, "z":-980.0, "color":"#a8cad1"},
+    {"name":"Mistveil Sanctuary", "kind":"Highland Village", "x":-1820.0, "z":-650.0, "color":"#b8c0da"},
+    {"name":"Starfall Observatory", "kind":"Town", "x":1510.0, "z":1820.0, "color":"#baa9df"},
+    {"name":"Kingsreach Citadel", "kind":"Kingdom", "x":2020.0, "z":820.0, "color":"#c8a4a0"},
+    {"name":"Emerald Vale Kingdom", "kind":"Kingdom", "x":-1780.0, "z":1690.0, "color":"#a0c897"},
+    {"name":"Saffron Dunes Capital", "kind":"Capital", "x":2150.0, "z":-1740.0, "color":"#e4c48d"},
+    {"name":"Tideglass Coastal City", "kind":"City", "x":1140.0, "z":-2010.0, "color":"#8bc4c7"},
+    {"name":"Silverpine Trade City", "kind":"City", "x":-2140.0, "z":-1800.0, "color":"#9da9bc"},
+    {"name":"Moonvine Kingdom", "kind":"Kingdom", "x":-1860.0, "z":-110.0, "color":"#c1a5d5"},
+    {"name":"Eldermist Mountain City", "kind":"City", "x":-400.0, "z":2090.0, "color":"#b1c5d9"},
+    {"name":"Bellflower Port", "kind":"Port", "x":490.0, "z":2110.0, "color":"#89bcbc"},
+    {"name":"Foxglove Crossing", "kind":"Town", "x":-710.0, "z":-1950.0, "color":"#d3abbc"},
+    {"name":"Auric Sunfields", "kind":"Village", "x":1630.0, "z":1070.0, "color":"#dec88c"},
+    {"name":"Amberroot Borough", "kind":"Town", "x":-950.0, "z":1150.0, "color":"#d3af84"},
+    {"name":"Crescent Bay", "kind":"Port", "x":1650.0, "z":-390.0, "color":"#8ac1ca"},
+    {"name":"Dragonfly Marsh", "kind":"Village", "x":460.0, "z":-1450.0, "color":"#86afa1"},
+    {"name":"Frostlight Royal City", "kind":"City", "x":-2140.0, "z":2120.0, "color":"#bbcde3"}
 ]
 const BIOME_COLORS := [
     ["#718f57","#a7be72"], ["#4e9478","#80bf94"], ["#9cae88","#d5ca96"],
@@ -490,16 +510,20 @@ func _create_atlas() -> void:
     bg.content_margin_right=18
     atlas.add_theme_stylebox_override("panel",bg)
     atlas_layer.add_child(atlas)
+    var scroll:=ScrollContainer.new()
+    scroll.custom_minimum_size=Vector2(500,380)
+    scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+    atlas.add_child(scroll)
     var list:=VBoxContainer.new()
     list.add_theme_constant_override("separation",3)
-    atlas.add_child(list)
+    scroll.add_child(list)
     location_line=Label.new()
     location_line.text="✦  EVERBLOOM CONTINENTAL ATLAS  ✦"
     location_line.add_theme_font_size_override("font_size",21)
     location_line.add_theme_color_override("font_color",Color("#f7dba8"))
     list.add_child(location_line)
     var guide:=Label.new()
-    guide.text="1,450 × 1,450 world   •   100× original area\nChoose a destination to take a waystone trail; M to close."
+    guide.text="4,800 × 4,800 world   •   ~1,096× original ground area\nChoose a destination to take a waystone trail; M to close."
     guide.add_theme_font_size_override("font_size",13)
     guide.add_theme_color_override("font_color",Color("#b7d2c0"))
     list.add_child(guide)
