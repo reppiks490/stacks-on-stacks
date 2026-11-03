@@ -12,7 +12,7 @@ def glb(doc):
     payload = json.dumps(doc).encode()
     payload += b" " * ((-len(payload)) % 4)
     binary = bytes(16384)
-    return struct.pack("<4sII", b"glTF", 2, 28 + len(payload) + len(binary)) + struct.pack("<I4s", len(payload), b"JSON") + payload + struct.pack("<I4s", len(binary), b"BIN\\x00") + binary
+    return struct.pack("<4sII", b"glTF", 2, 28 + len(payload) + len(binary)) + struct.pack("<I4s", len(payload), b"JSON") + payload + struct.pack("<I4s", len(binary), b"BIN\x00") + binary
 
 
 def valid_doc():
