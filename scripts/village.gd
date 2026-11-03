@@ -1,4 +1,5 @@
 extends Node3D
+const SculptedHumanoid = preload("res://scripts/sculpted_humanoid.gd")
 ## EVERBLOOM original village: seasonal schedules, memory, friendship and civic work.
 ## The calendar belongs to game.gd. This module never advances it or writes files.
 ## Dialogue history is an optional bounded nested memory; Principal owns strict save admission.
@@ -41,21 +42,50 @@ func setup(host) -> void:
         container.name = str(resident["name"])
         container.position = Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
         add_child(container)
-        var body := MeshInstance3D.new()
-        var mesh := CapsuleMesh.new()
-        mesh.radius = 0.38
-        mesh.height = 1.7
-        body.mesh = mesh
-        body.position.y = 0.9
-        var mat := StandardMaterial3D.new()
-        mat.albedo_color = Color.html(str(resident["palette"]))
-        body.material_override = mat
-        container.add_child(body)
+        var resident_seed: int=absi(str(resident["id"]).hash())
+        var render:=Node3D.new()
+        render.name="OriginalMeshResident"
+        render.set_script(SculptedHumanoid)
+        container.add_child(render)
+        var resident_tone: Color=Color("#c18d70") if resident_seed%3==0 else (Color("#e5bc9d") if resident_seed%3==1 else Color("#986950"))
+        render.configure({
+            "skin_tint":resident_tone,
+            "coat_tint":Color.html(str(resident["palette"])),
+            "trousers_tint":Color("#58645d").lightened(float(resident_seed%4)*0.05),
+            "hair_tint":Color("#4c3c36") if resident_seed%2==0 else Color("#926d4f"),
+            "iris_tint":Color("#5f806a") if resident_seed%2==0 else Color("#6b83a3"),
+            "build":resident_seed%5,
+            "height":resident_seed%9,
+            "face":resident_seed%6,
+            "jaw":resident_seed%9,
+            "brow":resident_seed%10,
+            "nose":(resident_seed/3)%10,
+            "mouth":(resident_seed/7)%10,
+            "eye_size":resident_seed%9,
+            "hair":resident_seed%12,
+            "hair_length":resident_seed%10,
+            "outfit":resident_seed%12,
+            "footwear":resident_seed%10,
+            "headwear":1 if str(resident["role"]).contains("Farm") else 0,
+            "accessory":3 if resident_seed%4==0 else 0
+        })
+        var citizen_body:=AnimatableBody3D.new()
+        citizen_body.name="VillageResidentCollision"
+        citizen_body.collision_layer=1
+        citizen_body.collision_mask=1
+        container.add_child(citizen_body)
+        var citizen_shape:=CollisionShape3D.new()
+        var presence:=CapsuleShape3D.new()
+        presence.radius=0.32
+        presence.height=1.8
+        citizen_shape.shape=presence
+        citizen_shape.position.y=0.93
+        citizen_body.add_child(citizen_shape)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
         label.pixel_size = 0.006
-        label.position = Vector3(0, 2.3, 0)
+        label.position = Vector3(0, 2.88, 0)
         container.add_child(label)
         resident["node"] = container
         resident["place"] = "home"
