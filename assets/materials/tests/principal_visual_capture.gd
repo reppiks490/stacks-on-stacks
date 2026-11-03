@@ -31,17 +31,32 @@ func _capture() -> void:
     # Record the camera BEFORE sampling; moving cameras invalidate matched comparisons.
     var initial_transform := camera.global_transform
     var initial_fov := camera.fov
+    var initial_viewport_size := viewport.get_visible_rect().size
+    var initial_camera_path := camera.get_path()
     var frame_times: Array[float] = []
     var draw_calls: Array[int] = []
     for i in range(SAMPLE_FRAMES):
         await process_frame
+        # Check EVERY sampled frame: a camera can move and return to its origin.
+        if not is_instance_valid(camera) or viewport.get_camera_3d() != camera:
+            push_error("VISUAL CAPTURE: active camera changed during sampling")
+            quit(6)
+            return
+        if camera.global_transform != initial_transform or not is_equal_approx(camera.fov, initial_fov):
+            push_error("VISUAL CAPTURE: camera moved during sampling")
+            quit(6)
+            return
+        if viewport.get_visible_rect().size != initial_viewport_size:
+            push_error("VISUAL CAPTURE: viewport resized during sampling")
+            quit(6)
+            return
         frame_times.append(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0)
         draw_calls.append(int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)))
-    if camera.global_transform != initial_transform or not is_equal_approx(camera.fov, initial_fov):
-        push_error("VISUAL CAPTURE: camera moved during sampling; comparison invalid")
+    await RenderingServer.frame_post_draw
+    if not is_instance_valid(camera) or viewport.get_camera_3d() != camera or camera.global_transform != initial_transform or not is_equal_approx(camera.fov, initial_fov) or viewport.get_visible_rect().size != initial_viewport_size:
+        push_error("VISUAL CAPTURE: camera/viewport changed before final render")
         quit(6)
         return
-    await RenderingServer.frame_post_draw
     var shot := viewport.get_texture().get_image()
     if shot == null or shot.is_empty() or shot.get_width() < 2 or shot.get_height() < 2:
         push_error("VISUAL CAPTURE: invalid renderer output")
@@ -62,7 +77,7 @@ func _capture() -> void:
     var metadata := {
         "scene": SCENE_PATH,
         "renderer": ProjectSettings.get_setting("rendering/renderer/rendering_method", "unknown"),
-        "camera_path": str(camera.get_path()),
+        "camera_path": str(initial_camera_path),
         "camera_transform": str(initial_transform),
         "camera_fov": initial_fov,
         "viewport_width": shot.get_width(),
