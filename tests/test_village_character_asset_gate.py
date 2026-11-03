@@ -11,13 +11,16 @@ from tools.validate_village_character import validate
 def glb(doc):
     payload = json.dumps(doc).encode()
     payload += b" " * ((-len(payload)) % 4)
-    binary = bytes(16384)\n    return struct.pack("<4sII", b"glTF", 2, 28 + len(payload) + len(binary)) + struct.pack("<I4s", len(payload), b"JSON") + payload + struct.pack("<I4s", len(binary), b"BIN\\x00") + binary
+    binary = bytes(16384)
+    return struct.pack("<4sII", b"glTF", 2, 28 + len(payload) + len(binary)) + struct.pack("<I4s", len(payload), b"JSON") + payload + struct.pack("<I4s", len(binary), b"BIN\\x00") + binary
 
 
 def valid_doc():
     return {
         "asset": {"version": "2.0"},
-        "buffers": [{"byteLength": 16384}],\n        "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": 16384}],\n        "accessors": [{"count": 1200, "bufferView": 0}],
+        "buffers": [{"byteLength": 16384}],
+        "bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": 16384}],
+        "accessors": [{"count": 1200, "bufferView": 0}],
         "meshes": [{"primitives": [{"attributes": {"POSITION": 0, "NORMAL": 0, "JOINTS_0": 0, "WEIGHTS_0": 0}, "material": 0}]}],
         "nodes": [{"mesh": 0, "skin": 0}, {}],
         "skins": [{"joints": [1]}],
