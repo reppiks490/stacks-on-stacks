@@ -60,6 +60,27 @@ func _run() -> void:
         check(is_equal_approx(float(material.get_shader_parameter("macro_variation")), 0.045), "macro variation binds to material")
         check(is_equal_approx(float(material.get_shader_parameter("macro_scale")), 0.035), "macro scale binds to material")
         check(is_equal_approx(float(material.get_shader_parameter("normal_strength")), 0.7), "normal strength binds to material")
+        # Exercise real runtime texture resources, not only numeric uniforms or
+        # source-string matching. These synthetic pixels are test fixtures,
+        # never substitutes for production authored PBR textures.
+        var albedo_image := Image.create(2, 2, false, Image.FORMAT_RGBA8)
+        albedo_image.fill(Color(0.65, 0.38, 0.24, 1.0))
+        var normal_image := Image.create(2, 2, false, Image.FORMAT_RGBA8)
+        normal_image.fill(Color(0.5, 0.5, 1.0, 1.0))
+        var roughness_image := Image.create(2, 2, false, Image.FORMAT_RGBA8)
+        roughness_image.fill(Color(0.7, 0.7, 0.7, 1.0))
+        var albedo_texture := ImageTexture.create_from_image(albedo_image)
+        var normal_texture := ImageTexture.create_from_image(normal_image)
+        var roughness_texture := ImageTexture.create_from_image(roughness_image)
+        material.set_shader_parameter("albedo_map", albedo_texture)
+        material.set_shader_parameter("normal_map", normal_texture)
+        material.set_shader_parameter("roughness_map", roughness_texture)
+        check(material.get_shader_parameter("albedo_map") == albedo_texture, "albedo texture resource binds")
+        check(material.get_shader_parameter("normal_map") == normal_texture, "normal texture resource binds")
+        check(material.get_shader_parameter("roughness_map") == roughness_texture, "roughness texture resource binds")
+        check(albedo_texture.get_width() == 2 and albedo_texture.get_height() == 2, "albedo fixture has expected dimensions")
+        check(normal_texture.get_width() == 2 and roughness_texture.get_height() == 2, "normal and roughness fixtures have expected dimensions")
+        check(code.contains("texture(normal_map") and code.contains("texture(roughness_map"), "normal and roughness textures are sampled")
         check(code.contains("texture(albedo_map"), "authored albedo is sampled")
         # Independent 150-unit chunks meet at the same WORLD coordinate even
         # though their local vertices and MODEL_MATRIX translations differ.
