@@ -49,6 +49,12 @@ class ContinentalExpansionContracts(unittest.TestCase):
         self.assertIn("KEY_B", s)
         self.assertIn("walking_speed", s)
 
+    def test_real_terrain_geometry_and_collision(self):
+        s = source("scripts/continental_world.gd")
+        for contract in ("func _terrain_height(", "func _terrain_mesh(", "SurfaceTool", "create_trimesh_shape()", "func _sample_chunk(", "for hub in HUBS"):
+            self.assertIn(contract, s)
+        self.assertNotIn("var mesh := PlaneMesh.new()", s)
+
     def test_physics_progression(self):
         s = source("scripts/movement_physics.gd")
         for feature in ("func planar_acceleration(", "func braking_drag(", "func jump_impulse(", "func max_slope_angle(", "func mount_turn_limit("):
