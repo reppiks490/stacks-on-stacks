@@ -54,17 +54,17 @@ def stage(destination: Path) -> None:
         # Explicit resource references bind all three maps to the existing shader.
         material = '''[gd_resource type="ShaderMaterial" load_steps=5 format=3]
 
-    [ext_resource type="Shader" path="res://%s/foliage_pbr_bound.gdshader" id="1"]
-    [ext_resource type="Texture2D" path="res://%s/leaf_albedo_rgba.png" id="2"]
-    [ext_resource type="Texture2D" path="res://%s/leaf_normal_rgb.png" id="3"]
-    [ext_resource type="Texture2D" path="res://%s/leaf_roughness_gray.png" id="4"]
+[ext_resource type="Shader" path="res://%s/foliage_pbr_bound.gdshader" id="1"]
+[ext_resource type="Texture2D" path="res://%s/leaf_albedo_rgba.png" id="2"]
+[ext_resource type="Texture2D" path="res://%s/leaf_normal_rgb.png" id="3"]
+[ext_resource type="Texture2D" path="res://%s/leaf_roughness_gray.png" id="4"]
 
-    [resource]
-    shader = ExtResource("1")
-    shader_parameter/leaf_albedo = ExtResource("2")
-    shader_parameter/leaf_normal = ExtResource("3")
-    shader_parameter/leaf_roughness = ExtResource("4")
-    shader_parameter/reduced_motion = false
+[resource]
+shader = ExtResource("1")
+shader_parameter/leaf_albedo = ExtResource("2")
+shader_parameter/leaf_normal = ExtResource("3")
+shader_parameter/leaf_roughness = ExtResource("4")
+shader_parameter/reduced_motion = false
     '''
         # The output is intended to be copied to res://everbloom_leaf_candidate.
         prefix = "everbloom_leaf_candidate"
@@ -72,13 +72,13 @@ def stage(destination: Path) -> None:
         # Godot imports OBJ as a Mesh resource; do not instantiate it as PackedScene.
         scene = '''[gd_scene load_steps=3 format=3]
 
-    [ext_resource type="Mesh" path="res://everbloom_leaf_candidate/original_curved_leaf_blade.obj" id="1"]
-    [ext_resource type="Material" path="res://everbloom_leaf_candidate/leaf_material.tres" id="2"]
+[ext_resource type="Mesh" path="res://everbloom_leaf_candidate/original_curved_leaf_blade.obj" id="1"]
+[ext_resource type="Material" path="res://everbloom_leaf_candidate/leaf_material.tres" id="2"]
 
-    [node name="LeafCandidate" type="Node3D"]
-    [node name="Blade" type="MeshInstance3D" parent="."]
-    mesh = ExtResource("1")
-    material_override = ExtResource("2")
+[node name="LeafCandidate" type="Node3D"]
+[node name="Blade" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1")
+material_override = ExtResource("2")
     '''
         (destination / "leaf_candidate.tscn").write_text(scene, encoding="utf-8")
         hashes = "\n".join(
