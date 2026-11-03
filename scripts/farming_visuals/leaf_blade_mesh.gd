@@ -61,7 +61,10 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
     # front/back surfaces cause depth fighting and unstable shadow sampling.
     # This remains a thin botanical sheet, not a solid collision mesh.
     var underside_offset := min(0.0015, width * 0.012)
-    # Taper lamina thickness toward the margins and tips. A uniform underside\n    # displacement exposes an unnatural open rim in grazing light. Retain a\n    # small nonzero thickness at boundaries to avoid coincident surfaces.\n    # Both faces use opposite winding for backface-culling and backlighting.
+    # Taper lamina thickness toward the margins and tips. A uniform underside 
+    # displacement exposes an unnatural open rim in grazing light. Retain a 
+    # small nonzero thickness at boundaries to avoid coincident surfaces. 
+    # Both faces use opposite winding for backface-culling and backlighting.
     for i in range(RINGS):
         for j in range(SIDES):
             var a := i * (SIDES + 1) + j
@@ -69,7 +72,9 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             for idx in [a + 1, b, a, b + 1, b, a + 1]:
                 surface.set_uv(uvs[idx])
                 surface.set_color(pigments[idx] * Color(0.83, 0.91, 0.77))
-                var uv := uvs[idx]\n                var taper := 0.2 + 0.8 * sin(PI * uv.y) * (1.0 - pow(abs(uv.x * 2.0 - 1.0), 4.0))\n                surface.add_vertex(verts[idx] - Vector3(0.0, 0.0, underside_offset * taper))
+                var uv := uvs[idx]
+                var taper := 0.2 + 0.8 * sin(PI * uv.y) * (1.0 - pow(abs(uv.x * 2.0 - 1.0), 4.0))
+                surface.add_vertex(verts[idx] - Vector3(0.0, 0.0, underside_offset * taper))
     surface.generate_normals()
     surface.generate_tangents()
     surface.commit(mesh)
