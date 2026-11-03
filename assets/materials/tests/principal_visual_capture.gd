@@ -63,21 +63,16 @@ func _capture() -> void:
         quit(4)
         return
     var image_path := "user://" + OUTPUT_NAME
-    if shot.save_png(image_path) != OK:
-        push_error("VISUAL CAPTURE: screenshot write failed")
-        quit(5)
-        return
     # A successful PNG write is not evidence of a rendered world. Reject blank
     # captures and frames with no geometry draw calls before publishing evidence.
     var occupied_pixels := 0
     var first_pixel := shot.get_pixel(0, 0)
-    for y in range(0, shot.get_height(), maxi(1, shot.get_height() / 32)):
-        for x in range(0, shot.get_width(), maxi(1, shot.get_width() / 32)):
+    for y in range(0, shot.get_height(), maxi(1, int(shot.get_height() / 32))):
+        for x in range(0, shot.get_width(), maxi(1, int(shot.get_width() / 32))):
             var pixel := shot.get_pixel(x, y)
             if absf(pixel.r - first_pixel.r) + absf(pixel.g - first_pixel.g) + absf(pixel.b - first_pixel.b) > 0.025:
                 occupied_pixels += 1
     if occupied_pixels == 0 or draw_calls.max() <= 0:
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(image_path))
         push_error("VISUAL CAPTURE: uniform/empty image or zero draw calls; evidence rejected")
         quit(8)
         return
@@ -104,8 +99,14 @@ func _capture() -> void:
         "nonuniform_sample_pixels": occupied_pixels,
         "limitations": "Not GPU timing, FPS, visual acceptance, collision, save, or mobile evidence"
     }
+    # Publish the PNG only after renderer validity checks have passed.
+    if shot.save_png(image_path) != OK:
+        push_error("VISUAL CAPTURE: screenshot write failed")
+        quit(5)
+        return
     var file := FileAccess.open("user://" + METADATA_NAME, FileAccess.WRITE)
     if file == null:
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(image_path))
         push_error("VISUAL CAPTURE: metadata write failed")
         quit(7)
         return
