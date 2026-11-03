@@ -28,7 +28,11 @@ void fragment() {
     // fwidth is evaluated in fragment space; the attenuation is presentation-only.
     vec2 phase_footprint = fwidth(macro_phase);
     float macro_fade = 1.0 - smoothstep(0.5, 1.5, max(phase_footprint.x, phase_footprint.y));
-    float macro = sin(macro_phase.x) * cos(macro_phase.y) * macro_fade;
+    // Two non-axis-aligned, low-amplitude waves break up visible straight banding.
+    // Both use absolute world coordinates, so independently streamed meshes agree.
+    vec2 phase_a = vec2(dot(macro_phase, vec2(0.8660254, -0.5)), dot(macro_phase, vec2(0.5, 0.8660254)));
+    vec2 phase_b = vec2(dot(macro_phase, vec2(0.6, 0.8)), dot(macro_phase, vec2(-0.8, 0.6))) * 0.61;
+    float macro = (0.65 * sin(phase_a.x) * cos(phase_a.y) + 0.35 * sin(phase_b.x) * cos(phase_b.y)) * macro_fade;
     ALBEDO = clamp(base * (1.0 + macro * macro_variation), vec3(0.0), vec3(1.0));
     NORMAL_MAP = texture(normal_map, uv).rgb;
     NORMAL_MAP_DEPTH = normal_strength;
