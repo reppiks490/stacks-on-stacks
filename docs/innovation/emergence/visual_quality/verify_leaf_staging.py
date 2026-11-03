@@ -23,6 +23,13 @@ def verify() -> None:
         root = Path(temporary)
         destination = root / "everbloom_leaf_candidate"
         stage_module.stage(destination)
+        invalid_destination = root / "wrong_leaf_directory"
+        try:
+            stage_module.stage(invalid_destination)
+        except ValueError:
+            assert not invalid_destination.exists(), "Invalid staging must not leave files behind"
+        else:
+            raise AssertionError("Mismatched destination must be rejected")
         expected = {
             "original_curved_leaf_blade.obj",
             "foliage_pbr_bound.gdshader",
@@ -54,7 +61,7 @@ def verify() -> None:
             pass
         else:
             raise AssertionError("Existing candidate output must not be overwritten")
-        print("PASS E19 staging: PBR bindings, OBJ mesh contract, hashes, no overwrite")
+        print("PASS E19 staging: PBR bindings, OBJ mesh contract, path guard, hashes, no overwrite")
         print("UNVERIFIED: Godot import, shader compilation, visual fidelity, FPS")
 
 
