@@ -17,6 +17,11 @@ func setup(host) -> void:
     _woods()
     _hills()
     _wayfinding()
+    var art := Node3D.new()
+    art.name = "EverBloomLivingArt"
+    art.set_script(load("res://scripts/visual_environment.gd"))
+    add_child(art)
+    art.setup(self)
 
 func material(tint: Color) -> StandardMaterial3D:
     var key := tint.to_html()
