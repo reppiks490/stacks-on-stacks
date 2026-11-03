@@ -213,10 +213,12 @@ func _porch() -> void:
     var mat:=StandardMaterial3D.new()
     mat.albedo_color=Color("#bea180")
     mat.roughness=0.88
+    mat.vertex_color_use_as_albedo=true
     step.material_override=mat
     add_child(step)
     # Doorstep is traversable but solid; separate ramp sized to the visible steps.
-    WorldCollision.solid_box(step,Vector3(2.7,0.35,1.8),"entry_steps")
+    var step_body:=WorldCollision.solid_box(step,Vector3(2.7,0.35,1.8),"entry_steps")
+    step_body.position=Vector3(0,0.20,depth*0.5+1.2)
 
 func _chimney() -> void:
     var s:=SurfaceTool.new()
@@ -243,4 +245,5 @@ func _chimney() -> void:
     mat.roughness=0.93
     node.material_override=mat
     add_child(node)
-    WorldCollision.solid_box(node,Vector3(a*1.7,high-low,a*1.7),"chimney")
+    var chimney_body:=WorldCollision.solid_box(node,Vector3(a*1.7,high-low,a*1.7),"chimney")
+    chimney_body.position=Vector3(x,(low+high)*0.5,z)
