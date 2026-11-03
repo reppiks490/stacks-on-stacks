@@ -62,37 +62,60 @@ def tapered_tube(name, points, radii, sides=9, mat=bark):
     return obj
 
 def leaf(name, origin, length, width, direction, mat):
-    """Double-sided sculpted lanceolate blade with midrib ridge and pointed tip."""
+    """Connected, watertight lanceolate leaf with a raised midrib and thickness.
+
+    The previous leaf builder used a triangle fan with overlapping and missing
+    spans; several vertices were disconnected. This version uses indexed
+    transverse rings, two skins and a closed perimeter.
+    """
     direction = Vector(direction).normalized()
-    lateral = direction.cross(Vector((0,0,1)))
+    lateral = direction.cross(Vector((0, 0, 1)))
     if lateral.length < 0.05:
-        lateral = direction.cross(Vector((0,1,0)))
+        lateral = direction.cross(Vector((0, 1, 0)))
     lateral.normalize()
     normal = lateral.cross(direction).normalized()
     base = Vector(origin)
-    verts = [tuple(base)]
-    for t in (0.24, 0.50, 0.76):
-        center = base + direction * length * t + normal * (0.12*width*math.sin(math.pi*t))
-        spread = width * math.sin(math.pi*t)
-        verts.extend([tuple(center-lateral*spread), tuple(center+normal*width*0.10),
-                      tuple(center+lateral*spread)])
-    verts.append(tuple(base+direction*length))
+    # Five cross-sections. Narrow endpoints avoid zero-area triangles.
+    stations = (0.0, 0.20, 0.43, 0.68, 0.86, 1.0)
+    verts = []
+    for t in stations:
+        span = max(0.008, math.sin(math.pi * t)) * width
+        mid = base + direction * (length * t)
+        # The central ridge gives the blade a convincing crease in grazing light.
+        for skin in (1.0, -1.0):
+            for across in (-1.0, 0.0, 1.0):
+                ridge = (1.0 - abs(across)) * 0.14 * width
+                thickness = skin * 0.012 * width
+                point = mid + lateral * (span * across)
+                point += normal * (ridge + thickness)
+                verts.append(tuple(point))
     faces = []
-    for k in range(3):
-        prev = 0 if k == 0 else 1+(k-1)*3+1
-        left, mid, right = 1+k*3, 2+k*3, 3+k*3
-        faces.extend([(prev,left,mid), (prev,mid,right)])
-        if k:
-            pl, pr = 1+(k-1)*3, 3+(k-1)*3
-            faces.extend([(pl,left,mid),(pr,mid,right)])
-    tip = len(verts)-1
-    faces.extend([(7,tip,8),(8,tip,9)])
-    mesh = bpy.data.meshes.new(name+"_mesh")
+    stride = 6
+    for k in range(len(stations) - 1):
+        a, b = k * stride, (k + 1) * stride
+        for j in range(2):
+            faces.extend(((a+j, b+j, b+j+1),
+                          (a+j, b+j+1, a+j+1)))
+            # Reverse winding for the underside.
+            faces.extend(((a+3+j, b+3+j+1, b+3+j),
+                          (a+3+j, a+3+j+1, b+3+j+1)))
+    for k in range(len(stations) - 1):
+        a, b = k * stride, (k + 1) * stride
+        faces.extend(((a, a+3, b+3), (a, b+3, b)))
+        faces.extend(((a+2, b+2, b+5), (a+2, b+5, a+5)))
+    first, last = 0, (len(stations)-1)*stride
+    faces.extend(((first, first+1, first+4), (first, first+4, first+3),
+                  (first+1, first+2, first+5), (first+1, first+5, first+4),
+                  (last, last+3, last+4), (last, last+4, last+1),
+                  (last+1, last+4, last+5), (last+1, last+5, last+2)))
+    mesh = bpy.data.meshes.new(name + "_mesh")
     mesh.from_pydata(verts, [], faces)
     mesh.update()
     obj = bpy.data.objects.new(name, mesh)
     bpy.context.collection.objects.link(obj)
     obj.data.materials.append(mat)
+    for polygon in mesh.polygons:
+        polygon.use_smooth = True
     return obj
 
 trunk = [(0,0,0),(.05,0,0.55),(.09,-.02,1.25),(.16,.02,2.05),
