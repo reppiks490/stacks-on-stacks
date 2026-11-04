@@ -30,3 +30,6 @@ jobs:
 
       - name: Verify stone PBR seam and relief coherence
         run: python3 docs/innovation/construction/quality/verify_stone_seams.py
+
+      - name: Verify PBR mip-chain integrity
+        run: python3 docs/innovation/construction/quality/verify_stone_mips.py
