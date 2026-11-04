@@ -230,9 +230,9 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
                 actor.rotation.y = atan2(-flat.x, -flat.y)
         var visual: Node = actor.get_node_or_null("ResidentVisual")
         if visual != null:
-            var player: AnimationPlayer = visual.find_child("*", true, false) as AnimationPlayer
-            if player != null:
-                _sync_resident_animation(player, moving)
+            var players: Array[Node] = visual.find_children("*", "AnimationPlayer", true, false)
+            if not players.is_empty():
+                _sync_resident_animation(players[0] as AnimationPlayer, moving)
         resident["place"] = place
 
 ## Imported GLB clips vary by Blender exporter; use only actual available names.
