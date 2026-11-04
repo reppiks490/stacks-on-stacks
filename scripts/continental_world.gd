@@ -76,7 +76,7 @@ func setup(host) -> void:
     add_child(exploration)
     exploration.setup(game,self)
     _create_atlas()
-    set_process(true)
+    set_physics_process(true)
 
 func _make_materials() -> void:
     grass_material = StandardMaterial3D.new()
@@ -118,7 +118,7 @@ void fragment() {
 }
 """
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
     if game == null or game.hero == null:
         return
     var pos: Vector3 = game.hero.global_position
@@ -267,6 +267,7 @@ func _make_chunk(key: Vector2i) -> Node3D:
     collision.shape=mesh.create_trimesh_shape()
     collision.position.y=0.0
     body.add_child(collision)
+    _install_outer_boundary(chunk, key)
     var rng:=RandomNumberGenerator.new()
     rng.seed=abs(key.x*16777619+key.y*1234567+20261103)
     _flora(chunk,origin,biome,rng)
@@ -279,6 +280,34 @@ func _make_chunk(key: Vector2i) -> Node3D:
             _make_settlement(chunk,hub,rng)
     society.spawn_for_chunk(chunk,key,origin)
     return chunk
+
+# Real physics containment at the outermost streamed cells. These barriers exist
+# only in loaded edge chunks, never across internal chunk transitions.
+# A 3 m tall collider is deliberately taller than the local terrain relief.
+func _install_outer_boundary(chunk: Node3D, key: Vector2i) -> void:
+    var thickness: float = 2.0
+    var wall_height: float = 80.0
+    var sides: Array[Dictionary] = []
+    if key.x == 0:
+        sides.append({"at":Vector3(-CHUNK_SIDE*0.5, 0, 0), "size":Vector3(thickness, wall_height, CHUNK_SIDE+thickness)})
+    if key.x == GRID_WIDTH-1:
+        sides.append({"at":Vector3(CHUNK_SIDE*0.5, 0, 0), "size":Vector3(thickness, wall_height, CHUNK_SIDE+thickness)})
+    if key.y == 0:
+        sides.append({"at":Vector3(0, 0, -CHUNK_SIDE*0.5), "size":Vector3(CHUNK_SIDE+thickness, wall_height, thickness)})
+    if key.y == GRID_WIDTH-1:
+        sides.append({"at":Vector3(0, 0, CHUNK_SIDE*0.5), "size":Vector3(CHUNK_SIDE+thickness, wall_height, thickness)})
+    for side in sides:
+        var boundary := StaticBody3D.new()
+        boundary.name = "PhysicalWorldBoundary"
+        boundary.collision_layer = 1
+        boundary.collision_mask = 1
+        chunk.add_child(boundary)
+        var shape := BoxShape3D.new()
+        shape.size = side["size"]
+        var collider := CollisionShape3D.new()
+        collider.shape = shape
+        collider.position = side["at"]
+        boundary.add_child(collider)
 
 func _safe_scatter(x: float,z: float) -> bool:
     return not (absf(x)<76.0 and absf(z)<76.0)
