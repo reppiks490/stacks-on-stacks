@@ -67,21 +67,58 @@ func _paths() -> void:
     box(Vector3(28, 0.02, -11), Vector3(3.0, 0.035, 27), Color("#d9c7a4"))
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
+# Structural house components are separate physics bodies; the front entry remains open.
+# This is a collision-safe interim cottage, NOT final authored architecture.
+func _solid_house_part(at: Vector3, extent: Vector3, tint: Color) -> void:
+    var body := StaticBody3D.new()
+    body.collision_layer = 1
+    body.collision_mask = 1
+    body.position = at
+    add_child(body)
+    var visual := box(Vector3.ZERO, extent, tint, body)
+    visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+    var collider := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = extent
+    collider.shape = shape
+    body.add_child(collider)
+
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
-    var roof_mesh := CylinderMesh.new()
-    roof_mesh.top_radius = 0.0
-    roof_mesh.bottom_radius = width * 0.67
-    roof_mesh.height = 2.2
-    roof_mesh.radial_segments = 4
-    var roof_node := MeshInstance3D.new()
-    roof_node.mesh = roof_mesh
-    roof_node.position = at + Vector3(0, 5.0, 0)
-    roof_node.rotation.y = PI / 4.0
-    roof_node.material_override = material(roof)
-    add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
-    box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+    var depth := 5.2
+    var thickness := 0.24
+    var door_width := 1.35
+    var door_height := 2.35
+    var side_width := (width - door_width) * 0.5
+    # Four real walls, a walkable floor and a deliberate open doorway.
+    _solid_house_part(at + Vector3(0, -0.10, 0), Vector3(width, 0.2, depth), walls.darkened(0.25))
+    _solid_house_part(at + Vector3(-width * 0.5 + thickness * 0.5, 2, 0), Vector3(thickness, 4, depth), walls)
+    _solid_house_part(at + Vector3(width * 0.5 - thickness * 0.5, 2, 0), Vector3(thickness, 4, depth), walls)
+    _solid_house_part(at + Vector3(0, 2, -depth * 0.5 + thickness * 0.5), Vector3(width, 4, thickness), walls)
+    _solid_house_part(at + Vector3(-door_width * 0.5 - side_width * 0.5, 2, depth * 0.5 - thickness * 0.5), Vector3(side_width, 4, thickness), walls)
+    _solid_house_part(at + Vector3(door_width * 0.5 + side_width * 0.5, 2, depth * 0.5 - thickness * 0.5), Vector3(side_width, 4, thickness), walls)
+    _solid_house_part(at + Vector3(0, door_height + (4 - door_height) * 0.5, depth * 0.5 - thickness * 0.5), Vector3(door_width, 4 - door_height, thickness), walls)
+    # Solid roof sections: structural collision follows their actual pitched silhouette.
+    var roof_slope := 0.43
+    var half_span := width * 0.5 + 0.4
+    var roof_length := sqrt(half_span * half_span + pow(half_span * roof_slope, 2))
+    for side in [-1.0, 1.0]:
+        var roof_body := StaticBody3D.new()
+        roof_body.collision_layer = 1
+        roof_body.position = at + Vector3(side * half_span * 0.5, 4.0 + half_span * roof_slope * 0.5, 0)
+        roof_body.rotation.z = side * roof_slope * -1.0
+        add_child(roof_body)
+        var roof_size := Vector3(roof_length + 0.2, 0.20, depth + 0.8)
+        box(Vector3.ZERO, roof_size, roof, roof_body)
+        var roof_collision := CollisionShape3D.new()
+        var roof_shape := BoxShape3D.new()
+        roof_shape.size = roof_size
+        roof_collision.shape = roof_shape
+        roof_body.add_child(roof_collision)
+    # Doorframe and windows are visual details; the windows remain solid glazing.
+    for side in [-1.0, 1.0]:
+        box(at + Vector3(side * (door_width * 0.5 + 0.06), 1.18, depth * 0.5 + 0.03), Vector3(0.12, 2.36, 0.13), Color("#71513b"))
+        box(at + Vector3(side * (door_width * 0.5 + side_width * 0.5), 2.55, depth * 0.5 + 0.14), Vector3(0.8, 0.95, 0.08), Color("#a6c6cb"))
+    box(at + Vector3(0, 2.40, depth * 0.5 + 0.04), Vector3(door_width + 0.22, 0.13, 0.13), Color("#71513b"))
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
