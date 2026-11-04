@@ -41,16 +41,30 @@ func setup(host) -> void:
         container.name = str(resident["name"])
         container.position = Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
         add_child(container)
-        var body := MeshInstance3D.new()
-        var mesh := CapsuleMesh.new()
-        mesh.radius = 0.38
-        mesh.height = 1.7
-        body.mesh = mesh
-        body.position.y = 0.9
-        var mat := StandardMaterial3D.new()
-        mat.albedo_color = Color.html(str(resident["palette"]))
-        body.material_override = mat
-        container.add_child(body)
+        # Render the original skinned GLB when it has actually been exported
+        # into this Godot project. Keep the prototype mesh only as an explicit
+        # missing-asset fallback; it is never production-quality artwork.
+        var resident_asset := "res://assets/village/characters/resident_artisan.glb"
+        var loaded_visual: bool = false
+        if ResourceLoader.exists(resident_asset):
+            var packed: Resource = load(resident_asset)
+            if packed is PackedScene:
+                var visual: Node = (packed as PackedScene).instantiate()
+                visual.name = "ResidentVisual"
+                container.add_child(visual)
+                loaded_visual = true
+        if not loaded_visual:
+            var body := MeshInstance3D.new()
+            body.name = "MISSING_ASSET_CapsulePrototype"
+            var mesh := CapsuleMesh.new()
+            mesh.radius = 0.38
+            mesh.height = 1.7
+            body.mesh = mesh
+            body.position.y = 0.9
+            var mat := StandardMaterial3D.new()
+            mat.albedo_color = Color.html(str(resident["palette"]))
+            body.material_override = mat
+            container.add_child(body)
         # The visible capsule is temporary art, but residents must already be solid.
         # Keep the collision under the moving resident root so schedules and
         # world-space interactions remain aligned without changing saved state.
