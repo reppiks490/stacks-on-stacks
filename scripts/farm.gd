@@ -27,6 +27,12 @@ func setup(host) -> void:
             bed.mesh = bed_mesh
             bed.position.y = 0.1
             holder.add_child(bed)
+            # Authored furrow surface is distinct from the solid underlying bed.
+            var furrows := MeshInstance3D.new()
+            furrows.name = "FurrowSurface"
+            furrows.mesh = _furrow_mesh(index)
+            furrows.position.y = 0.196
+            holder.add_child(furrows)
             var growth := Node3D.new()
             growth.position.y = 0.21
             holder.add_child(growth)
@@ -55,7 +61,7 @@ func setup(host) -> void:
             weed.material_override = _mat(Color("#47673b"))
             growth.add_child(weed)
             var plot := {
-                "holder":holder, "bed":bed, "growth":growth, "stem":stem,
+                "holder":holder, "bed":bed, "furrows":furrows, "growth":growth, "stem":stem,
                 "fruit":fruit, "weed":weed, "tilled":false, "crop":"",
                 "age":0, "watered":false, "watered_days":0,
                 "moisture":35, "fertility":80, "weeds":0, "stress":0,
@@ -64,6 +70,35 @@ func setup(host) -> void:
             }
             beds.append(plot)
             _paint(plot)
+
+# Fixed-seed sculpted topography: continuous ridges, no random frame-to-frame changes.
+# The underlying bed remains the physical planting footprint; the furrow surface
+# is visual-only so that player navigation does not snag on small soil ridges.
+func _furrow_mesh(index: int) -> ArrayMesh:
+    var tool := SurfaceTool.new()
+    tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+    var steps := 24
+    for zi in range(steps):
+        for xi in range(steps):
+            var x0 := -0.73 + 1.46 * float(xi) / float(steps)
+            var x1 := -0.73 + 1.46 * float(xi + 1) / float(steps)
+            var z0 := -0.73 + 1.46 * float(zi) / float(steps)
+            var z1 := -0.73 + 1.46 * float(zi + 1) / float(steps)
+            var a := _soil_vertex(x0, z0, index)
+            var b := _soil_vertex(x1, z0, index)
+            var c := _soil_vertex(x1, z1, index)
+            var d := _soil_vertex(x0, z1, index)
+            for point in [a, c, b, a, d, c]:
+                tool.set_uv(Vector2(point.x / 1.46 + 0.5, point.z / 1.46 + 0.5))
+                tool.add_vertex(point)
+    tool.generate_normals()
+    return tool.commit()
+
+func _soil_vertex(x: float, z: float, index: int) -> Vector3:
+    var edge := clampf((0.73 - maxf(absf(x), absf(z))) * 8.0, 0.0, 1.0)
+    var ridge := pow(maxf(0.0, cos((x + 0.02 * float(index % 3)) * TAU * 3.0)), 3.0)
+    var irregular := 0.008 * sin(z * 18.0 + float(index)) * cos(x * 13.0)
+    return Vector3(x, edge * (0.016 + ridge * 0.065 + irregular), z)
 
 func _mat(tint: Color) -> StandardMaterial3D:
     var key: String = tint.to_html()
@@ -247,6 +282,9 @@ func _paint(plot: Dictionary) -> void:
     if int(plot["fertility"]) < 25:
         soil = soil.lerp(Color("#aa9a80"), 0.36)
     plot["bed"].material_override = _mat(soil)
+    var furrows: MeshInstance3D = plot["furrows"]
+    furrows.visible = bool(plot["tilled"])
+    furrows.material_override = _mat(soil.lightened(0.045))
     var weed: MeshInstance3D = plot["weed"]
     weed.visible = int(plot["weeds"]) > 0
     weed.scale = Vector3.ONE * (0.6 + float(plot["weeds"]) * 0.18)
