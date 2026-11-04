@@ -37,7 +37,10 @@ func setup(host) -> void:
     for original in payload.get("villagers", []):
         var resident: Dictionary = original.duplicate(true)
         var spot: Array = resident["home"]
-        var container := Node3D.new()
+        var container := AnimatableBody3D.new()
+        container.sync_to_physics = true
+        container.collision_layer = 1
+        container.collision_mask = 1
         container.name = str(resident["name"])
         container.position = Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
         add_child(container)
@@ -53,21 +56,16 @@ func setup(host) -> void:
         container.add_child(body)
         # Collision is independent of the temporary presentation mesh. Keep a
         # dedicated physical envelope when an authored skinned mesh replaces it.
-        # A static collider is appropriate until schedule movement is migrated
-        # to CharacterBody3D and navigation-driven physics stepping.
-        var obstacle := StaticBody3D.new()
-        obstacle.name = "NPCObstacle"
-        obstacle.collision_layer = 1
-        obstacle.collision_mask = 1
-        var envelope := CollisionShape3D.new()
+        # AnimatableBody3D follows schedule motion on physics ticks. This is
+        # solid contact, not yet navigation/pathfinding or obstacle avoidance.
+                var envelope := CollisionShape3D.new()
         envelope.name = "BodyEnvelope"
         var capsule := CapsuleShape3D.new()
         capsule.radius = 0.38
         capsule.height = 1.7
         envelope.shape = capsule
         envelope.position.y = 0.9
-        obstacle.add_child(envelope)
-        container.add_child(obstacle)
+        container.add_child(envelope)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
@@ -185,7 +183,9 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
             actor.position = actor.position.move_toward(target, 2.4 * delta)
         resident["place"] = place
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
+    # Move collision and presentation together on fixed physics ticks.
+    # AnimatableBody3D propagates scheduled motion to physics contacts.
     if game != null and not residents.is_empty():
         sync_schedule(false, delta)
 
