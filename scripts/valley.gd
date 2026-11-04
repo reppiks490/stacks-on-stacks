@@ -67,8 +67,58 @@ func _paths() -> void:
     box(Vector3(28, 0.02, -11), Vector3(3.0, 0.035, 27), Color("#d9c7a4"))
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
+func _solid_panel(parent: StaticBody3D, center: Vector3, size: Vector3) -> void:
+    # Local-space wall/floor collision. Keep structural shapes independent of decoration.
+    var collider := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = size
+    collider.shape = shape
+    collider.position = center
+    parent.add_child(collider)
+
+
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
+    # Repair the existing launch-scene houses, without changing game/save contracts.
+    # The facade doorway is intentionally open; wall and roof solids block traversal.
+    var depth := 5.2
+    var height := 4.0
+    var thickness := 0.28
+    var door_width := 1.5
+    var door_height := 2.5
+    var structure := StaticBody3D.new()
+    structure.name = "SolidHouse"
+    structure.position = at
+    structure.collision_layer = 1
+    structure.collision_mask = 1
+    add_child(structure)
+    var side_width := (width - door_width) * 0.5
+    var front_z := depth * 0.5
+    # Grounded floor, back wall, side walls, doorway piers and lintel.
+    var floor_size := Vector3(width, 0.24, depth)
+    box(Vector3(0, -0.12, 0), floor_size, walls.darkened(0.25), structure)
+    _solid_panel(structure, Vector3(0, -0.12, 0), floor_size)
+    var back_size := Vector3(width, height, thickness)
+    box(Vector3(0, height * 0.5, -front_z), back_size, walls, structure)
+    _solid_panel(structure, Vector3(0, height * 0.5, -front_z), back_size)
+    var side_size := Vector3(thickness, height, depth)
+    for x in [-width * 0.5, width * 0.5]:
+        box(Vector3(x, height * 0.5, 0), side_size, walls, structure)
+        _solid_panel(structure, Vector3(x, height * 0.5, 0), side_size)
+    for sign_x in [-1.0, 1.0]:
+        var pier_x := sign_x * (door_width + side_width) * 0.25 * 2.0
+        var pier_center := Vector3(pier_x, height * 0.5, front_z)
+        var pier_size := Vector3(side_width, height, thickness)
+        box(pier_center, pier_size, walls, structure)
+        _solid_panel(structure, pier_center, pier_size)
+    var lintel_size := Vector3(door_width, height - door_height, thickness)
+    var lintel_center := Vector3(0, door_height + (height - door_height) * 0.5, front_z)
+    box(lintel_center, lintel_size, walls, structure)
+    _solid_panel(structure, lintel_center, lintel_size)
+    # Visible door frame, window and gable remain decorative; no phantom door collision.
+    for x in [-door_width * 0.5, door_width * 0.5]:
+        box(Vector3(x, door_height * 0.5, front_z + 0.17), Vector3(0.12, door_height, 0.12), Color("#73513d"), structure)
+    box(Vector3(0, door_height, front_z + 0.17), Vector3(door_width + 0.12, 0.12, 0.12), Color("#73513d"), structure)
+    box(Vector3(-width * 0.30, 2.3, front_z + 0.17), Vector3(0.8, 1.0, 0.12), Color("#f1d79c"), structure)
     var roof_mesh := CylinderMesh.new()
     roof_mesh.top_radius = 0.0
     roof_mesh.bottom_radius = width * 0.67
@@ -76,12 +126,12 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     roof_mesh.radial_segments = 4
     var roof_node := MeshInstance3D.new()
     roof_node.mesh = roof_mesh
-    roof_node.position = at + Vector3(0, 5.0, 0)
+    roof_node.position = Vector3(0, 5.0, 0)
     roof_node.rotation.y = PI / 4.0
     roof_node.material_override = material(roof)
-    add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
-    box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+    structure.add_child(roof_node)
+    # Conservative ceiling collision; actual pitched roof requires authored mesh collision.
+    _solid_panel(structure, Vector3(0, height + 0.08, 0), Vector3(width, 0.16, depth))
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
