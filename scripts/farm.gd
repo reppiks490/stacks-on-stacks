@@ -27,6 +27,20 @@ func setup(host) -> void:
             bed.mesh = bed_mesh
             bed.position.y = 0.1
             holder.add_child(bed)
+            # Solid raised soil matches the displayed bed footprint. Foliage and
+            # shader topsoil remain non-solid to preserve accessible crop actions.
+            var bed_body := StaticBody3D.new()
+            bed_body.name = "RaisedBedCollision"
+            bed_body.collision_layer = 1
+            bed_body.collision_mask = 1
+            holder.add_child(bed_body)
+            var bed_collision := CollisionShape3D.new()
+            bed_collision.name = "BedShape"
+            var bed_shape := BoxShape3D.new()
+            bed_shape.size = bed_mesh.size
+            bed_collision.shape = bed_shape
+            bed_collision.position = bed.position
+            bed_body.add_child(bed_collision)
             # Separate subdivided topsoil from the legacy bed body. The underlying
             # geometry and gameplay coordinates remain unchanged for old saves.
             var topsoil := MeshInstance3D.new()
