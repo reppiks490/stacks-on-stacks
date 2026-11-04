@@ -67,8 +67,38 @@ func _paths() -> void:
     box(Vector3(28, 0.02, -11), Vector3(3.0, 0.035, 27), Color("#d9c7a4"))
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
+func _solid_house_section(body: StaticBody3D, at: Vector3, size: Vector3, tint: Color) -> void:
+    # A structural section always has matching render and physics extents.
+    box(at, size, tint, body)
+    var collision := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = size
+    collision.shape = shape
+    collision.position = at
+    body.add_child(collision)
+
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
+    # Emergency repair: replace the formerly solid-looking but intangible wall
+    # block with a walkable interior, four collidable walls and a real doorway.
+    # The original low-fidelity roof remains a visual placeholder pending art.
+    var body := StaticBody3D.new()
+    body.name = "HouseStructure"
+    body.position = at
+    body.collision_layer = 1
+    body.collision_mask = 1
+    add_child(body)
+    var depth := 5.2
+    var thickness := 0.24
+    var doorway_width := 1.5
+    var doorway_height := 2.45
+    var side_width := (width - doorway_width) * 0.5
+    _solid_house_section(body, Vector3(0, 2.0, -depth * 0.5), Vector3(width, 4.0, thickness), walls)
+    _solid_house_section(body, Vector3(-width * 0.5, 2.0, 0), Vector3(thickness, 4.0, depth), walls)
+    _solid_house_section(body, Vector3(width * 0.5, 2.0, 0), Vector3(thickness, 4.0, depth), walls)
+    _solid_house_section(body, Vector3(-(doorway_width + side_width) * 0.5, 2.0, depth * 0.5), Vector3(side_width, 4.0, thickness), walls)
+    _solid_house_section(body, Vector3((doorway_width + side_width) * 0.5, 2.0, depth * 0.5), Vector3(side_width, 4.0, thickness), walls)
+    _solid_house_section(body, Vector3(0, doorway_height + (4.0 - doorway_height) * 0.5, depth * 0.5), Vector3(doorway_width, 4.0 - doorway_height, thickness), walls)
+    _solid_house_section(body, Vector3(0, -0.12, 0), Vector3(width, 0.24, depth), Color("#a88e70"))
     var roof_mesh := CylinderMesh.new()
     roof_mesh.top_radius = 0.0
     roof_mesh.bottom_radius = width * 0.67
@@ -80,8 +110,8 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     roof_node.rotation.y = PI / 4.0
     roof_node.material_override = material(roof)
     add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
-    box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+    # Doorway remains open; no fake door collider or solid visual panel.
+    box(at + Vector3(-width * 0.28, 2.3, depth * 0.5 + 0.04), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
