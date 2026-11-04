@@ -215,11 +215,45 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
         var place: String = _place_for(resident)
         var target: Vector3 = _place_position(resident, place)
         var actor: Node3D = resident["node"]
+        var previous: Vector3 = actor.position
         if snap:
             actor.position = target
         elif delta > 0.0:
             actor.position = actor.position.move_toward(target, 2.4 * delta)
+        # Presentation follows actual displacement, not a guessed schedule state.
+        # Never rotate or animate the collision body independently of its root.
+        var displacement: Vector3 = actor.position - previous
+        var moving: bool = not snap and displacement.length_squared() > 0.000001
+        if moving:
+            var flat := Vector2(displacement.x, displacement.z)
+            if flat.length_squared() > 0.000001:
+                actor.rotation.y = atan2(-flat.x, -flat.y)
+        var visual: Node = actor.get_node_or_null("ResidentVisual")
+        if visual != null:
+            var player: AnimationPlayer = visual.find_child("*", true, false) as AnimationPlayer
+            if player != null:
+                _sync_resident_animation(player, moving)
         resident["place"] = place
+
+## Imported GLB clips vary by Blender exporter; use only actual available names.
+## A WIP walk is better than a static moving mannequin, but is NOT final gait QA.
+func _sync_resident_animation(player: AnimationPlayer, moving: bool) -> void:
+    var clips: PackedStringArray = player.get_animation_list()
+    var selected: String = ""
+    for clip in clips:
+        var name_lower: String = clip.to_lower()
+        if moving and ("walk" in name_lower or "locomotion" in name_lower):
+            selected = clip
+            break
+        if not moving and "idle" in name_lower:
+            selected = clip
+            break
+    if selected.is_empty():
+        if player.is_playing():
+            player.stop()
+        return
+    if player.current_animation != selected or not player.is_playing():
+        player.play(selected)
 
 func _process(delta: float) -> void:
     if game != null and not residents.is_empty():
