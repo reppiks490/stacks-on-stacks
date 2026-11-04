@@ -67,8 +67,38 @@ func _paths() -> void:
     box(Vector3(28, 0.02, -11), Vector3(3.0, 0.035, 27), Color("#d9c7a4"))
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
+func _solid_house_part(at: Vector3, extent: Vector3, tint: Color, body: StaticBody3D) -> void:
+    # The visible surface and its collision share identical local transforms.
+    box(at, extent, tint)
+    var shape_node := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = extent
+    shape_node.shape = shape
+    shape_node.position = at
+    body.add_child(shape_node)
+
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
+    # Emergency repair: replace the previously solid, non-enterable wall cube
+    # with actual perimeter surfaces and a player-width open doorway.
+    # Art assets remain provisional; this is a physics/playability correction.
+    var body := StaticBody3D.new()
+    body.name = "HouseCollision_%d_%d" % [roundi(at.x), roundi(at.z)]
+    body.collision_layer = 1
+    body.collision_mask = 1
+    add_child(body)
+    var depth := 5.2
+    var thickness := 0.24
+    var doorway_width := 1.6
+    var doorway_height := 2.6
+    var wall_height := 4.0
+    _solid_house_part(at + Vector3(0, wall_height * 0.5, -depth * 0.5), Vector3(width, wall_height, thickness), walls, body)
+    _solid_house_part(at + Vector3(-width * 0.5, wall_height * 0.5, 0), Vector3(thickness, wall_height, depth), walls, body)
+    _solid_house_part(at + Vector3(width * 0.5, wall_height * 0.5, 0), Vector3(thickness, wall_height, depth), walls, body)
+    var side_width := (width - doorway_width) * 0.5
+    _solid_house_part(at + Vector3(-(doorway_width + side_width) * 0.5, wall_height * 0.5, depth * 0.5), Vector3(side_width, wall_height, thickness), walls, body)
+    _solid_house_part(at + Vector3((doorway_width + side_width) * 0.5, wall_height * 0.5, depth * 0.5), Vector3(side_width, wall_height, thickness), walls, body)
+    _solid_house_part(at + Vector3(0, (wall_height + doorway_height) * 0.5, depth * 0.5), Vector3(doorway_width, wall_height - doorway_height, thickness), walls, body)
+    _solid_house_part(at + Vector3(0, -0.10, 0), Vector3(width, 0.20, depth), Color("#aa957b"), body)
     var roof_mesh := CylinderMesh.new()
     roof_mesh.top_radius = 0.0
     roof_mesh.bottom_radius = width * 0.67
@@ -80,8 +110,8 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     roof_node.rotation.y = PI / 4.0
     roof_node.material_override = material(roof)
     add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
-    box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+    # Windows are decorative until authored window openings and glazing exist.
+    box(at + Vector3(-width * 0.28, 2.3, depth * 0.5 + 0.015), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
