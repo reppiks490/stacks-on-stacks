@@ -26,6 +26,10 @@ func _run() -> void:
     root.add_child(farm)
     farm.setup(host)
     _check(farm.beds.size() == 30, "all existing planting beds remain present")
+    # Fail closed if setup unexpectedly changes the number of plots.
+    if farm.beds.size() != 30:
+        quit(1)
+        return
     await physics_frame
     await physics_frame
     for i in range(farm.beds.size()):
@@ -51,6 +55,18 @@ func _run() -> void:
                 break
             await physics_frame
         _check(grounded, "bed %d supports a moving CharacterBody3D" % i)
+        # A neighboring bed, invisible fallback floor, or unrelated body must not
+        # make this test pass. The exact soil collider is the expected contact.
+        var soil: StaticBody3D = holder.get_node("SoilCollision")
+        _check(grounded and body.get_slide_collision_count() > 0,
+            "bed %d produced an actual movement collision" % i)
+        var touched_soil := false
+        for hit_index in range(body.get_slide_collision_count()):
+            if body.get_slide_collision(hit_index).get_collider() == soil:
+                touched_soil = true
+        _check(touched_soil, "bed %d contact belongs to its own soil body" % i)
+        _check(soil.collision_layer & body.collision_mask != 0,
+            "bed %d collision layer matches player mask" % i)
         _check(body.global_position.y > holder.global_position.y + 0.5,
             "bed %d player body did not fall through soil" % i)
         body.queue_free()
