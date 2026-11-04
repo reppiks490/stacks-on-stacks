@@ -180,7 +180,25 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
         if snap:
             actor.position = target
         elif delta > 0.0:
-            actor.position = actor.position.move_toward(target, 2.4 * delta)
+            # Sweep the physical NPC envelope before moving. A direct transform
+            # assignment can tunnel through walls despite AnimatableBody3D.
+            var requested: Vector3 = target - actor.position
+            var travel: Vector3 = requested.limit_length(2.4 * delta)
+            if travel.length_squared() > 0.000001 and actor is CollisionObject3D:
+                var envelope: CollisionShape3D = actor.get_node_or_null("BodyEnvelope")
+                if envelope != null and envelope.shape != null:
+                    var query := PhysicsShapeQueryParameters3D.new()
+                    query.shape = envelope.shape
+                    query.transform = envelope.global_transform * envelope.transform
+                    query.motion = actor.global_transform.basis * travel
+                    query.collision_mask = actor.collision_mask
+                    query.exclude = [actor.get_rid()]
+                    var clearance: PackedFloat32Array = actor.get_world_3d().direct_space_state.cast_motion(query)
+                    if clearance.size() >= 1:
+                        travel *= clampf(clearance[0] - 0.01, 0.0, 1.0)
+                    else:
+                        travel = Vector3.ZERO
+            actor.position += travel
         resident["place"] = place
 
 func _physics_process(delta: float) -> void:
