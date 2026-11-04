@@ -22,8 +22,7 @@ func setup(host) -> void:
             holder.position = field_origin + Vector3(float(x) * 1.8, 0.0, float(z) * 1.8)
             add_child(holder)
             var bed := MeshInstance3D.new()
-            var bed_mesh := BoxMesh.new()
-            bed_mesh.size = Vector3(1.48, 0.18, 1.48)
+            var bed_mesh := _furrow_mesh()
             bed.mesh = bed_mesh
             bed.position.y = 0.1
             holder.add_child(bed)
@@ -64,6 +63,39 @@ func setup(host) -> void:
             }
             beds.append(plot)
             _paint(plot)
+
+## A continuous sculpted bed surface: the top carries six shallow planting
+## furrows instead of a flat block. Geometry is deterministic and save-neutral.
+## This is an intermediate original mesh, NOT a finished authored art asset.
+func _furrow_mesh() -> ArrayMesh:
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    const STEPS := 36
+    const ROWS := 12
+    const WIDTH := 1.48
+    const DEPTH := 1.48
+    for z in range(ROWS):
+        for x in range(STEPS):
+            var x0: float = (float(x) / STEPS - 0.5) * WIDTH
+            var x1: float = (float(x + 1) / STEPS - 0.5) * WIDTH
+            var z0: float = (float(z) / ROWS - 0.5) * DEPTH
+            var z1: float = (float(z + 1) / ROWS - 0.5) * DEPTH
+            var a := Vector3(x0, _furrow_height(x0, z0), z0)
+            var b := Vector3(x1, _furrow_height(x1, z0), z0)
+            var c := Vector3(x0, _furrow_height(x0, z1), z1)
+            var d := Vector3(x1, _furrow_height(x1, z1), z1)
+            surface.add_vertex(a)
+            surface.add_vertex(c)
+            surface.add_vertex(b)
+            surface.add_vertex(b)
+            surface.add_vertex(c)
+            surface.add_vertex(d)
+    surface.generate_normals()
+    return surface.commit()
+
+func _furrow_height(x: float, z: float) -> float:
+    var edge: float = smoothstep(0.54, 0.74, maxf(absf(x), absf(z)))
+    return 0.055 * cos(x * TAU * 3.0) + 0.035 * edge
 
 func _mat(tint: Color) -> StandardMaterial3D:
     var key: String = tint.to_html()
