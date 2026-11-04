@@ -39,8 +39,9 @@ func setup(host) -> void:
         # A separate physics proxy keeps livestock solid without using primitive
         # display geometry as an anatomical model. It follows the existing root
         # when daily grazing positions change and does not affect saved state.
-        var solid := StaticBody3D.new()
+        var solid := AnimatableBody3D.new()
         solid.name = "LivestockCollision"
+        solid.sync_to_physics = true
         solid.collision_layer = 1
         solid.collision_mask = 1
         root.add_child(solid)
@@ -51,6 +52,15 @@ func setup(host) -> void:
         hitbox.shape = envelope
         hitbox.position.y = 0.72
         solid.add_child(hitbox)
+        # The head projects forward of the torso. Give it a second, smaller
+        # collider so the player cannot enter the face while the torso blocks.
+        var head_hitbox := CollisionShape3D.new()
+        head_hitbox.name = "HeadCollision"
+        var head_envelope := SphereShape3D.new()
+        head_envelope.radius = 0.34
+        head_hitbox.shape = head_envelope
+        head_hitbox.position = Vector3(0.0, 1.02, 0.52)
+        solid.add_child(head_hitbox)
         var head := MeshInstance3D.new()
         var head_mesh := SphereMesh.new()
         head_mesh.radius = 0.36
