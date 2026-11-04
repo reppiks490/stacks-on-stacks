@@ -11,9 +11,37 @@ var game
 var beds: Array = []
 var field_origin := Vector3(-20.0, 0.0, -1.0)
 var materials: Dictionary = {}
+var furrow_mesh: ArrayMesh
+
+func _furrow_surface() -> ArrayMesh:
+    # Original geometry; raised planting rows retain a level contact footprint.
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    const GRID := 24
+    for z in range(GRID):
+        for x in range(GRID):
+            var a := _soil_vertex(x, z, GRID)
+            var b := _soil_vertex(x + 1, z, GRID)
+            var c := _soil_vertex(x, z + 1, GRID)
+            var d := _soil_vertex(x + 1, z + 1, GRID)
+            for point in [a, c, b, b, c, d]:
+                surface.add_vertex(point)
+    surface.generate_normals()
+    return surface.commit()
+
+func _soil_vertex(x: int, z: int, grid: int) -> Vector3:
+    var u := float(x) / float(grid)
+    var v := float(z) / float(grid)
+    var edge := minf(minf(u, 1.0 - u), minf(v, 1.0 - v))
+    var taper := smoothstep(0.0, 0.12, edge)
+    var row := pow(0.5 + 0.5 * cos(u * TAU * 4.0), 2.0)
+    var grain := sin(u * 79.0 + v * 37.0) * sin(v * 63.0 - u * 19.0) * 0.012
+    return Vector3((u - 0.5) * 1.48, 0.13 + taper * (0.095 * row + grain), (v - 0.5) * 1.48)
+
 
 func setup(host) -> void:
     game = host
+    furrow_mesh = _furrow_surface()
     for z in range(5):
         for x in range(6):
             var index: int = z * 6 + x
@@ -24,8 +52,8 @@ func setup(host) -> void:
             var bed := MeshInstance3D.new()
             var bed_mesh := BoxMesh.new()
             bed_mesh.size = Vector3(1.48, 0.18, 1.48)
-            bed.mesh = bed_mesh
-            bed.position.y = 0.1
+            bed.mesh = furrow_mesh
+            bed.position.y = 0.0
             holder.add_child(bed)
             var growth := Node3D.new()
             growth.position.y = 0.21
@@ -71,7 +99,8 @@ func _mat(tint: Color) -> StandardMaterial3D:
         return materials[key]
     var result := StandardMaterial3D.new()
     result.albedo_color = tint
-    result.roughness = 0.86
+    result.roughness = 0.94
+    result.metallic = 0.0
     materials[key] = result
     return result
 
