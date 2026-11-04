@@ -14,6 +14,10 @@ var materials: Dictionary = {}
 
 func setup(host) -> void:
     game = host
+    # Shared deterministic soil geometry and matching walkable collision surface.
+    # The surface is static; crop visuals remain independent of physics.
+    var soil_mesh := _furrow_mesh()
+    var soil_shape := soil_mesh.create_trimesh_shape()
     for z in range(5):
         for x in range(6):
             var index: int = z * 6 + x
@@ -22,10 +26,19 @@ func setup(host) -> void:
             holder.position = field_origin + Vector3(float(x) * 1.8, 0.0, float(z) * 1.8)
             add_child(holder)
             var bed := MeshInstance3D.new()
-            var bed_mesh := _furrow_mesh()
-            bed.mesh = bed_mesh
+            bed.mesh = soil_mesh
             bed.position.y = 0.1
             holder.add_child(bed)
+            var soil_body := StaticBody3D.new()
+            soil_body.name = "SoilCollision"
+            soil_body.position.y = bed.position.y
+            soil_body.collision_layer = 1
+            soil_body.collision_mask = 0
+            holder.add_child(soil_body)
+            var soil_collider := CollisionShape3D.new()
+            soil_collider.name = "FurrowSurface"
+            soil_collider.shape = soil_shape
+            soil_body.add_child(soil_collider)
             var growth := Node3D.new()
             growth.position.y = 0.21
             holder.add_child(growth)
