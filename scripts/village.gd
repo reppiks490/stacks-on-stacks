@@ -51,6 +51,20 @@ func setup(host) -> void:
         mat.albedo_color = Color.html(str(resident["palette"]))
         body.material_override = mat
         container.add_child(body)
+        # Physical NPC presence: the visual capsule is provisional art, not a finished rig.
+        # Use a separate physics body so schedules remain owned by the village domain.
+        var obstacle := StaticBody3D.new()
+        obstacle.name = "ResidentCollision"
+        obstacle.collision_layer = 1
+        obstacle.collision_mask = 1
+        container.add_child(obstacle)
+        var hitbox := CollisionShape3D.new()
+        var capsule := CapsuleShape3D.new()
+        capsule.radius = 0.38
+        capsule.height = 1.7
+        hitbox.shape = capsule
+        hitbox.position.y = 0.9
+        obstacle.add_child(hitbox)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
