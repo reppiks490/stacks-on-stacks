@@ -44,6 +44,33 @@ def loft(name, sections, mat, sides=20, phase=0.0):
     mesh=bpy.data.meshes.new(name)
     mesh.from_pydata(vertices, [], faces)
     mesh.update()
+    # Per-face UVs preserve the longitudinal seam without duplicating mesh
+    # vertices. This enables independently authored PBR textures on the
+    # sculpt-reference surfaces; it does not constitute finished texture art.
+    uv = mesh.uv_layers.new(name="Resident_UV0")
+    distances = [0.0]
+    for i in range(1, len(sections)):
+        a, b = Vector(sections[i-1][:3]), Vector(sections[i][:3])
+        distances.append(distances[-1] + (b-a).length)
+    length = max(distances[-1], 1e-6)
+    for polygon in mesh.polygons:
+        for loop_index in polygon.loop_indices:
+            vertex_index = mesh.loops[loop_index].vertex_index
+            ring, segment = divmod(vertex_index, sides)
+            if polygon.index < (len(sections)-1)*sides:
+                # The final face crosses U=1/0: unwrap it at U=1.
+                if polygon.index % sides == sides-1 and segment == 0:
+                    u = 1.0
+                else:
+                    u = segment / sides
+                v = distances[ring] / length
+            else:
+                # Planar UVs for end caps.
+                co = mesh.vertices[vertex_index].co
+                radius = max(sections[ring][3], sections[ring][4], 1e-6)
+                u = 0.5 + (co.x-sections[ring][1])/(2*radius)
+                v = 0.5 + (co.y-sections[ring][2])/(2*radius)
+            uv.data[loop_index].uv = (u, v)
     obj=bpy.data.objects.new(name,mesh)
     bpy.context.collection.objects.link(obj)
     obj.data.materials.append(mat)
