@@ -12,7 +12,7 @@ func _assert(value: bool, message: String) -> void:
         push_error("VILLAGE WALL REGRESSION: " + message)
 
 func _run() -> void:
-    var host = load("res://tests/village_test_host.gd").new()
+    var host = load("res://tests/village_wall_clock_host.gd").new()
     root.add_child(host)
     var village = load("res://scripts/village.gd").new()
     root.add_child(village)
@@ -45,8 +45,8 @@ func _run() -> void:
     actor.global_position = origin
     await process_frame
     await physics_frame
+    # Village already moves on _physics_process: do not double-step it.
     for step in range(180):
-        village.sync_schedule(false, 1.0 / 60.0)
         await physics_frame
     _assert(actor.global_position.z > origin.z - 1.55,
             "NPC crossed a solid wall: %s" % actor.global_position)
