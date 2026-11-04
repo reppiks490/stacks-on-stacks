@@ -49,6 +49,7 @@ var grass_material: StandardMaterial3D
 var bloom_material: StandardMaterial3D
 var stone_material: StandardMaterial3D
 var terrain_shader: Shader
+var _terrain_vertex_origin: Vector3 = Vector3.ZERO
 var last_season: int = -1
 var panorama: bool = false
 var atlas_layer: CanvasLayer
@@ -76,6 +77,11 @@ func setup(host) -> void:
     add_child(exploration)
     exploration.setup(game,self)
     _create_atlas()
+    # Install the starting 3x3 terrain and physics before the first movement tick.
+    # Otherwise the hero can fall while waiting for _physics_process streaming.
+    if game.hero != null:
+        last_cell = _cell_of(Vector2(game.hero.global_position.x, game.hero.global_position.z))
+        _stream_neighborhood(last_cell)
     set_physics_process(true)
 
 func _make_materials() -> void:
@@ -212,6 +218,7 @@ func _terrain_mesh(origin: Vector3) -> ArrayMesh:
     # Sculpt 150m chunks with 24 subdivisions; generate normals and a matching
     # StaticBody trimesh. 3x3 nearby chunks bound runtime memory and collision.
     const STEPS: int=24
+    _terrain_vertex_origin = origin
     var surface:=SurfaceTool.new()
     surface.begin(Mesh.PRIMITIVE_TRIANGLES)
     surface.set_smooth_group(0)
@@ -233,11 +240,18 @@ func _terrain_mesh(origin: Vector3) -> ArrayMesh:
             _terrain_vertex(surface,b,Vector2(float(ix)/STEPS,float(iz+1)/STEPS))
             _terrain_vertex(surface,e,Vector2(float(ix+1)/STEPS,float(iz+1)/STEPS))
     surface.index()
-    surface.generate_normals()
+    # Normals are derived from the same world-space height function on BOTH
+    # sides of a chunk border, avoiding discontinuous lighting at tile seams.
     return surface.commit()
 
 func _terrain_vertex(surface: SurfaceTool,at: Vector3,uv: Vector2) -> void:
     surface.set_uv(uv)
+    var wx: float = _terrain_vertex_origin.x + at.x
+    var wz: float = _terrain_vertex_origin.z + at.z
+    var spacing: float = CHUNK_SIDE / 24.0
+    var slope_x: float = (_terrain_height(wx + spacing, wz) - _terrain_height(wx - spacing, wz)) / (2.0 * spacing)
+    var slope_z: float = (_terrain_height(wx, wz + spacing) - _terrain_height(wx, wz - spacing)) / (2.0 * spacing)
+    surface.set_normal(Vector3(-slope_x, 1.0, -slope_z).normalized())
     surface.add_vertex(at)
 
 func _make_chunk(key: Vector2i) -> Node3D:
