@@ -101,6 +101,37 @@ nose=loft("nasal bridge and tip",[
     (1.76,0,-0.129,0.026,0.024),
     (1.82,0,-0.156,0.021,0.033),
     (1.88,0,-0.132,0.021,0.019)],skin,12)
+# Original facial geometry: layered sclera/iris/pupil and brow ridges.
+# These are deliberately small sculpt-reference surfaces, not loose sphere eyes.
+# Front of face points toward negative Y in this authoring coordinate system.
+sclera = material("warm ivory sclera | sculpt reference", (0.77, 0.71, 0.62), 0.31)
+iris = material("hazel iris | sculpt reference", (0.21, 0.27, 0.14), 0.36)
+pupil = material("near black pupil | sculpt reference", (0.018, 0.015, 0.012), 0.19)
+brow = material("chestnut brow | sculpt reference", (0.11, 0.052, 0.032), 0.81)
+for side in (-1, 1):
+    ex = side * 0.066
+    # Contours lie along the vertical axis, conforming to the cheek/forehead.
+    loft("eye sclera " + str(side), [
+        (1.828, ex, -0.132, 0.035, 0.009),
+        (1.848, ex, -0.146, 0.039, 0.014),
+        (1.869, ex, -0.132, 0.032, 0.009),
+    ], sclera, 16)
+    loft("iris " + str(side), [
+        (1.837, ex, -0.156, 0.018, 0.004),
+        (1.851, ex, -0.163, 0.019, 0.005),
+        (1.864, ex, -0.156, 0.014, 0.003),
+    ], iris, 16)
+    loft("pupil " + str(side), [
+        (1.843, ex, -0.168, 0.009, 0.002),
+        (1.851, ex, -0.171, 0.010, 0.003),
+        (1.859, ex, -0.168, 0.008, 0.002),
+    ], pupil, 12)
+    loft("eyebrow " + str(side), [
+        (1.883, ex, -0.137, 0.044, 0.008),
+        (1.896, ex + side * 0.006, -0.139, 0.040, 0.010),
+        (1.903, ex + side * 0.011, -0.128, 0.028, 0.006),
+    ], brow, 12)
+
 # Longitudinal limbs with changing radius and anatomical bends.
 for side in (-1,1):
     x=side
@@ -161,7 +192,7 @@ bpy.ops.object.mode_set(mode='OBJECT')
 def normalized_weights(obj, vertex):
     z, x = vertex.co.z, vertex.co.x
     name = obj.name
-    if name.startswith(("jaw cheek", "nasal bridge", "swept hair")) or name == "jaw cheek cranium":
+    if name.startswith(("jaw cheek", "nasal bridge", "swept hair", "eye sclera", "iris ", "pupil ", "eyebrow ")) or name == "jaw cheek cranium":
         return {"head": 1.0}
     if name == "neck anatomy":
         return {"neck": 1.0}
