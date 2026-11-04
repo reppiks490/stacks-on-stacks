@@ -62,6 +62,9 @@ func _capture() -> void:
         quit(2)
         return
     # A saved PNG is not evidence of rendered foliage: reject a blank capture.
+    # Compare against the actual rendered background, not a green-channel heuristic.
+    # A green-tinted clear color or lighting change must not pass as foliage.
+    var background := image.get_pixel(2, 2)
     var foreground := 0
     var occupied_columns := 0
     for gx in range(32):
@@ -70,7 +73,9 @@ func _capture() -> void:
             var px := int((float(gx) + 0.5) * float(image.get_width()) / 32.0)
             var py := int((float(gy) + 0.5) * float(image.get_height()) / 18.0)
             var sample := image.get_pixel(px, py)
-            if sample.g > sample.r * 1.12 and sample.g > sample.b * 1.06:
+            var delta := Vector3(sample.r - background.r, sample.g - background.g, sample.b - background.b).length()
+            var green_dominance := sample.g > sample.r * 1.08 and sample.g > sample.b * 1.04
+            if delta > 0.12 and green_dominance:
                 foreground += 1
                 column_has_leaf = true
         if column_has_leaf:
@@ -79,7 +84,7 @@ func _capture() -> void:
         push_error("Leaf visibility gate failed: %d samples across %d columns" % [foreground, occupied_columns])
         quit(4)
         return
-    print("Leaf visibility samples: ", foreground, " columns: ", occupied_columns)
+    print("Leaf visibility samples: ", foreground, " columns: ", occupied_columns, " background: ", background)
     var error := image.save_png(OUTPUT)
     if error != OK:
         push_error("Could not save leaf capture: %s" % error_string(error))
