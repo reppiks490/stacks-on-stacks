@@ -58,7 +58,7 @@ func setup(host) -> void:
         # dedicated physical envelope when an authored skinned mesh replaces it.
         # AnimatableBody3D follows schedule motion on physics ticks. This is
         # solid contact, not yet navigation/pathfinding or obstacle avoidance.
-                var envelope := CollisionShape3D.new()
+        var envelope := CollisionShape3D.new()
         envelope.name = "BodyEnvelope"
         var capsule := CapsuleShape3D.new()
         capsule.radius = 0.38
