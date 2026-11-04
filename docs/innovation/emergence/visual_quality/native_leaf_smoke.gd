@@ -42,6 +42,32 @@ func _run() -> void:
     if bounds.size.x < 0.4 or bounds.size.y < 0.3 or bounds.size.z < 0.02:
         _fail("leaf geometry collapsed or lost authored curvature")
         return
+    # A positive bounding box can still conceal NaN vertices or degenerate faces.
+    for vertex in vertices:
+        if not is_finite(vertex.x) or not is_finite(vertex.y) or not is_finite(vertex.z):
+            _fail("leaf has non-finite vertex positions")
+            return
+    if blade.mesh.surface_get_primitive_type(0) != Mesh.PRIMITIVE_TRIANGLES:
+        _fail("leaf surface is not triangle geometry")
+        return
+    var indices: PackedInt32Array = mesh_arrays[Mesh.ARRAY_INDEX]
+    var triangle_count := indices.size() / 3 if indices.size() > 0 else vertices.size() / 3
+    if triangle_count < 5 or (indices.size() > 0 and indices.size() % 3 != 0) or (indices.size() == 0 and vertices.size() % 3 != 0):
+        _fail("leaf has incomplete or insufficient triangles")
+        return
+    var nondegenerate := 0
+    for triangle in range(int(triangle_count)):
+        var a := indices[triangle * 3] if indices.size() > 0 else triangle * 3
+        var b := indices[triangle * 3 + 1] if indices.size() > 0 else triangle * 3 + 1
+        var c := indices[triangle * 3 + 2] if indices.size() > 0 else triangle * 3 + 2
+        if a < 0 or b < 0 or c < 0 or a >= vertices.size() or b >= vertices.size() or c >= vertices.size():
+            _fail("leaf triangle references an invalid vertex")
+            return
+        if (vertices[b] - vertices[a]).cross(vertices[c] - vertices[a]).length_squared() > 0.0000000001:
+            nondegenerate += 1
+    if nondegenerate < 5:
+        _fail("leaf triangle surface is predominantly collapsed")
+        return
     for uv in uvs:
         if not is_finite(uv.x) or not is_finite(uv.y) or uv.x < 0.0 or uv.x > 1.0 or uv.y < 0.0 or uv.y > 1.0:
             _fail("leaf has invalid or out-of-atlas UVs")
