@@ -39,6 +39,19 @@ def check_normals(rows, size):
             assert nx * nx + ny * ny + nz * nz > 0.10, (size, x)
 
 
+def check_material_detail(rows, size, channel):
+    # A successful mip import must not silently erase authored surface variation.
+    # At very small mips averaging legitimately removes high-frequency detail.
+    if size < 8:
+        return
+    pixels = [row[i] for row in rows for i in range(0, len(row), 3)]
+    contrast = max(pixels) - min(pixels)
+    if channel == 0:
+        assert contrast >= 2, ("albedo flattened", size, contrast)
+    elif channel == 2:
+        assert contrast >= 1, ("roughness flattened", size, contrast)
+
+
 def main():
     with tempfile.TemporaryDirectory(prefix="everbloom_stone_mips_") as tmp:
         for resolution in (64, 128, 256):
@@ -48,6 +61,7 @@ def main():
                 while size >= 2:
                     assert len(rows) == size
                     assert all(len(row) == size * 3 for row in rows)
+                    check_material_detail(rows, size, channel)
                     if channel == 1:
                         check_normals(rows, size)
                     if channel == 2:
