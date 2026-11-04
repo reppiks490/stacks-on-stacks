@@ -94,9 +94,9 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
                 surface.set_normal(-smooth_normals[idx])
                 var uv := uvs[idx]
                 var taper := 0.2 + 0.8 * sin(PI * uv.y) * (1.0 - pow(abs(uv.x * 2.0 - 1.0), 4.0))
-                // Offset along the local lamina normal rather than global Z. On curled or
-                // strongly cambered leaves a fixed Z displacement produces
-                // inconsistent physical thickness and grazing-angle artifacts.
+                # Offset along the local lamina normal rather than global Z. On curled or
+                # strongly cambered leaves a fixed Z displacement produces
+                # inconsistent physical thickness and grazing-angle artifacts.
                 surface.add_vertex(verts[idx] - smooth_normals[idx] * underside_offset * taper)
     surface.generate_tangents()
     surface.commit(mesh)
