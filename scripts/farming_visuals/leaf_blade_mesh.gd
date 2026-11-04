@@ -49,6 +49,22 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             tint = tint.lerp(Color(0.82, 0.84, 0.64), edge_fade * 0.18)
             tint *= exposure * (0.96 + 0.04 * longitudinal)
             pigments.append(tint)
+    # Smooth vertex normals follow the curved lamina instead of each triangle's
+    # individual plane. This removes triangulation-shaped specular bands without
+    # changing mesh topology, UVs, pigments or crop/save contracts.
+    var smooth_normals: Array[Vector3] = []
+    for i in range(RINGS + 1):
+        for j in range(SIDES + 1):
+            var left := i * (SIDES + 1) + maxi(j - 1, 0)
+            var right := i * (SIDES + 1) + mini(j + 1, SIDES)
+            var down := maxi(i - 1, 0) * (SIDES + 1) + j
+            var up := mini(i + 1, RINGS) * (SIDES + 1) + j
+            var tangent_x := verts[right] - verts[left]
+            var tangent_y := verts[up] - verts[down]
+            var normal := tangent_x.cross(tangent_y).normalized()
+            if normal.length_squared() < 0.5:
+                normal = Vector3.FORWARD
+            smooth_normals.append(normal)
     # Counterclockwise as viewed from +Z: upper lamina faces sunlight,
     # not the soil. Backface culling otherwise hides the upper surface.
     for i in range(RINGS):
@@ -58,6 +74,7 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             for idx in [a, a + 1, b, a + 1, b + 1, b]:
                 surface.set_uv(uvs[idx])
                 surface.set_color(pigments[idx])
+                surface.set_normal(smooth_normals[idx])
                 surface.add_vertex(verts[idx])
     # Separate the underside by a small physical lamina thickness. Coincident
     # front/back surfaces cause depth fighting and unstable shadow sampling.
@@ -74,10 +91,10 @@ static func make_leaf(length: float, width: float, curl: float, seed: int = 0) -
             for idx in [b, a + 1, a, b, b + 1, a + 1]:
                 surface.set_uv(uvs[idx])
                 surface.set_color(pigments[idx] * Color(0.83, 0.91, 0.77))
+                surface.set_normal(-smooth_normals[idx])
                 var uv := uvs[idx]
                 var taper := 0.2 + 0.8 * sin(PI * uv.y) * (1.0 - pow(abs(uv.x * 2.0 - 1.0), 4.0))
                 surface.add_vertex(verts[idx] - Vector3(0.0, 0.0, underside_offset * taper))
-    surface.generate_normals()
     surface.generate_tangents()
     surface.commit(mesh)
     return mesh
