@@ -76,6 +76,11 @@ func setup(host) -> void:
     add_child(exploration)
     exploration.setup(game,self)
     _create_atlas()
+    # Build physical terrain around the known homestead spawn before the first
+    # player physics frame. Previously chunks appeared only on the next tick,
+    # leaving a transient unsupported world under the spawned character.
+    last_cell = _cell_of(Vector2(-15.0, -7.0))
+    _stream_neighborhood(last_cell)
     set_physics_process(true)
 
 func _make_materials() -> void:
