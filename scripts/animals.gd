@@ -36,6 +36,21 @@ func setup(host) -> void:
         body.position.y = 0.75
         body.material_override = _mat(Color.html(str(profile["palette"])))
         root.add_child(body)
+        # A separate physics proxy keeps livestock solid without using primitive
+        # display geometry as an anatomical model. It follows the existing root
+        # when daily grazing positions change and does not affect saved state.
+        var solid := StaticBody3D.new()
+        solid.name = "LivestockCollision"
+        solid.collision_layer = 1
+        solid.collision_mask = 1
+        root.add_child(solid)
+        var hitbox := CollisionShape3D.new()
+        var envelope := CapsuleShape3D.new()
+        envelope.radius = 0.68 if index == 1 else 0.48
+        envelope.height = 1.35 if index == 1 else 1.05
+        hitbox.shape = envelope
+        hitbox.position.y = 0.72
+        solid.add_child(hitbox)
         var head := MeshInstance3D.new()
         var head_mesh := SphereMesh.new()
         head_mesh.radius = 0.36
