@@ -154,7 +154,18 @@ for b in range(11):
     height = 1.65 + .16*b
     reach = 1.35 + .22*(b%3)
     direction = Vector((math.cos(angle), math.sin(angle), .48)).normalized()
-    start = Vector((.11,.03,height))
+    # Anchor each branch to the actual bent trunk centerline at its height.
+    # The former constant (.11, .03) origin left upper branches detached
+    # from the trunk silhouette as the trunk bends toward (+X, +Y).
+    trunk_center = Vector(trunk[-1])
+    for segment in range(len(trunk) - 1):
+        lower, upper = Vector(trunk[segment]), Vector(trunk[segment + 1])
+        if lower.z <= height <= upper.z:
+            alpha = (height - lower.z) / (upper.z - lower.z)
+            trunk_center = lower.lerp(upper, alpha)
+            break
+    # Start inside the trunk so that no daylight gap appears at the junction.
+    start = trunk_center + Vector((direction.x, direction.y, 0)) * .035
     points = [start,
               start+direction*reach*.38+Vector((0,0,.12)),
               start+direction*reach*.76+Vector((0,0,.22)),
