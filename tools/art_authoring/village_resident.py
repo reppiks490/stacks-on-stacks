@@ -175,6 +175,37 @@ for obj in bpy.context.scene.objects:
 assert bound_meshes > 0, "No meshes bound to the skeleton"
 # Validate deformation manually at shoulders, elbows, hips and knees before
 # accepting a playable resident. Separate surfaces may visibly intersect.
+# First-pass authored locomotion preview: deliberately conservative rotations.
+# This is a deformation test clip, not a production-approved walk animation.
+# glTF exports the armature action for inspection in Godot/Blender.
+rig.animation_data_create()
+preview = bpy.data.actions.new("Resident_Walk_DeformationPreview_WIP")
+rig.animation_data.action = preview
+bpy.context.view_layer.objects.active = rig
+bpy.ops.object.mode_set(mode='POSE')
+from mathutils import Quaternion
+for frame in (1, 7, 13, 19, 25):
+    phase = 2.0 * math.pi * (frame - 1) / 24.0
+    for suffix, direction in (("L", 1.0), ("R", -1.0)):
+        for bone_name, amplitude, offset in (
+            ("thigh_" + suffix, 0.28, 0.0),
+            ("shin_" + suffix, 0.16, -0.7),
+            ("upper_arm_" + suffix, 0.15, math.pi),
+            ("forearm_" + suffix, 0.08, math.pi - 0.4),
+        ):
+            pb = rig.pose.bones[bone_name]
+            pb.rotation_mode = 'XYZ'
+            pb.rotation_euler = (direction * amplitude * math.sin(phase + offset), 0.0, 0.0)
+            pb.keyframe_insert(data_path="rotation_euler", frame=frame, group=bone_name)
+    rig.pose.bones["hips"].rotation_mode = 'XYZ'
+    rig.pose.bones["hips"].rotation_euler = (0.0, 0.0, 0.018 * math.sin(2 * phase))
+    rig.pose.bones["hips"].keyframe_insert(data_path="rotation_euler", frame=frame, group="hips")
+bpy.ops.object.mode_set(mode='OBJECT')
+bpy.context.scene.frame_start = 1
+bpy.context.scene.frame_end = 24
+bpy.context.scene.render.fps = 24
+bpy.context.scene.frame_set(1)
+# Inspect both rest pose and frames 7/13/19 for knee/elbow collapse and clipping.
 bpy.ops.object.select_all(action='SELECT')
-bpy.ops.export_scene.gltf(filepath=str(OUT),export_format='GLB',use_selection=False)
+bpy.ops.export_scene.gltf(filepath=str(OUT),export_format='GLB',use_selection=False,export_animations=True)
 print("WIP original sculpt exported:", OUT)
