@@ -1,4 +1,4 @@
-"""Original EVERBLOOM resident sculpt blockout. Blender 4.x, no external assets.
+"""Original EVERBLOOM skinned resident blockout. Blender 4.x, no external assets.
 Run: blender -b --python tools/art_authoring/village_resident.py
 Outputs assets/village/characters/resident_artisan.glb (not production approved).
 The authored surface is an anatomical starting mesh, not a primitive-stack NPC.
@@ -127,8 +127,54 @@ for side, suffix in [(-1,"L"),(1,"R")]:
     bone("thigh_"+suffix,(side*0.12,0,0.95),(side*0.14,0,0.53),"hips")
     bone("shin_"+suffix,(side*0.14,0,0.53),(side*0.145,0,0.13),"thigh_"+suffix)
 bpy.ops.object.mode_set(mode='OBJECT')
-# WIP: unweighted mesh is intentionally NOT claimed to be skinned or animated.
-# A later pass must retopologize joints, weight paint, add facial topology and validate deformation.
+# Bind the original blockout to its deform armature. This is a first-pass
+# region-weighted skin, NOT hand-painted production deformation.
+# The previous unweighted export could not move with the reference skeleton.
+def normalized_weights(obj, vertex):
+    z, x = vertex.co.z, vertex.co.x
+    name = obj.name
+    if name.startswith(("jaw cheek", "nasal bridge", "swept hair")) or name == "jaw cheek cranium":
+        return {"head": 1.0}
+    if name == "neck anatomy":
+        return {"neck": 1.0}
+    if name.startswith("hand "):
+        return {"forearm_" + ("L" if x < 0 else "R"): 1.0}
+    if name.startswith(("arm sleeve ",)):
+        side = "L" if x < 0 else "R"
+        # Smooth elbow transition between upper arm and forearm.
+        upper = max(0.0, min(1.0, (z - 1.05) / 0.23))
+        return {"upper_arm_" + side: upper, "forearm_" + side: 1.0-upper}
+    if name.startswith(("trouser leg ", "boot upper ")):
+        side = "L" if x < 0 else "R"
+        thigh = max(0.0, min(1.0, (z - 0.43) / 0.22))
+        return {"thigh_" + side: thigh, "shin_" + side: 1.0-thigh}
+    # Waist-to-chest transition; preserve a rooted hip.
+    spine = max(0.0, min(1.0, (z - 0.94) / 0.23))
+    return {"spine": spine, "hips": 1.0-spine}
+
+bound_meshes = 0
+for obj in bpy.context.scene.objects:
+    if obj.type != 'MESH':
+        continue
+    for v in obj.data.vertices:
+        weights = normalized_weights(obj, v)
+        total = sum(w for w in weights.values() if w > 0.0)
+        if total <= 0.0:
+            raise RuntimeError("Unweighted vertex in " + obj.name)
+        for bone_name, weight in weights.items():
+            if weight <= 0.0:
+                continue
+            group = obj.vertex_groups.get(bone_name)
+            if group is None:
+                group = obj.vertex_groups.new(name=bone_name)
+            group.add([v.index], weight / total, 'REPLACE')
+    modifier = obj.modifiers.new(name="Resident skeletal deformation", type='ARMATURE')
+    modifier.object = rig
+    obj.parent = rig
+    bound_meshes += 1
+assert bound_meshes > 0, "No meshes bound to the skeleton"
+# Validate deformation manually at shoulders, elbows, hips and knees before
+# accepting a playable resident. Separate surfaces may visibly intersect.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=str(OUT),export_format='GLB',use_selection=False)
 print("WIP original sculpt exported:", OUT)
