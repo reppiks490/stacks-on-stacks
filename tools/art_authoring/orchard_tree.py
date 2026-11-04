@@ -181,7 +181,13 @@ for b in range(11):
     tapered_tube("branch_%02d"%b, points, [.105, .085, .059, .031, .008], 9, twig_mat)
     for k in range(13):
         t = .40 + .55*rng.random()
-        anchor = points[0].lerp(points[3],t)
+        # Follow the authored five-point branch polyline. The old straight
+        # chord from points[0] to points[3] cut across the bowed branch and
+        # could leave leaf petioles visibly suspended in mid-air.
+        segment_position = t * (len(points) - 1)
+        segment_index = min(int(segment_position), len(points) - 2)
+        segment_fraction = segment_position - segment_index
+        anchor = points[segment_index].lerp(points[segment_index + 1], segment_fraction)
         az = angle + rng.uniform(-1.5,1.5)
         v = Vector((math.cos(az),math.sin(az),rng.uniform(-.22,.7)))
         # Each leaf is attached by a visible curved petiole instead of
