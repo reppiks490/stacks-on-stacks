@@ -166,11 +166,19 @@ for b in range(11):
             break
     # Start inside the trunk so that no daylight gap appears at the junction.
     start = trunk_center + Vector((direction.x, direction.y, 0)) * .035
-    points = [start,
-              start+direction*reach*.38+Vector((0,0,.12)),
-              start+direction*reach*.76+Vector((0,0,.22)),
-              start+direction*reach+Vector((0,0,.31))]
-    tapered_tube("branch_%02d"%b, points, [.105,.072,.039,.008], 7, twig_mat)
+    # Follow a gently bowed, non-planar centerline instead of a straight
+    # diagonal tube. Opposing lateral bends break the repeated spoke silhouette
+    # without adding branches or altering world/gameplay state.
+    sideways = Vector((-direction.y, direction.x, 0)).normalized()
+    bow = (0.11 + 0.035 * (b % 3)) * (-1 if b % 2 else 1)
+    points = [
+        start,
+        start + direction * reach * .25 + sideways * (bow * .45) + Vector((0, 0, .055)),
+        start + direction * reach * .51 + sideways * bow + Vector((0, 0, .17)),
+        start + direction * reach * .77 + sideways * (bow * .65) + Vector((0, 0, .27)),
+        start + direction * reach + Vector((0, 0, .31)),
+    ]
+    tapered_tube("branch_%02d"%b, points, [.105, .085, .059, .031, .008], 9, twig_mat)
     for k in range(13):
         t = .40 + .55*rng.random()
         anchor = points[0].lerp(points[3],t)
