@@ -35,6 +35,8 @@ def check_normals(rows, size):
             # Averaged normals must be renormalized by the renderer after mip sampling.
             assert all(math.isfinite(v) for v in (nx, ny, nz))
             assert nz > 0.08, (size, x, nz)
+            # Linear filtering must not collapse the normal into a near-zero vector.
+            assert nx * nx + ny * ny + nz * nz > 0.10, (size, x)
 
 
 def main():
@@ -52,6 +54,13 @@ def main():
                         assert all(row[i] == row[i + 1] == row[i + 2]
                                    for row in rows for i in range(0, len(row), 3))
                     if size == 2:
+                        # Include the final 1x1 mip; its normal must still face outward.
+                        rows = downsample(rows)
+                        size = 1
+                        if channel == 1:
+                            check_normals(rows, size)
+                        if channel == 2:
+                            assert rows[0][0] == rows[0][1] == rows[0][2]
                         break
                     rows = downsample(rows)
                     size //= 2
