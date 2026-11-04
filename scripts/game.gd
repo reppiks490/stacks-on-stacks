@@ -42,6 +42,9 @@ func _ready() -> void:
     _make_sky()
     valley = _component("res://scripts/valley.gd", "TheLivingValley")
     valley.setup(self)
+    # Principal emergency safety retrofit for the currently launched baseline.
+    var collision_report: Dictionary = preload("res://scripts/principal_baseline_collision.gd").install(valley)
+    print("EVERBLOOM baseline collision: ", collision_report)
     farm = _component("res://scripts/farm.gd", "HomesteadSoil")
     farm.setup(self)
     village = _component("res://scripts/village.gd", "LarkspurResidents")
