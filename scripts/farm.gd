@@ -11,9 +11,11 @@ var game
 var beds: Array = []
 var field_origin := Vector3(-20.0, 0.0, -1.0)
 var materials: Dictionary = {}
+var furrow_mesh: ArrayMesh
 
 func setup(host) -> void:
     game = host
+    furrow_mesh = _make_furrow_mesh()
     for z in range(5):
         for x in range(6):
             var index: int = z * 6 + x
@@ -22,10 +24,8 @@ func setup(host) -> void:
             holder.position = field_origin + Vector3(float(x) * 1.8, 0.0, float(z) * 1.8)
             add_child(holder)
             var bed := MeshInstance3D.new()
-            var bed_mesh := BoxMesh.new()
-            bed_mesh.size = Vector3(1.48, 0.18, 1.48)
-            bed.mesh = bed_mesh
-            bed.position.y = 0.1
+            bed.mesh = furrow_mesh
+            bed.position.y = 0.035
             holder.add_child(bed)
             var growth := Node3D.new()
             growth.position.y = 0.21
@@ -65,13 +65,41 @@ func setup(host) -> void:
             beds.append(plot)
             _paint(plot)
 
+# Deterministic authored-in-code furrow surface. This is a working geometry pass,
+# not a substitute for production-scanned soil textures or authored crop models.
+func _make_furrow_mesh() -> ArrayMesh:
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    const GRID := 24
+    const WIDTH := 1.48
+    for row in range(GRID):
+        for col in range(GRID):
+            var x0: float = -WIDTH * 0.5 + WIDTH * float(col) / GRID
+            var x1: float = -WIDTH * 0.5 + WIDTH * float(col + 1) / GRID
+            var z0: float = -WIDTH * 0.5 + WIDTH * float(row) / GRID
+            var z1: float = -WIDTH * 0.5 + WIDTH * float(row + 1) / GRID
+            var a := Vector3(x0, _furrow_height(x0, z0), z0)
+            var b := Vector3(x1, _furrow_height(x1, z0), z0)
+            var d := Vector3(x0, _furrow_height(x0, z1), z1)
+            var e := Vector3(x1, _furrow_height(x1, z1), z1)
+            for point in [a, d, b, b, d, e]:
+                surface.set_uv(Vector2(point.x, point.z) * 2.5)
+                surface.add_vertex(point)
+    surface.generate_normals()
+    return surface.commit()
+
+func _furrow_height(x: float, z: float) -> float:
+    var ridge: float = pow(0.5 + 0.5 * cos(x * TAU * 5.0), 2.0)
+    var grain: float = sin(x * 47.0 + z * 31.0) * sin(z * 53.0 - x * 19.0)
+    return 0.025 + ridge * 0.065 + grain * 0.008
+
 func _mat(tint: Color) -> StandardMaterial3D:
     var key: String = tint.to_html()
     if materials.has(key):
         return materials[key]
     var result := StandardMaterial3D.new()
     result.albedo_color = tint
-    result.roughness = 0.86
+    result.roughness = 0.96
     materials[key] = result
     return result
 
