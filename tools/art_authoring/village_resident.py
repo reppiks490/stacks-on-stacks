@@ -153,6 +153,7 @@ for side, suffix in [(-1,"L"),(1,"R")]:
     bone("forearm_"+suffix,(side*0.39,0,1.24),(side*0.41,0,1.02),"upper_arm_"+suffix)
     bone("thigh_"+suffix,(side*0.12,0,0.95),(side*0.14,0,0.53),"hips")
     bone("shin_"+suffix,(side*0.14,0,0.53),(side*0.145,0,0.13),"thigh_"+suffix)
+    bone("foot_"+suffix,(side*0.145,0,0.13),(side*0.145,-0.13,0.055),"shin_"+suffix)
 bpy.ops.object.mode_set(mode='OBJECT')
 # Bind the original blockout to its deform armature. This is a first-pass
 # region-weighted skin, NOT hand-painted production deformation.
@@ -171,7 +172,12 @@ def normalized_weights(obj, vertex):
         # Smooth elbow transition between upper arm and forearm.
         upper = max(0.0, min(1.0, (z - 1.05) / 0.23))
         return {"upper_arm_" + side: upper, "forearm_" + side: 1.0-upper}
-    if name.startswith(("trouser leg ", "boot upper ")):
+    if name.startswith("boot upper "):
+        side = "L" if x < 0 else "R"
+        # Boots follow the ankle through the gait rather than bending as shins.
+        # This is a coarse deform binding until a dedicated shoe mesh is authored.
+        return {"foot_" + side: 1.0}
+    if name.startswith("trouser leg "):
         side = "L" if x < 0 else "R"
         thigh = max(0.0, min(1.0, (z - 0.43) / 0.22))
         return {"thigh_" + side: thigh, "shin_" + side: 1.0-thigh}
@@ -219,6 +225,7 @@ for frame in (1, 7, 13, 19, 25):
             ("shin_" + suffix, 0.16, -0.7),
             ("upper_arm_" + suffix, 0.15, math.pi),
             ("forearm_" + suffix, 0.08, math.pi - 0.4),
+            ("foot_" + suffix, 0.10, -0.85),
         ):
             pb = rig.pose.bones[bone_name]
             pb.rotation_mode = 'XYZ'
@@ -232,6 +239,8 @@ bpy.context.scene.frame_start = 1
 bpy.context.scene.frame_end = 24
 bpy.context.scene.render.fps = 24
 bpy.context.scene.frame_set(1)
+# Foot joints now have independent ankle control. This is NOT foot-locking or IK;
+# sliding, terrain adaptation and ground penetration require rendered inspection.
 # Inspect both rest pose and frames 7/13/19 for knee/elbow collapse and clipping.
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.export_scene.gltf(filepath=str(OUT),export_format='GLB',use_selection=False,export_animations=True)
