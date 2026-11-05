@@ -39,6 +39,26 @@ func _soil_vertex(x: int, z: int, grid: int) -> Vector3:
     return Vector3((u - 0.5) * 1.48, 0.13 + taper * (0.095 * row + grain), (v - 0.5) * 1.48)
 
 
+func _leaf_mesh() -> ArrayMesh:
+    # Original tapered, curved, double-sided leaf mesh; no spherical leaf primitives.
+    var st := SurfaceTool.new()
+    st.begin(Mesh.PRIMITIVE_TRIANGLES)
+    const SEGMENTS := 8
+    for side in [-1.0, 1.0]:
+        for i in range(SEGMENTS):
+            var t0 := float(i) / float(SEGMENTS)
+            var t1 := float(i + 1) / float(SEGMENTS)
+            var w0 := sin(t0 * PI) * 0.19
+            var w1 := sin(t1 * PI) * 0.19
+            var mid0 := Vector3(t0 * 0.68, sin(t0 * PI) * 0.065, 0.0)
+            var mid1 := Vector3(t1 * 0.68, sin(t1 * PI) * 0.065, 0.0)
+            var edge0 := mid0 + Vector3(0.0, -0.025 * sin(t0 * PI), side * w0)
+            var edge1 := mid1 + Vector3(0.0, -0.025 * sin(t1 * PI), side * w1)
+            for p in [mid0, edge0, mid1, mid1, edge0, edge1]:
+                st.add_vertex(p)
+    st.generate_normals()
+    return st.commit()
+
 func setup(host) -> void:
     game = host
     furrow_mesh = _furrow_surface()
@@ -79,6 +99,18 @@ func setup(host) -> void:
             stem.mesh = stem_mesh
             stem.material_override = _mat(Color("#579e56"))
             growth.add_child(stem)
+            var foliage := Node3D.new()
+            foliage.name = "AuthoredLeafWhorls"
+            growth.add_child(foliage)
+            var leaf_mesh := _leaf_mesh()
+            for leaf_index in range(7):
+                var leaf := MeshInstance3D.new()
+                leaf.mesh = leaf_mesh
+                leaf.material_override = _mat(Color("#477d40") if leaf_index % 2 == 0 else Color("#70a94e"))
+                leaf.rotation.y = float(leaf_index) * TAU / 7.0
+                leaf.rotation.z = -0.23 - float(leaf_index % 3) * 0.09
+                leaf.position.y = 0.17 + float(leaf_index % 3) * 0.19
+                foliage.add_child(leaf)
             var fruit := MeshInstance3D.new()
             var orb := SphereMesh.new()
             orb.radius = 0.3
@@ -97,7 +129,7 @@ func setup(host) -> void:
             growth.add_child(weed)
             var plot := {
                 "holder":holder, "bed":bed, "growth":growth, "stem":stem,
-                "fruit":fruit, "weed":weed, "tilled":false, "crop":"",
+                "fruit":fruit, "weed":weed, "foliage":foliage, "tilled":false, "crop":"",
                 "age":0, "watered":false, "watered_days":0,
                 "moisture":35, "fertility":80, "weeds":0, "stress":0,
                 "last_family":"", "rotation_bonus":0, "seed_vigor":0,
@@ -297,12 +329,14 @@ func _paint(plot: Dictionary) -> void:
     var crop_id: String = str(plot["crop"])
     stem.visible = crop_id != ""
     fruit.visible = crop_id != ""
+    plot["foliage"].visible = crop_id != ""
     if crop_id == "":
         return
     var definition: Dictionary = game.crop_definitions[crop_id]
     var proportion: float = clampf(float(plot["age"]) / maxf(1.0, float(definition["days"])), 0.08, 1.0)
     var stem_height: float = 0.2 + proportion * 0.85
     stem.scale = Vector3(1, stem_height, 1)
+    plot["foliage"].scale = Vector3.ONE * (0.35 + proportion * 0.8)
     stem.position.y = stem_height * 0.5
     fruit.scale = Vector3.ONE * (0.28 + proportion * 0.85)
     fruit.position.y = stem_height + 0.12
