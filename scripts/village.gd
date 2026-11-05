@@ -475,7 +475,9 @@ func act(action: String, position: Vector3, topic: String = "") -> String:
         _friendship_tier(points), celebration]
 
 func next_day() -> void:
-    sync_schedule(true)
+    # Calendar changes update destinations; never teleport an active body
+    # across intervening walls. Physics movement resumes on the next tick.
+    sync_schedule(false)
 
 ## V19: deterministic, read-only recap. No transcript is fabricated or stored.
 ## Save/load already preserves every underlying count and gift memory.
@@ -568,4 +570,5 @@ func load_state(state: Dictionary) -> void:
         for key in visits:
             if visits[key] == true and str(key).length() <= 80:
                 festival_visits[str(key)] = true
-    sync_schedule(true)
+    # Restoring social state must not relocate live actors through geometry.
+    sync_schedule(false)
