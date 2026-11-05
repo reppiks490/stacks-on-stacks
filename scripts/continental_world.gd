@@ -308,6 +308,43 @@ func _install_outer_boundary(chunk: Node3D, key: Vector2i) -> void:
         collider.shape = shape
         collider.position = side["at"]
         boundary.add_child(collider)
+        _make_boundary_escarpment(chunk, side["at"], side["size"])
+
+# An authored-looking terrain-facing escarpment makes the physical world limit
+# visible rather than leaving an invisible wall against a bottomless horizon.
+# The cliff follows the same world-space height sampler as adjacent chunks.
+# It is visual only: PhysicalWorldBoundary above remains the authoritative
+# solid collision and never appears at an internal chunk seam.
+func _make_boundary_escarpment(chunk: Node3D, at: Vector3, size: Vector3) -> void:
+    var along_z: bool = size.z > size.x
+    var length: float = CHUNK_SIDE
+    const SEGMENTS: int = 24
+    var tool := SurfaceTool.new()
+    tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+    var cliff_material := StandardMaterial3D.new()
+    cliff_material.albedo_color = Color("#777b71")
+    cliff_material.roughness = 0.96
+    cliff_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+    for i in range(SEGMENTS):
+        var t0: float = -length * 0.5 + length * float(i) / float(SEGMENTS)
+        var t1: float = -length * 0.5 + length * float(i + 1) / float(SEGMENTS)
+        var p0 := Vector3(at.x, 0.0, t0) if along_z else Vector3(t0, 0.0, at.z)
+        var p1 := Vector3(at.x, 0.0, t1) if along_z else Vector3(t1, 0.0, at.z)
+        var h0: float = _terrain_height(chunk.position.x + p0.x, chunk.position.z + p0.z)
+        var h1: float = _terrain_height(chunk.position.x + p1.x, chunk.position.z + p1.z)
+        var a := Vector3(p0.x, h0 - 0.5, p0.z)
+        var b := Vector3(p1.x, h1 - 0.5, p1.z)
+        var c := Vector3(p0.x, h0 + 14.0, p0.z)
+        var d := Vector3(p1.x, h1 + 14.0, p1.z)
+        for v in [a, b, c, c, b, d]:
+            tool.add_vertex(v)
+    tool.generate_normals()
+    var cliff := MeshInstance3D.new()
+    cliff.name = "VisibleWorldEscarpment"
+    cliff.mesh = tool.commit()
+    cliff.material_override = cliff_material
+    cliff.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+    chunk.add_child(cliff)
 
 func _safe_scatter(x: float,z: float) -> bool:
     return not (absf(x)<76.0 and absf(z)<76.0)
