@@ -114,9 +114,9 @@ func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
     _house(Vector3(-4, 0, -15), Color("#b6b48e"), Color("#846a53"), 8.0)
     for idx in range(5):
-        box(Vector3(-17 + idx * 2.4, 0.55, 10), Vector3(0.22, 1.1, 0.25), Color("#88694a"))
-        box(Vector3(-17 + idx * 2.4, 0.55, 18), Vector3(0.22, 1.1, 0.25), Color("#88694a"))
-    box(Vector3(-5, 0.62, -5), Vector3(2.4, 1.24, 1.8), Color("#98724b"))
+        solid_box(Vector3(-17 + idx * 2.4, 0.55, 10), Vector3(0.22, 1.1, 0.25), Color("#88694a"))
+        solid_box(Vector3(-17 + idx * 2.4, 0.55, 18), Vector3(0.22, 1.1, 0.25), Color("#88694a"))
+    solid_box(Vector3(-5, 0.62, -5), Vector3(2.4, 1.24, 1.8), Color("#98724b"))
 
 func _town() -> void:
     _house(Vector3(22,0,10), Color("#d8a88c"), Color("#8f627d"))
@@ -124,7 +124,7 @@ func _town() -> void:
     _house(Vector3(44,0,5), Color("#e3d0a7"), Color("#a27660"))
     _house(Vector3(35,0,-7), Color("#b3aec9"), Color("#6c768c"))
     sphere(Vector3(30,2.3,0), 1.4, Color("#e9ce89"))
-    box(Vector3(30,0.65,0),Vector3(0.9,1.3,0.9),Color("#a89575"))
+    solid_box(Vector3(30,0.65,0),Vector3(0.9,1.3,0.9),Color("#a89575"))
     for i in range(10):
         var angle = float(i) * TAU / 10.0
         sphere(Vector3(30 + cos(angle)*6.0,0.2, sin(angle)*6.0),0.22,Color("#e9b9b8"))
@@ -163,7 +163,7 @@ func _woods() -> void:
         sphere(Vector3(x,0.2,z), rng.randf_range(0.11,0.25), Color("#f0c8d5") if i%3==0 else Color("#f5e6a8"))
 
 func _tree(at: Vector3, scale: float, index: int) -> void:
-    box(at+Vector3(0,1.2*scale,0),Vector3(0.55*scale,2.6*scale,0.55*scale),Color("#785e43"))
+    solid_box(at+Vector3(0,1.2*scale,0),Vector3(0.55*scale,2.6*scale,0.55*scale),Color("#785e43"))
     var leaf := Color("#75a36e") if index%3 else Color("#98b87a")
     sphere(at+Vector3(0,3.0*scale,0),1.55*scale,leaf)
     sphere(at+Vector3(-0.8*scale,2.7*scale,0),1.1*scale,leaf.lightened(0.1))
