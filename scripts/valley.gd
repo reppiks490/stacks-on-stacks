@@ -67,21 +67,49 @@ func _paths() -> void:
     box(Vector3(28, 0.02, -11), Vector3(3.0, 0.035, 27), Color("#d9c7a4"))
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
+func _solid_piece(parent: Node3D, at: Vector3, extent: Vector3, tint: Color) -> void:
+    # Every wall and floor segment has a corresponding physics collider.
+    var solid := StaticBody3D.new()
+    solid.position = at
+    solid.collision_layer = 1
+    solid.collision_mask = 1
+    parent.add_child(solid)
+    box(Vector3.ZERO, extent, tint, solid)
+    var shape := BoxShape3D.new()
+    shape.size = extent
+    var collider := CollisionShape3D.new()
+    collider.shape = shape
+    solid.add_child(collider)
+
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
-    var roof_mesh := CylinderMesh.new()
-    roof_mesh.top_radius = 0.0
-    roof_mesh.bottom_radius = width * 0.67
-    roof_mesh.height = 2.2
-    roof_mesh.radial_segments = 4
-    var roof_node := MeshInstance3D.new()
-    roof_node.mesh = roof_mesh
-    roof_node.position = at + Vector3(0, 5.0, 0)
-    roof_node.rotation.y = PI / 4.0
-    roof_node.material_override = material(roof)
-    add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
-    box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+    # Repair the original walk-through solid-box house: create a real interior
+    # cavity with an intentional 1.5m doorway and physical perimeter walls.
+    # This is collision-first baseline work, not finished architectural art.
+    var house := Node3D.new()
+    house.name = "SolidHouse"
+    house.position = at
+    add_child(house)
+    var depth := 5.2
+    var wall_height := 4.0
+    var thickness := 0.22
+    var doorway := 1.5
+    var door_height := 2.65
+    _solid_piece(house, Vector3(0,-0.13,0), Vector3(width+0.3,0.26,depth+0.3), Color("#b4a18a"))
+    _solid_piece(house, Vector3(0,wall_height*0.5,-depth*0.5), Vector3(width,wall_height,thickness), walls)
+    _solid_piece(house, Vector3(-width*0.5,wall_height*0.5,0), Vector3(thickness,wall_height,depth), walls)
+    _solid_piece(house, Vector3(width*0.5,wall_height*0.5,0), Vector3(thickness,wall_height,depth), walls)
+    var side_width := (width-doorway)*0.5
+    for side in [-1.0,1.0]:
+        _solid_piece(house, Vector3(side*(doorway+side_width)*0.5,wall_height*0.5,depth*0.5), Vector3(side_width,wall_height,thickness), walls)
+    _solid_piece(house, Vector3(0,(wall_height+door_height)*0.5,depth*0.5), Vector3(doorway,wall_height-door_height,thickness), walls)
+    # Roof collision is deliberately simple, with the visible ridge separately
+    # represented; it must not block the ground-level entrance.
+    _solid_piece(house, Vector3(0,wall_height+0.13,0), Vector3(width+0.45,0.26,depth+0.45), roof)
+    for side in [-1.0,1.0]:
+        box(Vector3(side*(width*0.5-0.15),2.0,depth*0.5+0.14),Vector3(0.14,3.7,0.12),Color("#72543f"),house)
+    # Window decoration is on the outside of a solid wall until functional
+    # window apertures and corresponding collision are authored.
+    box(Vector3(-width*0.28,2.3,depth*0.5+0.13),Vector3(0.8,1.0,0.08),Color("#f1d79c"),house)
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
