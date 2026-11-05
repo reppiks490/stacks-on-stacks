@@ -37,9 +37,21 @@ func setup(host) -> void:
     for original in payload.get("villagers", []):
         var resident: Dictionary = original.duplicate(true)
         var spot: Array = resident["home"]
-        var container := Node3D.new()
+        # Keep presentation separate from the physical actor. The capsule is
+        # collision geometry only; authored visual meshes remain a separate gate.
+        var container := CharacterBody3D.new()
         container.name = str(resident["name"])
         container.position = Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
+        container.collision_layer = 2
+        container.collision_mask = 1 | 2
+        container.floor_snap_length = 0.3
+        var collider := CollisionShape3D.new()
+        var capsule := CapsuleShape3D.new()
+        capsule.radius = 0.38
+        capsule.height = 1.7
+        collider.shape = capsule
+        collider.position.y = 0.85
+        container.add_child(collider)
         add_child(container)
         var body := MeshInstance3D.new()
         var mesh := CapsuleMesh.new()
@@ -161,14 +173,30 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
     for resident in residents:
         var place: String = _place_for(resident)
         var target: Vector3 = _place_position(resident, place)
-        var actor: Node3D = resident["node"]
+        var actor: CharacterBody3D = resident["node"]
         if snap:
+            # Spawn/load initialization is not a path traversal. Movement after
+            # initialization always uses the physics solver.
             actor.position = target
+            actor.velocity = Vector3.ZERO
         elif delta > 0.0:
-            actor.position = actor.position.move_toward(target, 2.4 * delta)
+            var offset: Vector3 = target - actor.position
+            var horizontal := Vector3(offset.x, 0.0, offset.z)
+            var speed: float = minf(2.4, horizontal.length() / delta)
+            var direction: Vector3 = horizontal.normalized() if horizontal.length() > 0.05 else Vector3.ZERO
+            actor.velocity.x = direction.x * speed
+            actor.velocity.z = direction.z * speed
+            if actor.is_on_floor():
+                actor.velocity.y = -0.3
+            else:
+                actor.velocity.y = maxf(-30.0, actor.velocity.y - 24.0 * delta)
+            actor.move_and_slide()
+            if direction.length_squared() > 0.01:
+                actor.rotation.y = lerp_angle(actor.rotation.y, atan2(direction.x, direction.z), minf(1.0, delta * 8.0))
+        # This is a requested schedule destination, not an arrival guarantee.
         resident["place"] = place
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
     if game != null and not residents.is_empty():
         sync_schedule(false, delta)
 
