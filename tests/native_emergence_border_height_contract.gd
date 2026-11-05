@@ -25,18 +25,34 @@ func _run() -> void:
         check(vertices.size() > 0, "terrain vertices " + str(cell))
         var shape = mesh.create_trimesh_shape()
         check(shape != null, "terrain collision shape " + str(cell))
-        for offset in [0.0, 37.5, 75.0, 112.5, 150.0]:
-            var x = -world.HALF + float(cell.x + 1) * world.CHUNK_SIDE
-            var z = -world.HALF + float(cell.y) * world.CHUNK_SIDE + offset
-            if cell.x + 1 < world.GRID_WIDTH:
-                var left = world._terrain_height(x, z)
-                var right = world._terrain_height(x, z)
-                check(absf(left - right) < EPS, "shared x seam " + str(cell) + " " + str(offset))
-            var z_edge = -world.HALF + float(cell.y + 1) * world.CHUNK_SIDE
-            var x_sample = -world.HALF + float(cell.x) * world.CHUNK_SIDE + offset
-            if cell.y + 1 < world.GRID_WIDTH:
-                check(absf(world._terrain_height(x_sample, z_edge) - world._terrain_height(x_sample, z_edge)) < EPS, "shared z seam " + str(cell))
+        # Compare independently generated mesh edge vertices, not the height
+        # function against itself. This catches chunk-origin and tessellation drift.
+        for axis in [0, 1]:
+            var neighbor_cell = cell + (Vector2i(1, 0) if axis == 0 else Vector2i(0, 1))
+            if neighbor_cell.x >= world.GRID_WIDTH or neighbor_cell.y >= world.GRID_WIDTH:
+                continue
+            var neighbor_origin = origin + (Vector3(world.CHUNK_SIDE, 0, 0) if axis == 0 else Vector3(0, 0, world.CHUNK_SIDE))
+            var other_mesh: ArrayMesh = world._terrain_mesh(neighbor_origin)
+            var other_vertices: PackedVector3Array = other_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+            var seam_coordinate = world.CHUNK_SIDE * 0.5
+            var first: Dictionary = {}
+            var second: Dictionary = {}
+            for v in vertices:
+                var coordinate: float = v.x if axis == 0 else v.z
+                if absf(coordinate - seam_coordinate) < EPS:
+                    var along: float = v.z if axis == 0 else v.x
+                    first[snappedf(along, 0.0001)] = v.y
+            for v in other_vertices:
+                var coordinate: float = v.x if axis == 0 else v.z
+                if absf(coordinate + seam_coordinate) < EPS:
+                    var along: float = v.z if axis == 0 else v.x
+                    second[snappedf(along, 0.0001)] = v.y
+            check(first.size() == 25 and second.size() == 25, "edge vertex count " + str(cell) + " axis " + str(axis))
+            for along in first:
+                check(second.has(along), "missing neighbor edge vertex " + str(along))
+                if second.has(along):
+                    check(absf(float(first[along]) - float(second[along])) < EPS, "mesh seam height " + str(cell) + " axis " + str(axis) + " at " + str(along))
     world.queue_free()
     if failures == 0:
-        print("PASS: terrain extent, mesh creation, trimesh collision, deterministic sampled boundaries")
+        print("PASS: terrain extent, mesh creation, trimesh collision, neighbor mesh edge heights")
     quit(1 if failures > 0 else 0)
