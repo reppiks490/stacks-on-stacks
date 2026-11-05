@@ -7,15 +7,6 @@ func _initialize() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    var village := Node3D.new()
-    village.set_script(VillageScript)
-    root.add_child(village)
-    var host := Node.new()
-    host.set_script(GDScript.new())
-    # Setup requires the live game calendar and economy; use the actual
-    # main scene rather than a mock host to exercise ordinary integration.
-    village.queue_free()
-    host.queue_free()
     var scene: PackedScene = load("res://scenes/main.tscn")
     if scene == null:
         push_error("QUALITY FAIL: ordinary main scene cannot load")
@@ -25,7 +16,6 @@ func _run() -> void:
     root.add_child(game)
     await process_frame
     await physics_frame
-    var village_nodes := get_nodes_in_group("everbloom_village")
     # The existing Village node may not be grouped; find it by script path.
     var candidates: Array[Node] = []
     _find_villages(game, candidates)
@@ -47,7 +37,7 @@ func _run() -> void:
             var authored := false
             var animated := false
             for part in mesh_nodes:
-                if part.mesh is ArrayMesh or part.mesh is ImporterMesh:
+                if part.mesh is ArrayMesh:
                     authored = true
             animated = _has_animation(actor)
             if not authored or not animated:
@@ -75,8 +65,6 @@ func _find_meshes(node: Node, result: Array[MeshInstance3D]) -> void:
 
 func _has_animation(node: Node) -> bool:
     if node is AnimationPlayer and node.get_animation_list().size() > 0:
-        return true
-    if node is AnimationTree and node.anim_player != NodePath(""):
         return true
     for child in node.get_children():
         if _has_animation(child):
