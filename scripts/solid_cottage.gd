@@ -14,7 +14,7 @@ func build(width: float, plaster: Color, roof_color: Color) -> void:
     for sign_value in [-1.0, 1.0]:
         _solid("SideWall", Vector3(sign_value*width*0.5, HEIGHT*0.5, 0), Vector3(THICKNESS, HEIGHT, DEPTH), plaster)
         var segment_width := (width-DOOR_WIDTH)*0.5
-        _solid("EntrancePier", Vector3(sign_value*(DOOR_WIDTH+segment_width)*0.25, HEIGHT*0.5, DEPTH*0.5), Vector3(segment_width, HEIGHT, THICKNESS), plaster)
+        _solid("EntrancePier", Vector3(sign_value*(DOOR_WIDTH+segment_width)*0.5, HEIGHT*0.5, DEPTH*0.5), Vector3(segment_width, HEIGHT, THICKNESS), plaster)
     _solid("DoorLintel", Vector3(0, (HEIGHT+DOOR_HEIGHT)*0.5, DEPTH*0.5), Vector3(DOOR_WIDTH, HEIGHT-DOOR_HEIGHT, THICKNESS), plaster)
     _solid("RoofUnderlay", Vector3(0, HEIGHT+0.08, 0), Vector3(width+0.45, 0.16, DEPTH+0.45), roof_color)
     # Roof slopes are decorative for now; structural roof collision is the underlay.
