@@ -157,6 +157,8 @@ func _bed_reachable(origin: Vector3, plot: Dictionary) -> bool:
     var start := origin + Vector3.UP * 0.8
     var target: Vector3 = plot["holder"].global_position + Vector3.UP * 0.8
     var query := PhysicsRayQueryParameters3D.create(start, target, 1)
+    if game != null and is_instance_valid(game.hero):
+        query.exclude = [game.hero.get_rid()]
     query.collide_with_areas = false
     var hit: Dictionary = space.intersect_ray(query)
     return hit.is_empty()
