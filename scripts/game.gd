@@ -42,6 +42,7 @@ func _ready() -> void:
     _make_sky()
     valley = _component("res://scripts/valley.gd", "TheLivingValley")
     valley.setup(self)
+    _install_legacy_ground_safety_perimeter()
     farm = _component("res://scripts/farm.gd", "HomesteadSoil")
     farm.setup(self)
     village = _component("res://scripts/village.gd", "LarkspurResidents")
@@ -72,6 +73,30 @@ func _ready() -> void:
     add_child(save_health_panel)
     save_health_panel.setup(self)
     _show("Welcome home. Tend your garden and befriend the valley.")
+
+## Temporary collision-only guard for the *actual* 145-unit legacy ground.
+## Remove only after streamed terrain has verified collision across all chunks.
+## This is not a substitute for the 4,800-unit terrain or finished art.
+func _install_legacy_ground_safety_perimeter() -> void:
+    var boundary := StaticBody3D.new()
+    boundary.name = "LegacyGroundSafetyPerimeter"
+    boundary.collision_layer = 1
+    boundary.collision_mask = 1
+    add_child(boundary)
+    var half_span := 71.0
+    var wall_height := 12.0
+    var thickness := 2.0
+    for side in range(4):
+        var wall := CollisionShape3D.new()
+        var shape := BoxShape3D.new()
+        if side < 2:
+            shape.size = Vector3(thickness, wall_height, 145.0)
+            wall.position = Vector3((-half_span if side == 0 else half_span), wall_height * 0.5 - 1.0, 0.0)
+        else:
+            shape.size = Vector3(145.0, wall_height, thickness)
+            wall.position = Vector3(0.0, wall_height * 0.5 - 1.0, (-half_span if side == 2 else half_span))
+        wall.shape = shape
+        boundary.add_child(wall)
 
 func _component(script_path: String, component_name: String):
     var component = Node3D.new()
