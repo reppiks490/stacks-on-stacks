@@ -41,19 +41,28 @@ func _run() -> void:
     shape_node.position.y = 0.91
     probe.add_child(shape_node)
     scene.add_child(probe)
-    probe.global_position = Vector3(-29.0, 0.05, -14.0)
+    probe.global_position = Vector3(-29.0, 0.0, -14.0)
     await physics_frame
     var hit := probe.move_and_collide(Vector3(12, 0, 0), true)
     _assert(hit != null, "Capsule traverses farmhouse without wall collision")
     if hit != null:
         _assert(hit.get_travel().x < 5.0, "Farmhouse collision only occurs after entering its footprint")
     # World edge: floor must exist or a physical boundary must stop forward motion.
-    probe.global_position = Vector3(70, 0.05, 0)
+    probe.global_position = Vector3(70, 0.0, 0)
     await physics_frame
     var edge_motion := probe.move_and_collide(Vector3(20, 0, 0), true)
     var space := scene.get_world_3d().direct_space_state
     var ground := space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(80, 4, 0), Vector3(80, -8, 0)))
     _assert(edge_motion != null or not ground.is_empty(), "No physical edge barrier or streamed ground at x=80")
+    # A floor ray alone cannot certify continuity: require support at both sides of the old 145-unit edge.
+    var inside_ground := space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(70, 4, 0), Vector3(70, -8, 0)))
+    _assert(not inside_ground.is_empty(), "Ground missing just inside the original homestead boundary")
+    # A floor collision must not masquerade as a blocking wall; horizontal probes start above the floor.
+    _assert(edge_motion == null or absf(edge_motion.get_normal().y) < 0.5 or not ground.is_empty(), "Edge probe hit only a floor, not an outer boundary")
+    # Release-quality visuals must be real mesh/rig assets in the ordinary startup hero.
+    if hero != null:
+        var rigged := _contains_skeleton(hero)
+        _assert(rigged, "Ordinary Farmer has no Skeleton3D; primitive body is not an authored rigged character")
     probe.queue_free()
     scene.queue_free()
     await process_frame
@@ -67,5 +76,13 @@ func _run() -> void:
 func _has_collision(body: Node) -> bool:
     for child in body.get_children():
         if child is CollisionShape3D and child.shape != null:
+            return true
+    return false
+
+func _contains_skeleton(node: Node) -> bool:
+    if node is Skeleton3D:
+        return true
+    for child in node.get_children():
+        if _contains_skeleton(child):
             return true
     return false
