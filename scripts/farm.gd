@@ -66,12 +66,9 @@ func setup(host) -> void:
                 leaf.position.y = 0.12 + float(leaf_index / 2) * 0.18
                 foliage.add_child(leaf)
             var fruit := MeshInstance3D.new()
-            var orb := SphereMesh.new()
-            orb.radius = 0.3
-            orb.height = 0.6
-            orb.radial_segments = 12
-            orb.rings = 8
-            fruit.mesh = orb
+            # Original faceted, lobed produce mesh replaces the generic sphere.
+            # Intermediate in-game geometry; not a finished crop-specific asset.
+            fruit.mesh = _produce_mesh()
             growth.add_child(fruit)
             # A small rosette of original curved leaf geometry replaces the
             # spherical weed placeholder; no changes to persistent weed state.
@@ -123,6 +120,35 @@ func _leaf_mesh() -> ArrayMesh:
     tool.generate_normals()
     var result := tool.commit()
     return result
+
+## Original closed lobed produce silhouette with a recessed crown and tapered base.
+## Shared by existing crops until crop-specific authored assets are integrated.
+func _produce_mesh() -> ArrayMesh:
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    const SIDES := 24
+    const RINGS := 12
+    for ring in range(RINGS):
+        var t0: float = float(ring) / RINGS
+        var t1: float = float(ring + 1) / RINGS
+        for side in range(SIDES):
+            var a0: float = float(side) * TAU / SIDES
+            var a1: float = float(side + 1) * TAU / SIDES
+            var p00 := _produce_point(t0, a0)
+            var p01 := _produce_point(t0, a1)
+            var p10 := _produce_point(t1, a0)
+            var p11 := _produce_point(t1, a1)
+            for vertex in [p00, p01, p10, p01, p11, p10]:
+                surface.add_vertex(vertex)
+    surface.generate_normals()
+    return surface.commit()
+
+func _produce_point(t: float, angle: float) -> Vector3:
+    var radial: float = sin(PI * t)
+    var lobes: float = 1.0 + 0.065 * cos(6.0 * angle)
+    var radius: float = 0.32 * radial * lobes * (0.85 + 0.25 * t)
+    var crown: float = -0.055 * exp(-pow((1.0 - t) * 9.0, 2.0))
+    return Vector3(radius * cos(angle), 0.42 * (t - 0.5) + crown, radius * sin(angle))
 
 func _furrow_mesh() -> ArrayMesh:
     var surface := SurfaceTool.new()
