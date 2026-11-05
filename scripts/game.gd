@@ -135,6 +135,22 @@ func _make_sky() -> void:
     sunlight.shadow_enabled = true
     add_child(sunlight)
 
+# Legacy 145m homestead containment until the continental streamer is integrated.
+# This is deliberately a temporary safety rail, not a 4.8km world substitute.
+func _physics_process(_delta: float) -> void:
+    if hero == null or not is_instance_valid(hero):
+        return
+    if get_node_or_null("ContinentalWorld") != null:
+        return
+    const SAFE_HALF_EXTENT := 71.0
+    var location: Vector3 = hero.global_position
+    var safe_x: float = clampf(location.x, -SAFE_HALF_EXTENT, SAFE_HALF_EXTENT)
+    var safe_z: float = clampf(location.z, -SAFE_HALF_EXTENT, SAFE_HALF_EXTENT)
+    if not is_equal_approx(location.x, safe_x) or not is_equal_approx(location.z, safe_z):
+        hero.global_position = Vector3(safe_x, maxf(location.y, 1.0), safe_z)
+        hero.velocity.x = 0.0
+        hero.velocity.z = 0.0
+
 func _process(delta: float) -> void:
     if hero == null:
         return
