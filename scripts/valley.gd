@@ -68,7 +68,19 @@ func _paths() -> void:
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
+    # Separate solid walls leave a real front doorway; never collide the entire house volume.
+    var depth := 5.2
+    var thickness := 0.24
+    var door_width := 1.5
+    var door_height := 2.35
+    _solid_panel(at + Vector3(0, 2.0, -depth * 0.5), Vector3(width, 4.0, thickness), walls)
+    _solid_panel(at + Vector3(-width * 0.5, 2.0, 0), Vector3(thickness, 4.0, depth), walls)
+    _solid_panel(at + Vector3(width * 0.5, 2.0, 0), Vector3(thickness, 4.0, depth), walls)
+    var side_width := (width - door_width) * 0.5
+    _solid_panel(at + Vector3(-(door_width + side_width) * 0.5, 2.0, depth * 0.5), Vector3(side_width, 4.0, thickness), walls)
+    _solid_panel(at + Vector3((door_width + side_width) * 0.5, 2.0, depth * 0.5), Vector3(side_width, 4.0, thickness), walls)
+    _solid_panel(at + Vector3(0, door_height + (4.0 - door_height) * 0.5, depth * 0.5), Vector3(door_width, 4.0 - door_height, thickness), walls)
+    _solid_panel(at + Vector3(0, 0.08, 0), Vector3(width - thickness, 0.16, depth - thickness), Color("#a38b70"))
     var roof_mesh := CylinderMesh.new()
     roof_mesh.top_radius = 0.0
     roof_mesh.bottom_radius = width * 0.67
@@ -80,8 +92,21 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     roof_node.rotation.y = PI / 4.0
     roof_node.material_override = material(roof)
     add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
+    # The opening remains physically passable; a decorative door panel must not seal it.
     box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+
+func _solid_panel(at: Vector3, extent: Vector3, tint: Color) -> void:
+    box(at, extent, tint)
+    var body := StaticBody3D.new()
+    body.position = at
+    body.collision_layer = 1
+    body.collision_mask = 1
+    add_child(body)
+    var collision := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = extent
+    collision.shape = shape
+    body.add_child(collision)
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
