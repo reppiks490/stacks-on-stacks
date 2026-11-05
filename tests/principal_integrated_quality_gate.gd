@@ -49,7 +49,7 @@ func _run() -> void:
 func _has_authored_character(node: Node) -> bool:
     if node is Skeleton3D:
         for child in node.find_children("*", "MeshInstance3D", true, false):
-            if child is MeshInstance3D and child.skin != null:
+            if child is MeshInstance3D and (child as MeshInstance3D).skin != null:
                 return true
     for child in node.get_children():
         if _has_authored_character(child):
