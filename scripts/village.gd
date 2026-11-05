@@ -183,7 +183,17 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
         if snap:
             actor.position = target
         elif delta > 0.0:
-            actor.position = actor.position.move_toward(target, 2.4 * delta)
+            # Prevent direct NPC traversal through solid scenery.
+            # Navigation around obstacles remains a separate integration gate.
+            var next_position: Vector3 = actor.position.move_toward(target, 2.4 * delta)
+            var query := PhysicsRayQueryParameters3D.create(
+                to_global(actor.position + Vector3.UP * 0.9),
+                to_global(next_position + Vector3.UP * 0.9), 1)
+            var obstacle: CollisionObject3D = actor.get_node_or_null("ResidentObstacle")
+            if obstacle != null:
+                query.exclude = [obstacle.get_rid()]
+            if get_world_3d().direct_space_state.intersect_ray(query).is_empty():
+                actor.position = next_position
         resident["place"] = place
 
 # Keep collision-bearing resident transforms on the fixed physics clock.
