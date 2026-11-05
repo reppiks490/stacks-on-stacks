@@ -639,11 +639,16 @@ func _travel(index: int) -> void:
     if game==null or game.hero==null or index<0 or index>=HUBS.size():
         return
     var hub: Dictionary=HUBS[index]
-    game.hero.global_position=Vector3(float(hub["x"]),1.05,float(hub["z"])+6.0)
-    game.hero.velocity=Vector3.ZERO
-    last_cell=Vector2i(-999,-999)
-    _stream_neighborhood(_cell_of(Vector2(game.hero.global_position.x,game.hero.global_position.z)))
-    last_cell=_cell_of(Vector2(game.hero.global_position.x,game.hero.global_position.z))
+    var destination_x: float = float(hub["x"])
+    var destination_z: float = float(hub["z"]) + 6.0
+    var destination_cell := _cell_of(Vector2(destination_x, destination_z))
+    # Install destination ground and its collision before moving the player.
+    # A fixed y=1.05 could place the player inside elevated terrain.
+    _stream_neighborhood(destination_cell)
+    var destination_height: float = _terrain_height(destination_x, destination_z)
+    game.hero.global_position = Vector3(destination_x, destination_height + 1.05, destination_z)
+    game.hero.velocity = Vector3.ZERO
+    last_cell = destination_cell
     atlas.hide()
     game._show("Waystone reached: %s. Explore the square, markets and local residents." % str(hub["name"]))
 
