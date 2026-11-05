@@ -49,11 +49,11 @@ func _run() -> void:
     floor_query.collision_mask = 1
     var floor_hit := state.intersect_ray(floor_query)
     _check(not floor_hit.is_empty(), "terrain floor raycast has physical contact")
-    var wall_query := PhysicsRayQueryParameters3D.create(center + Vector3(0, 4, 0), center + Vector3(-90, 4, 0))
+    var wall_query := PhysicsRayQueryParameters3D.create(center + Vector3(0, 30, 0), center + Vector3(-90, 30, 0))
     wall_query.collision_mask = 1
     var wall_hit := state.intersect_ray(wall_query)
     _check(not wall_hit.is_empty() and wall_hit["collider"].name == "PhysicalWorldBoundary", "west world boundary stops horizontal traversal")
-    var south_query := PhysicsRayQueryParameters3D.create(center + Vector3(0, 4, 0), center + Vector3(0, 4, -90))
+    var south_query := PhysicsRayQueryParameters3D.create(center + Vector3(0, 30, 0), center + Vector3(0, 30, -90))
     south_query.collision_mask = 1
     var south_hit := state.intersect_ray(south_query)
     _check(not south_hit.is_empty() and south_hit["collider"].name == "PhysicalWorldBoundary", "south world boundary stops horizontal traversal")
