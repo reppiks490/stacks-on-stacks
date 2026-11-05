@@ -37,7 +37,12 @@ func setup(host) -> void:
     for original in payload.get("villagers", []):
         var resident: Dictionary = original.duplicate(true)
         var spot: Array = resident["home"]
-        var container := Node3D.new()
+        # A moving resident must own a kinematic physics body; a StaticBody3D
+        # translated every render frame can tunnel through buildings and players.
+        var container := CharacterBody3D.new()
+        container.collision_layer = 1
+        container.collision_mask = 1
+        container.floor_snap_length = 0.25
         container.name = str(resident["name"])
         container.position = Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
         add_child(container)
@@ -51,13 +56,7 @@ func setup(host) -> void:
         mat.albedo_color = Color.html(str(resident["palette"]))
         body.material_override = mat
         container.add_child(body)
-        # The rendered capsule is temporary art; this physical body is deliberately
-        # separate so replacing the visual with a skinned mesh cannot remove collision.
-        # A stationary resident must block the player even before navigation is upgraded.
-        var blocker := StaticBody3D.new()
-        blocker.name = "ResidentCollision"
-        blocker.collision_layer = 1
-        blocker.collision_mask = 0
+        # Collision is independent of temporary visuals and survives mesh swaps.
         var blocker_shape := CollisionShape3D.new()
         blocker_shape.name = "ResidentBodyShape"
         var capsule_shape := CapsuleShape3D.new()
@@ -65,8 +64,7 @@ func setup(host) -> void:
         capsule_shape.height = 1.7
         blocker_shape.shape = capsule_shape
         blocker_shape.position.y = 0.9
-        blocker.add_child(blocker_shape)
-        container.add_child(blocker)
+        container.add_child(blocker_shape)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
@@ -177,14 +175,23 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
     for resident in residents:
         var place: String = _place_for(resident)
         var target: Vector3 = _place_position(resident, place)
-        var actor: Node3D = resident["node"]
+        var actor: CharacterBody3D = resident["node"]
         if snap:
+            # Calendar transitions intentionally reposition residents; ordinary
+            # movement below is collision-aware and never teleports through walls.
             actor.position = target
+            actor.velocity = Vector3.ZERO
         elif delta > 0.0:
-            actor.position = actor.position.move_toward(target, 2.4 * delta)
+            var direction: Vector3 = target - actor.position
+            direction.y = 0.0
+            var horizontal: Vector3 = direction.normalized() * minf(2.4, direction.length() / delta)
+            actor.velocity.x = horizontal.x
+            actor.velocity.z = horizontal.z
+            actor.velocity.y = -0.1 if actor.is_on_floor() else actor.velocity.y - 18.0 * delta
+            actor.move_and_slide()
         resident["place"] = place
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
     if game != null and not residents.is_empty():
         sync_schedule(false, delta)
 
