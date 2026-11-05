@@ -82,21 +82,45 @@ func _paths() -> void:
     box(Vector3(28, 0.02, -11), Vector3(3.0, 0.035, 27), Color("#d9c7a4"))
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
+func _solid_section(parent: Node3D, at: Vector3, extent: Vector3, tint: Color) -> void:
+    # Visual and physics geometry share the same local transform.
+    box(at, extent, tint, parent)
+    var body := StaticBody3D.new()
+    body.collision_layer = 1
+    body.collision_mask = 1
+    parent.add_child(body)
+    body.position = at
+    var collider := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = extent
+    collider.shape = shape
+    body.add_child(collider)
+
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
-    var roof_mesh := CylinderMesh.new()
-    roof_mesh.top_radius = 0.0
-    roof_mesh.bottom_radius = width * 0.67
-    roof_mesh.height = 2.2
-    roof_mesh.radial_segments = 4
-    var roof_node := MeshInstance3D.new()
-    roof_node.mesh = roof_mesh
-    roof_node.position = at + Vector3(0, 5.0, 0)
-    roof_node.rotation.y = PI / 4.0
-    roof_node.material_override = material(roof)
-    add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
-    box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+    # Structural repair: four solid walls with an actual open front doorway.
+    # This is a collision-first interim building, NOT finished architectural art.
+    var building := Node3D.new()
+    building.name = "SolidHouse"
+    building.position = at
+    add_child(building)
+    var depth := 5.2
+    var height := 4.0
+    var thickness := 0.25
+    var opening := 1.6
+    var door_height := 2.6
+    _solid_section(building, Vector3(0, -0.12, 0), Vector3(width, 0.24, depth), Color("#b8aa94"))
+    _solid_section(building, Vector3(0, height * 0.5, -depth * 0.5), Vector3(width, height, thickness), walls)
+    _solid_section(building, Vector3(-width * 0.5, height * 0.5, 0), Vector3(thickness, height, depth), walls)
+    _solid_section(building, Vector3(width * 0.5, height * 0.5, 0), Vector3(thickness, height, depth), walls)
+    var wing_width := (width - opening) * 0.5
+    for side in [-1.0, 1.0]:
+        _solid_section(building, Vector3(side * (opening + wing_width) * 0.5, height * 0.5, depth * 0.5), Vector3(wing_width, height, thickness), walls)
+    _solid_section(building, Vector3(0, (height + door_height) * 0.5, depth * 0.5), Vector3(opening, height - door_height, thickness), walls)
+    # Distinct roof slab collision blocks traversal from above.
+    _solid_section(building, Vector3(0, height + 0.18, 0), Vector3(width + 0.5, 0.36, depth + 0.5), roof)
+    # A framed, passable doorway: no invisible collision across its opening.
+    for side in [-1.0, 1.0]:
+        _solid_section(building, Vector3(side * opening * 0.5, door_height * 0.5, depth * 0.5 + 0.05), Vector3(0.12, door_height, 0.12), Color("#77563d"))
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
