@@ -51,6 +51,22 @@ func setup(host) -> void:
         mat.albedo_color = Color.html(str(resident["palette"]))
         body.material_override = mat
         container.add_child(body)
+        # Runtime collision is independent of the temporary visual mesh.
+        # StaticBody3D participates in player/world collision; the authored
+        # skinned visual can replace CapsuleMesh without changing this contract.
+        var obstacle := StaticBody3D.new()
+        obstacle.name = "ResidentObstacle"
+        obstacle.collision_layer = 1
+        obstacle.collision_mask = 1
+        obstacle.position.y = 0.9
+        var shape_node := CollisionShape3D.new()
+        shape_node.name = "ResidentCollision"
+        var capsule := CapsuleShape3D.new()
+        capsule.radius = 0.38
+        capsule.height = 1.7
+        shape_node.shape = capsule
+        obstacle.add_child(shape_node)
+        container.add_child(obstacle)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
