@@ -123,6 +123,24 @@ func _install_legacy_building_collision() -> void:
         wall.position = entry[0] + Vector3(0.0, 2.0, 0.0)
         wall.shape = shape
         buildings.add_child(wall)
+    # Collision-only stopgaps for the shipping chest and town monument.
+    # These footprints match valley.gd, not finished authored assets.
+    var props := StaticBody3D.new()
+    props.name = "LegacySolidPropCollision"
+    props.collision_layer = 1
+    props.collision_mask = 1
+    add_child(props)
+    var prop_footprints := [
+        [Vector3(-5.0, 0.62, -5.0), Vector3(2.4, 1.24, 1.8)],
+        [Vector3(30.0, 0.65, 0.0), Vector3(0.9, 1.3, 0.9)]
+    ]
+    for entry in prop_footprints:
+        var collider := CollisionShape3D.new()
+        var prop_shape := BoxShape3D.new()
+        prop_shape.size = entry[1]
+        collider.position = entry[0]
+        collider.shape = prop_shape
+        props.add_child(collider)
 
 func _component(script_path: String, component_name: String):
     var component = Node3D.new()
