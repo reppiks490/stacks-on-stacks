@@ -99,7 +99,11 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
 
 func _farmhouse() -> void:
-    _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
+    var cottage := Node3D.new()
+    cottage.name = "OriginalSolidFarmhouse"
+    cottage.set_script(load("res://scripts/solid_cottage.gd"))
+    add_child(cottage)
+    cottage.build_cottage(Vector3(-23, 0, -14), 7.0)
     _house(Vector3(-4, 0, -15), Color("#b6b48e"), Color("#846a53"), 8.0)
     for idx in range(5):
         box(Vector3(-17 + idx * 2.4, 0.55, 10), Vector3(0.22, 1.1, 0.25), Color("#88694a"))
