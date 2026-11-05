@@ -52,10 +52,10 @@ func _run() -> void:
     var wall_query := PhysicsRayQueryParameters3D.create(center + Vector3(0, 4, 0), center + Vector3(-90, 4, 0))
     wall_query.collision_mask = 1
     var wall_hit := state.intersect_ray(wall_query)
-    _check(not wall_hit.is_empty(), "west world boundary stops horizontal traversal")
+    _check(not wall_hit.is_empty() and wall_hit["collider"].name == "PhysicalWorldBoundary", "west world boundary stops horizontal traversal")
     var south_query := PhysicsRayQueryParameters3D.create(center + Vector3(0, 4, 0), center + Vector3(0, 4, -90))
     south_query.collision_mask = 1
     var south_hit := state.intersect_ray(south_query)
-    _check(not south_hit.is_empty(), "south world boundary stops horizontal traversal")
+    _check(not south_hit.is_empty() and south_hit["collider"].name == "PhysicalWorldBoundary", "south world boundary stops horizontal traversal")
     print("EMERGENCE BOUNDARY PHYSICS: ", "PASS" if failures == 0 else "FAIL %d" % failures)
     quit(0 if failures == 0 else 1)
