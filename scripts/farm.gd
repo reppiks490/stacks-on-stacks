@@ -147,10 +147,26 @@ func _nearest(origin: Vector3) -> int:
             nearest = i
     return nearest
 
+## Check the actual physics world before any tool consumes energy or inventory.
+## Raise both endpoints above the terrain to avoid treating the walkable ground
+## as a blocking wall. Solid world props/buildings use collision layer 1.
+func _bed_reachable(origin: Vector3, plot: Dictionary) -> bool:
+    if not is_inside_tree():
+        return false
+    var space := get_world_3d().direct_space_state
+    var start := origin + Vector3.UP * 0.8
+    var target: Vector3 = plot["holder"].global_position + Vector3.UP * 0.8
+    var query := PhysicsRayQueryParameters3D.create(start, target, 1)
+    query.collide_with_areas = false
+    var hit: Dictionary = space.intersect_ray(query)
+    return hit.is_empty()
+
 func act(tool: String, origin: Vector3) -> String:
     var index: int = _nearest(origin)
     if index < 0:
         return "Move closer to a planting bed."
+    if not _bed_reachable(origin, beds[index]):
+        return "A solid obstacle blocks this planting bed."
     var plot: Dictionary = beds[index]
     if tool == "till":
         if bool(plot["tilled"]):
