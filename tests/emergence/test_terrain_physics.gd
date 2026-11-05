@@ -15,7 +15,7 @@ func _assert(condition: bool, message: String) -> void:
         push_error(message)
 
 func _run() -> void:
-    var world: Node3D = WorldScript.new()
+    var world = WorldScript.new()
     root.add_child(world)
     var center := Vector2i(16, 16)
     var neighbor := Vector2i(17, 16)
