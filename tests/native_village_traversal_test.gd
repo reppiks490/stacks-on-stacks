@@ -50,13 +50,28 @@ func _run() -> void:
     await physics_frame
     await physics_frame
     var start_z := player.global_position.z
+    var collided := false
     for frame in range(120):
         player.velocity = Vector3(0.0, 0.0, -2.0)
         player.move_and_slide()
+        collided = collided or player.get_slide_collision_count() > 0
         await physics_frame
     var relative_z := player.global_position.z - obstacle.global_position.z
     verify(player.global_position.z < start_z - 0.5, "probe advanced toward resident")
     verify(relative_z > 0.5, "player did not cross resident physical body")
-    verify(player.get_slide_collision_count() >= 0, "physics movement completed")
+    verify(collided, "probe registered an actual slide collision")
+    # Negative control ensures an unrelated obstruction cannot produce a false pass.
+    obstacle.collision_layer = 0
+    obstacle.collision_mask = 0
+    player.global_position = obstacle.global_position + Vector3(0.0, -0.9, 3.0)
+    player.velocity = Vector3.ZERO
+    await physics_frame
+    await physics_frame
+    for frame in range(120):
+        player.velocity = Vector3(0.0, 0.0, -2.0)
+        player.move_and_slide()
+        await physics_frame
+    var open_relative_z := player.global_position.z - obstacle.global_position.z
+    verify(open_relative_z < -0.5, "negative control crosses when collision disabled")
     print("VILLAGE TRAVERSAL: %d checks; %d failures; relative_z=%.3f" % [checks, failures, relative_z])
     quit(0 if failures == 0 else 1)
