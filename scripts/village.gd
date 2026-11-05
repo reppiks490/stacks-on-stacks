@@ -51,6 +51,22 @@ func setup(host) -> void:
         mat.albedo_color = Color.html(str(resident["palette"]))
         body.material_override = mat
         container.add_child(body)
+        # The rendered capsule is temporary art; this physical body is deliberately
+        # separate so replacing the visual with a skinned mesh cannot remove collision.
+        # A stationary resident must block the player even before navigation is upgraded.
+        var blocker := StaticBody3D.new()
+        blocker.name = "ResidentCollision"
+        blocker.collision_layer = 1
+        blocker.collision_mask = 0
+        var blocker_shape := CollisionShape3D.new()
+        blocker_shape.name = "ResidentBodyShape"
+        var capsule_shape := CapsuleShape3D.new()
+        capsule_shape.radius = 0.38
+        capsule_shape.height = 1.7
+        blocker_shape.shape = capsule_shape
+        blocker_shape.position.y = 0.9
+        blocker.add_child(blocker_shape)
+        container.add_child(blocker)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
