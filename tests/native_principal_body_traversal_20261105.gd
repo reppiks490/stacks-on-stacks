@@ -44,7 +44,7 @@ func _run() -> void:
     probe.global_position = Vector3(-29.0, 0.0, -14.0)
     await physics_frame
     var hit := probe.move_and_collide(Vector3(12, 0, 0), true)
-    _assert(hit != null, "Capsule traverses farmhouse without wall collision")
+    _assert(hit != null and absf(hit.get_normal().y) < 0.5, "Capsule traverses farmhouse or contacts floor instead of wall")
     if hit != null:
         _assert(hit.get_travel().x < 5.0, "Farmhouse collision only occurs after entering its footprint")
     # World edge: floor must exist or a physical boundary must stop forward motion.
@@ -53,12 +53,14 @@ func _run() -> void:
     var edge_motion := probe.move_and_collide(Vector3(20, 0, 0), true)
     var space := scene.get_world_3d().direct_space_state
     var ground := space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(80, 4, 0), Vector3(80, -8, 0)))
-    _assert(edge_motion != null or not ground.is_empty(), "No physical edge barrier or streamed ground at x=80")
+    var has_edge_wall := edge_motion != null and absf(edge_motion.get_normal().y) < 0.5 and edge_motion.get_travel().x < 19.0
+    var has_supported_ground := not ground.is_empty() and ground.get("normal", Vector3.ZERO).y > 0.7
+    _assert(has_edge_wall or has_supported_ground, "No verified physical boundary wall or walkable streamed ground at x=80")
     # A floor ray alone cannot certify continuity: require support at both sides of the old 145-unit edge.
     var inside_ground := space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(70, 4, 0), Vector3(70, -8, 0)))
-    _assert(not inside_ground.is_empty(), "Ground missing just inside the original homestead boundary")
+    _assert(not inside_ground.is_empty() and inside_ground.get("normal", Vector3.ZERO).y > 0.7, "Walkable ground missing just inside original homestead boundary")
     # A floor collision must not masquerade as a blocking wall; horizontal probes start above the floor.
-    _assert(edge_motion == null or absf(edge_motion.get_normal().y) < 0.5 or not ground.is_empty(), "Edge probe hit only a floor, not an outer boundary")
+    _assert(not (edge_motion != null and absf(edge_motion.get_normal().y) >= 0.5 and not has_supported_ground), "Edge probe hit only a floor, not a boundary wall")
     # Release-quality visuals must be real mesh/rig assets in the ordinary startup hero.
     if hero != null:
         var rigged := _contains_skeleton(hero)
