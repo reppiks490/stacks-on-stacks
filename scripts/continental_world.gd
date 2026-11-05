@@ -76,6 +76,12 @@ func setup(host) -> void:
     add_child(exploration)
     exploration.setup(game,self)
     _create_atlas()
+    # Install terrain and its collision before the first physics tick; the hero
+    # must never start a frame above an unstreamed void.
+    if game != null and game.hero != null:
+        var spawn: Vector3 = game.hero.global_position
+        last_cell = _cell_of(Vector2(spawn.x, spawn.z))
+        _stream_neighborhood(last_cell)
     set_physics_process(true)
 
 func _make_materials() -> void:
@@ -126,6 +132,14 @@ func _physics_process(delta: float) -> void:
         game.hero.global_position.x=clampf(pos.x,-HALF+3.0,HALF-3.0)
         game.hero.global_position.z=clampf(pos.z,-HALF+3.0,HALF-3.0)
         game.hero.velocity=Vector3.ZERO
+    # Emergency recovery only after the hero is demonstrably below the terrain.
+    # This protects against delayed chunk creation and missing floor contact;
+    # normal jumps, slopes and traversable terrain are unaffected.
+    var hero_pos: Vector3 = game.hero.global_position
+    var terrain_y: float = _terrain_height(hero_pos.x, hero_pos.z)
+    if hero_pos.y < terrain_y - 6.0:
+        game.hero.global_position.y = terrain_y + 2.0
+        game.hero.velocity = Vector3.ZERO
     var cell := _cell_of(Vector2(game.hero.global_position.x,game.hero.global_position.z))
     if cell!=last_cell:
         last_cell=cell
