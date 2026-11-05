@@ -36,6 +36,13 @@ func setup(host) -> void:
             stem.mesh = stem_mesh
             stem.material_override = _mat(Color("#579e56"))
             growth.add_child(stem)
+            # Original curved leaf geometry, kept under the existing crop growth node.
+            # Geometry is decorative; farm interaction and saves remain authoritative.
+            var leaves := MeshInstance3D.new()
+            leaves.name = "LeafCanopy"
+            leaves.mesh = _crop_leaf_mesh(index)
+            leaves.material_override = _mat(Color("#42834a"))
+            growth.add_child(leaves)
             var fruit := MeshInstance3D.new()
             var orb := SphereMesh.new()
             orb.radius = 0.3
@@ -54,7 +61,7 @@ func setup(host) -> void:
             growth.add_child(weed)
             var plot := {
                 "holder":holder, "bed":bed, "growth":growth, "stem":stem,
-                "fruit":fruit, "weed":weed, "tilled":false, "crop":"",
+                "fruit":fruit, "leaves":leaves, "weed":weed, "tilled":false, "crop":"",
                 "age":0, "watered":false, "watered_days":0,
                 "moisture":35, "fertility":80, "weeds":0, "stress":0,
                 "last_family":"", "rotation_bonus":0, "seed_vigor":0,
@@ -87,6 +94,30 @@ func _soil_furrow_mesh(plot_index: int) -> ArrayMesh:
             surface.add_vertex(b)
             surface.add_vertex(d)
             surface.add_vertex(e)
+    surface.generate_normals()
+    return surface.commit()
+
+## Curved, tapered double-sided leaves with an intentional midrib and variation.
+## Deterministic per bed; never affects gameplay state or collision.
+func _crop_leaf_mesh(plot_index: int) -> ArrayMesh:
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    for leaf_index in range(6):
+        var angle := TAU * (float(leaf_index) / 6.0 + float(plot_index % 7) * 0.019)
+        var direction := Vector3(cos(angle), 0.0, sin(angle))
+        var sideways := Vector3(-direction.z, 0.0, direction.x)
+        var height := 0.18 + float(leaf_index % 3) * 0.15
+        var start := Vector3(0.0, height, 0.0)
+        var tip := direction * (0.34 + float(leaf_index % 2) * 0.12) + Vector3.UP * (height + 0.16)
+        var middle := start.lerp(tip, 0.54) + Vector3.UP * 0.12
+        var left := middle + sideways * 0.115
+        var right := middle - sideways * 0.115
+        for triangle in [[start, left, middle], [start, middle, right],
+                [middle, left, tip], [middle, tip, right]]:
+            for vertex in triangle:
+                surface.add_vertex(vertex)
+            for vertex in [triangle[2], triangle[1], triangle[0]]:
+                surface.add_vertex(vertex)
     surface.generate_normals()
     return surface.commit()
 
@@ -283,9 +314,11 @@ func _paint(plot: Dictionary) -> void:
     weed.scale = Vector3.ONE * (0.6 + float(plot["weeds"]) * 0.18)
     var stem: MeshInstance3D = plot["stem"]
     var fruit: MeshInstance3D = plot["fruit"]
+    var leaves: MeshInstance3D = plot["leaves"]
     var crop_id: String = str(plot["crop"])
     stem.visible = crop_id != ""
     fruit.visible = crop_id != ""
+    leaves.visible = crop_id != ""
     if crop_id == "":
         return
     var definition: Dictionary = game.crop_definitions[crop_id]
@@ -293,6 +326,7 @@ func _paint(plot: Dictionary) -> void:
     var stem_height: float = 0.2 + proportion * 0.85
     stem.scale = Vector3(1, stem_height, 1)
     stem.position.y = stem_height * 0.5
+    leaves.scale = Vector3(0.45 + proportion * 0.75, 0.5 + proportion * 0.8, 0.45 + proportion * 0.75)
     fruit.scale = Vector3.ONE * (0.28 + proportion * 0.85)
     fruit.position.y = stem_height + 0.12
     fruit.material_override = _mat(Color.html(str(definition["color"])))
