@@ -22,10 +22,8 @@ func setup(host) -> void:
             holder.position = field_origin + Vector3(float(x) * 1.8, 0.0, float(z) * 1.8)
             add_child(holder)
             var bed := MeshInstance3D.new()
-            var bed_mesh := BoxMesh.new()
-            bed_mesh.size = Vector3(1.48, 0.18, 1.48)
-            bed.mesh = bed_mesh
-            bed.position.y = 0.1
+            bed.mesh = _soil_furrow_mesh(index)
+            bed.position.y = 0.0
             holder.add_child(bed)
             var growth := Node3D.new()
             growth.position.y = 0.21
@@ -64,6 +62,39 @@ func setup(host) -> void:
             }
             beds.append(plot)
             _paint(plot)
+
+## Authored deterministic furrow surface. Top is continuous at the plot boundary;
+## central ridges follow a smooth cross-section, not stacked primitive boxes.
+## Visual-only soil: the world terrain remains the authoritative walkable collider.
+func _soil_furrow_mesh(plot_index: int) -> ArrayMesh:
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    var segments := 24
+    var rows := 12
+    for z in range(rows):
+        for x in range(segments):
+            var x0 := -0.74 + 1.48 * float(x) / float(segments)
+            var x1 := -0.74 + 1.48 * float(x + 1) / float(segments)
+            var z0 := -0.74 + 1.48 * float(z) / float(rows)
+            var z1 := -0.74 + 1.48 * float(z + 1) / float(rows)
+            var a := Vector3(x0, _soil_height(x0, z0, plot_index), z0)
+            var b := Vector3(x1, _soil_height(x1, z0, plot_index), z0)
+            var d := Vector3(x0, _soil_height(x0, z1, plot_index), z1)
+            var e := Vector3(x1, _soil_height(x1, z1, plot_index), z1)
+            surface.add_vertex(a)
+            surface.add_vertex(d)
+            surface.add_vertex(b)
+            surface.add_vertex(b)
+            surface.add_vertex(d)
+            surface.add_vertex(e)
+    surface.generate_normals()
+    return surface.commit()
+
+func _soil_height(x: float, z: float, plot_index: int) -> float:
+    var boundary := clampf(minf(0.74 - absf(x), 0.74 - absf(z)) * 12.0, 0.0, 1.0)
+    var ridge := pow(maxf(0.0, cos(x * TAU * 2.0)), 2.0)
+    var variation := sin(z * 9.0 + float(plot_index) * 1.37) * 0.012
+    return 0.035 + boundary * (0.07 + 0.09 * ridge + variation)
 
 func _mat(tint: Color) -> StandardMaterial3D:
     var key: String = tint.to_html()
