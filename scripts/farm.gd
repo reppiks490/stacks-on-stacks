@@ -55,6 +55,19 @@ func setup(host) -> void:
             bed.mesh = furrow_mesh
             bed.position.y = 0.0
             holder.add_child(bed)
+            # Gameplay collision follows the stable soil base, not each decorative furrow.
+            # Static soil must register on world layer 1 for player grounding raycasts.
+            var soil_body := StaticBody3D.new()
+            soil_body.name = "SoilCollision"
+            soil_body.collision_layer = 1
+            soil_body.collision_mask = 0
+            holder.add_child(soil_body)
+            var soil_shape := CollisionShape3D.new()
+            var soil_box := BoxShape3D.new()
+            soil_box.size = Vector3(1.48, 0.18, 1.48)
+            soil_shape.shape = soil_box
+            soil_shape.position.y = 0.09
+            soil_body.add_child(soil_shape)
             var growth := Node3D.new()
             growth.position.y = 0.21
             holder.add_child(growth)
