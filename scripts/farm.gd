@@ -73,13 +73,18 @@ func setup(host) -> void:
             orb.rings = 8
             fruit.mesh = orb
             growth.add_child(fruit)
-            var weed := MeshInstance3D.new()
-            var weed_mesh := SphereMesh.new()
-            weed_mesh.radius = 0.2
-            weed_mesh.height = 0.4
-            weed.mesh = weed_mesh
+            # A small rosette of original curved leaf geometry replaces the
+            # spherical weed placeholder; no changes to persistent weed state.
+            var weed := Node3D.new()
+            weed.name = "WeedRosette"
             weed.position = Vector3(0.42, 0.22, -0.35)
-            weed.material_override = _mat(Color("#47673b"))
+            for weed_leaf_index in range(5):
+                var weed_leaf := MeshInstance3D.new()
+                weed_leaf.mesh = leaf_mesh
+                weed_leaf.rotation.y = float(weed_leaf_index) * TAU / 5.0
+                weed_leaf.scale = Vector3(0.48, 0.62, 0.55)
+                weed_leaf.material_override = _mat(Color("#47673b"))
+                weed.add_child(weed_leaf)
             growth.add_child(weed)
             var plot := {
                 "holder":holder, "bed":bed, "growth":growth, "stem":stem,
@@ -331,7 +336,7 @@ func _paint(plot: Dictionary) -> void:
     if int(plot["fertility"]) < 25:
         soil = soil.lerp(Color("#aa9a80"), 0.36)
     plot["bed"].material_override = _mat(soil)
-    var weed: MeshInstance3D = plot["weed"]
+    var weed: Node3D = plot["weed"]
     weed.visible = int(plot["weeds"]) > 0
     weed.scale = Vector3.ONE * (0.6 + float(plot["weeds"]) * 0.18)
     var foliage: Node3D = plot["foliage"]
