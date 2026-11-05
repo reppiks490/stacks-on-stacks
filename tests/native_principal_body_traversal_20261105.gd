@@ -1,0 +1,71 @@
+extends SceneTree
+## Principal physical gameplay acceptance: exercise a moving collision body against
+## the ordinary startup scene, not a ray-only or isolated mock.
+## Run: godot --headless --path . --script res://tests/native_principal_body_traversal_20261105.gd
+var failures: Array[String] = []
+
+func _initialize() -> void:
+    call_deferred("_run")
+
+func _assert(condition: bool, message: String) -> void:
+    if not condition:
+        failures.append(message)
+        push_error("TRAVERSAL BLOCKER: " + message)
+
+func _run() -> void:
+    var startup := str(ProjectSettings.get_setting("application/run/main_scene", ""))
+    var packed := load(startup) as PackedScene
+    if packed == null:
+        _assert(false, "Configured startup scene cannot load: " + startup)
+        quit(1)
+        return
+    var scene := packed.instantiate()
+    get_root().add_child(scene)
+    current_scene = scene
+    for frame in range(120):
+        await physics_frame
+    var hero := scene.get_node_or_null("Farmer") as CharacterBody3D
+    _assert(hero != null, "Ordinary startup scene has no Farmer CharacterBody3D")
+    if hero != null:
+        _assert(hero.get_node_or_null("CollisionShape3D") != null or _has_collision(hero), "Farmer has no collision shape")
+    # Exercise the physics solver with a real capsule against the existing farmhouse.
+    var probe := CharacterBody3D.new()
+    probe.name = "PrincipalCollisionProbe"
+    probe.collision_layer = 0
+    probe.collision_mask = 0x7fffffff
+    var shape_node := CollisionShape3D.new()
+    var capsule := CapsuleShape3D.new()
+    capsule.radius = 0.38
+    capsule.height = 1.75
+    shape_node.shape = capsule
+    shape_node.position.y = 0.91
+    probe.add_child(shape_node)
+    scene.add_child(probe)
+    probe.global_position = Vector3(-29.0, 0.05, -14.0)
+    await physics_frame
+    var hit := probe.move_and_collide(Vector3(12, 0, 0), true)
+    _assert(hit != null, "Capsule traverses farmhouse without wall collision")
+    if hit != null:
+        _assert(hit.get_travel().x < 5.0, "Farmhouse collision only occurs after entering its footprint")
+    # World edge: floor must exist or a physical boundary must stop forward motion.
+    probe.global_position = Vector3(70, 0.05, 0)
+    await physics_frame
+    var edge_motion := probe.move_and_collide(Vector3(20, 0, 0), true)
+    var space := scene.get_world_3d().direct_space_state
+    var ground := space.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(80, 4, 0), Vector3(80, -8, 0)))
+    _assert(edge_motion != null or not ground.is_empty(), "No physical edge barrier or streamed ground at x=80")
+    probe.queue_free()
+    scene.queue_free()
+    await process_frame
+    if failures.is_empty():
+        print("PRINCIPAL BODY TRAVERSAL PASS (limited probes; streamed chunk, animation, save and visuals still require separate proof)")
+        quit(0)
+    else:
+        print("PRINCIPAL BODY TRAVERSAL FAIL: %d defects" % failures.size())
+        quit(1)
+
+func _has_collision(body: Node) -> bool:
+    for child in body.get_children():
+        if child is CollisionShape3D and child.shape != null:
+            return true
+    return false
