@@ -52,9 +52,11 @@ func setup(host) -> void:
         body.material_override = mat
         container.add_child(body)
         # Runtime collision is independent of the temporary visual mesh.
-        # StaticBody3D participates in player/world collision; the authored
-        # skinned visual can replace CapsuleMesh without changing this contract.
-        var obstacle := StaticBody3D.new()
+        # NPCs move each physics tick: use AnimatableBody3D rather than a
+        # StaticBody3D, which is intended for stationary world geometry.
+        # This is a moving obstacle, not yet a pathfinding/grounding solution.
+        var obstacle := AnimatableBody3D.new()
+        obstacle.sync_to_physics = true
         obstacle.name = "ResidentObstacle"
         obstacle.collision_layer = 1
         obstacle.collision_mask = 1
