@@ -29,6 +29,7 @@ func _run() -> void:
     var space: PhysicsDirectSpaceState3D = farm.get_world_3d().direct_space_state
     var hits := 0
     var misses := 0
+    var outside_hits := 0
     for plot in farm.beds:
         var holder: Node3D = plot["holder"]
         var point: Vector3 = holder.global_position
@@ -47,8 +48,23 @@ func _run() -> void:
         _check(collider == expected, "%s: ray hit unexpected body" % holder.name)
         if collider == expected:
             hits += 1
+            _check(result.has("normal") and (result["normal"] as Vector3).y > 0.3,
+                "%s: soil ray hit a non-walkable or inverted face" % holder.name)
+        # The path beside a bed must not collide with that bed's soil.
+        if expected != null:
+            var outside := point + Vector3(0.95, 0.0, 0.0)
+            var outside_query := PhysicsRayQueryParameters3D.create(
+                outside + Vector3.UP * 3.0,
+                outside - Vector3.UP * 3.0,
+                1
+            )
+            var outside_result: Dictionary = space.intersect_ray(outside_query)
+            if outside_result.get("collider") == expected:
+                outside_hits += 1
+                _check(false, "%s: soil collider extends into path" % holder.name)
     _check(hits == 30, "All 30 beds must have physical ray hits")
-    print("FARM_SOIL_RAYCAST_TEST beds=%d hits=%d misses=%d failures=%d" % [
-        farm.beds.size(), hits, misses, failures.size()
+    _check(outside_hits == 0, "Soil collision footprint must not extend into paths")
+    print("FARM_SOIL_RAYCAST_TEST beds=%d hits=%d misses=%d outside_hits=%d failures=%d" % [
+        farm.beds.size(), hits, misses, outside_hits, failures.size()
     ])
     quit(0 if failures.is_empty() else 1)
