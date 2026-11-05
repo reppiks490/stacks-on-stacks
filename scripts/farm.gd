@@ -52,11 +52,9 @@ func setup(host) -> void:
             fruit.mesh = orb
             growth.add_child(fruit)
             var weed := MeshInstance3D.new()
-            var weed_mesh := SphereMesh.new()
-            weed_mesh.radius = 0.2
-            weed_mesh.height = 0.4
-            weed.mesh = weed_mesh
-            weed.position = Vector3(0.42, 0.22, -0.35)
+            # Authored tapered-leaf surface replaces the spherical weed placeholder.
+            weed.mesh = _crop_leaf_mesh(index + 19)
+            weed.position = Vector3(0.42, 0.13, -0.35)
             weed.material_override = _mat(Color("#47673b"))
             growth.add_child(weed)
             var plot := {
