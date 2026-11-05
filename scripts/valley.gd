@@ -67,8 +67,35 @@ func _paths() -> void:
     box(Vector3(28, 0.02, -11), Vector3(3.0, 0.035, 27), Color("#d9c7a4"))
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
+func _solid_house_piece(at: Vector3, extent: Vector3, tint: Color) -> void:
+    var body := StaticBody3D.new()
+    body.collision_layer = 1
+    body.collision_mask = 1
+    body.position = at
+    add_child(body)
+    box(Vector3.ZERO, extent, tint, body)
+    var collision := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = extent
+    collision.shape = shape
+    body.add_child(collision)
+
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
+    # Collision-backed walls, split around a walkable front entrance.
+    # This is an immediate physics repair, not a finished authored cottage mesh.
+    var depth := 5.2
+    var height := 4.0
+    var thickness := 0.24
+    var doorway_width := 1.5
+    var doorway_height := 2.5
+    var half_segment := (width - doorway_width) * 0.5
+    _solid_house_piece(at + Vector3(0, -0.12, 0), Vector3(width, 0.24, depth), walls)
+    _solid_house_piece(at + Vector3(-width * 0.5 + thickness * 0.5, height * 0.5, 0), Vector3(thickness, height, depth), walls)
+    _solid_house_piece(at + Vector3(width * 0.5 - thickness * 0.5, height * 0.5, 0), Vector3(thickness, height, depth), walls)
+    _solid_house_piece(at + Vector3(0, height * 0.5, -depth * 0.5 + thickness * 0.5), Vector3(width, height, thickness), walls)
+    _solid_house_piece(at + Vector3(-doorway_width * 0.5 - half_segment * 0.5, height * 0.5, depth * 0.5 - thickness * 0.5), Vector3(half_segment, height, thickness), walls)
+    _solid_house_piece(at + Vector3(doorway_width * 0.5 + half_segment * 0.5, height * 0.5, depth * 0.5 - thickness * 0.5), Vector3(half_segment, height, thickness), walls)
+    _solid_house_piece(at + Vector3(0, doorway_height + (height - doorway_height) * 0.5, depth * 0.5 - thickness * 0.5), Vector3(doorway_width, height - doorway_height, thickness), walls)
     var roof_mesh := CylinderMesh.new()
     roof_mesh.top_radius = 0.0
     roof_mesh.bottom_radius = width * 0.67
@@ -80,7 +107,7 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     roof_node.rotation.y = PI / 4.0
     roof_node.material_override = material(roof)
     add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
+    # Keep the entrance physically open until an interactive door is implemented.
     box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
 
 func _farmhouse() -> void:
