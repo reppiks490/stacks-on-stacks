@@ -133,6 +133,32 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     # Conservative ceiling collision; actual pitched roof requires authored mesh collision.
     _solid_panel(structure, Vector3(0, height + 0.08, 0), Vector3(width, 0.16, depth))
 
+# Physics shells are separate from decorative meshes. Front doorway stays open.
+func _house_structure(at: Vector3, width: float) -> void:
+    var body := StaticBody3D.new()
+    body.name = "HouseStructure"
+    body.position = at
+    body.collision_layer = 1
+    add_child(body)
+    _solid(body, Vector3(0, -0.15, 0), Vector3(width, 0.3, 5.2))
+    _solid(body, Vector3(0, 4.1, 0), Vector3(width, 0.2, 5.2))
+    _solid(body, Vector3(-width * 0.5, 2, 0), Vector3(0.24, 4, 5.2))
+    _solid(body, Vector3(width * 0.5, 2, 0), Vector3(0.24, 4, 5.2))
+    _solid(body, Vector3(0, 2, -2.6), Vector3(width, 4, 0.24))
+    var opening := 1.6
+    var side := (width - opening) * 0.5
+    _solid(body, Vector3(-(opening + side) * 0.5, 2, 2.6), Vector3(side, 4, 0.24))
+    _solid(body, Vector3((opening + side) * 0.5, 2, 2.6), Vector3(side, 4, 0.24))
+    _solid(body, Vector3(0, 3.45, 2.6), Vector3(opening, 1.1, 0.24))
+
+func _solid(body: StaticBody3D, center: Vector3, size: Vector3) -> void:
+    var collider := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = size
+    collider.shape = shape
+    collider.position = center
+    body.add_child(collider)
+
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
     _house(Vector3(-4, 0, -15), Color("#b6b48e"), Color("#846a53"), 8.0)
