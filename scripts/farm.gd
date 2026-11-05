@@ -50,6 +50,21 @@ func setup(host) -> void:
             stem.mesh = stem_mesh
             stem.material_override = _mat(Color("#579e56"))
             growth.add_child(stem)
+            # Original tapered leaf geometry, authored directly in local farm space.
+            # This replaces the previous bare-stalk silhouette; it is an
+            # intermediate mesh, not a production-quality plant asset.
+            var foliage := Node3D.new()
+            foliage.name = "Foliage"
+            growth.add_child(foliage)
+            var leaf_mesh := _leaf_mesh()
+            for leaf_index in range(6):
+                var leaf := MeshInstance3D.new()
+                leaf.name = "Leaf_%d" % leaf_index
+                leaf.mesh = leaf_mesh
+                leaf.material_override = _mat(Color("#47864a"))
+                leaf.rotation.y = float(leaf_index) * TAU / 6.0
+                leaf.position.y = 0.12 + float(leaf_index / 2) * 0.18
+                foliage.add_child(leaf)
             var fruit := MeshInstance3D.new()
             var orb := SphereMesh.new()
             orb.radius = 0.3
@@ -68,7 +83,7 @@ func setup(host) -> void:
             growth.add_child(weed)
             var plot := {
                 "holder":holder, "bed":bed, "growth":growth, "stem":stem,
-                "fruit":fruit, "weed":weed, "tilled":false, "crop":"",
+                "fruit":fruit, "weed":weed, "foliage":foliage, "tilled":false, "crop":"",
                 "age":0, "watered":false, "watered_days":0,
                 "moisture":35, "fertility":80, "weeds":0, "stress":0,
                 "last_family":"", "rotation_bonus":0, "seed_vigor":0,
@@ -80,6 +95,30 @@ func setup(host) -> void:
 ## A continuous sculpted bed surface: the top carries six shallow planting
 ## furrows instead of a flat block. Geometry is deterministic and save-neutral.
 ## This is an intermediate original mesh, NOT a finished authored art asset.
+## Double-sided, tapered curved blade with a central raised vein.
+## Local stem attachment at origin; broad tip extends outward along +X.
+func _leaf_mesh() -> ArrayMesh:
+    var tool := SurfaceTool.new()
+    tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+    const SEGMENTS := 8
+    for i in range(SEGMENTS):
+        var t0: float = float(i) / SEGMENTS
+        var t1: float = float(i + 1) / SEGMENTS
+        var width0: float = 0.17 * sin(PI * t0)
+        var width1: float = 0.17 * sin(PI * t1)
+        var a := Vector3(t0 * 0.68, 0.20 * sin(PI * t0), -width0)
+        var b := Vector3(t0 * 0.68, 0.20 * sin(PI * t0) + 0.045, 0.0)
+        var c := Vector3(t0 * 0.68, 0.20 * sin(PI * t0), width0)
+        var d := Vector3(t1 * 0.68, 0.20 * sin(PI * t1), -width1)
+        var e := Vector3(t1 * 0.68, 0.20 * sin(PI * t1) + 0.045, 0.0)
+        var f := Vector3(t1 * 0.68, 0.20 * sin(PI * t1), width1)
+        for triangle in [[a, d, b], [b, d, e], [b, e, c], [c, e, f]]:
+            for vertex in triangle:
+                tool.add_vertex(vertex)
+    tool.generate_normals()
+    var result := tool.commit()
+    return result
+
 func _furrow_mesh() -> ArrayMesh:
     var surface := SurfaceTool.new()
     surface.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -295,6 +334,8 @@ func _paint(plot: Dictionary) -> void:
     var weed: MeshInstance3D = plot["weed"]
     weed.visible = int(plot["weeds"]) > 0
     weed.scale = Vector3.ONE * (0.6 + float(plot["weeds"]) * 0.18)
+    var foliage: Node3D = plot["foliage"]
+    foliage.visible = str(plot["crop"]) != ""
     var stem: MeshInstance3D = plot["stem"]
     var fruit: MeshInstance3D = plot["fruit"]
     var crop_id: String = str(plot["crop"])
@@ -305,6 +346,7 @@ func _paint(plot: Dictionary) -> void:
     var definition: Dictionary = game.crop_definitions[crop_id]
     var proportion: float = clampf(float(plot["age"]) / maxf(1.0, float(definition["days"])), 0.08, 1.0)
     var stem_height: float = 0.2 + proportion * 0.85
+    foliage.scale = Vector3.ONE * (0.35 + proportion * 0.85)
     stem.scale = Vector3(1, stem_height, 1)
     stem.position.y = stem_height * 0.5
     fruit.scale = Vector3.ONE * (0.28 + proportion * 0.85)
