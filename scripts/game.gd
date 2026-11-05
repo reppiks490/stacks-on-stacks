@@ -43,6 +43,7 @@ func _ready() -> void:
     valley = _component("res://scripts/valley.gd", "TheLivingValley")
     valley.setup(self)
     _install_legacy_ground_safety_perimeter()
+    _install_legacy_building_collision()
     farm = _component("res://scripts/farm.gd", "HomesteadSoil")
     farm.setup(self)
     village = _component("res://scripts/village.gd", "LarkspurResidents")
@@ -97,6 +98,31 @@ func _install_legacy_ground_safety_perimeter() -> void:
             wall.position = Vector3(0.0, wall_height * 0.5 - 1.0, (-half_span if side == 2 else half_span))
         wall.shape = shape
         boundary.add_child(wall)
+
+## Collision-only stopgap for the six currently visible, non-enterable houses.
+## Keep footprints in sync with valley.gd::_house; replace with authored
+## wall/door colliders when real enterable building scenes are integrated.
+func _install_legacy_building_collision() -> void:
+    var buildings := StaticBody3D.new()
+    buildings.name = "LegacyBuildingCollision"
+    buildings.collision_layer = 1
+    buildings.collision_mask = 1
+    add_child(buildings)
+    var footprints := [
+        [Vector3(-23.0, 0.0, -14.0), 7.0],
+        [Vector3(-4.0, 0.0, -15.0), 8.0],
+        [Vector3(22.0, 0.0, 10.0), 6.0],
+        [Vector3(34.0, 0.0, 12.0), 6.0],
+        [Vector3(44.0, 0.0, 5.0), 6.0],
+        [Vector3(35.0, 0.0, -7.0), 6.0]
+    ]
+    for entry in footprints:
+        var wall := CollisionShape3D.new()
+        var shape := BoxShape3D.new()
+        shape.size = Vector3(float(entry[1]), 4.0, 5.2)
+        wall.position = entry[0] + Vector3(0.0, 2.0, 0.0)
+        wall.shape = shape
+        buildings.add_child(wall)
 
 func _component(script_path: String, component_name: String):
     var component = Node3D.new()
