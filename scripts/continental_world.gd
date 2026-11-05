@@ -49,6 +49,7 @@ var grass_material: StandardMaterial3D
 var bloom_material: StandardMaterial3D
 var stone_material: StandardMaterial3D
 var terrain_shader: Shader
+var _terrain_vertex_origin: Vector3 = Vector3.ZERO
 var last_season: int = -1
 var panorama: bool = false
 var atlas_layer: CanvasLayer
@@ -212,6 +213,7 @@ func _terrain_mesh(origin: Vector3) -> ArrayMesh:
     # Sculpt 150m chunks with 24 subdivisions; generate normals and a matching
     # StaticBody trimesh. 3x3 nearby chunks bound runtime memory and collision.
     const STEPS: int=24
+    _terrain_vertex_origin = origin
     var surface:=SurfaceTool.new()
     surface.begin(Mesh.PRIMITIVE_TRIANGLES)
     surface.set_smooth_group(0)
@@ -232,11 +234,18 @@ func _terrain_mesh(origin: Vector3) -> ArrayMesh:
             _terrain_vertex(surface,d,Vector2(float(ix+1)/STEPS,float(iz)/STEPS))
             _terrain_vertex(surface,b,Vector2(float(ix)/STEPS,float(iz+1)/STEPS))
             _terrain_vertex(surface,e,Vector2(float(ix+1)/STEPS,float(iz+1)/STEPS))
+    # World-space gradient normals avoid chunk-local boundary lighting seams.
+    # Do not regenerate triangle normals after assigning these samples.
     surface.index()
-    surface.generate_normals()
     return surface.commit()
 
 func _terrain_vertex(surface: SurfaceTool,at: Vector3,uv: Vector2) -> void:
+    var world_x: float = _terrain_vertex_origin.x + at.x
+    var world_z: float = _terrain_vertex_origin.z + at.z
+    const SAMPLE: float = 0.25
+    var slope_x: float = (_terrain_height(world_x + SAMPLE, world_z) - _terrain_height(world_x - SAMPLE, world_z)) / (2.0 * SAMPLE)
+    var slope_z: float = (_terrain_height(world_x, world_z + SAMPLE) - _terrain_height(world_x, world_z - SAMPLE)) / (2.0 * SAMPLE)
+    surface.set_normal(Vector3(-slope_x, 1.0, -slope_z).normalized())
     surface.set_uv(uv)
     surface.add_vertex(at)
 
