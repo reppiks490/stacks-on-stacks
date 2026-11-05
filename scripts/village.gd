@@ -184,7 +184,9 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
             actor.position = actor.position.move_toward(target, 2.4 * delta)
         resident["place"] = place
 
-func _process(delta: float) -> void:
+# Keep collision-bearing resident transforms on the fixed physics clock.
+# This does not yet provide navigation around buildings or terrain grounding.
+func _physics_process(delta: float) -> void:
     if game != null and not residents.is_empty():
         sync_schedule(false, delta)
 
