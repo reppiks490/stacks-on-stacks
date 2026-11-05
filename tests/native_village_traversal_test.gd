@@ -34,6 +34,20 @@ func _run() -> void:
     if obstacle == null:
         quit(1)
         return
+    # Every spawned resident must carry an enabled, correctly sized physical
+    # obstacle at its visible actor origin, not merely the first test subject.
+    for entry in village.residents:
+        var actor: Node3D = entry["node"]
+        var physical := actor.get_node_or_null("ResidentObstacle") as StaticBody3D
+        verify(physical != null, "resident %s has a physical obstacle" % entry["id"])
+        if physical == null:
+            continue
+        verify((physical.collision_layer & 1) != 0, "resident %s blocks player world mask" % entry["id"])
+        var collider := physical.get_node_or_null("ResidentCollision") as CollisionShape3D
+        verify(collider != null and not collider.disabled and collider.shape is CapsuleShape3D,
+            "resident %s has enabled capsule collision" % entry["id"])
+        verify(absf(physical.position.y - 0.9) < 0.01,
+            "resident %s collision is aligned to visible body" % entry["id"])
     var player := CharacterBody3D.new()
     player.name = "TraversalProbe"
     player.collision_layer = 2
@@ -72,6 +86,8 @@ func _run() -> void:
         player.move_and_slide()
         await physics_frame
     var open_relative_z := player.global_position.z - obstacle.global_position.z
+    obstacle.collision_layer = 1
+    obstacle.collision_mask = 1
     verify(open_relative_z < -0.5, "negative control crosses when collision disabled")
     print("VILLAGE TRAVERSAL: %d checks; %d failures; relative_z=%.3f" % [checks, failures, relative_z])
     quit(0 if failures == 0 else 1)
