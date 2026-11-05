@@ -371,16 +371,22 @@ func _paint(plot: Dictionary) -> void:
     var fruit: MeshInstance3D = plot["fruit"]
     var crop_id: String = str(plot["crop"])
     stem.visible = crop_id != ""
-    fruit.visible = crop_id != ""
+    fruit.visible = false
     if crop_id == "":
         return
     var definition: Dictionary = game.crop_definitions[crop_id]
-    var proportion: float = clampf(float(plot["age"]) / maxf(1.0, float(definition["days"])), 0.08, 1.0)
-    var stem_height: float = 0.2 + proportion * 0.85
-    foliage.scale = Vector3.ONE * (0.35 + proportion * 0.85)
-    stem.scale = Vector3(1, stem_height, 1)
+    var proportion: float = clampf(float(plot["age"]) / maxf(1.0, float(definition["days"])), 0.0, 1.0)
+    # Germination, canopy expansion and fruit set now follow actual crop age.
+    # This is visual-only: save schema, yields and harvesting remain unchanged.
+    var canopy: float = smoothstep(0.05, 0.72, proportion)
+    var stem_height: float = 0.12 + canopy * 0.93
+    foliage.scale = Vector3.ONE * (0.12 + canopy * 1.08)
+    foliage.visible = proportion >= 0.08
+    stem.scale = Vector3(0.55 + canopy * 0.45, stem_height, 0.55 + canopy * 0.45)
     stem.position.y = stem_height * 0.5
-    fruit.scale = Vector3.ONE * (0.28 + proportion * 0.85)
+    var fruit_set: float = smoothstep(0.58, 1.0, proportion)
+    fruit.visible = fruit_set > 0.01
+    fruit.scale = Vector3.ONE * (0.08 + fruit_set * 0.92)
     fruit.position.y = stem_height + 0.12
     fruit.material_override = _mat(Color.html(str(definition["color"])))
 
