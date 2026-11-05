@@ -8,6 +8,8 @@ var start_z := 0.0
 var minimum_z := INF
 var floor_contacts := 0
 var wall_contacts := 0
+var wall_normal_contacts := 0
+var floor_normal_contacts := 0
 
 func _initialize() -> void:
     call_deferred("_begin")
@@ -53,8 +55,14 @@ func _physics_process(delta: float) -> void:
     minimum_z = minf(minimum_z, actor.global_position.z)
     if actor.is_on_floor():
         floor_contacts += 1
+        if actor.get_floor_normal().dot(Vector3.UP) >= 0.9:
+            floor_normal_contacts += 1
     if actor.is_on_wall():
         wall_contacts += 1
+        for index in range(actor.get_slide_collision_count()):
+            var hit := actor.get_slide_collision(index)
+            if hit.get_collider() is StaticBody3D and hit.get_collider().name == "Wall" and hit.get_normal().z > 0.8:
+                wall_normal_contacts += 1
     if actor.global_position.y < -0.2:
         failures += 1
         push_error("NPC fell through the floor at frame %d" % frames)
@@ -74,12 +82,18 @@ func _physics_process(delta: float) -> void:
         if wall_contacts == 0 or minimum_z > -1.2:
             failures += 1
             push_error("NPC never contacted the blocking wall")
+        if wall_normal_contacts == 0:
+            failures += 1
+            push_error("NPC never registered a collision normal against the actual Wall body")
+        if floor_normal_contacts < 90:
+            failures += 1
+            push_error("NPC did not maintain upward-facing floor normals")
         if floor_contacts < 90:
             failures += 1
             push_error("NPC did not maintain stable floor contact")
         if not actor.is_on_floor():
             failures += 1
             push_error("NPC not grounded at frame 120")
-        print("VILLAGE_PHYSICS_120_FRAME ", "PASS" if failures == 0 else "FAIL", " frames=", frames, " final=", actor.global_position, " wall_contacts=", wall_contacts, " floor_contacts=", floor_contacts)
+        print("VILLAGE_PHYSICS_120_FRAME ", "PASS" if failures == 0 else "FAIL", " frames=", frames, " final=", actor.global_position, " wall_contacts=", wall_contacts, " floor_contacts=", floor_contacts, " wall_normal_contacts=", wall_normal_contacts, " floor_normal_contacts=", floor_normal_contacts)
         quit(0 if failures == 0 else 1)
     return
