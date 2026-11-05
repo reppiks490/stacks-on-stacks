@@ -37,10 +37,20 @@ func setup(host) -> void:
     for original in payload.get("villagers", []):
         var resident: Dictionary = original.duplicate(true)
         var spot: Array = resident["home"]
-        var container := Node3D.new()
+        var container := CharacterBody3D.new()
         container.name = str(resident["name"])
         container.position = Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
         add_child(container)
+        # Village-owned physical resident footprint; presentation remains explicitly unfinished.
+        container.collision_layer = 2
+        container.collision_mask = 1 | 2
+        var collider := CollisionShape3D.new()
+        var footprint := CapsuleShape3D.new()
+        footprint.radius = 0.38
+        footprint.height = 1.7
+        collider.shape = footprint
+        collider.position.y = 0.9
+        container.add_child(collider)
         var body := MeshInstance3D.new()
         var mesh := CapsuleMesh.new()
         mesh.radius = 0.38
@@ -165,10 +175,20 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
         if snap:
             actor.position = target
         elif delta > 0.0:
-            actor.position = actor.position.move_toward(target, 2.4 * delta)
+            # Movement is resolved through Godot physics rather than ghosting through walls.
+            # The caller must invoke this branch from the physics tick.
+            if actor is CharacterBody3D:
+                var mover: CharacterBody3D = actor
+                var displacement: Vector3 = target - mover.position
+                mover.velocity = Vector3(displacement.x, 0.0, displacement.z).limit_length(2.4)
+                if not mover.is_on_floor():
+                    mover.velocity.y = -8.0
+                mover.move_and_slide()
+            else:
+                push_error("Village resident lacks physics movement body: " + actor.name)
         resident["place"] = place
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
     if game != null and not residents.is_empty():
         sync_schedule(false, delta)
 
