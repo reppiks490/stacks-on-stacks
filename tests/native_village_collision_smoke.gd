@@ -41,9 +41,9 @@ func _begin() -> void:
     root.add_child(actor)
     start_z = actor.position.z
 
-func _physics_process(delta: float) -> bool:
+func _physics_process(delta: float) -> void:
     if actor == null:
-        return false
+        return
     frames += 1
     actor.velocity = Vector3(0, actor.velocity.y - 24.0 * delta, -2.4)
     actor.move_and_slide()
@@ -51,12 +51,12 @@ func _physics_process(delta: float) -> bool:
         failures += 1
         push_error("NPC fell through the floor at frame %d" % frames)
         quit(1)
-        return false
+        return
     if actor.global_position.z < -1.40:
         failures += 1
         push_error("NPC crossed the wall at frame %d" % frames)
         quit(1)
-        return false
+        return
     if frames >= 120:
         if actor.global_position.z >= start_z - 0.5:
             failures += 1
@@ -66,4 +66,4 @@ func _physics_process(delta: float) -> bool:
             push_error("NPC not grounded at frame 120")
         print("VILLAGE_PHYSICS_120_FRAME ", "PASS" if failures == 0 else "FAIL", " frames=", frames, " final=", actor.global_position)
         quit(0 if failures == 0 else 1)
-    return false
+    return
