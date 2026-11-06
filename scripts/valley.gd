@@ -103,7 +103,7 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
         panel.collision_layer = 1
         panel.collision_mask = 1
         panel.position = Vector3(side * half_span * 0.5, height + roof_rise * 0.5, 0)
-        panel.rotation.z = side * roof_angle
+        panel.rotation.z = -side * roof_angle
         body.add_child(panel)
         _solid_house_part(panel, Vector3.ZERO,
             Vector3(slope_length + 0.16, 0.18, depth + 0.9), roof)
