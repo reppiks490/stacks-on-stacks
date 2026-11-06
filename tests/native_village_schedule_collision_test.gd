@@ -53,8 +53,18 @@ func _run() -> void:
     await physics_frame
     _assert_case("building volume rejected", village._safe_schedule_destination(actor, Vector3(4, 0, 0)), false)
     _assert_case("floor elevation mismatch rejected", village._safe_schedule_destination(actor, Vector3(2, 1.5, 0)), false)
+    _assert_case("near-wall capsule overlap rejected", village._safe_schedule_destination(actor, Vector3(2.7, 0, 0)), false)
+    _solid(world, "LowCeiling", Vector3(-2, 1.55, 0), Vector3(1.5, 0.3, 1.5))
+    await physics_frame
+    await physics_frame
+    _assert_case("low ceiling rejected", village._safe_schedule_destination(actor, Vector3(-2, 0, 0)), false)
+    var floor_body: StaticBody3D = world.get_node("LoadedGround")
+    floor_body.queue_free()
+    await physics_frame
+    await physics_frame
+    _assert_case("unloaded former floor rejected", village._safe_schedule_destination(actor, Vector3(2, 0, 0)), false)
     if failures.is_empty():
-        print("PASS village schedule physics: 4 assertions")
+        print("PASS village schedule physics: 7 assertions")
         quit(0)
     else:
         for failure in failures:
