@@ -25,6 +25,27 @@ func _run() -> void:
             failures.append("Hero not grounded after 120 physics frames")
         if hero.global_position.y < -0.5:
             failures.append("Hero fell below expected ground")
+    # Release gate A: the live player must actually contain an authored, skinned
+    # model and an animation controller, not merely a primitive visual shell.
+    if hero is CharacterBody3D:
+        var has_skin := false
+        var has_skeleton := false
+        var has_animation := false
+        var pending: Array[Node] = [hero]
+        while not pending.is_empty():
+            var node: Node = pending.pop_back()
+            if node is Skeleton3D:
+                has_skeleton = true
+            if node is MeshInstance3D and node.skin != null:
+                has_skin = true
+            if node is AnimationPlayer or node is AnimationTree:
+                has_animation = true
+            for child in node.get_children():
+                pending.append(child)
+        if not has_skeleton or not has_skin:
+            failures.append("Live hero has no integrated skinned mesh + Skeleton3D")
+        if not has_animation:
+            failures.append("Live hero has no animation controller")
     if valley is Node3D:
         var space := root.get_world_3d().direct_space_state
         # The front facade of the original farmhouse is at z=-11.4.
@@ -53,6 +74,13 @@ func _run() -> void:
                 var side_position: Vector3 = side_hit.get("position", Vector3.ZERO)
                 if side_position.z > -11.0 or side_position.z < -17.0:
                     failures.append("Side wall probe hit unrelated geometry at x=" + str(side_x))
+        # A 145-unit-only floor is not the required 4.8 km traversable world.
+        # These points lie immediately beyond its old +/-72.5 boundary.
+        # Fail closed until streamed chunk collision is genuinely available.
+        for edge_point in [Vector3(74.0, 4.0, 0.0), Vector3(-74.0, 4.0, 0.0), Vector3(0.0, 4.0, 74.0), Vector3(0.0, 4.0, -74.0)]:
+            var edge_query := PhysicsRayQueryParameters3D.create(edge_point, edge_point + Vector3.DOWN * 10.0)
+            if space.intersect_ray(edge_query).is_empty():
+                failures.append("Missing walkable terrain collision beyond legacy map edge at " + str(edge_point))
         # Floor support at the playable homestead spawn.
         var floor_query := PhysicsRayQueryParameters3D.create(
             Vector3(-15, 3, -7), Vector3(-15, -3, -7))
