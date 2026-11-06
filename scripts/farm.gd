@@ -204,14 +204,22 @@ func _bed_reachable(origin: Vector3, plot: Dictionary) -> bool:
     if not is_inside_tree():
         return false
     var space := get_world_3d().direct_space_state
-    var start := origin + Vector3.UP * 0.8
-    var target: Vector3 = plot["holder"].global_position + Vector3.UP * 0.8
-    var query := PhysicsRayQueryParameters3D.create(start, target, 1)
+    # Sample at ankle, waist and shoulder height: a single waist-height ray
+    # can miss short fences, stone edging and low solid farm equipment.
+    # All samples remain above the walkable terrain; collision layer 1 is
+    # reserved for the world solids that must obstruct farm interactions.
+    var excluded: Array[RID] = []
     if game != null and is_instance_valid(game.hero):
-        query.exclude = [game.hero.get_rid()]
-    query.collide_with_areas = false
-    var hit: Dictionary = space.intersect_ray(query)
-    return hit.is_empty()
+        excluded.append(game.hero.get_rid())
+    for height in [0.32, 0.8, 1.45]:
+        var offset := Vector3.UP * float(height)
+        var start := origin + offset
+        var target: Vector3 = plot["holder"].global_position + offset
+        var query := PhysicsRayQueryParameters3D.create(start, target, 1, excluded)
+        query.collide_with_areas = false
+        if not space.intersect_ray(query).is_empty():
+            return false
+    return true
 
 func act(tool: String, origin: Vector3) -> String:
     var index: int = _nearest(origin)
