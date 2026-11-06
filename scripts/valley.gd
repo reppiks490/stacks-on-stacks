@@ -90,20 +90,37 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     _solid_house_part(body, Vector3(-(opening_width + side_width) * 0.5, height * 0.5, front_z), Vector3(side_width, height, thickness), walls)
     _solid_house_part(body, Vector3((opening_width + side_width) * 0.5, height * 0.5, front_z), Vector3(side_width, height, thickness), walls)
     _solid_house_part(body, Vector3(0, (opening_height + height) * 0.5, front_z), Vector3(opening_width, height - opening_height, thickness), walls)
-    # The roof remains a temporary visual mesh; its collision uses a conservative
-    # overhead slab and must be replaced by authored roof panels in the art pass.
-    var roof_mesh := CylinderMesh.new()
-    roof_mesh.top_radius = 0.0
-    roof_mesh.bottom_radius = width * 0.67
-    roof_mesh.height = 2.2
-    roof_mesh.radial_segments = 4
-    var roof_node := MeshInstance3D.new()
-    roof_node.mesh = roof_mesh
-    roof_node.position = Vector3(0, 5.0, 0)
-    roof_node.rotation.y = PI / 4.0
-    roof_node.material_override = material(roof)
-    body.add_child(roof_node)
-    _solid_house_part(body, Vector3(0, 4.0, 0), Vector3(width, 0.2, depth), roof)
+    # A two-plane gable roof replaces the former pyramid and flat slab.
+    # Every roof panel has a matching collision shape. The raised eaves
+    # leave the 2.55 m doorway clear for normal character traversal.
+    var half_span := width * 0.5 + 0.45
+    var roof_rise := 1.55
+    var roof_angle := atan2(roof_rise, half_span)
+    var slope_length := sqrt(half_span * half_span + roof_rise * roof_rise)
+    for side in [-1.0, 1.0]:
+        var panel := StaticBody3D.new()
+        panel.name = "GableRoofPanel"
+        panel.collision_layer = 1
+        panel.collision_mask = 1
+        panel.position = Vector3(side * half_span * 0.5, height + roof_rise * 0.5, 0)
+        panel.rotation.z = side * roof_angle
+        body.add_child(panel)
+        _solid_house_part(panel, Vector3.ZERO,
+            Vector3(slope_length + 0.16, 0.18, depth + 0.9), roof)
+        # Roof-edge fascia is solid, not a pass-through decoration.
+        _solid_house_part(panel, Vector3(0, -0.13, (depth + 0.9) * 0.5),
+            Vector3(slope_length + 0.16, 0.19, 0.14), Color("#6d493a"))
+        _solid_house_part(panel, Vector3(0, -0.13, -(depth + 0.9) * 0.5),
+            Vector3(slope_length + 0.16, 0.19, 0.14), Color("#6d493a"))
+    _solid_house_part(body, Vector3(0, height + roof_rise, 0),
+        Vector3(0.22, 0.22, depth + 1.0), Color("#68493b"))
+    # Door surround has full-size clearance and accurately matched collision.
+    for side in [-1.0, 1.0]:
+        _solid_house_part(body,
+            Vector3(side * (opening_width * 0.5 + 0.075), opening_height * 0.5, depth * 0.5 + 0.035),
+            Vector3(0.15, opening_height, 0.15), Color("#77513d"))
+    _solid_house_part(body, Vector3(0, opening_height + 0.075, depth * 0.5 + 0.035),
+        Vector3(opening_width + 0.3, 0.15, 0.15), Color("#77513d"))
     # Window and door accents are deliberately nonblocking; the doorway has
     # no closed-door collider until a functional hinged door is implemented.
     box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
