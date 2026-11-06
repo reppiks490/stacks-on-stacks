@@ -215,7 +215,9 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
                 probe.exclude = [actor.get_rid()]
                 var ground: Dictionary = actor.get_world_3d().direct_space_state.intersect_ray(probe)
                 var ground_normal: Vector3 = ground.get("normal", Vector3.ZERO)
-                if ground.is_empty() or ground_normal.dot(Vector3.UP) < 0.55:
+                # Dynamic characters and props are not reliable streamed terrain.
+                var ground_body: Object = ground.get("collider")
+                if ground.is_empty() or not (ground_body is StaticBody3D) or ground_normal.dot(Vector3.UP) < 0.55:
                     horizontal = Vector3.ZERO
             actor.velocity.x = horizontal.x
             actor.velocity.z = horizontal.z
