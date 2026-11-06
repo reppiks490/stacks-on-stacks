@@ -205,6 +205,17 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
             var horizontal: Vector3 = Vector3.ZERO
             if direction.length() > 0.35 and travel.length() > 0.05:
                 horizontal = travel.normalized() * minf(2.4, direction.length() / delta)
+            # Do not step into an unloaded chunk or a gap in the physical floor.
+            # This is a conservative guard, not a substitute for world collision.
+            if horizontal.length_squared() > 0.0 and actor.is_on_floor():
+                var ahead: Vector3 = actor.global_position + horizontal * maxf(delta, 0.1)
+                var probe := PhysicsRayQueryParameters3D.create(
+                    ahead + Vector3.UP * 1.2, ahead + Vector3.DOWN * 2.5)
+                probe.collision_mask = 1
+                probe.exclude = [actor.get_rid()]
+                var ground: Dictionary = actor.get_world_3d().direct_space_state.intersect_ray(probe)
+                if ground.is_empty() or Vector3(ground.get("normal", Vector3.ZERO)).dot(Vector3.UP) < 0.55:
+                    horizontal = Vector3.ZERO
             actor.velocity.x = horizontal.x
             actor.velocity.z = horizontal.z
             actor.velocity.y = -0.1 if actor.is_on_floor() else actor.velocity.y - 18.0 * delta
