@@ -173,6 +173,33 @@ func _furrow_mesh() -> ArrayMesh:
             surface.add_vertex(b)
             surface.add_vertex(c)
             surface.add_vertex(d)
+    # Close the four vertical soil banks and underside. Previously only the
+    # top surface existed, allowing lateral traversal through the raised bed.
+    # The visual mesh and trimesh collider share this same watertight geometry.
+    const BASE_Y := -0.16
+    for side in range(4):
+        var segments: int = STEPS if side < 2 else ROWS
+        for j in range(segments):
+            var t0: float = float(j) / segments - 0.5
+            var t1: float = float(j + 1) / segments - 0.5
+            var x0: float = t0 * WIDTH if side < 2 else (-WIDTH * 0.5 if side == 2 else WIDTH * 0.5)
+            var x1: float = t1 * WIDTH if side < 2 else x0
+            var z0: float = (-DEPTH * 0.5 if side == 0 else DEPTH * 0.5) if side < 2 else t0 * DEPTH
+            var z1: float = z0 if side < 2 else t1 * DEPTH
+            var upper0 := Vector3(x0, _furrow_height(x0, z0), z0)
+            var upper1 := Vector3(x1, _furrow_height(x1, z1), z1)
+            var lower0 := Vector3(x0, BASE_Y, z0)
+            var lower1 := Vector3(x1, BASE_Y, z1)
+            var flip: bool = side == 1 or side == 2
+            for triangle in ([[upper0, upper1, lower0], [upper1, lower1, lower0]] if flip else [[upper1, upper0, lower0], [lower1, upper1, lower0]]):
+                for vertex in triangle:
+                    surface.add_vertex(vertex)
+    var bl := Vector3(-WIDTH * 0.5, BASE_Y, -DEPTH * 0.5)
+    var br := Vector3(WIDTH * 0.5, BASE_Y, -DEPTH * 0.5)
+    var tl := Vector3(-WIDTH * 0.5, BASE_Y, DEPTH * 0.5)
+    var tr := Vector3(WIDTH * 0.5, BASE_Y, DEPTH * 0.5)
+    for vertex in [bl, br, tl, br, tr, tl]:
+        surface.add_vertex(vertex)
     surface.generate_normals()
     return surface.commit()
 
