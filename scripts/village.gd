@@ -180,6 +180,36 @@ func _place_position(resident: Dictionary, place: String) -> Vector3:
     var spot: Array = places[place]
     return Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
 
+## Verify floor support and capsule clearance before schedule relocation.
+## A visual mesh is never a substitute for collision geometry.
+func _safe_schedule_destination(actor: CharacterBody3D, destination: Vector3) -> bool:
+    if not actor.is_inside_tree():
+        return false
+    var space := actor.get_world_3d().direct_space_state
+    var floor_query := PhysicsRayQueryParameters3D.create(
+        destination + Vector3.UP * 1.1, destination + Vector3.DOWN * 2.0)
+    floor_query.collision_mask = actor.collision_mask
+    floor_query.exclude = [actor.get_rid()]
+    var floor_hit: Dictionary = space.intersect_ray(floor_query)
+    if not (floor_hit.get("collider") is StaticBody3D):
+        return false
+    if Vector3(floor_hit.get("normal", Vector3.ZERO)).dot(Vector3.UP) < 0.7:
+        return false
+    var floor_y: float = Vector3(floor_hit["position"]).y
+    if absf(destination.y - floor_y) > 0.35:
+        return false
+    var body_shape: CollisionShape3D = actor.get_node_or_null("ResidentBodyShape")
+    if body_shape == null or body_shape.shape == null:
+        return false
+    var overlap := PhysicsShapeQueryParameters3D.new()
+    overlap.shape = body_shape.shape
+    overlap.transform = Transform3D(actor.global_transform.basis,
+        destination + body_shape.position)
+    overlap.collision_mask = actor.collision_mask
+    overlap.exclude = [actor.get_rid()]
+    overlap.margin = 0.02
+    return space.intersect_shape(overlap, 16).is_empty()
+
 func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
     if game == null:
         return
@@ -190,9 +220,13 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
         if snap:
             # Calendar transitions intentionally reposition residents; ordinary
             # movement below is collision-aware and never teleports through walls.
-            actor.position = target
-            actor.velocity = Vector3.ZERO
-            resident_safe_positions[str(resident["id"])] = actor.global_position
+            # Schedule changes must not teleport an NPC into a wall or a missing
+            # streamed floor. Keep the previous safe location on rejection.
+            var destination: Vector3 = to_global(target)
+            if _safe_schedule_destination(actor, destination):
+                actor.global_position = destination
+                actor.velocity = Vector3.ZERO
+                resident_safe_positions[str(resident["id"])] = destination
         elif delta > 0.0:
             var direction: Vector3 = target - actor.position
             direction.y = 0.0
