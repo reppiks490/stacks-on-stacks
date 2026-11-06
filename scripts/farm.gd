@@ -44,12 +44,9 @@ func setup(host) -> void:
             leaves.material_override = _mat(Color("#42834a"))
             growth.add_child(leaves)
             var fruit := MeshInstance3D.new()
-            var orb := SphereMesh.new()
-            orb.radius = 0.3
-            orb.height = 0.6
-            orb.radial_segments = 12
-            orb.rings = 8
-            fruit.mesh = orb
+            # Original lobed fruit geometry; replaces the spherical crop placeholder.
+            # The existing maturity scale, crop tint, harvest and save contracts remain intact.
+            fruit.mesh = _fruit_mesh(index)
             growth.add_child(fruit)
             var weed := MeshInstance3D.new()
             # Authored tapered-leaf surface replaces the spherical weed placeholder.
@@ -118,6 +115,35 @@ func _crop_leaf_mesh(plot_index: int) -> ArrayMesh:
                 surface.add_vertex(vertex)
     surface.generate_normals()
     return surface.commit()
+
+## A closed, organic fruit silhouette with five subtle lobes and a recessed crown.
+## Authored from rings rather than a SphereMesh primitive; decorative only.
+func _fruit_mesh(plot_index: int) -> ArrayMesh:
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    var sides := 20
+    var rings := 12
+    for ring in range(rings):
+        var v0 := float(ring) / float(rings)
+        var v1 := float(ring + 1) / float(rings)
+        for side in range(sides):
+            var a0 := TAU * float(side) / float(sides)
+            var a1 := TAU * float(side + 1) / float(sides)
+            var p00 := _fruit_point(v0, a0, plot_index)
+            var p01 := _fruit_point(v0, a1, plot_index)
+            var p10 := _fruit_point(v1, a0, plot_index)
+            var p11 := _fruit_point(v1, a1, plot_index)
+            for point in [p00, p10, p01, p01, p10, p11]:
+                surface.add_vertex(point)
+    surface.generate_normals()
+    return surface.commit()
+
+func _fruit_point(v: float, angle: float, plot_index: int) -> Vector3:
+    var latitude := PI * v
+    var lobe := 1.0 + 0.075 * cos(angle * 5.0 + float(plot_index % 5) * 0.18)
+    var radius := 0.31 * sin(latitude) * lobe
+    var crown := 0.055 * pow(maxf(0.0, (v - 0.78) / 0.22), 2.0)
+    return Vector3(radius * cos(angle), 0.34 * cos(latitude) + crown, radius * sin(angle))
 
 func _soil_height(x: float, z: float, plot_index: int) -> float:
     var boundary := clampf(minf(0.74 - absf(x), 0.74 - absf(z)) * 12.0, 0.0, 1.0)
