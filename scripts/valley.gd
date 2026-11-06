@@ -123,13 +123,30 @@ func _solid_house_part(body: StaticBody3D, local_position: Vector3, dimensions: 
     collider.position = local_position
     body.add_child(collider)
 
+func _solid_prop(at: Vector3, dimensions: Vector3, tint: Color, label: String) -> void:
+    # A visible solid furnishing must share the same transform as its physics.
+    var body := StaticBody3D.new()
+    body.name = label
+    body.position = at
+    body.collision_layer = 1
+    body.collision_mask = 1
+    add_child(body)
+    _solid_house_part(body, Vector3.ZERO, dimensions, tint)
+
+func _solid_tree_trunk(at: Vector3, scale: float) -> void:
+    # Trunk contact is intentionally independent of decorative foliage.
+    # Keeping foliage non-solid prevents snagging the character in the canopy.
+    _solid_prop(at + Vector3(0, 1.2 * scale, 0),
+        Vector3(0.55, 2.6, 0.55) * scale,
+        Color("#785e43"), "TreeTrunk")
+
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
     _house(Vector3(-4, 0, -15), Color("#b6b48e"), Color("#846a53"), 8.0)
     for idx in range(5):
-        box(Vector3(-17 + idx * 2.4, 0.55, 10), Vector3(0.22, 1.1, 0.25), Color("#88694a"))
-        box(Vector3(-17 + idx * 2.4, 0.55, 18), Vector3(0.22, 1.1, 0.25), Color("#88694a"))
-    box(Vector3(-5, 0.62, -5), Vector3(2.4, 1.24, 1.8), Color("#98724b"))
+        _solid_prop(Vector3(-17 + idx * 2.4, 0.55, 10), Vector3(0.22, 1.1, 0.25), Color("#88694a"), "FencePost")
+        _solid_prop(Vector3(-17 + idx * 2.4, 0.55, 18), Vector3(0.22, 1.1, 0.25), Color("#88694a"), "FencePost")
+    _solid_prop(Vector3(-5, 0.62, -5), Vector3(2.4, 1.24, 1.8), Color("#98724b"), "StorageChest")
 
 func _town() -> void:
     _house(Vector3(22,0,10), Color("#d8a88c"), Color("#8f627d"))
@@ -176,7 +193,7 @@ func _woods() -> void:
         sphere(Vector3(x,0.2,z), rng.randf_range(0.11,0.25), Color("#f0c8d5") if i%3==0 else Color("#f5e6a8"))
 
 func _tree(at: Vector3, scale: float, index: int) -> void:
-    box(at+Vector3(0,1.2*scale,0),Vector3(0.55*scale,2.6*scale,0.55*scale),Color("#785e43"))
+    _solid_tree_trunk(at, scale)
     var leaf := Color("#75a36e") if index%3 else Color("#98b87a")
     sphere(at+Vector3(0,3.0*scale,0),1.55*scale,leaf)
     sphere(at+Vector3(-0.8*scale,2.7*scale,0),1.1*scale,leaf.lightened(0.1))
@@ -194,7 +211,7 @@ func _wayfinding() -> void:
         ["HOME",Vector3(-15,0.2,5)],["LARKSPUR",Vector3(19,0.2,0)],
         ["GLIMMER LAKE",Vector3(27,0.2,-16)],["HIGH HILL",Vector3(0,0.2,22)]
     ]:
-        box(data[1] + Vector3(0, 0.8, 0),Vector3(0.22,1.6,0.22),Color("#886c4c"))
+        _solid_prop(data[1] + Vector3(0, 0.8, 0), Vector3(0.22, 1.6, 0.22), Color("#886c4c"), "WayfindingPost")
         var sign := Label3D.new()
         sign.text = data[0]
         sign.font_size = 45
