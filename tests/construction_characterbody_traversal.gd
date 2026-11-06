@@ -59,8 +59,17 @@ func _run() -> void:
     # The roof must also block entry from above.
     actor.global_position = Vector3(0, 6.5, 0)
     await physics_frame
-    var roof_hit := actor.move_and_collide(Vector3(0, -3.0, 0), true)
+    var roof_hit := actor.move_and_collide(Vector3(0, -5.0, 0), true)
     _check(roof_hit != null, "CharacterBody3D cannot fall through roof")
+    if roof_hit != null:
+        _check(roof_hit.get_normal().y > 0.8, "roof contact has upward normal")
+
+    # A doorway clearance is not sufficient if the player is blocked by a
+    # decorative invisible collision after entering the interior.
+    actor.global_position = Vector3(0, 1.0, 3.0)
+    await physics_frame
+    var interior_hit := actor.move_and_collide(Vector3(0, 0, -4.0), true)
+    _check(interior_hit == null, "CharacterBody3D can continue into cottage interior")
 
     print("CONSTRUCTION_CHARACTERBODY_TRAVERSAL failures=", failures)
     quit(0 if failures == 0 else 1)
