@@ -40,6 +40,19 @@ func _run() -> void:
             var hit_point: Vector3 = hit.get("position", Vector3.ZERO)
             if hit_point.z > -11.0 or hit_point.z < -17.0:
                 failures.append("Farmhouse probe hit unrelated geometry, not the building")
+        # Door-only collision is insufficient: probe both side facades.
+        for side_x in [-25.5, -20.5]:
+            var side_query := PhysicsRayQueryParameters3D.create(
+                Vector3(side_x, 1.8, -7.0), Vector3(side_x, 1.8, -17.0))
+            if hero is CollisionObject3D:
+                side_query.exclude = [hero.get_rid()]
+            var side_hit := space.intersect_ray(side_query)
+            if side_hit.is_empty():
+                failures.append("Farmhouse side wall intangible at x=" + str(side_x))
+            else:
+                var side_position: Vector3 = side_hit.get("position", Vector3.ZERO)
+                if side_position.z > -11.0 or side_position.z < -17.0:
+                    failures.append("Side wall probe hit unrelated geometry at x=" + str(side_x))
         # Floor support at the playable homestead spawn.
         var floor_query := PhysicsRayQueryParameters3D.create(
             Vector3(-15, 3, -7), Vector3(-15, -3, -7))
