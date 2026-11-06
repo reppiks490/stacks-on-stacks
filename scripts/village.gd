@@ -48,16 +48,34 @@ func setup(host) -> void:
         container.name = str(resident["name"])
         container.position = Vector3(float(spot[0]), float(spot[1]), float(spot[2]))
         add_child(container)
-        var body := MeshInstance3D.new()
-        var mesh := CapsuleMesh.new()
-        mesh.radius = 0.38
-        mesh.height = 1.7
-        body.mesh = mesh
-        body.position.y = 0.9
-        var mat := StandardMaterial3D.new()
-        mat.albedo_color = Color.html(str(resident["palette"]))
-        body.material_override = mat
-        container.add_child(body)
+        # Authored character scenes are presentation-only: physics and social
+        # identity remain on the stable CharacterBody3D parent. Missing assets
+        # retain the explicitly temporary graybox rather than hiding residents.
+        var visual_path: String = str(resident.get("visual_scene", ""))
+        var authored_visual: Node3D = null
+        if visual_path.begins_with("res://") and visual_path.ends_with(".tscn") and ResourceLoader.exists(visual_path):
+            var visual_resource: Resource = load(visual_path)
+            if visual_resource is PackedScene:
+                var instance: Node = (visual_resource as PackedScene).instantiate()
+                if instance is Node3D:
+                    authored_visual = instance as Node3D
+                else:
+                    instance.free()
+        if authored_visual != null:
+            authored_visual.name = "ResidentVisual"
+            container.add_child(authored_visual)
+        else:
+            var body := MeshInstance3D.new()
+            body.name = "TEMPORARY_GRAYBOX_VISUAL"
+            var mesh := CapsuleMesh.new()
+            mesh.radius = 0.38
+            mesh.height = 1.7
+            body.mesh = mesh
+            body.position.y = 0.9
+            var mat := StandardMaterial3D.new()
+            mat.albedo_color = Color.html(str(resident["palette"]))
+            body.material_override = mat
+            container.add_child(body)
         # Collision is independent of temporary visuals and survives mesh swaps.
         var blocker_shape := CollisionShape3D.new()
         blocker_shape.name = "ResidentBodyShape"
