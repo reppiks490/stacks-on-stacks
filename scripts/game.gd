@@ -42,6 +42,9 @@ func _ready() -> void:
     _make_sky()
     valley = _component("res://scripts/valley.gd", "TheLivingValley")
     valley.setup(self)
+    # Collision adapter for the six existing houses in the ordinary launch.
+    # Authored building scenes must eventually own their collision directly.
+    _component("res://scripts/principal_building_collision.gd", "HouseCollisionRepair")
     farm = _component("res://scripts/farm.gd", "HomesteadSoil")
     farm.setup(self)
     village = _component("res://scripts/village.gd", "LarkspurResidents")
