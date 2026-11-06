@@ -130,6 +130,15 @@ func _physics_process(delta: float) -> void:
     if cell!=last_cell:
         last_cell=cell
         _stream_neighborhood(cell)
+    # Emergency recovery only: if streamed terrain physics failed to catch a fall,
+    # restore the player above the deterministic ground surface. Normal jumps,
+    # slopes and legitimate falls remain governed by CharacterBody3D physics.
+    # This does NOT replace native floor/contact and chunk seam acceptance tests.
+    var ground_y: float = _terrain_height(game.hero.global_position.x, game.hero.global_position.z)
+    if game.hero.global_position.y < ground_y - 30.0:
+        push_warning("Continental terrain fall-through recovered at chunk %s" % str(cell))
+        game.hero.global_position.y = ground_y + 2.0
+        game.hero.velocity = Vector3.ZERO
     if game.season_index!=last_season:
         last_season=game.season_index
         for chunk in chunks.values():
