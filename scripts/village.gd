@@ -15,6 +15,8 @@ var last_job: Dictionary = {}
 var festival_visits: Dictionary = {}
 var memories: Dictionary = {}
 var life_data: Dictionary = {}
+## Runtime-only safe positions; never modifies persistent saves.
+var resident_safe_positions: Dictionary = {}
 ## Presentation-only locale; not a gameplay or economy save field.
 var dialogue_locale: String = "en"
 ## Presentation adapter; authoritative social data stays in this domain.
@@ -80,6 +82,7 @@ func setup(host) -> void:
         label.position = Vector3(0, 2.3, 0)
         container.add_child(label)
         resident["node"] = container
+        resident_safe_positions[str(resident["id"])] = container.global_position
         resident["place"] = "home"
         residents.append(resident)
         var rid: String = str(resident["id"])
@@ -189,6 +192,7 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
             # movement below is collision-aware and never teleports through walls.
             actor.position = target
             actor.velocity = Vector3.ZERO
+            resident_safe_positions[str(resident["id"])] = actor.global_position
         elif delta > 0.0:
             var direction: Vector3 = target - actor.position
             direction.y = 0.0
@@ -223,6 +227,13 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
             actor.velocity.z = horizontal.z
             actor.velocity.y = -0.1 if actor.is_on_floor() else actor.velocity.y - 18.0 * delta
             actor.move_and_slide()
+            # Recover from streamed floor removal before falling into the void.
+            var rid: String = str(resident["id"])
+            if actor.is_on_floor():
+                resident_safe_positions[rid] = actor.global_position
+            elif actor.global_position.y < float(resident_safe_positions.get(rid, actor.global_position).y) - 3.0:
+                actor.global_position = resident_safe_positions.get(rid, actor.global_position)
+                actor.velocity = Vector3.ZERO
         resident["place"] = place
 
 func _physics_process(delta: float) -> void:
