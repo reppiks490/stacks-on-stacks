@@ -29,11 +29,8 @@ func setup(host) -> void:
             growth.position.y = 0.21
             holder.add_child(growth)
             var stem := MeshInstance3D.new()
-            var stem_mesh := CylinderMesh.new()
-            stem_mesh.top_radius = 0.06
-            stem_mesh.bottom_radius = 0.09
-            stem_mesh.height = 1.0
-            stem.mesh = stem_mesh
+            # Continuous, gently bending, tapered stem; no CylinderMesh placeholder.
+            stem.mesh = _crop_stem_mesh(index)
             stem.material_override = _mat(Color("#579e56"))
             growth.add_child(stem)
             # Original curved leaf geometry, kept under the existing crop growth node.
@@ -115,6 +112,35 @@ func _crop_leaf_mesh(plot_index: int) -> ArrayMesh:
                 surface.add_vertex(vertex)
     surface.generate_normals()
     return surface.commit()
+
+## Original tapered stalk surface with subtle bend, eight longitudinal segments
+## and ten radial sides. The existing maturity transform remains authoritative.
+func _crop_stem_mesh(plot_index: int) -> ArrayMesh:
+    var surface := SurfaceTool.new()
+    surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+    var rings := 8
+    var sides := 10
+    for ring in range(rings):
+        var t0 := float(ring) / float(rings)
+        var t1 := float(ring + 1) / float(rings)
+        for side in range(sides):
+            var a0 := TAU * float(side) / float(sides)
+            var a1 := TAU * float(side + 1) / float(sides)
+            var p00 := _stem_point(t0, a0, plot_index)
+            var p01 := _stem_point(t0, a1, plot_index)
+            var p10 := _stem_point(t1, a0, plot_index)
+            var p11 := _stem_point(t1, a1, plot_index)
+            for point in [p00, p01, p10, p01, p11, p10]:
+                surface.add_vertex(point)
+    surface.generate_normals()
+    return surface.commit()
+
+func _stem_point(t: float, angle: float, plot_index: int) -> Vector3:
+    var radius := lerpf(0.09, 0.035, t) * (1.0 + 0.06 * sin(t * TAU * 2.0))
+    var bend := 0.075 * t * t
+    var direction := float(plot_index % 7) * TAU / 7.0
+    return Vector3(radius * cos(angle) + bend * cos(direction),
+        t - 0.5, radius * sin(angle) + bend * sin(direction))
 
 ## A closed, organic fruit silhouette with five subtle lobes and a recessed crown.
 ## Authored from rings rather than a SphereMesh primitive; decorative only.
