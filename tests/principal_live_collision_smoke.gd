@@ -57,6 +57,8 @@ func _run() -> void:
         var hit := space.intersect_ray(query)
         if hit.is_empty():
             failures.append("Farmhouse wall is intangible (horizontal collision ray missed)")
+        elif not _belongs_to_valley(hit.get("collider"), valley):
+            failures.append("Farmhouse probe struck a non-valley collider; cannot prove solid architecture")
         else:
             var hit_point: Vector3 = hit.get("position", Vector3.ZERO)
             if hit_point.z > -11.0 or hit_point.z < -17.0:
@@ -70,6 +72,8 @@ func _run() -> void:
             var side_hit := space.intersect_ray(side_query)
             if side_hit.is_empty():
                 failures.append("Farmhouse side wall intangible at x=" + str(side_x))
+            elif not _belongs_to_valley(side_hit.get("collider"), valley):
+                failures.append("Farmhouse side probe struck non-valley collider at x=" + str(side_x))
             else:
                 var side_position: Vector3 = side_hit.get("position", Vector3.ZERO)
                 if side_position.z > -11.0 or side_position.z < -17.0:
@@ -94,3 +98,15 @@ func _run() -> void:
         print("PRINCIPAL NATIVE COLLISION SMOKE BLOCKED: ", failures.size())
     root.queue_free()
     quit(0 if failures.is_empty() else 1)
+
+# Collision against the player, livestock or an unrelated gameplay actor does
+# not establish that a visible farmhouse facade is physically solid.
+func _belongs_to_valley(collider: Object, valley_node: Node) -> bool:
+    if not (collider is StaticBody3D):
+        return false
+    var current: Node = collider
+    while current != null:
+        if current == valley_node:
+            return true
+        current = current.get_parent()
+    return false
