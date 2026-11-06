@@ -83,13 +83,23 @@ func _run() -> void:
         # Fail closed until streamed chunk collision is genuinely available.
         for edge_point in [Vector3(74.0, 4.0, 0.0), Vector3(-74.0, 4.0, 0.0), Vector3(0.0, 4.0, 74.0), Vector3(0.0, 4.0, -74.0)]:
             var edge_query := PhysicsRayQueryParameters3D.create(edge_point, edge_point + Vector3.DOWN * 10.0)
-            if space.intersect_ray(edge_query).is_empty():
+            var edge_hit := space.intersect_ray(edge_query)
+            if edge_hit.is_empty():
                 failures.append("Missing walkable terrain collision beyond legacy map edge at " + str(edge_point))
+            elif not _belongs_to_valley(edge_hit.get("collider"), valley):
+                failures.append("Terrain edge probe hit non-valley object at " + str(edge_point))
+            elif absf(edge_hit.get("position", Vector3.ZERO).y) > 2.0:
+                failures.append("Terrain edge probe hit elevated/unrelated geometry at " + str(edge_point))
         # Floor support at the playable homestead spawn.
         var floor_query := PhysicsRayQueryParameters3D.create(
             Vector3(-15, 3, -7), Vector3(-15, -3, -7))
-        if space.intersect_ray(floor_query).is_empty():
+        var floor_hit := space.intersect_ray(floor_query)
+        if floor_hit.is_empty():
             failures.append("Spawn ground lacks collision")
+        elif not _belongs_to_valley(floor_hit.get("collider"), valley):
+            failures.append("Spawn ground probe hit non-valley collider")
+        elif absf(floor_hit.get("position", Vector3.ZERO).y) > 0.5:
+            failures.append("Spawn ground probe did not hit expected terrain height")
     if failures.is_empty():
         print("PRINCIPAL NATIVE COLLISION SMOKE PASS (120 physics frames; limited probes only)")
     else:
