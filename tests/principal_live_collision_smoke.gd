@@ -31,9 +31,15 @@ func _run() -> void:
         # Cast horizontally at chest height; a solid building MUST block it.
         var query := PhysicsRayQueryParameters3D.create(
             Vector3(-23.0, 1.8, -7.0), Vector3(-23.0, 1.8, -17.0))
+        if hero is CollisionObject3D:
+            query.exclude = [hero.get_rid()]
         var hit := space.intersect_ray(query)
         if hit.is_empty():
             failures.append("Farmhouse wall is intangible (horizontal collision ray missed)")
+        else:
+            var hit_point: Vector3 = hit.get("position", Vector3.ZERO)
+            if hit_point.z > -11.0 or hit_point.z < -17.0:
+                failures.append("Farmhouse probe hit unrelated geometry, not the building")
         # Floor support at the playable homestead spawn.
         var floor_query := PhysicsRayQueryParameters3D.create(
             Vector3(-15, 3, -7), Vector3(-15, -3, -7))
