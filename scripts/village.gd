@@ -229,11 +229,27 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
             actor.move_and_slide()
             # Recover from streamed floor removal before falling into the void.
             var rid: String = str(resident["id"])
+            # A remembered position is only safe while the streamed static
+            # terrain still exists. Never recover onto unloaded empty space.
             if actor.is_on_floor():
-                resident_safe_positions[rid] = actor.global_position
-            elif actor.global_position.y < float(resident_safe_positions.get(rid, actor.global_position).y) - 3.0:
-                actor.global_position = resident_safe_positions.get(rid, actor.global_position)
-                actor.velocity = Vector3.ZERO
+                var floor_probe := PhysicsRayQueryParameters3D.create(
+                    actor.global_position + Vector3.UP * 0.6,
+                    actor.global_position + Vector3.DOWN * 1.8)
+                floor_probe.collision_mask = 1
+                floor_probe.exclude = [actor.get_rid()]
+                var floor_hit: Dictionary = actor.get_world_3d().direct_space_state.intersect_ray(floor_probe)
+                if floor_hit.get("collider") is StaticBody3D and Vector3(floor_hit.get("normal", Vector3.ZERO)).dot(Vector3.UP) >= 0.55:
+                    resident_safe_positions[rid] = actor.global_position
+            elif resident_safe_positions.has(rid) and actor.global_position.y < float(resident_safe_positions[rid].y) - 3.0:
+                var safe_spot: Vector3 = resident_safe_positions[rid]
+                var recovery_probe := PhysicsRayQueryParameters3D.create(
+                    safe_spot + Vector3.UP * 0.6, safe_spot + Vector3.DOWN * 1.8)
+                recovery_probe.collision_mask = 1
+                recovery_probe.exclude = [actor.get_rid()]
+                var recovery_hit: Dictionary = actor.get_world_3d().direct_space_state.intersect_ray(recovery_probe)
+                if recovery_hit.get("collider") is StaticBody3D and Vector3(recovery_hit.get("normal", Vector3.ZERO)).dot(Vector3.UP) >= 0.55:
+                    actor.global_position = safe_spot
+                    actor.velocity = Vector3.ZERO
         resident["place"] = place
 
 func _physics_process(delta: float) -> void:
