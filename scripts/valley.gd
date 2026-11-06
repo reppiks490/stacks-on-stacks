@@ -68,7 +68,30 @@ func _paths() -> void:
     box(Vector3(-15, 0.02, 14), Vector3(3.0, 0.035, 40), Color("#d9c7a4"))
 
 func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
-    box(at + Vector3(0, 2.0, 0), Vector3(width, 4, 5.2), walls)
+    # Structural geometry is kept separate from visual decoration so that the
+    # doorway is actually traversable. All dimensions are in Godot meters.
+    var depth := 5.2
+    var height := 4.0
+    var thickness := 0.24
+    var opening_width := 1.45
+    var opening_height := 2.55
+    var body := StaticBody3D.new()
+    body.name = "HouseStructure"
+    body.position = at
+    body.collision_layer = 1
+    body.collision_mask = 1
+    add_child(body)
+    _solid_house_part(body, Vector3(0, -0.12, 0), Vector3(width, 0.24, depth), walls)
+    _solid_house_part(body, Vector3(-width * 0.5 + thickness * 0.5, height * 0.5, 0), Vector3(thickness, height, depth), walls)
+    _solid_house_part(body, Vector3(width * 0.5 - thickness * 0.5, height * 0.5, 0), Vector3(thickness, height, depth), walls)
+    _solid_house_part(body, Vector3(0, height * 0.5, -depth * 0.5 + thickness * 0.5), Vector3(width, height, thickness), walls)
+    var side_width := (width - opening_width) * 0.5
+    var front_z := depth * 0.5 - thickness * 0.5
+    _solid_house_part(body, Vector3(-(opening_width + side_width) * 0.5, height * 0.5, front_z), Vector3(side_width, height, thickness), walls)
+    _solid_house_part(body, Vector3((opening_width + side_width) * 0.5, height * 0.5, front_z), Vector3(side_width, height, thickness), walls)
+    _solid_house_part(body, Vector3(0, (opening_height + height) * 0.5, front_z), Vector3(opening_width, height - opening_height, thickness), walls)
+    # The roof remains a temporary visual mesh; its collision uses a conservative
+    # overhead slab and must be replaced by authored roof panels in the art pass.
     var roof_mesh := CylinderMesh.new()
     roof_mesh.top_radius = 0.0
     roof_mesh.bottom_radius = width * 0.67
@@ -76,12 +99,29 @@ func _house(at: Vector3, walls: Color, roof: Color, width: float = 6.0) -> void:
     roof_mesh.radial_segments = 4
     var roof_node := MeshInstance3D.new()
     roof_node.mesh = roof_mesh
-    roof_node.position = at + Vector3(0, 5.0, 0)
+    roof_node.position = Vector3(0, 5.0, 0)
     roof_node.rotation.y = PI / 4.0
     roof_node.material_override = material(roof)
-    add_child(roof_node)
-    box(at + Vector3(0, 1.35, 2.62), Vector3(1.15, 2.7, 0.2), Color("#6c5042"))
+    body.add_child(roof_node)
+    _solid_house_part(body, Vector3(0, 4.0, 0), Vector3(width, 0.2, depth), roof)
+    # Window and door accents are deliberately nonblocking; the doorway has
+    # no closed-door collider until a functional hinged door is implemented.
     box(at + Vector3(-width * 0.28, 2.3, 2.65), Vector3(0.8, 1.0, 0.13), Color("#f1d79c"))
+
+func _solid_house_part(body: StaticBody3D, local_position: Vector3, dimensions: Vector3, tint: Color) -> void:
+    var visual := MeshInstance3D.new()
+    var mesh := BoxMesh.new()
+    mesh.size = dimensions
+    visual.mesh = mesh
+    visual.position = local_position
+    visual.material_override = material(tint)
+    body.add_child(visual)
+    var collider := CollisionShape3D.new()
+    var shape := BoxShape3D.new()
+    shape.size = dimensions
+    collider.shape = shape
+    collider.position = local_position
+    body.add_child(collider)
 
 func _farmhouse() -> void:
     _house(Vector3(-23, 0, -14), Color("#f0e5ca"), Color("#ba7662"), 7.0)
