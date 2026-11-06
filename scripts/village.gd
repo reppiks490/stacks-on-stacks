@@ -65,6 +65,14 @@ func setup(host) -> void:
         blocker_shape.shape = capsule_shape
         blocker_shape.position.y = 0.9
         container.add_child(blocker_shape)
+        # Navigation is optional until the world lane supplies a baked navigation map.
+        # Keep collision-driven locomotion even when no map is available.
+        var navigator := NavigationAgent3D.new()
+        navigator.name = "ResidentNavigator"
+        navigator.path_desired_distance = 0.45
+        navigator.target_desired_distance = 0.65
+        navigator.avoidance_enabled = false
+        container.add_child(navigator)
         var label := Label3D.new()
         label.text = str(resident["name"]) + " • " + str(resident["role"])
         label.font_size = 36
@@ -184,7 +192,19 @@ func sync_schedule(snap: bool = false, delta: float = 0.0) -> void:
         elif delta > 0.0:
             var direction: Vector3 = target - actor.position
             direction.y = 0.0
-            var horizontal: Vector3 = direction.normalized() * minf(2.4, direction.length() / delta)
+            var navigator: NavigationAgent3D = actor.get_node("ResidentNavigator")
+            var travel: Vector3 = direction
+            var nav_map: RID = navigator.get_navigation_map()
+            if nav_map.is_valid() and NavigationServer3D.map_get_iteration_id(nav_map) > 0:
+                if navigator.target_position.distance_to(to_global(target)) > 0.65:
+                    navigator.target_position = to_global(target)
+                if not navigator.is_navigation_finished():
+                    travel = navigator.get_next_path_position() - actor.global_position
+                    travel.y = 0.0
+            # Arrival dead-zone avoids shaking and overshooting the destination.
+            var horizontal: Vector3 = Vector3.ZERO
+            if direction.length() > 0.35 and travel.length() > 0.05:
+                horizontal = travel.normalized() * minf(2.4, direction.length() / delta)
             actor.velocity.x = horizontal.x
             actor.velocity.z = horizontal.z
             actor.velocity.y = -0.1 if actor.is_on_floor() else actor.velocity.y - 18.0 * delta
