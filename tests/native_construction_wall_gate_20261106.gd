@@ -20,6 +20,7 @@ func _check(label: String, expected_hit: bool, from: Vector3, to: Vector3, space
 
 func _run() -> void:
     var root := Node3D.new()
+    get_root().add_child(root)
     current_scene = root
     root.name = "ConstructionPhysicsGate"
     root.add_child(Valley.new())
